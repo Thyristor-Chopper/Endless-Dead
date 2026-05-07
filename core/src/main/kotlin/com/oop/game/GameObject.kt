@@ -45,23 +45,9 @@ abstract class GameObject(
     var y: Float,
     // 크기는 일반적으로 바뀌지 않지만, 폭발·성장 이펙트 같은 확장을 위해 var.
     //   바뀔 일이 없다면 val 로 두는 것이 더 안전하다.
-    var width: Float,
-    var height: Float
+    val width: Float,
+    val height: Float
 ) {
-
-    /**
-     * 이 객체가 아직 '살아있는지' 여부.
-     *
-     * GameWorld 가 매 프레임 removeDead() 를 호출하면,
-     *   이 값이 false 인 객체가 월드에서 정리된다.
-     *
-     * 기본값은 true — 대부분의 객체는 '살아있는 게 기본' 이기 때문.
-     * 'open' 이므로 서브클래스에서 원한다면 override 할 수 있다.
-     *   예) class Bullet(val worldHeight: Float) {
-     *           override fun isAlive() = y in 0f..worldHeight   // 화면 안에 있을 때만 살아있음
-     *       }
-     */
-    open fun isAlive(): Boolean = true
 
     /**
      * 매 프레임 호출되어 **상태를 갱신**한다.

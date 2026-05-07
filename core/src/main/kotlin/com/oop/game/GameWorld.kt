@@ -136,7 +136,7 @@ abstract class GameWorld(
     protected fun removeDead() {
         val toRemove = mutableListOf<GameObject>()
         for (obj in gameObjects) {
-            if (!obj.isAlive()) {
+            if (obj is LivingGameObject && !obj.isAlive()) {
                 toRemove.add(obj)
             }
         }
