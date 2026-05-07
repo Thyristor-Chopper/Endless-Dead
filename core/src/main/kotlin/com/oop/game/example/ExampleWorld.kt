@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.oop.game.GameWorld
 import com.oop.game.InputHandler
 import kotlin.math.floor
+import com.oop.game.objects.Chest;
+import com.oop.game.objects.Building;
 
 /**
  * ════════════════════════════════════════════════════════════
@@ -85,6 +87,10 @@ class ExampleWorld(
         maxY = worldHeight,
         angle = 0f
     )
+	
+	// 예제 건물과 상자
+	private val building = Building(worldWidth / 2 - 20f, 50f);
+	private val chest = Chest(worldWidth / 2 - 30f, 90f);
 
     // 현재 게임 상태 — 입력/충돌에 따라 IN_PLAY ↔ GAME_OVER 로 전환된다.
     private var state = GameState.IN_PLAY
@@ -107,6 +113,8 @@ class ExampleWorld(
     init {
         add(player)
         add(enemy)
+		add(building);
+		add(chest);
     }
 
     /**
