@@ -11,7 +11,4 @@ class Building(x: Float, y: Float): ItemContainer(x, y, 32.0f, 32.0f) {
 	override fun draw(batch: SpriteBatch) {
 		batch.draw(texture, x, y, width, height);
 	}
-	
-	override fun update(delta: Float) {
-	}
 }

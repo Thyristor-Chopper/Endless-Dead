@@ -13,4 +13,7 @@ abstract class ItemContainer(x: Float, y: Float, width: Float, height: Float) : 
 		gameObject.addItemToInventory(target);
 		containedItem = null;
 	}
+	
+	override open fun update(delta: Float) {
+	}
 }
