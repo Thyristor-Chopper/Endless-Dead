@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.oop.game.GameObject
 import com.oop.game.InputHandler
+import com.oop.game.InventoryObject;
+import com.oop.game.Item;
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -28,7 +30,9 @@ class ExamplePlayer(
     y: Float,
     private val worldWidth: Float,
     private val worldHeight: Float
-) : GameObject(x, y, 30f, 30f) {
+) : GameObject(x, y, 30f, 30f), InventoryObject {
+
+	override val inventory = mutableListOf<Item>();
 
     // 이미지 로딩.
     //   Gdx.files.internal: 클래스패스(자원 폴더)에서 파일을 찾아 읽는다.
