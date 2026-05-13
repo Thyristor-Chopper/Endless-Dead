@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.oop.game.example.ExamplePlayer;
 
 /**
  * 게임 한 장면 = '월드 하나' 의 추상 기본 클래스.
@@ -55,6 +56,7 @@ abstract class GameWorld(
     val worldWidth: Float = screenWidth,
     val worldHeight: Float = screenHeight
 ) : ScreenAdapter() {
+	abstract val player: ExamplePlayer;
 
     // OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     val camera = OrthographicCamera()

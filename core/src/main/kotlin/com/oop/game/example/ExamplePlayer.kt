@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.oop.game.GameObject
+import com.oop.game.GameWorld;
 import com.oop.game.InputHandler
 import com.oop.game.InventoryObject;
 import com.oop.game.Item;
@@ -26,11 +27,12 @@ import com.oop.game.Item;
  * @param worldWidth/Height: 월드 크기를 받아 경계 밖으로 못 나가게 제한하는 용도.
  */
 class ExamplePlayer(
+	world: GameWorld,
     x: Float,
     y: Float,
     private val worldWidth: Float,
     private val worldHeight: Float
-) : GameObject(x, y, 30f, 30f), InventoryObject {
+) : GameObject(world, x, y, 30f, 30f), InventoryObject {
 
 	override val inventory = mutableListOf<Item>();
 

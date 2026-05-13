@@ -2,6 +2,7 @@ package com.oop.game
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Rectangle
+import com.oop.game.GameWorld;
 
 /**
  * 게임에 등장하는 모든 '무엇인가'의 공통 부모.
@@ -38,6 +39,7 @@ import com.badlogic.gdx.math.Rectangle
  * @param height 세로 크기 (픽셀)
  */
 abstract class GameObject(
+	val world: GameWorld,
     // var 로 선언한 이유: 객체는 게임 중 위치가 **변해야 하므로**.
     //   val 로 만들면 한 번 생성된 이후 움직일 수 없다.
     //   파이썬의 self.x = ... 와 같은 역할을 val/var 속성이 한다.
@@ -110,10 +112,4 @@ abstract class GameObject(
      * 텍스처를 쓰는 객체라면 override 해서 texture.dispose() 를 호출.
      */
     open fun dispose() {}
-	
-	fun enemyAndPlayerDistance(startPosition: ExampleEnemy, determinatePosition: ExamplePlayer): Float {
-		val dx = startPosition.x - determinatePosition.x;
-		val dy = startPosition.y - determinatePosition.y;
-		return sqrt(dx * dx + dy * dy);
-	}
 }

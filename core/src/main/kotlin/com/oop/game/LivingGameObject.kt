@@ -1,6 +1,8 @@
 package com.oop.game;
 
-abstract class LivingGameObject(x: Float, y: Float, width: Float, height: Float) : GameObject(x, y, width, height) {
+import com.oop.game.GameWorld;
+
+abstract class LivingGameObject(world: GameWorld, x: Float, y: Float, width: Float, height: Float) : GameObject(world, x, y, width, height) {
 	/**
 	 * 이 객체가 아직 '살아있는지' 여부.
 	 *

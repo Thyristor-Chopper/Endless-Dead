@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.oop.game.GameObject
+import com.oop.game.GameWorld;
 import java.lang.Math
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.sqrt;
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -31,6 +33,7 @@ import kotlin.math.sin
  */
 
 class ExampleEnemy(
+	world: GameWorld,
     x: Float,
     y: Float,
     private var angle : Float,
@@ -38,9 +41,8 @@ class ExampleEnemy(
     private val maxX: Float,
     private val minY: Float,
     private val maxY: Float,
-	private val player: ExamplePlayer,
-) : GameObject(x, y, 80f, 80f) {
-	
+) : GameObject(world, x, y, 80f, 80f) {
+    
     var wall = false
     private var radian : Float = 0f
     private fun changeRandomAngle() {
@@ -55,16 +57,22 @@ class ExampleEnemy(
     // 현재 진행 방향 — +1 이면 오른쪽, -1 이면 왼쪽.
     //   var 로 선언한 이유: 경계에서 반대로 뒤집혀야 하므로 값이 변함.
     private var direction = 1f
+    
+    fun distanceToPlayer(player: ExamplePlayer = world.player): Float {
+        val dx = x - player.x;
+        val dy = y - player.y;
+        return sqrt(dx * dx + dy * dy);
+    }
 
     override fun update(delta: Float) {
         // 수평 이동: 속도 × 방향 × 시간
-		var distance = enemyAndPlayerDistance(this, player)
-		var dx = player.x - x
-		var dy = player.y - y
-		if (distance > 0f) {
-			x += dx / distance * speed * delta
-			y += dy / distance * speed * delta
-		}
+        var distance = distanceToPlayer()
+        var dx = world.player.x - x
+        var dy = world.player.y - y
+        if (distance > 0f) {
+            x += dx / distance * speed * delta
+            y += dy / distance * speed * delta
+        }
     }
 
     /**
