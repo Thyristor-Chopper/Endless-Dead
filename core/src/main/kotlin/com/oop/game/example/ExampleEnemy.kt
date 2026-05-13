@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.oop.game.GameObject
+import com.oop.game.LivingGameObject
 import java.lang.Math
 import kotlin.math.cos
 import kotlin.math.sin
@@ -38,7 +39,7 @@ class ExampleEnemy(
     private val maxX: Float,
     private val minY: Float,
     private val maxY: Float,
-) : GameObject(x, y, 80f, 80f) {
+) : LivingGameObject(x, y, 80f, 80f,5) {
     var wall = false
     private var radian : Float = 0f
     private fun changeRandomAngle() {

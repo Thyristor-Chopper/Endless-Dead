@@ -7,6 +7,7 @@ import com.oop.game.GameObject
 import com.oop.game.InputHandler
 import com.oop.game.InventoryObject;
 import com.oop.game.Item;
+import com.oop.game.LivingGameObject
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -30,7 +31,7 @@ class ExamplePlayer(
     y: Float,
     private val worldWidth: Float,
     private val worldHeight: Float
-) : GameObject(x, y, 30f, 30f), InventoryObject {
+) : LivingGameObject(x, y, 30f, 30f,5), InventoryObject {
 
 	override val inventory = mutableListOf<Item>();
 
@@ -41,8 +42,17 @@ class ExamplePlayer(
     private val texture = Texture(Gdx.files.internal("player.png"))
 
     private val speed = 200f
+    //체력
+
+    //무적시간(이거 없으면 1초만 닿아도 60(프레임)번 맞음
+
+
+
+
+
 
     override fun update(delta: Float) {
+        super<com.oop.game.LivingGameObject>.update(delta)
         if (InputHandler.isKeyPressed(InputHandler.LEFT))  x -= speed * delta
         if (InputHandler.isKeyPressed(InputHandler.RIGHT)) x += speed * delta
         if (InputHandler.isKeyPressed(InputHandler.UP))    y += speed * delta
