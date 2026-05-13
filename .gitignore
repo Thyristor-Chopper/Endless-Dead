@@ -1,1 +1,4 @@
 .gradle/
+desktop/.lwjgl/
+desktop/build/
+core/build/
