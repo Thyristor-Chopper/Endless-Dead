@@ -1,7 +1,5 @@
 package com.oop.game;
 
-import com.oop.game.GameWorld;
-
 abstract class LivingGameObject(world: GameWorld, x: Float, y: Float, width: Float, height: Float) : GameObject(world, x, y, width, height) {
 	/**
 	 * 이 객체가 아직 '살아있는지' 여부.

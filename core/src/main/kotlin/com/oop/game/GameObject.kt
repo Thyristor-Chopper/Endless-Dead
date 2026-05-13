@@ -2,7 +2,6 @@ package com.oop.game
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Rectangle
-import com.oop.game.GameWorld;
 
 /**
  * 게임에 등장하는 모든 '무엇인가'의 공통 부모.
@@ -50,7 +49,6 @@ abstract class GameObject(
     val width: Float,
     val height: Float
 ) {
-
     /**
      * 매 프레임 호출되어 **상태를 갱신**한다.
      *

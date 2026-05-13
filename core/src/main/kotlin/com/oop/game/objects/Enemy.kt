@@ -1,11 +1,14 @@
-package com.oop.game.example
+package com.oop.game.objects;
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+
 import com.oop.game.GameObject
 import com.oop.game.GameWorld;
+
 import java.lang.Math
+
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt;
@@ -32,7 +35,7 @@ import kotlin.math.sqrt;
  * @param maxY
  */
 
-class ExampleEnemy(
+class Enemy(
 	world: GameWorld,
     x: Float,
     y: Float,
@@ -42,7 +45,6 @@ class ExampleEnemy(
     private val minY: Float,
     private val maxY: Float,
 ) : GameObject(world, x, y, 80f, 80f) {
-    
     var wall = false
     private var radian : Float = 0f
     private fun changeRandomAngle() {
@@ -58,7 +60,7 @@ class ExampleEnemy(
     //   var 로 선언한 이유: 경계에서 반대로 뒤집혀야 하므로 값이 변함.
     private var direction = 1f
     
-    fun distanceToPlayer(player: ExamplePlayer = world.player): Float {
+    fun distanceToPlayer(player: Player = world.player): Float {
         val dx = x - player.x;
         val dy = y - player.y;
         return sqrt(dx * dx + dy * dy);

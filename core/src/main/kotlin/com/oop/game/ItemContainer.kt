@@ -1,9 +1,5 @@
 package com.oop.game;
 
-import com.oop.game.GameWorld;
-import com.oop.game.InventoryObject;
-import com.oop.game.LivingGameObject;
-
 abstract class ItemContainer(world: GameWorld, x: Float, y: Float, width: Float, height: Float) : GameObject(world, x, y, width, height) {
 	open var containedItem: Item? = null;
 	
@@ -17,6 +13,5 @@ abstract class ItemContainer(world: GameWorld, x: Float, y: Float, width: Float,
 		containedItem = null;
 	}
 	
-	override open fun update(delta: Float) {
-	}
+	override open fun update(delta: Float) {}
 }
