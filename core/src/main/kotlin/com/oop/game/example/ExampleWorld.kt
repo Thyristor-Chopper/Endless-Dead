@@ -85,7 +85,8 @@ class ExampleWorld(
         maxX = worldWidth,
         minY = 0f,
         maxY = worldHeight,
-        angle = 0f
+        angle = 0f,
+		player
     )
 	
 	// 예제 건물과 상자

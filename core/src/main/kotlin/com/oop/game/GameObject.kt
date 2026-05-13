@@ -110,4 +110,10 @@ abstract class GameObject(
      * 텍스처를 쓰는 객체라면 override 해서 texture.dispose() 를 호출.
      */
     open fun dispose() {}
+	
+	fun enemyAndPlayerDistance(startPosition: ExampleEnemy, determinatePosition: ExamplePlayer): Float {
+		val dx = startPosition.x - determinatePosition.x;
+		val dy = startPosition.y - determinatePosition.y;
+		return sqrt(dx * dx + dy * dy);
+	}
 }
