@@ -39,6 +39,7 @@ class ExampleEnemy(
     private val maxX: Float,
     private val minY: Float,
     private val maxY: Float,
+    private val player: ExamplePlayer
 ) : LivingGameObject(x, y, 80f, 80f,5) {
     var wall = false
     private var radian : Float = 0f
@@ -82,6 +83,13 @@ class ExampleEnemy(
         if(wall) {
             changeRandomAngle()
             wall = false
+        }
+        var distance = enemyAndPlayerDistance(this, player)
+        var dx = player.x - x
+        var dy = player.y - y
+        if (distance > 0f) {
+            x += dx / distance * speed * delta
+            y += dy / distance * speed * delta
         }
     }
 
