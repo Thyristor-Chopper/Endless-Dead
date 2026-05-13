@@ -35,6 +35,7 @@ class Player(
     private val worldHeight: Float
 ) : GameObject(world, x, y, 30f, 30f), InventoryObject {
 	override val inventory = mutableListOf<Item>();
+	override var selectedItemIndex: Int? = null;
 
     // 이미지 로딩.
     //   Gdx.files.internal: 클래스패스(자원 폴더)에서 파일을 찾아 읽는다.
@@ -49,6 +50,10 @@ class Player(
         if (InputHandler.isKeyPressed(InputHandler.RIGHT)) x += speed * delta
         if (InputHandler.isKeyPressed(InputHandler.UP))    y += speed * delta
         if (InputHandler.isKeyPressed(InputHandler.DOWN))  y -= speed * delta
+		
+		if(InputHandler.isKeyPressed(InputHandler.SPACE) && holdingItem is Gun) {
+			holdingItem.shoot();
+		}
 
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, worldWidth - width)
