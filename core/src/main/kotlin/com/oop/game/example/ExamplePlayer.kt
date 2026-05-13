@@ -51,6 +51,8 @@ class ExamplePlayer(
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, worldWidth - width)
         y = y.coerceIn(0f, worldHeight - height)
+
+
     }
 
     /**

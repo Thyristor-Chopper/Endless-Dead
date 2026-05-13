@@ -82,7 +82,10 @@ class ExampleWorld(
         x = 100f,
         y = worldHeight - 100f,
         minX = 0f,
-        maxX = worldWidth
+        maxX = worldWidth,
+        minY = 0f,
+        maxY = worldHeight,
+        angle = 0f
     )
 	
 	// 예제 건물과 상자
@@ -259,10 +262,10 @@ class ExampleWorld(
     /** 게임 오버 시 화면 중앙에 띄우는 안내 메시지. */
     private fun drawGameOverOverlay() {
         drawTextOnScreen(
-            text = "Game Over!",
+            text = "YOU DIED!",
             x = screenWidth / 2 - 80f,
             y = screenHeight / 2,
-            color = Color.WHITE,
+            color = Color.RED,
             scale = 2f
         )
         drawTextOnScreen(

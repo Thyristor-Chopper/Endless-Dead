@@ -4,6 +4,9 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.oop.game.GameObject
+import java.lang.Math
+import kotlin.math.cos
+import kotlin.math.sin
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -23,18 +26,29 @@ import com.oop.game.GameObject
  *
  * @param minX 왕복 이동의 왼쪽 한계 (보통 0f)
  * @param maxX 왕복 이동의 오른쪽 한계 (보통 worldWidth)
+ * @param minY
+ * @param maxY
  */
+
 class ExampleEnemy(
     x: Float,
     y: Float,
+    private var angle : Float,
     private val minX: Float,
-    private val maxX: Float
-) : GameObject(x, y, 40f, 40f) {
-
+    private val maxX: Float,
+    private val minY: Float,
+    private val maxY: Float,
+) : GameObject(x, y, 80f, 80f) {
+    var wall = false
+    private var radian : Float = 0f
+    private fun changeRandomAngle() {
+        val variation = (-30..30).random()
+        radian = (angle + variation) * 3.14f / 180
+    }
     // 이미지 로딩 — src/main/resources/enemy.png.
     private val texture = Texture(Gdx.files.internal("enemy.png"))
 
-    private val speed = 150f
+    private val speed = 400f
 
     // 현재 진행 방향 — +1 이면 오른쪽, -1 이면 왼쪽.
     //   var 로 선언한 이유: 경계에서 반대로 뒤집혀야 하므로 값이 변함.
@@ -42,17 +56,34 @@ class ExampleEnemy(
 
     override fun update(delta: Float) {
         // 수평 이동: 속도 × 방향 × 시간
-        x += speed * direction * delta
+        x += speed * direction * delta*cos(radian)
+        y += speed * direction * delta*sin(radian)
 
         // 경계에 닿으면 제자리에 붙이고 방향 반전.
         if (x <= minX) {
             x = minX
             direction = 1f
+            wall = true
         } else if (x + width >= maxX) {
             x = maxX - width
             direction = -1f
+            wall = true
+        }
+        if (y <= minY) {
+            y = minY
+            direction = 1f
+            wall = true
+        } else if (y + height >= maxY) {
+            y = maxY - height
+            direction = -1f
+            wall = true
+        }
+        if(wall) {
+            changeRandomAngle()
+            wall = false
         }
     }
+
 
     /**
      * 자신의 이미지를 그린다.
