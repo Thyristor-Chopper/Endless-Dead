@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 import com.oop.game.GameObject
 import com.oop.game.GameWorld;
+import com.oop.game.LivingGameObject;
 
 import java.lang.Math
 
@@ -44,7 +45,7 @@ class Enemy(
     private val maxX: Float,
     private val minY: Float,
     private val maxY: Float,
-) : GameObject(world, x, y, 80f, 80f) {
+) : LivingGameObject(world, x, y, 80f, 80f, 5) {
     var wall = false
     private var radian : Float = 0f
     private fun changeRandomAngle() {

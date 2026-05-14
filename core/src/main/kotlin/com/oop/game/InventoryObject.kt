@@ -5,8 +5,9 @@ interface InventoryObject {
 	var selectedItemIndex: Int?;
 	val holdingItem: Item?
 		get() {
-			if(selectedItemIndex == null) return null;
-			return inventory[selectedItemIndex];
+			val index: Int? = selectedItemIndex;
+			if(index == null) return null;
+			return inventory[index];
 		};
 	
 	fun addItemToInventory(item: Item) {
@@ -14,11 +15,12 @@ interface InventoryObject {
 	}
 	
 	fun removeItemFromInventory(index: Int) {
+		val currentIndex: Int? = selectedItemIndex;
 		inventory.removeAt(index);
 		if(inventory.isEmpty())
 			selectedItemIndex = null;
-		else if(index == selectedItemIndex) {
-			if(selectedItemIndex == 0) selectedItemIndex = 1;
+		else if(index == currentIndex) {
+			if(currentIndex == 0) selectedItemIndex = 1;
 			else selectedItemIndex--;
 		}
 	}
@@ -32,22 +34,24 @@ interface InventoryObject {
 	}
 	
 	fun selectNextItem() {
+		val index: Int? = selectedItemIndex;
 		if(inventory.isEmpty())
 			selectedItemIndex = null;
-		else if(selectedItemIndex == null)
+		else if(index == null)
 			selectedItemIndex = 0;
-		else if(selectedItemIndex >= inventory.size - 1)
+		else if(index >= inventory.size - 1)
 			selectedItemIndex = 0;
 		else
 			selectedItemIndex++;
 	}
 	
 	fun selectPreviousItem() {
+		val index: Int? = selectedItemIndex;
 		if(inventory.isEmpty())
 			selectedItemIndex = null;
-		else if(selectedItemIndex == null)
+		else if(index == null)
 			selectedItemIndex = 0;
-		else if(selectedItemIndex <= 0)
+		else if(index <= 0)
 			selectedItemIndex = inventory.size - 1;
 		else
 			selectedItemIndex--;

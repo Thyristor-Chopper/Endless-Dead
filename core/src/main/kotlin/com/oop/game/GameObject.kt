@@ -110,4 +110,14 @@ abstract class GameObject(
      * 텍스처를 쓰는 객체라면 override 해서 texture.dispose() 를 호출.
      */
     open fun dispose() {}
+	
+	fun bulletTarget(
+		bullet: Bullet,
+		target: Position
+	): Float {
+		val dx = target.x - bullet.x
+		val dy = target.y - bullet.y
+
+		return sqrt(dx * dx + dy * dy)
+	}
 }

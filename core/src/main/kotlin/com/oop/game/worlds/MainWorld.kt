@@ -161,7 +161,11 @@ class MainWorld(
         //   이 예제에선 충돌 시 객체를 죽이지 않고 게임 상태만 바꾼다.
         //   (총알 게임이라면 여기서 bullet.kill(), enemy.kill() 같은 처리)
         if (player.collidesWith(enemy)) {
-            state = GameState.GAME_OVER
+            player.takeDamage(1,1.0f)
+        }
+            //state = GameState.GAME_OVER
+        if (!player.isAlive()) {
+            state = GameState.GAME_OVER // 피가 0 이하가 되면 진짜 게임 오버!
         }
 
         // ── 3) 죽은 객체 정리 ──

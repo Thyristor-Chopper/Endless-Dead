@@ -6,9 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 import com.oop.game.GameObject
 import com.oop.game.GameWorld;
+import com.oop.game.Gun;
 import com.oop.game.InputHandler
 import com.oop.game.InventoryObject;
 import com.oop.game.Item;
+import com.oop.game.LivingGameObject;
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -33,7 +35,7 @@ class Player(
     y: Float,
     private val worldWidth: Float,
     private val worldHeight: Float
-) : GameObject(world, x, y, 30f, 30f), InventoryObject {
+) : LivingGameObject(world, x, y, 30f, 30f, 5), InventoryObject {
 	override val inventory = mutableListOf<Item>();
 	override var selectedItemIndex: Int? = null;
 
@@ -52,7 +54,7 @@ class Player(
         if (InputHandler.isKeyPressed(InputHandler.DOWN))  y -= speed * delta
 		
 		if(InputHandler.isKeyPressed(InputHandler.SPACE) && holdingItem is Gun) {
-			holdingItem.shoot();
+			// holdingItem.shoot();
 		}
 
         // 월드 경계 안쪽으로 가두기.
