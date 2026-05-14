@@ -1,13 +1,17 @@
-package com.oop.game.example
+package com.oop.game.objects;
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+
 import com.oop.game.GameObject
+import com.oop.game.GameWorld;
+import com.oop.game.Gun;
 import com.oop.game.InputHandler
 import com.oop.game.InventoryObject;
 import com.oop.game.Item;
 import com.oop.game.LivingGameObject
+import com.oop.game.LivingGameObject;
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -26,14 +30,15 @@ import com.oop.game.LivingGameObject
  *
  * @param worldWidth/Height: 월드 크기를 받아 경계 밖으로 못 나가게 제한하는 용도.
  */
-class ExamplePlayer(
+class Player(
+	world: GameWorld,
     x: Float,
     y: Float,
     private val worldWidth: Float,
     private val worldHeight: Float
-) : LivingGameObject(x, y, 30f, 30f,5), InventoryObject {
-
+) : LivingGameObject(world, x, y, 30f, 30f, 5), InventoryObject {
 	override val inventory = mutableListOf<Item>();
+	override var selectedItemIndex: Int? = null;
 
     // 이미지 로딩.
     //   Gdx.files.internal: 클래스패스(자원 폴더)에서 파일을 찾아 읽는다.
@@ -42,21 +47,16 @@ class ExamplePlayer(
     private val texture = Texture(Gdx.files.internal("player.png"))
 
     private val speed = 200f
-    //체력
-
-    //무적시간(이거 없으면 1초만 닿아도 60(프레임)번 맞음
-
-
-
-
-
 
     override fun update(delta: Float) {
-        super<com.oop.game.LivingGameObject>.update(delta)
         if (InputHandler.isKeyPressed(InputHandler.LEFT))  x -= speed * delta
         if (InputHandler.isKeyPressed(InputHandler.RIGHT)) x += speed * delta
         if (InputHandler.isKeyPressed(InputHandler.UP))    y += speed * delta
         if (InputHandler.isKeyPressed(InputHandler.DOWN))  y -= speed * delta
+
+		if(InputHandler.isKeyPressed(InputHandler.SPACE) && holdingItem is Gun) {
+			// holdingItem.shoot();
+		}
 
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, worldWidth - width)

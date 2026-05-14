@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.oop.game.GameObject
-import com.oop.game.LivingGameObject
 import java.lang.Math
 import kotlin.math.cos
 import kotlin.math.sin
@@ -39,8 +38,9 @@ class ExampleEnemy(
     private val maxX: Float,
     private val minY: Float,
     private val maxY: Float,
-    private val player: ExamplePlayer
-) : LivingGameObject(x, y, 80f, 80f,5) {
+	private val player: ExamplePlayer,
+) : GameObject(x, y, 80f, 80f) {
+	
     var wall = false
     private var radian : Float = 0f
     private fun changeRandomAngle() {
@@ -58,41 +58,14 @@ class ExampleEnemy(
 
     override fun update(delta: Float) {
         // 수평 이동: 속도 × 방향 × 시간
-        x += speed * direction * delta*cos(radian)
-        y += speed * direction * delta*sin(radian)
-
-        // 경계에 닿으면 제자리에 붙이고 방향 반전.
-        if (x <= minX) {
-            x = minX
-            direction = 1f
-            wall = true
-        } else if (x + width >= maxX) {
-            x = maxX - width
-            direction = -1f
-            wall = true
-        }
-        if (y <= minY) {
-            y = minY
-            direction = 1f
-            wall = true
-        } else if (y + height >= maxY) {
-            y = maxY - height
-            direction = -1f
-            wall = true
-        }
-        if(wall) {
-            changeRandomAngle()
-            wall = false
-        }
-        var distance = enemyAndPlayerDistance(this, player)
-        var dx = player.x - x
-        var dy = player.y - y
-        if (distance > 0f) {
-            x += dx / distance * speed * delta
-            y += dy / distance * speed * delta
-        }
+		var distance = enemyAndPlayerDistance(this, player)
+		var dx = player.x - x
+		var dy = player.y - y
+		if (distance > 0f) {
+			x += dx / distance * speed * delta
+			y += dy / distance * speed * delta
+		}
     }
-
 
     /**
      * 자신의 이미지를 그린다.

@@ -38,6 +38,7 @@ import com.badlogic.gdx.math.Rectangle
  * @param height 세로 크기 (픽셀)
  */
 abstract class GameObject(
+	val world: GameWorld,
     // var 로 선언한 이유: 객체는 게임 중 위치가 **변해야 하므로**.
     //   val 로 만들면 한 번 생성된 이후 움직일 수 없다.
     //   파이썬의 self.x = ... 와 같은 역할을 val/var 속성이 한다.
@@ -48,7 +49,6 @@ abstract class GameObject(
     val width: Float,
     val height: Float
 ) {
-
     /**
      * 매 프레임 호출되어 **상태를 갱신**한다.
      *
@@ -111,9 +111,13 @@ abstract class GameObject(
      */
     open fun dispose() {}
 	
-	fun enemyAndPlayerDistance(startPosition: ExampleEnemy, determinatePosition: ExamplePlayer): Float {
-		val dx = startPosition.x - determinatePosition.x;
-		val dy = startPosition.y - determinatePosition.y;
-		return sqrt(dx * dx + dy * dy);
+	fun bulletTarget(
+		bullet: Bullet,
+		target: Position
+	): Float {
+		val dx = target.x - bullet.x
+		val dy = target.y - bullet.y
+
+		return sqrt(dx * dx + dy * dy)
 	}
 }
