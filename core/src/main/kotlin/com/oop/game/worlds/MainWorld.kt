@@ -4,12 +4,13 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.oop.game.EnemySpawner
 
 import com.oop.game.GameWorld;
 import com.oop.game.InputHandler;
+import com.oop.game.example.Enemy
 import com.oop.game.objects.Building;
 import com.oop.game.objects.Chest;
-import com.oop.game.objects.Enemy;
 import com.oop.game.objects.Player;
 
 import kotlin.math.floor
@@ -79,19 +80,23 @@ class MainWorld(
         y = 50f,
         worldWidth = worldWidth,
         worldHeight = worldHeight
+
     )
 
     // 적 — 월드 상단에서 좌우 왕복.
-    private val enemy = Enemy(
-		this,
+    /*private val enemy = Enemy(
+        this,
         x = 100f,
         y = worldHeight - 100f,
         minX = 0f,
         maxX = worldWidth,
         minY = 0f,
         maxY = worldHeight,
-        angle = 0f
+        angle = 0f,
+        player = player
     )
+
+     */
 	
 	// 예제 건물과 상자
 	private val building = Building(this, worldWidth / 2 - 20f, 50f);
@@ -99,6 +104,10 @@ class MainWorld(
 
     // 현재 게임 상태 — 입력/충돌에 따라 IN_PLAY ↔ GAME_OVER 로 전환된다.
     private var state = GameState.IN_PLAY
+
+    // 좀비들만 따로 모아두는 관리용 리스트
+    private val enemies = mutableListOf<Enemy>()
+    private val enemySpawner = EnemySpawner(this, player,  3.0f)
 
     // ── 체스판 배경 설정 (drawBackground() 에서 사용) ──
     //   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
@@ -117,7 +126,6 @@ class MainWorld(
      */
     init {
         add(player)
-        add(enemy)
 		add(building);
 		add(chest);
     }
@@ -155,13 +163,33 @@ class MainWorld(
 
         // ── 1) 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
         updateAllObjects(delta)
+        val newZombie = enemySpawner.update(delta)
+        if (newZombie != null) {
+
+            enemies.add(newZombie)
+        }
 
         // ── 2) 상호작용 결정 — 누가 누구와 부딪혀 어떻게 되는지 ──
         //   collidesWith 는 GameObject 의 메서드 → 모든 게임 객체가 자동으로 가짐.
         //   이 예제에선 충돌 시 객체를 죽이지 않고 게임 상태만 바꾼다.
         //   (총알 게임이라면 여기서 bullet.kill(), enemy.kill() 같은 처리)
-        if (player.collidesWith(enemy)) {
-            player.takeDamage(1,1.0f)
+        val deadZombies = mutableListOf<Enemy>()
+
+        for (enemy in enemies) {
+
+            if (player.collidesWith(enemy)) {
+                player.takeDamage(enemy.damage, 1.0f)
+            }
+
+
+            if (!enemy.isAlive()) {
+                deadZombies.add(enemy)
+            }
+        }
+
+
+        for (dead in deadZombies) {
+            enemies.remove(dead)
         }
             //state = GameState.GAME_OVER
         if (!player.isAlive()) {

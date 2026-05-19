@@ -2,7 +2,7 @@ package com.oop.game;
 
 abstract class LivingGameObject(world: GameWorld, x: Float, y: Float, width: Float, height: Float, initialHp: Int = 100) : GameObject(world, x, y, width, height) {
 	// HP
-	// 최대hp, hp 캡슐화, initialhp: 객체 만들 떄 지정할 체력
+	// 최대hp,  initialhp: 객체 만들 떄 지정할 체력
 	open val maxHp: Int = initialHp
 
 	var hp: Int = initialHp
