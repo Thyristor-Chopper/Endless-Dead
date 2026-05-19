@@ -1,14 +1,18 @@
-package com.oop.game.example
+package com.oop.game.worlds;
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.oop.game.GameWorld
-import com.oop.game.InputHandler
-import kotlin.math.floor
-import com.oop.game.objects.Chest;
+
+import com.oop.game.GameWorld;
+import com.oop.game.InputHandler;
 import com.oop.game.objects.Building;
+import com.oop.game.objects.Chest;
+import com.oop.game.objects.Enemy;
+import com.oop.game.objects.Player;
+
+import kotlin.math.floor
 
 /**
  * ════════════════════════════════════════════════════════════
@@ -47,13 +51,12 @@ import com.oop.game.objects.Building;
  * @param worldWidth   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
  * @param worldHeight  월드 전체 높이
  */
-class ExampleWorld(
+class MainWorld(
     screenWidth: Float,
     screenHeight: Float,
     worldWidth: Float,
     worldHeight: Float
 ) : GameWorld(screenWidth, screenHeight, worldWidth, worldHeight) {
-
     /**
      * 게임의 현재 상태를 나타내는 열거형.
      *
@@ -70,7 +73,8 @@ class ExampleWorld(
 
     // 플레이어 — 월드 중앙 하단에서 시작.
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
-    private val player = ExamplePlayer(
+    override val player = Player(
+		this,
         x = worldWidth / 2 - 15f,   // 가로 30 의 절반을 빼서 정확히 중앙
         y = 50f,
         worldWidth = worldWidth,
@@ -78,20 +82,20 @@ class ExampleWorld(
     )
 
     // 적 — 월드 상단에서 좌우 왕복.
-    private val enemy = ExampleEnemy(
+    private val enemy = Enemy(
+		this,
         x = 100f,
         y = worldHeight - 100f,
         minX = 0f,
         maxX = worldWidth,
         minY = 0f,
         maxY = worldHeight,
-        angle = 0f,
-		player
+        angle = 0f
     )
 	
 	// 예제 건물과 상자
-	private val building = Building(worldWidth / 2 - 20f, 50f);
-	private val chest = Chest(worldWidth / 2 - 30f, 90f);
+	private val building = Building(this, worldWidth / 2 - 20f, 50f);
+	private val chest = Chest(this, worldWidth / 2 - 30f, 90f);
 
     // 현재 게임 상태 — 입력/충돌에 따라 IN_PLAY ↔ GAME_OVER 로 전환된다.
     private var state = GameState.IN_PLAY
