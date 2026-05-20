@@ -26,6 +26,9 @@ class Bullet(
 			x += dx / distance * speed * delta
 			y += dy / distance * speed * delta
 		}
+		if (x < 0f || x > world.worldWidth || y < 0f || y > world.worldHeight) {
+			kill()
+		}
 	}
 
 	override fun draw(batch: SpriteBatch) {
