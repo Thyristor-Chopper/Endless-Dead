@@ -11,6 +11,7 @@ import com.oop.game.InputHandler
 import com.oop.game.InventoryObject;
 import com.oop.game.Item;
 import com.oop.game.LivingGameObject;
+import com.oop.game.Position
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -54,7 +55,11 @@ class Player(
         if (InputHandler.isKeyPressed(InputHandler.UP))    y += speed * delta
         if (InputHandler.isKeyPressed(InputHandler.DOWN))  y -= speed * delta
         if (InputHandler.isButtonJustPressed(InputHandler.CLICK) && holdingItem is Gun) {
-            //target()
+            fun target(): Position {
+                return Position(
+                    x = world.offsetX + Gdx.input.x.toFloat(),
+                    y = world.offsetY + (world.screenHeight - Gdx.input.y.toFloat())
+                )}
         }
 		if(InputHandler.isKeyPressed(InputHandler.SPACE) && holdingItem is Gun) {
 			// holdingItem.shoot();
