@@ -53,7 +53,9 @@ class Player(
         if (InputHandler.isKeyPressed(InputHandler.RIGHT)) x += speed * delta
         if (InputHandler.isKeyPressed(InputHandler.UP))    y += speed * delta
         if (InputHandler.isKeyPressed(InputHandler.DOWN))  y -= speed * delta
-
+        if (InputHandler.isButtonJustPressed(InputHandler.CLICK) && holdingItem is Gun) {
+            //target()
+        }
 		if(InputHandler.isKeyPressed(InputHandler.SPACE) && holdingItem is Gun) {
 			// holdingItem.shoot();
 		}
