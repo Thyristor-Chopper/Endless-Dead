@@ -1,7 +1,9 @@
-package com.oop.game;
+package com.oop.game
+
+import com.oop.game.GameObject
 
 
-abstract class Gun(world: GameWorld, id: String, name: String, damage: Int, speed: Float) : Item(world, id, name), Shootable {
+abstract class Gun(world: GameWorld, id: String, name: String, damage: Int, speed: Float, fireinterval : Float) : Item(world, id, name), Shootable {
 	override val bulletDamage = damage
 	override val bulletSpeed = speed
 	
@@ -16,7 +18,8 @@ class shotGun(world: GameWorld): Gun(
 	"G002",
 	"샷건",
 	20,
-	5f
+	5f,
+	2f
 ){
 // 기능들 넣을까 예정
 }
@@ -25,7 +28,8 @@ class machineGun(world: GameWorld) : Gun(
 	"G003",
 	"기관총",
 	5,
-	5f
+	5f,
+	0f
 ){
 
 }
