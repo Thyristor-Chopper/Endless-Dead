@@ -12,8 +12,8 @@ class Bullet(
     val target: Position,
     private val speed: Float,
     val damage: Int
-) : GameObject(world, x, y, 8f, 8f) {
-	private val texture = Texture(Gdx.files.internal("enemy.png"))
+) : GameObject(world, x, y, 3f, 24f) {
+	private val texture = Texture(Gdx.files.internal("bullet.png"))
 	
     var alive = true
 
