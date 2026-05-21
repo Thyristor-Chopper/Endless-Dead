@@ -51,6 +51,7 @@ class Player(
     private val speed = 200f
 	
 	init {
+		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
 		Gdx.input.setInputProcessor(object : InputProcessor {
 			override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
 				if(button != Input.Buttons.LEFT) return false;
