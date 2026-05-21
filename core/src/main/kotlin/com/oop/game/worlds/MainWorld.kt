@@ -8,9 +8,9 @@ import com.oop.game.EnemySpawner
 
 import com.oop.game.GameWorld;
 import com.oop.game.InputHandler;
-import com.oop.game.example.Enemy
 import com.oop.game.objects.Building;
 import com.oop.game.objects.Chest;
+import com.oop.game.objects.Enemy;
 import com.oop.game.objects.Player;
 
 import kotlin.math.floor
