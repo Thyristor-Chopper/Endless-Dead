@@ -4,36 +4,41 @@ import com.oop.game.Position;
 import com.oop.game.entity.Entity;
 import com.oop.game.world.World;
 
+import kotlin.math.sqrt;
+
 class Bullet(
 	world: World,
     x: Float,
     y: Float,
-    /*target은 총알의 목적지, 마우스 좌클릭 위치를 저장 시도 예정*/
     val target: Position,
     private val speed: Float,
     val damage: Int
 ) : Entity(world, x, y, 16.0f, 16.0f, "bullet.png") {
-    var alive = true
+    var isAlive = true
+		private set;
 
-    var distance = bulletTarget(this, target)
-    var dx = target.x - x
-    var dy = target.y - y
-
+    private val dx = target.x - x;
+    private val dy = target.y - y;
+    private val distance = sqrt(dx * dx + dy * dy);
+	
 	override fun update(delta: Float) {
 		if (distance > 0f) {
 			x += dx / distance * speed * delta
 			y += dy / distance * speed * delta
 		}
 		if (x < 0f || x > world.width || y < 0f || y > world.height) {
-			kill()
+			isAlive = false
 		}
 	}
 
-	fun isAlive(): Boolean {
-		return alive
+	/*
+	fun bulletTarget(
+		bullet: Bullet,
+		target: Position
+	): Float {
+		val dx = target.x - bullet.x
+		val dy = target.y - bullet.y
+		return sqrt(dx * dx + dy * dy)
 	}
-
-	fun kill() {
-		alive = false
-	}
+	*/
 }

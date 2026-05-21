@@ -129,13 +129,4 @@ abstract class Entity(
 		if(texture == null) return;
 		texture.dispose();
 	}
-	
-	fun bulletTarget(
-		bullet: Bullet,
-		target: Position
-	): Float {
-		val dx = target.x - bullet.x
-		val dy = target.y - bullet.y
-		return sqrt(dx * dx + dy * dy)
-	}
 }

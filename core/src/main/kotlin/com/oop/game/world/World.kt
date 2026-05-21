@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
+import com.oop.game.entity.Bullet;
 import com.oop.game.entity.Entity;
 import com.oop.game.entity.LivingEntity;
 import com.oop.game.entity.Player;
@@ -139,11 +140,10 @@ abstract class World(
      *   gameObjects.removeAll { !it.isAlive() } 한 줄로 대체 가능.
      */
     protected fun removeDead() {
-        val toRemove = mutableListOf<Entity>()
-        for (obj in gameObjects) {
-            if (obj is LivingEntity && !obj.isAlive()) {
+		val toRemove = mutableListOf<Entity>()
+        for(obj in gameObjects) {
+            if((obj is LivingEntity && !obj.isAlive()) || (obj is Bullet && !obj.isAlive))
                 toRemove.add(obj)
-            }
         }
         for (obj in toRemove) {
             gameObjects.remove(obj)
