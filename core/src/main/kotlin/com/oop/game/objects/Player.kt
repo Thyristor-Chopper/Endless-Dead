@@ -55,21 +55,29 @@ class Player(
 		Gdx.input.setInputProcessor(object : InputProcessor {
 			override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
 				if(button != Input.Buttons.LEFT) return false;
-				// this@Player.x += 10.0f;
+				
 				val holding = holdingItem;
 				if(holding is Gun) {
 					holding.shoot(Position(x.toFloat(), y.toFloat()), this@Player);
+					return true;
 				}
-				return true;
+				return false;
 			}
 			
 			override fun keyDown(code: Int): Boolean = false;
+			
 			override fun keyUp(code: Int): Boolean = false;
+			
 			override fun keyTyped(char: Char): Boolean = false;
+			
 			override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
+			
 			override fun touchCancelled(x: Int, y: Int, p3: Int, p4: Int): Boolean = false;
+			
 			override fun touchDragged(x: Int, y: Int, p3: Int): Boolean = false;
+			
 			override fun mouseMoved(x: Int, y: Int): Boolean = false;
+			
 			override fun scrolled(p1: Float, p2: Float): Boolean = false;
 		});
 	}
