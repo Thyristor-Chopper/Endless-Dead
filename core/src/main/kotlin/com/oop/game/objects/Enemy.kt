@@ -62,7 +62,7 @@ sealed class Enemy(
         radian = (angle + variation) * 3.14f / 180
     }
     // 이미지 로딩 — src/main/resources/enemy.png.
-    private val texture = Texture(Gdx.files.internal("enemy.png"))
+    private val texture = Texture(Gdx.files.internal("인간좀비 앞모습.png"))
 
 
 
