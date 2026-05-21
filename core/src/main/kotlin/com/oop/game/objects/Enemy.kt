@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.oop.game.GameObject
 import com.oop.game.GameWorld;
 import com.oop.game.LivingGameObject;
-import com.oop.game.objects.Player
 import java.lang.Math
 import kotlin.math.cos
 import kotlin.math.sin
@@ -33,7 +32,6 @@ import kotlin.math.sin
  * @param maxY
  */
 
-class ExampleEnemy(
 sealed class Enemy(
 	world: GameWorld,
     x: Float,
