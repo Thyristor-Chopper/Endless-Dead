@@ -7,10 +7,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.oop.game.EnemySpawner
 
 import com.oop.game.InputHandler;
-import com.oop.game.entity.Building;
-import com.oop.game.entity.Chest;
 import com.oop.game.entity.Enemy;
 import com.oop.game.entity.Player;
+import com.oop.game.entity.container.Building;
+import com.oop.game.entity.container.Chest;
 
 import kotlin.math.floor
 

@@ -136,7 +136,6 @@ abstract class Entity(
 	): Float {
 		val dx = target.x - bullet.x
 		val dy = target.y - bullet.y
-
 		return sqrt(dx * dx + dy * dy)
 	}
 }

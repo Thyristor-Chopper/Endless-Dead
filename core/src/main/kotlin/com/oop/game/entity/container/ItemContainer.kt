@@ -1,5 +1,7 @@
-package com.oop.game.entity;
+package com.oop.game.entity.container;
 
+import com.oop.game.entity.Entity;
+import com.oop.game.entity.InventoryEntity;
 import com.oop.game.item.Item;
 import com.oop.game.world.World;
 

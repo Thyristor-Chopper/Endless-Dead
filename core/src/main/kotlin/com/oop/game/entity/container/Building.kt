@@ -1,4 +1,4 @@
-package com.oop.game.entity;
+package com.oop.game.entity.container;
 
 import com.oop.game.world.World;
 
