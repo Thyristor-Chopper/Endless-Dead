@@ -41,16 +41,12 @@ sealed class Enemy(
     height: Float,
     hp: Int,
     val damage: Int,
-
-    private var angle : Float,
-    /**
+    private val angle : Float,
+    /*
     private val minX: Float,
     private val maxX: Float,
     private val minY: Float,
     private val maxY: Float,
-	private val player: ExamplePlayer,
-) : GameObject(x, y, 80f, 80f) {
-
     */
     private val player:Player,
     private val speed: Float=100f
