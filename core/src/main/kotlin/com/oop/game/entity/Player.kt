@@ -1,10 +1,8 @@
 package com.oop.game.entity;
 
-import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 import com.oop.game.InputHandler
 import com.oop.game.Position;
@@ -31,15 +29,9 @@ class Player(
 	world: World,
     x: Float,
     y: Float
-) : LivingEntity(world, x, y, 30f, 30f, 5), InventoryEntity {
+) : LivingEntity(world, x, y, 30f, 30f, "player.png", 5), InventoryEntity {
 	override val inventory = mutableListOf<Item>();
 	override var selectedItemIndex: Int? = null;
-
-    // 이미지 로딩.
-    //   Gdx.files.internal: 클래스패스(자원 폴더)에서 파일을 찾아 읽는다.
-    //   Texture 는 GPU 메모리에 이미지를 올린 핸들이다.
-    //   src/main/resources/player.png 에 위치.
-    private val texture = Texture(Gdx.files.internal("player.png"))
 
     private val speed = 200f
 	
@@ -100,21 +92,5 @@ class Player(
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width - width)
         y = y.coerceIn(0f, world.height - height)
-    }
-
-    /**
-     * 매 프레임 호출 — 자신의 이미지를 그린다.
-     *
-     * batch.draw(texture, x, y, w, h):
-     *   왼쪽 아래 (x, y) 지점부터 (w, h) 크기로 텍스처를 늘려서 그린다.
-     *   원본 이미지가 30x30 이고 w=30, h=30 이면 1:1 그대로 그려진다.
-     */
-    override fun draw(batch: SpriteBatch) {
-        batch.draw(texture, x, y, width, height)
-    }
-
-    /** GPU 자원 정리 — 화면이 닫힐 때 GameWorld 가 호출. */
-    override fun dispose() {
-        texture.dispose()
     }
 }

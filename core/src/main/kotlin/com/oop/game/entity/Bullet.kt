@@ -1,9 +1,5 @@
 package com.oop.game.entity;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
-
 import com.oop.game.Position;
 import com.oop.game.entity.Entity;
 import com.oop.game.world.World;
@@ -16,9 +12,7 @@ class Bullet(
     val target: Position,
     private val speed: Float,
     val damage: Int
-) : Entity(world, x, y, 3f, 24f) {
-	private val texture = Texture(Gdx.files.internal("bullet.png"))
-	
+) : Entity(world, x, y, 3f, 24f, "bullet.png") {
     var alive = true
 
     var distance = bulletTarget(this, target)
@@ -33,10 +27,6 @@ class Bullet(
 		if (x < 0f || x > world.width || y < 0f || y > world.height) {
 			kill()
 		}
-	}
-
-	override fun draw(batch: SpriteBatch) {
-		batch.draw(texture, x, y, width, height);
 	}
 
 	fun isAlive(): Boolean {

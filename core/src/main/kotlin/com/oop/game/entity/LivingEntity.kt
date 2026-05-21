@@ -2,7 +2,7 @@ package com.oop.game.entity;
 
 import com.oop.game.world.World;
 
-abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, initialHp: Int = 100) : Entity(world, x, y, width, height) {
+abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, initialHp: Int = 100) : Entity(world, x, y, width, height, texture) {
 	// HP
 	// 최대hp,  initialhp: 객체 만들 떄 지정할 체력
 	open val maxHp: Int = initialHp

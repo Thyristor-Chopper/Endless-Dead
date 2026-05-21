@@ -1,5 +1,7 @@
 package com.oop.game.entity;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Rectangle
 
@@ -53,8 +55,11 @@ abstract class Entity(
     // 크기는 일반적으로 바뀌지 않지만, 폭발·성장 이펙트 같은 확장을 위해 var.
     //   바뀔 일이 없다면 val 로 두는 것이 더 안전하다.
     val width: Float,
-    val height: Float
+    val height: Float,
+	texture: String
 ) {
+	private val texture: Texture? = Texture(Gdx.files.internal(texture));
+	
     /**
      * 매 프레임 호출되어 **상태를 갱신**한다.
      *
@@ -79,7 +84,11 @@ abstract class Entity(
      * 이미지 로딩은 보통 객체의 init 또는 프로퍼티 초기화 시점에 한 번 한다:
      *   private val texture = Texture(Gdx.files.internal("player.png"))
      */
-    abstract fun draw(batch: SpriteBatch)
+    fun draw(batch: SpriteBatch) {
+		val texture = this.texture;
+		if(texture == null) return;
+		batch.draw(texture, x, y, width, height);
+	}
 
     /**
      * 이 객체가 차지하는 사각형 영역 — 충돌 판정에 쓴다.
@@ -115,7 +124,11 @@ abstract class Entity(
      * 기본 구현은 빈 함수 — Texture 같은 자원을 안 쓰는 객체는 그대로 두면 된다.
      * 텍스처를 쓰는 객체라면 override 해서 texture.dispose() 를 호출.
      */
-    open fun dispose() {}
+    fun dispose() {
+		val texture = this.texture;
+		if(texture == null) return;
+		texture.dispose();
+	}
 	
 	fun bulletTarget(
 		bullet: Bullet,

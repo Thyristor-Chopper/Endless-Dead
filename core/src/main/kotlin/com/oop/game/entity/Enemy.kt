@@ -1,9 +1,5 @@
 package com.oop.game.entity;
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-
 import com.oop.game.world.World;
 
 import java.lang.Math
@@ -50,17 +46,13 @@ sealed class Enemy(
     */
     private val player:Player,
     private val speed: Float=100f
-) : LivingEntity(world, x, y, width, height, hp) {
+) : LivingEntity(world, x, y, width, height, "인간좀비 앞모습.png", hp) {
     var wall = false
     private var radian : Float = 0f
     private fun changeRandomAngle() {
         val variation = (-30..30).random()
         radian = (angle + variation) * 3.14f / 180
     }
-    // 이미지 로딩 — src/main/resources/enemy.png.
-    private val texture = Texture(Gdx.files.internal("인간좀비 앞모습.png"))
-
-
 
     // 현재 진행 방향 — +1 이면 오른쪽, -1 이면 왼쪽.
     //   var 로 선언한 이유: 경계에서 반대로 뒤집혀야 하므로 값이 변함.
@@ -114,19 +106,6 @@ sealed class Enemy(
         }
     }
 
-    /**
-     * 자신의 이미지를 그린다.
-     *   원본은 40x40 이고 width/height 도 40 이라 1:1 로 그려진다.
-     *   더 크게 보이게 하려면 width/height 를 늘리면 자동 확대된다.
-     */
-    override fun draw(batch: SpriteBatch) {
-        batch.draw(texture, x, y, width, height)
-    }
-
-    override fun dispose() {
-        texture.dispose()
-    }
-	
     class WeakZombie(world: World, x: Float, y: Float, player: Player,angle: Float) :
         Enemy(world, x, y, width = 30f, height = 30f, hp = 3, speed = 150f,angle=angle, player = player,damage=1)
 
