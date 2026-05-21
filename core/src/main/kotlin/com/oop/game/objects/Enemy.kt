@@ -40,7 +40,7 @@ sealed class Enemy(
     width: Float,
     height: Float,
     hp: Int,
-     val damage: Int,
+    val damage: Int,
 
     private var angle : Float,
     /**
@@ -130,6 +130,7 @@ sealed class Enemy(
     override fun dispose() {
         texture.dispose()
     }
+	
     class WeakZombie(world: GameWorld, x: Float, y: Float, player: Player,angle: Float) :
         Enemy(world, x, y, width = 30f, height = 30f, hp = 3, speed = 150f,angle=angle, player = player,damage=1)
 

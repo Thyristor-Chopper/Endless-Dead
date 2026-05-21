@@ -1,6 +1,8 @@
 package com.oop.game.objects;
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
@@ -11,6 +13,7 @@ import com.oop.game.InputHandler
 import com.oop.game.InventoryObject;
 import com.oop.game.Item;
 import com.oop.game.LivingGameObject;
+import com.oop.game.Position;
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -46,6 +49,29 @@ class Player(
     private val texture = Texture(Gdx.files.internal("player.png"))
 
     private val speed = 200f
+	
+	init {
+		Gdx.input.setInputProcessor(object : InputProcessor {
+			override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
+				if(button != Input.Buttons.LEFT) return false;
+				// this@Player.x += 10.0f;
+				val holding = holdingItem;
+				if(holding is Gun) {
+					holding.shoot(Position(x.toFloat(), y.toFloat()), this@Player);
+				}
+				return true;
+			}
+			
+			override fun keyDown(code: Int): Boolean = false;
+			override fun keyUp(code: Int): Boolean = false;
+			override fun keyTyped(char: Char): Boolean = false;
+			override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
+			override fun touchCancelled(x: Int, y: Int, p3: Int, p4: Int): Boolean = false;
+			override fun touchDragged(x: Int, y: Int, p3: Int): Boolean = false;
+			override fun mouseMoved(x: Int, y: Int): Boolean = false;
+			override fun scrolled(p1: Float, p2: Float): Boolean = false;
+		});
+	}
 
     override fun update(delta: Float) {
         super<com.oop.game.LivingGameObject>.update(delta)
@@ -53,10 +79,6 @@ class Player(
         if (InputHandler.isKeyPressed(InputHandler.RIGHT)) x += speed * delta
         if (InputHandler.isKeyPressed(InputHandler.UP))    y += speed * delta
         if (InputHandler.isKeyPressed(InputHandler.DOWN))  y -= speed * delta
-
-		if(InputHandler.isKeyPressed(InputHandler.SPACE) && holdingItem is Gun) {
-			// holdingItem.shoot();
-		}
 
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, worldWidth - width)

@@ -80,7 +80,6 @@ class MainWorld(
         y = 50f,
         worldWidth = worldWidth,
         worldHeight = worldHeight
-
     )
 
     // 적 — 월드 상단에서 좌우 왕복.
