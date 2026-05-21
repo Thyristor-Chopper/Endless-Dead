@@ -1,4 +1,4 @@
-package com.oop.game.worlds;
+package com.oop.game.world;
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
@@ -6,12 +6,11 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.oop.game.EnemySpawner
 
-import com.oop.game.GameWorld;
 import com.oop.game.InputHandler;
-import com.oop.game.objects.Building;
-import com.oop.game.objects.Chest;
-import com.oop.game.objects.Enemy;
-import com.oop.game.objects.Player;
+import com.oop.game.entity.Building;
+import com.oop.game.entity.Chest;
+import com.oop.game.entity.Enemy;
+import com.oop.game.entity.Player;
 
 import kotlin.math.floor
 
@@ -55,9 +54,9 @@ import kotlin.math.floor
 class MainWorld(
     screenWidth: Float,
     screenHeight: Float,
-    worldWidth: Float,
-    worldHeight: Float
-) : GameWorld(screenWidth, screenHeight, worldWidth, worldHeight) {
+    width: Float,
+    height: Float
+) : World(screenWidth, screenHeight, width, height) {
     /**
      * 게임의 현재 상태를 나타내는 열거형.
      *
@@ -76,10 +75,8 @@ class MainWorld(
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
     override val player = Player(
 		this,
-        x = worldWidth / 2 - 15f,   // 가로 30 의 절반을 빼서 정확히 중앙
-        y = 50f,
-        worldWidth = worldWidth,
-        worldHeight = worldHeight
+        x = width / 2 - 15f,   // 가로 30 의 절반을 빼서 정확히 중앙
+        y = 50f
     )
 
     // 적 — 월드 상단에서 좌우 왕복.
@@ -98,8 +95,8 @@ class MainWorld(
      */
 	
 	// 예제 건물과 상자
-	private val building = Building(this, worldWidth / 2 - 20f, 50f);
-	private val chest = Chest(this, worldWidth / 2 - 30f, 90f);
+	private val building = Building(this, width / 2 - 20f, 50f);
+	private val chest = Chest(this, width / 2 - 30f, 90f);
 
     // 현재 게임 상태 — 입력/충돌에 따라 IN_PLAY ↔ GAME_OVER 로 전환된다.
     private var state = GameState.IN_PLAY
@@ -139,8 +136,8 @@ class MainWorld(
      */
     override fun update(delta: Float) {
         when (state) {
-            GameState.IN_PLAY -> updateInPlay(delta)
-            GameState.GAME_OVER -> updateGameOver()
+            GameState.IN_PLAY	-> updateInPlay(delta)
+            GameState.GAME_OVER	-> updateGameOver()
         }
     }
 
@@ -157,14 +154,13 @@ class MainWorld(
         // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
         //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
         //   offset 은 0 ~ (world - screen) 범위여야 한다.
-        offsetX = offsetX.coerceIn(0f, worldWidth - screenWidth)
-        offsetY = offsetY.coerceIn(0f, worldHeight - screenHeight)
+        offsetX = offsetX.coerceIn(0f, width - screenWidth)
+        offsetY = offsetY.coerceIn(0f, height - screenHeight)
 
         // ── 1) 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
         updateAllObjects(delta)
         val newZombie = enemySpawner.update(delta)
         if (newZombie != null) {
-
             enemies.add(newZombie)
         }
 
@@ -175,17 +171,14 @@ class MainWorld(
         val deadZombies = mutableListOf<Enemy>()
 
         for (enemy in enemies) {
-
             if (player.collidesWith(enemy)) {
                 player.takeDamage(enemy.damage, 1.0f)
             }
-
 
             if (!enemy.isAlive()) {
                 deadZombies.add(enemy)
             }
         }
-
 
         for (dead in deadZombies) {
             enemies.remove(dead)
@@ -264,10 +257,10 @@ class MainWorld(
 
         // ── 상태별로 그리는 것이 다름 ──
         when (state) {
-            GameState.IN_PLAY -> {
+            GameState.IN_PLAY 	-> {
                 // 플레이 중에는 추가로 그릴 것 없음
             }
-            GameState.GAME_OVER -> drawGameOverOverlay()
+            GameState.GAME_OVER	-> drawGameOverOverlay()
         }
     }
 
@@ -287,8 +280,8 @@ class MainWorld(
         //    WASD 로 카메라를 움직이면 이 글자도 화면에서 움직인다.
         drawTextInWorld(
             text = "WORLD CENTER",
-            worldX = worldWidth / 2 - 70f,
-            worldY = worldHeight / 2,
+            worldX = width / 2 - 70f,
+            worldY = height / 2,
             color = Color.CYAN,
             scale = 1.5f
         )

@@ -1,18 +1,22 @@
-package com.oop.game
+package com.oop.game.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 
+import com.oop.game.Position;
+import com.oop.game.entity.Entity;
+import com.oop.game.world.World;
+
 class Bullet(
-	world: GameWorld,
+	world: World,
     x: Float,
     y: Float,
     /*target은 총알의 목적지, 마우스 좌클릭 위치를 저장 시도 예정*/
     val target: Position,
     private val speed: Float,
     val damage: Int
-) : GameObject(world, x, y, 3f, 24f) {
+) : Entity(world, x, y, 3f, 24f) {
 	private val texture = Texture(Gdx.files.internal("bullet.png"))
 	
     var alive = true
@@ -26,7 +30,7 @@ class Bullet(
 			x += dx / distance * speed * delta
 			y += dy / distance * speed * delta
 		}
-		if (x < 0f || x > world.worldWidth || y < 0f || y > world.worldHeight) {
+		if (x < 0f || x > world.width || y < 0f || y > world.height) {
 			kill()
 		}
 	}

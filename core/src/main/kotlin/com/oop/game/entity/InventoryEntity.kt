@@ -1,6 +1,8 @@
-package com.oop.game;
+package com.oop.game.entity;
 
-interface InventoryObject {
+import com.oop.game.item.Item;
+
+interface InventoryEntity {
 	val inventory: MutableList<Item>;
 	var selectedItemIndex: Int?;
 	val holdingItem: Item?

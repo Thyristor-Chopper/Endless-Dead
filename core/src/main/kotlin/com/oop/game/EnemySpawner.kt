@@ -1,10 +1,11 @@
 package com.oop.game
 
-import com.oop.game.objects.Enemy
-import com.oop.game.objects.Player
+import com.oop.game.entity.Enemy;
+import com.oop.game.entity.Player;
+import com.oop.game.world.World;
 
 class EnemySpawner(
-    private val world: GameWorld,
+    private val world: World,
     private val player: Player,
     private val spawnInterval: Float=3f ) {
     private var timer=0f
@@ -19,15 +20,15 @@ class EnemySpawner(
     }
 
     private fun spawnRandomEnemy():Enemy {
-        val randomX = kotlin.random.Random.nextFloat() * (world.worldWidth - 70f)
-        val randomY = kotlin.random.Random.nextFloat() * (world.worldHeight - 70f)
+        val randomX = kotlin.random.Random.nextFloat() * (world.width - 70f)
+        val randomY = kotlin.random.Random.nextFloat() * (world.height - 70f)
 
         // 주사위를 굴려서 확률로 좀비 종류 뽑기
         val rand = kotlin.random.Random.nextInt(100)
         val newEnemy = when {
-            rand < 60 -> Enemy.WeakZombie(world, randomX, randomY, player,angle=10f)     // 60% 확률
-            rand < 90 -> Enemy.NormalZombie(world, randomX, randomY, player,angle=10f)   // 30% 확률
-            else -> Enemy.StrongZombie(world, randomX, randomY, player,angle=10f)        // 10% 확률
+            rand < 60 	-> Enemy.WeakZombie(world, randomX, randomY, player,angle=10f)     // 60% 확률
+            rand < 90	-> Enemy.NormalZombie(world, randomX, randomY, player,angle=10f)   // 30% 확률
+            else		-> Enemy.StrongZombie(world, randomX, randomY, player,angle=10f)        // 10% 확률
         }
 
         world.add(newEnemy)

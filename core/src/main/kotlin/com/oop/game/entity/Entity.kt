@@ -1,8 +1,12 @@
-package com.oop.game
+package com.oop.game.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Rectangle
-import com.oop.game.objects.Enemy
+
+import com.oop.game.Position;
+import com.oop.game.entity.Entity;
+import com.oop.game.world.World;
+
 import kotlin.math.sqrt;
 
 /**
@@ -39,8 +43,8 @@ import kotlin.math.sqrt;
  * @param width  가로 크기 (픽셀)
  * @param height 세로 크기 (픽셀)
  */
-abstract class GameObject(
-	val world: GameWorld,
+abstract class Entity(
+	val world: World,
     // var 로 선언한 이유: 객체는 게임 중 위치가 **변해야 하므로**.
     //   val 로 만들면 한 번 생성된 이후 움직일 수 없다.
     //   파이썬의 self.x = ... 와 같은 역할을 val/var 속성이 한다.
@@ -97,7 +101,7 @@ abstract class GameObject(
      *   그래서 player.collidesWith(enemy), bullet.collidesWith(wall) 처럼
      *   어떤 조합이든 똑같은 문법으로 쓸 수 있다.
      */
-    fun collidesWith(other: GameObject): Boolean {
+    fun collidesWith(other: Entity): Boolean {
         return getBounds().overlaps(other.getBounds())
     }
 

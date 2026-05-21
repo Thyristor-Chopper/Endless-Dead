@@ -1,6 +1,8 @@
-package com.oop.game;
+package com.oop.game.entity;
 
-abstract class LivingGameObject(world: GameWorld, x: Float, y: Float, width: Float, height: Float, initialHp: Int = 100) : GameObject(world, x, y, width, height) {
+import com.oop.game.world.World;
+
+abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, initialHp: Int = 100) : Entity(world, x, y, width, height) {
 	// HP
 	// 최대hp,  initialhp: 객체 만들 떄 지정할 체력
 	open val maxHp: Int = initialHp

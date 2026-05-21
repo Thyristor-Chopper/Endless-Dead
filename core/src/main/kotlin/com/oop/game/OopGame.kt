@@ -2,7 +2,7 @@ package com.oop.game
 
 import com.badlogic.gdx.Game
 
-import com.oop.game.worlds.MainWorld
+import com.oop.game.world.MainWorld;
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -59,8 +59,8 @@ class OopGame : Game() {
         val firstWorld = MainWorld(
             screenWidth = screenWidth.toFloat(),
             screenHeight = screenHeight.toFloat(),
-            worldWidth = worldWidth.toFloat(),
-            worldHeight = worldHeight.toFloat()
+            width = worldWidth.toFloat(),
+            height = worldHeight.toFloat()
         )
         setScreen(firstWorld)   // 부모 Game 이 제공하는 메서드
     }

@@ -1,11 +1,11 @@
-package com.oop.game.objects;
+package com.oop.game.entity;
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.oop.game.GameObject
-import com.oop.game.GameWorld;
-import com.oop.game.LivingGameObject;
+
+import com.oop.game.world.World;
+
 import java.lang.Math
 import kotlin.math.cos
 import kotlin.math.sin
@@ -34,7 +34,7 @@ import kotlin.math.sqrt;
  */
 
 sealed class Enemy(
-	world: GameWorld,
+	world: World,
     x: Float,
     y: Float,
     width: Float,
@@ -50,7 +50,7 @@ sealed class Enemy(
     */
     private val player:Player,
     private val speed: Float=100f
-) : LivingGameObject(world, x, y, width, height, hp) {
+) : LivingEntity(world, x, y, width, height, hp) {
     var wall = false
     private var radian : Float = 0f
     private fun changeRandomAngle() {
@@ -127,12 +127,12 @@ sealed class Enemy(
         texture.dispose()
     }
 	
-    class WeakZombie(world: GameWorld, x: Float, y: Float, player: Player,angle: Float) :
+    class WeakZombie(world: World, x: Float, y: Float, player: Player,angle: Float) :
         Enemy(world, x, y, width = 30f, height = 30f, hp = 3, speed = 150f,angle=angle, player = player,damage=1)
 
-    class NormalZombie(world: GameWorld, x: Float, y: Float, player: Player,angle: Float) :
+    class NormalZombie(world: World, x: Float, y: Float, player: Player,angle: Float) :
         Enemy(world, x, y, width = 45f, height = 45f, hp = 5, speed = 100f,angle=angle, player = player,damage=3)
 
-    class StrongZombie(world: GameWorld, x: Float, y: Float, player: Player,angle: Float) :
+    class StrongZombie(world: World, x: Float, y: Float, player: Player,angle: Float) :
         Enemy(world, x, y, width = 70f, height = 70f, hp = 15, speed = 50f,angle=angle, player = player,damage=5)
 }

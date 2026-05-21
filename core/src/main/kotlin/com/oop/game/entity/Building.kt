@@ -1,13 +1,12 @@
-package com.oop.game.objects;
+package com.oop.game.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import com.oop.game.GameWorld;
-import com.oop.game.ItemContainer;
+import com.oop.game.world.World;
 
-class Building(world: GameWorld, x: Float, y: Float): ItemContainer(world, x, y, 32.0f, 32.0f) {
+class Building(world: World, x: Float, y: Float): ItemContainer(world, x, y, 32.0f, 32.0f) {
 	private val texture = Texture(Gdx.files.internal("building.png"));
 	
 	override fun draw(batch: SpriteBatch) {

@@ -1,4 +1,4 @@
-package com.oop.game
+package com.oop.game.world;
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.ScreenAdapter
@@ -8,7 +8,9 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
-import com.oop.game.objects.Player;
+import com.oop.game.entity.Entity;
+import com.oop.game.entity.LivingEntity;
+import com.oop.game.entity.Player;
 
 /**
  * 게임 한 장면 = '월드 하나' 의 추상 기본 클래스.
@@ -28,7 +30,7 @@ import com.oop.game.objects.Player;
  *  두 가지 크기의 차이
  * ────────────────────────────────────────────────────────────
  *  screenWidth/Height  — 카메라가 한 번에 보여주는 영역 (창 크기와 같다)
- *  worldWidth/Height   — 게임 월드 전체 크기 (화면보다 클 수 있다)
+ *  width/height        — 게임 월드 전체 크기 (화면보다 클 수 있다)
  *  이 둘이 같으면 화면 고정, 월드가 더 크면 카메라(offset) 로 스크롤 가능.
  *
  * ────────────────────────────────────────────────────────────
@@ -48,14 +50,14 @@ import com.oop.game.objects.Player;
  *
  * @param screenWidth  화면(카메라)이 보여주는 영역 너비 (픽셀)
  * @param screenHeight 화면(카메라)이 보여주는 영역 높이
- * @param worldWidth   월드 전체 너비 (기본값: 화면과 동일 = 스크롤 없음)
- * @param worldHeight  월드 전체 높이
+ * @param width        월드 전체 너비 (기본값: 화면과 동일 = 스크롤 없음)
+ * @param height       월드 전체 높이
  */
-abstract class GameWorld(
+abstract class World(
     val screenWidth: Float,
     val screenHeight: Float,
-    val worldWidth: Float = screenWidth,
-    val worldHeight: Float = screenHeight
+    val width: Float = screenWidth,
+    val height: Float = screenHeight
 ) : ScreenAdapter() {
 	abstract val player: Player;
 
@@ -76,7 +78,7 @@ abstract class GameWorld(
     // private 으로 감춘 이유: 외부가 직접 add/remove 하면
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. add(), remove() 라는 공식 창구만 허용.
     //   (5주차에서 배운 캡슐화의 실제 사례)
-    private val gameObjects = mutableListOf<GameObject>()
+    private val gameObjects = mutableListOf<Entity>()
 
     init {
         // 카메라를 '왼쪽 아래 = (0,0), 오른쪽 위 = (screenWidth, screenHeight)' 로 설정.
@@ -89,12 +91,12 @@ abstract class GameWorld(
     // ────────────────────────────────────────────────────────
 
     /** 객체를 월드에 등록 — 이후부터 자동으로 update/draw 된다. */
-    fun add(obj: GameObject) {
+    fun add(obj: Entity) {
         gameObjects.add(obj)
     }
 
     /** 특정 객체를 수동 제거. 보통은 isAlive()=false 후 removeDead() 로 정리. */
-    fun remove(obj: GameObject) {
+    fun remove(obj: Entity) {
         gameObjects.remove(obj)
     }
 
@@ -105,7 +107,7 @@ abstract class GameWorld(
      *   외부가 받은 리스트에 add/remove 하면 내부 상태가 망가진다.
      *   복사본을 줘서 '훔쳐보기만 하고 건드리진 못하게' 한다.
      */
-    fun getObjects(): List<GameObject> = gameObjects.toList()
+    fun getObjects(): List<Entity> = gameObjects.toList()
 
     // ────────────────────────────────────────────────────────
     //  매 프레임 로직
@@ -137,9 +139,9 @@ abstract class GameWorld(
      *   gameObjects.removeAll { !it.isAlive() } 한 줄로 대체 가능.
      */
     protected fun removeDead() {
-        val toRemove = mutableListOf<GameObject>()
+        val toRemove = mutableListOf<Entity>()
         for (obj in gameObjects) {
-            if (obj is LivingGameObject && !obj.isAlive()) {
+            if (obj is LivingEntity && !obj.isAlive()) {
                 toRemove.add(obj)
             }
         }

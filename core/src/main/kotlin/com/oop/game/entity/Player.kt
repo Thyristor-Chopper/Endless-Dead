@@ -1,4 +1,4 @@
-package com.oop.game.objects;
+package com.oop.game.entity;
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input;
@@ -6,14 +6,11 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
-import com.oop.game.GameObject
-import com.oop.game.GameWorld;
-import com.oop.game.Gun;
 import com.oop.game.InputHandler
-import com.oop.game.InventoryObject;
-import com.oop.game.Item;
-import com.oop.game.LivingGameObject;
 import com.oop.game.Position;
+import com.oop.game.item.Gun;
+import com.oop.game.item.Item;
+import com.oop.game.world.World;
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -29,16 +26,12 @@ import com.oop.game.Position;
  *   ▸ Texture 는 객체가 살아있는 동안 한 번만 만들고 재사용 (생성 비용이 큼).
  *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 GameObject.dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
- *
- * @param worldWidth/Height: 월드 크기를 받아 경계 밖으로 못 나가게 제한하는 용도.
  */
 class Player(
-	world: GameWorld,
+	world: World,
     x: Float,
-    y: Float,
-    private val worldWidth: Float,
-    private val worldHeight: Float
-) : LivingGameObject(world, x, y, 30f, 30f, 5), InventoryObject {
+    y: Float
+) : LivingEntity(world, x, y, 30f, 30f, 5), InventoryEntity {
 	override val inventory = mutableListOf<Item>();
 	override var selectedItemIndex: Int? = null;
 
@@ -84,7 +77,7 @@ class Player(
 	}
 
     override fun update(delta: Float) {
-        super<com.oop.game.LivingGameObject>.update(delta)
+        super<LivingEntity>.update(delta)
 		
         val cameraSpeed = 200.0f * delta;
         if(InputHandler.isKeyPressed(InputHandler.LEFT)) {
@@ -105,8 +98,8 @@ class Player(
 		}
 
         // 월드 경계 안쪽으로 가두기.
-        x = x.coerceIn(0f, worldWidth - width)
-        y = y.coerceIn(0f, worldHeight - height)
+        x = x.coerceIn(0f, world.width - width)
+        y = y.coerceIn(0f, world.height - height)
     }
 
     /**
