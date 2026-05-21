@@ -1,5 +1,6 @@
 package com.oop.game;
 
+
 abstract class Gun(world: GameWorld, id: String, name: String, damage: Int, speed: Float) : Item(world, id, name), Shootable {
 	override val bulletDamage = damage;
 	override val bulletSpeed = speed;
@@ -8,4 +9,14 @@ abstract class Gun(world: GameWorld, id: String, name: String, damage: Int, spee
 		val bullet = Bullet(world, shooter.x, shooter.y, target, bulletSpeed, bulletDamage);
 		world.add(bullet);
 	}
+}
+
+class shotGun(world: GameWorld): Gun(
+	world,
+	"G002",
+	"샷건",
+	20,
+	5f
+){
+
 }
