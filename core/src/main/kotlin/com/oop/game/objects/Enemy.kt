@@ -1,4 +1,4 @@
-package com.oop.game.example
+package com.oop.game.objects;
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
