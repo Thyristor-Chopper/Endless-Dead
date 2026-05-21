@@ -49,6 +49,7 @@ class Player(
     private val speed = 200f
 
     override fun update(delta: Float) {
+        super<com.oop.game.LivingGameObject>.update(delta)
         if (InputHandler.isKeyPressed(InputHandler.LEFT))  x -= speed * delta
         if (InputHandler.isKeyPressed(InputHandler.RIGHT)) x += speed * delta
         if (InputHandler.isKeyPressed(InputHandler.UP))    y += speed * delta

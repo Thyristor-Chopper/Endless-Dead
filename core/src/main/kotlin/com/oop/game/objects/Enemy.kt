@@ -4,6 +4,9 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.oop.game.GameObject
+import com.oop.game.GameWorld;
+import com.oop.game.LivingGameObject;
+import com.oop.game.objects.Player
 import java.lang.Math
 import kotlin.math.cos
 import kotlin.math.sin
@@ -31,16 +34,28 @@ import kotlin.math.sin
  */
 
 class ExampleEnemy(
+sealed class Enemy(
+	world: GameWorld,
     x: Float,
     y: Float,
+    width: Float,
+    height: Float,
+    hp: Int,
+     val damage: Int,
+
     private var angle : Float,
+    /**
     private val minX: Float,
     private val maxX: Float,
     private val minY: Float,
     private val maxY: Float,
 	private val player: ExamplePlayer,
 ) : GameObject(x, y, 80f, 80f) {
-	
+
+    */
+    private val player:Player,
+    private val speed: Float=100f
+) : LivingGameObject(world, x, y, width, height, hp) {
     var wall = false
     private var radian : Float = 0f
     private fun changeRandomAngle() {
@@ -50,14 +65,58 @@ class ExampleEnemy(
     // 이미지 로딩 — src/main/resources/enemy.png.
     private val texture = Texture(Gdx.files.internal("enemy.png"))
 
-    private val speed = 400f
+
 
     // 현재 진행 방향 — +1 이면 오른쪽, -1 이면 왼쪽.
     //   var 로 선언한 이유: 경계에서 반대로 뒤집혀야 하므로 값이 변함.
     private var direction = 1f
 
+    fun distanceToPlayer(player: Player = world.player): Float {
+        val dx = x - player.x;
+        val dy = y - player.y;
+        return sqrt(dx * dx + dy * dy);
+    }
+
     override fun update(delta: Float) {
         // 수평 이동: 속도 × 방향 × 시간
+        /**
+        x += speed * direction * delta*cos(radian)
+        y += speed * direction * delta*sin(radian)
+
+        // 경계에 닿으면 제자리에 붙이고 방향 반전.
+        if (x <= minX) {
+        x = minX
+        direction = 1f
+        wall = true
+        } else if (x + width >= maxX) {
+        x = maxX - width
+        direction = -1f
+        wall = true
+        }
+        if (y <= minY) {
+        y = minY
+        direction = 1f
+        wall = true
+        } else if (y + height >= maxY) {
+        y = maxY - height
+        direction = -1f
+        wall = true
+        }
+        if(wall) {
+        changeRandomAngle()
+        wall = false
+        }
+         */
+
+        super.update(delta) // 부모(LivingGameObject)의 무적 타이머 갱신 로직 실행
+
+        var distance = distanceToPlayer()
+        var dx = world.player.x - x
+        var dy = world.player.y - y
+        if (distance > 0f) {
+            x += dx / distance * speed * delta
+            y += dy / distance * speed * delta
+        }
 		var distance = enemyAndPlayerDistance(this, player)
 		var dx = player.x - x
 		var dy = player.y - y
@@ -79,4 +138,12 @@ class ExampleEnemy(
     override fun dispose() {
         texture.dispose()
     }
+    class WeakZombie(world: GameWorld, x: Float, y: Float, player: Player,angle: Float) :
+        Enemy(world, x, y, width = 30f, height = 30f, hp = 3, speed = 150f,angle=angle, player = player,damage=1)
+
+    class NormalZombie(world: GameWorld, x: Float, y: Float, player: Player,angle: Float) :
+        Enemy(world, x, y, width = 45f, height = 45f, hp = 5, speed = 100f,angle=angle, player = player,damage=3)
+
+    class StrongZombie(world: GameWorld, x: Float, y: Float, player: Player,angle: Float) :
+        Enemy(world, x, y, width = 70f, height = 70f, hp = 15, speed = 50f,angle=angle, player = player,damage=5)
 }

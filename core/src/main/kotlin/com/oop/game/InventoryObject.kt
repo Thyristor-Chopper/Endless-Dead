@@ -21,7 +21,7 @@ interface InventoryObject {
 			selectedItemIndex = null;
 		else if(index == currentIndex) {
 			if(currentIndex == 0) selectedItemIndex = 1;
-			else selectedItemIndex--;
+			else selectedItemIndex = (selectedItemIndex ?: 1) - 1;
 		}
 	}
 	
@@ -42,7 +42,7 @@ interface InventoryObject {
 		else if(index >= inventory.size - 1)
 			selectedItemIndex = 0;
 		else
-			selectedItemIndex++;
+			selectedItemIndex = (selectedItemIndex ?: 0) + 1;
 	}
 	
 	fun selectPreviousItem() {
@@ -54,6 +54,6 @@ interface InventoryObject {
 		else if(index <= 0)
 			selectedItemIndex = inventory.size - 1;
 		else
-			selectedItemIndex--;
+			selectedItemIndex = (selectedItemIndex ?: 1) - 1;
 	}
 }

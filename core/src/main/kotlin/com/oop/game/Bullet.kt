@@ -32,7 +32,7 @@ class Bullet(
 		batch.draw(texture, x, y, width, height);
 	}
 
-	override fun isAlive(): Boolean {
+	fun isAlive(): Boolean {
 		return alive
 	}
 
