@@ -12,7 +12,7 @@ class Bullet(
     val target: Position,
     private val speed: Float,
     val damage: Int
-) : Entity(world, x, y, 3f, 24f, "bullet.png") {
+) : Entity(world, x, y, 16.0f, 16.0f, "bullet.png") {
     var alive = true
 
     var distance = bulletTarget(this, target)
