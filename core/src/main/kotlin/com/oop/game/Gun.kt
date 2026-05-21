@@ -2,7 +2,6 @@ package com.oop.game
 
 import com.oop.game.GameObject
 
-
 abstract class Gun(
 	world: GameWorld,
 	id: String,
@@ -22,19 +21,22 @@ abstract class Gun(
 			fireCooldown -= delta
 		}
 	}
+	
 	fun canShoot(): Boolean {
 		return fireCooldown <= 0f
 	}
+	
 	fun startFireCooldown() {
 		fireCooldown = fireInterval
 	}
+	
 	override fun shoot(target: Position, shooter: LivingGameObject) {
 		val bullet = Bullet(world, shooter.x, shooter.y, target, bulletSpeed, bulletDamage);
 		world.add(bullet);
 	}
 }//maxAmmo와 ammo 프로퍼티도 필요할 듯? fireinterval, fire 함수도
 
-class shotGun(world: GameWorld): Gun(
+class ShotGun(world: GameWorld): Gun(
 	world,
 	"G002",
 	"샷건",
@@ -43,10 +45,11 @@ class shotGun(world: GameWorld): Gun(
 	2f,
 	10,
 	5
-){
+) {
 // 기능들 넣을까 예정
 }
-class machineGun(world: GameWorld) : Gun(
+
+class MachineGun(world: GameWorld) : Gun(
 	world,
 	"G003",
 	"기관총",
@@ -55,6 +58,6 @@ class machineGun(world: GameWorld) : Gun(
 	0f,
 	30,
 	30
-){
+) {
 
 }

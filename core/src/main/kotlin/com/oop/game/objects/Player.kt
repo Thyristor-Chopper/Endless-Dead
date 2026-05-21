@@ -85,16 +85,28 @@ class Player(
 
     override fun update(delta: Float) {
         super<com.oop.game.LivingGameObject>.update(delta)
-        if (InputHandler.isKeyPressed(InputHandler.LEFT))  x -= speed * delta
-        if (InputHandler.isKeyPressed(InputHandler.RIGHT)) x += speed * delta
-        if (InputHandler.isKeyPressed(InputHandler.UP))    y += speed * delta
-        if (InputHandler.isKeyPressed(InputHandler.DOWN))  y -= speed * delta
+		
+        val cameraSpeed = 200.0f * delta;
+        if(InputHandler.isKeyPressed(InputHandler.LEFT)) {
+			x -= speed * delta;
+			// world.offsetX -= cameraSpeed;
+		}
+        if(InputHandler.isKeyPressed(InputHandler.RIGHT)) {
+			x += speed * delta;
+			// world.offsetX += cameraSpeed;
+		}
+        if(InputHandler.isKeyPressed(InputHandler.UP)) {
+			y += speed * delta;
+			// world.offsetY += cameraSpeed;
+		}
+        if(InputHandler.isKeyPressed(InputHandler.DOWN)) {
+			y -= speed * delta;
+			// world.offsetY -= cameraSpeed;
+		}
 
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, worldWidth - width)
         y = y.coerceIn(0f, worldHeight - height)
-
-
     }
 
     /**
