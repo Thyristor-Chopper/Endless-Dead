@@ -18,15 +18,14 @@ abstract class Gun(
 	override val bulletDamage = damage
 	override val bulletSpeed = speed
 	private var fireCooldown = 0f
+	
+	val canShoot: Boolean
+		get() = fireCooldown <= 0f;
 
 	fun update(delta: Float) {
 		if (fireCooldown > 0f) {
 			fireCooldown -= delta
 		}
-	}
-	
-	fun canShoot(): Boolean {
-		return fireCooldown <= 0f
 	}
 	
 	fun startFireCooldown() {

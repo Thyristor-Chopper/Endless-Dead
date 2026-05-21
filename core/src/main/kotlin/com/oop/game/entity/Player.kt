@@ -43,7 +43,7 @@ class Player(
 				
 				val holding = holdingItem;
 				if(holding is Gun) {
-					holding.shoot(Position(x.toFloat(), y.toFloat()), this@Player);
+					holding.shoot(Position(x.toFloat() + world.offsetX, y.toFloat() - world.offsetY), this@Player);
 					return true;
 				}
 				
@@ -66,6 +66,9 @@ class Player(
 			
 			override fun scrolled(amountX: Float, amountY: Float): Boolean = false;
 		});
+		
+		// 예시
+		addItemToInventory(com.oop.game.item.ShotGun(world));
 	}
 
     override fun update(delta: Float) {

@@ -14,6 +14,8 @@ interface InventoryEntity {
 	
 	fun addItemToInventory(item: Item) {
 		inventory.add(item);
+		if(selectedItemIndex == null)
+			selectedItemIndex = 0;
 	}
 	
 	fun removeItemFromInventory(index: Int) {

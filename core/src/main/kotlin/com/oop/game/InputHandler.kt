@@ -43,6 +43,7 @@ object InputHandler {
     fun isKeyJustPressed(key: Int): Boolean {
         return Gdx.input.isKeyJustPressed(key)
     }
+	
     fun isButtonPressed(button: Int): Boolean {
         return Gdx.input.isButtonPressed(button)
     }
@@ -50,6 +51,7 @@ object InputHandler {
     fun isButtonJustPressed(button: Int): Boolean {
         return Gdx.input.isButtonJustPressed(button)
     }
+	
     // 자주 쓰는 키 상수를 짧은 이름으로 재노출.
     //   원본은 Input.Keys.LEFT 처럼 길어서 자주 쓸수록 번거롭다.
     //   필요하면 Input.Keys.XXX 에서 다른 키를 직접 import 해서 써도 된다.

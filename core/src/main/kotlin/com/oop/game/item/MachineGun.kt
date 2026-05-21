@@ -12,5 +12,5 @@ class MachineGun(world: World) : Gun(
 	30,
 	30
 ) {
-
+	
 }
