@@ -9,6 +9,7 @@ import com.oop.game.LivingGameObject;
 import java.lang.Math
 import kotlin.math.cos
 import kotlin.math.sin
+import kotlin.math.sqrt;
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -108,20 +109,13 @@ sealed class Enemy(
 
         super.update(delta) // 부모(LivingGameObject)의 무적 타이머 갱신 로직 실행
 
-        var distance = distanceToPlayer()
-        var dx = world.player.x - x
-        var dy = world.player.y - y
+        val distance = distanceToPlayer()
+        val dx = world.player.x - x
+        val dy = world.player.y - y
         if (distance > 0f) {
             x += dx / distance * speed * delta
             y += dy / distance * speed * delta
         }
-		var distance = enemyAndPlayerDistance(this, player)
-		var dx = player.x - x
-		var dy = player.y - y
-		if (distance > 0f) {
-			x += dx / distance * speed * delta
-			y += dy / distance * speed * delta
-		}
     }
 
     /**

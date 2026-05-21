@@ -1,6 +1,5 @@
 package com.oop.game;
 
-abstract class LivingGameObject(x: Float, y: Float, width: Float, height: Float) : GameObject(x, y, width, height) {
 abstract class LivingGameObject(world: GameWorld, x: Float, y: Float, width: Float, height: Float, initialHp: Int = 100) : GameObject(world, x, y, width, height) {
 	// HP
 	// 최대hp,  initialhp: 객체 만들 떄 지정할 체력

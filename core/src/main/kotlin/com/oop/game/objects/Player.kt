@@ -10,7 +10,6 @@ import com.oop.game.Gun;
 import com.oop.game.InputHandler
 import com.oop.game.InventoryObject;
 import com.oop.game.Item;
-import com.oop.game.LivingGameObject
 import com.oop.game.LivingGameObject;
 
 /**
