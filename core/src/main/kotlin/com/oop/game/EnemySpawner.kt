@@ -1,6 +1,6 @@
 package com.oop.game
 
-import com.oop.game.example.Enemy
+import com.oop.game.objects.Enemy
 import com.oop.game.objects.Player
 
 class EnemySpawner(
