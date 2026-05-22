@@ -8,7 +8,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	open val maxHp: Int = initialHp
 
 	var hp: Int = initialHp
-		set(value) {
+		private set(value) {
 			if(value > maxHp) field = maxHp
 			else if(value < 0) field = 0
 			else field = value
@@ -45,5 +45,5 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 *           override fun isAlive() = y in 0f..worldHeight   // 화면 안에 있을 때만 살아있음
 	 *       }
 	 */
-	open fun isAlive(): Boolean = true;
+	open fun isAlive(): Boolean = hp > 0;
 }
