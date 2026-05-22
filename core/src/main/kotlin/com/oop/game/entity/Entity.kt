@@ -40,10 +40,12 @@ import kotlin.math.sqrt;
  *        override fun dispose() { texture.dispose() }
  *    }
  *
- * @param x      왼쪽 아래 꼭짓점의 월드 좌표 x
- * @param y      왼쪽 아래 꼭짓점의 월드 좌표 y
- * @param width  가로 크기 (픽셀)
- * @param height 세로 크기 (픽셀)
+ * @param world		개체가 속한 세계
+ * @param x			왼쪽 아래 꼭짓점의 월드 좌표 x
+ * @param y 		왼쪽 아래 꼭짓점의 월드 좌표 y
+ * @param width		가로 크기 (픽셀)
+ * @param height	세로 크기 (픽셀)
+ * @param texture	아이템 텍스처(없을 수도 있음)
  */
 abstract class Entity(val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) {
 	private val texture: Texture?;
@@ -80,7 +82,7 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
      * 이미지 로딩은 보통 객체의 init 또는 프로퍼티 초기화 시점에 한 번 한다:
      *   private val texture = Texture(Gdx.files.internal("player.png"))
      */
-    fun draw(batch: SpriteBatch) {
+    open fun draw(batch: SpriteBatch) {
 		val texture = this.texture;
 		if(texture == null) return;
 		batch.draw(texture, x, y, width, height);
@@ -120,7 +122,7 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
      * 기본 구현은 빈 함수 — Texture 같은 자원을 안 쓰는 객체는 그대로 두면 된다.
      * 텍스처를 쓰는 객체라면 override 해서 texture.dispose() 를 호출.
      */
-    fun dispose() {
+    open fun dispose() {
 		val texture = this.texture;
 		if(texture == null) return;
 		texture.dispose();
