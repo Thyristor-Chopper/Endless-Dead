@@ -46,7 +46,7 @@ sealed class Enemy(
     */
     private val player:Player,
     private val speed: Float=100f
-) : LivingEntity(world, x, y, width, height, "인간좀비 앞모습.png", hp) {
+) : LivingEntity(world, x, y, width, height, "zombie_front.png", hp) {
     var wall = false
     private var radian : Float = 0f
     private fun changeRandomAngle() {
