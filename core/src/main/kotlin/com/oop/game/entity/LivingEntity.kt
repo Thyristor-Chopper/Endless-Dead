@@ -20,7 +20,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	// 피격 시 잠깐 동안 데미지를 안 받게 해주는 무적 타이머. 자식들도 알 수 있게 protected로 설정.
 	protected var invincibilityTimer: Float = 0f
 		private set(value) {
-			if(value < 0) field = 0;
+			if(value < 0.0f) field = 0.0f;
 			else field = value;
 		}
 
