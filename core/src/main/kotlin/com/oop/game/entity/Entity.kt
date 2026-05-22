@@ -45,8 +45,16 @@ import kotlin.math.sqrt;
  * @param width  가로 크기 (픽셀)
  * @param height 세로 크기 (픽셀)
  */
-abstract class Entity(val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String) {
-	private val texture: Texture? = Texture(Gdx.files.internal(texture));
+abstract class Entity(val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) {
+	private val texture: Texture?;
+	
+	init {
+		val texturePath = texture;
+		if(texturePath == null)
+			this.texture = null;
+		else
+			this.texture = Texture(Gdx.files.internal(texturePath));
+	}
 	
     /**
      * 매 프레임 호출되어 **상태를 갱신**한다.
