@@ -3,17 +3,15 @@ package com.oop.game.entity;
 import com.oop.game.world.World;
 
 abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, initialHp: Int = 100) : Entity(world, x, y, width, height, texture) {
-	// HP
 	// 최대hp,  initialhp: 객체 만들 떄 지정할 체력
 	open val maxHp: Int = initialHp
-
+	// HP
 	var hp: Int = initialHp
 		private set(value) {
 			if(value > maxHp) field = maxHp
 			else if(value < 0) field = 0
 			else field = value
 		}
-
 	// 피격 시 잠깐 동안 데미지를 안 받게 해주는 무적 타이머. 자식들도 알 수 있게 protected로 설정.
 	protected var invincibilityTimer: Float = 0f
 		private set(value) {
