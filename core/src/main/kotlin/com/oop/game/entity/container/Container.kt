@@ -5,7 +5,7 @@ import com.oop.game.entity.InventoryEntity;
 import com.oop.game.item.Item;
 import com.oop.game.world.World;
 
-abstract class ItemContainer(world: World, x: Float, y: Float, width: Float, height: Float, texture: String) : Entity(world, x, y, width, height, texture) {
+abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: String) : Entity(world, x, y, width, height, texture) {
 	open var containedItem: Item? = null;
 	
 	fun takeItem(taker: InventoryEntity) {
