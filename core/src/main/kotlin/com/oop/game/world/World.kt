@@ -61,20 +61,16 @@ abstract class World(
     val height: Float = screenHeight
 ) : ScreenAdapter() {
 	abstract val player: Player;
-
     // OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     val camera = OrthographicCamera()
-
     // SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
     //   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
     val batch = SpriteBatch()
     val font = BitmapFont()
-
     // 카메라 오프셋 — 월드의 어느 지점이 화면 좌하단에 오는지.
     //   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
     var offsetX: Float = 0f
     var offsetY: Float = 0.1f
-
     // 등록된 객체들만 update/draw 된다.
     // private 으로 감춘 이유: 외부가 직접 add/remove 하면
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. add(), remove() 라는 공식 창구만 허용.
@@ -124,9 +120,8 @@ abstract class World(
      *   gameObjects.forEach { it.update(delta) } 처럼 줄일 수 있다.
      */
     protected fun updateAllObjects(delta: Float) {
-        for (obj in gameObjects) {
+        for(obj in gameObjects)
             obj.update(delta)
-        }
     }
 
     /**
@@ -141,13 +136,11 @@ abstract class World(
      */
     protected fun removeDead() {
 		val toRemove = mutableListOf<Entity>()
-        for(obj in gameObjects) {
+        for(obj in gameObjects)
             if((obj is LivingEntity && !obj.isAlive()) || (obj is Bullet && !obj.isAlive))
                 toRemove.add(obj)
-        }
-        for (obj in toRemove) {
+        for(obj in toRemove)
             gameObjects.remove(obj)
-        }
     }
 
     /**
@@ -292,8 +285,7 @@ abstract class World(
     override fun dispose() {
         batch.dispose()
         font.dispose()
-        for (obj in gameObjects) {
+        for(obj in gameObjects)
             obj.dispose()
-        }
     }
 }
