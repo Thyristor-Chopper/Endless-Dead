@@ -17,6 +17,4 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		taker.addItemToInventory(target);
 		containedItem = null;
 	}
-	
-	override open fun update(delta: Float) {}
 }

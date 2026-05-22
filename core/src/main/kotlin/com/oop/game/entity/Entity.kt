@@ -71,7 +71,7 @@ abstract class Entity(
      *              '픽셀/초' 단위의 속도에 delta 를 곱하면 '이번 프레임 이동량' 이 된다.
      *              (프레임 속도가 달라져도 같은 속도로 움직이게 하려는 공식)
      */
-    abstract fun update(delta: Float)
+    open fun update(delta: Float) {}
 
     /**
      * 매 프레임 호출되어 **자신을 그린다**.
