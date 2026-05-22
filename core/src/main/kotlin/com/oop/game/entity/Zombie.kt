@@ -29,34 +29,15 @@ import kotlin.math.sqrt;
  * @param maxY
  */
 
-sealed class Enemy(
-	world: World,
-    x: Float,
-    y: Float,
-    width: Float,
-    height: Float,
-    hp: Int,
-    val damage: Int,
-    private val angle : Float,
-    /*
-    private val minX: Float,
-    private val maxX: Float,
-    private val minY: Float,
-    private val maxY: Float,
-    */
-    private val player:Player,
-    private val speed: Float=100f
-) : LivingEntity(world, x, y, width, height, "zombie_front.png", hp) {
+open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, val damage: Int, private val angle: Float, private val player: Player, private val speed: Float = 100f, texture: String = "zombie_front.png") : LivingEntity(world, x, y, width, height, texture, hp) {
     var wall = false
     private var radian : Float = 0f
+    private var direction = 1f  // 현재 진행 방향 — +1 이면 오른쪽, -1 이면 왼쪽. var 로 선언한 이유: 경계에서 반대로 뒤집혀야 하므로 값이 변함.
+	
     private fun changeRandomAngle() {
         val variation = (-30..30).random()
         radian = (angle + variation) * 3.14f / 180
     }
-
-    // 현재 진행 방향 — +1 이면 오른쪽, -1 이면 왼쪽.
-    //   var 로 선언한 이유: 경계에서 반대로 뒤집혀야 하므로 값이 변함.
-    private var direction = 1f
 
     fun distanceToPlayer(player: Player = world.player): Float {
         val dx = x - player.x;
@@ -65,36 +46,6 @@ sealed class Enemy(
     }
 
     override fun update(delta: Float) {
-        // 수평 이동: 속도 × 방향 × 시간
-        /**
-        x += speed * direction * delta*cos(radian)
-        y += speed * direction * delta*sin(radian)
-
-        // 경계에 닿으면 제자리에 붙이고 방향 반전.
-        if (x <= minX) {
-        x = minX
-        direction = 1f
-        wall = true
-        } else if (x + width >= maxX) {
-        x = maxX - width
-        direction = -1f
-        wall = true
-        }
-        if (y <= minY) {
-        y = minY
-        direction = 1f
-        wall = true
-        } else if (y + height >= maxY) {
-        y = maxY - height
-        direction = -1f
-        wall = true
-        }
-        if(wall) {
-        changeRandomAngle()
-        wall = false
-        }
-         */
-
         super.update(delta) // 부모(LivingGameObject)의 무적 타이머 갱신 로직 실행
 
         val distance = distanceToPlayer()
@@ -105,13 +56,4 @@ sealed class Enemy(
             y += dy / distance * speed * delta
         }
     }
-
-    class WeakZombie(world: World, x: Float, y: Float, player: Player,angle: Float) :
-        Enemy(world, x, y, width = 30f, height = 30f, hp = 3, speed = 150f,angle=angle, player = player,damage=1)
-
-    class NormalZombie(world: World, x: Float, y: Float, player: Player,angle: Float) :
-        Enemy(world, x, y, width = 45f, height = 45f, hp = 5, speed = 100f,angle=angle, player = player,damage=3)
-
-    class StrongZombie(world: World, x: Float, y: Float, player: Player,angle: Float) :
-        Enemy(world, x, y, width = 70f, height = 70f, hp = 15, speed = 50f,angle=angle, player = player,damage=5)
 }

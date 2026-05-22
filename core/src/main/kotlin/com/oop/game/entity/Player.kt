@@ -32,7 +32,6 @@ class Player(
 ) : LivingEntity(world, x, y, 30f, 30f, "player.png", 5), InventoryEntity {
 	override val inventory = mutableListOf<Item>();
 	override var selectedItemIndex: Int? = null;
-
     private val speed = 200f
 	
 	init {
