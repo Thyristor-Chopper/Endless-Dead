@@ -2,6 +2,11 @@ package com.oop.game.entity;
 
 import com.oop.game.world.World;
 
+/**
+ * 살아있다는 개념이 있는 개체
+ *
+ * @param initialHp	초기(최대) 체력
+ */
 abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, initialHp: Int = 100) : Entity(world, x, y, width, height, texture) {
 	// 최대hp,  initialhp: 객체 만들 떄 지정할 체력
 	open val maxHp: Int = initialHp

@@ -2,6 +2,9 @@ package com.oop.game.entity;
 
 import com.oop.game.item.Item;
 
+/**
+ * 인벤토리를 가지는 개체에 대한 인터페이스
+ */
 interface InventoryEntity {
 	val inventory: MutableList<Item>;
 	var selectedItemIndex: Int?;
