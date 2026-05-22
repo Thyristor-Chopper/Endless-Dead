@@ -5,6 +5,16 @@ import com.oop.game.entity.Bullet;
 import com.oop.game.entity.Entity;
 import com.oop.game.world.World;
 
+/**
+ * 총 아이템 추상 클래스
+ *
+ * @param world			아이템이 있는 세계
+ * @param id			총 식별자
+ * @param name			총 이름
+ * @param damage		총알 피해량
+ * @param speed			총알 속도
+ * @param fireInterval	공격 속도
+ */
 abstract class Gun(world: World, id: String, name: String, damage: Int, speed: Float, val fireInterval: Float, private val maxAmmo: Int, var ammo: Int) : Item(world, id, name), Fireable {
 	override val bulletDamage = damage
 	override val bulletSpeed = speed
@@ -12,10 +22,9 @@ abstract class Gun(world: World, id: String, name: String, damage: Int, speed: F
 	val canShoot: Boolean
 		get() = fireCooldown <= 0f;
 
-	fun update(delta: Float) {
-		if (fireCooldown > 0f) {
+	override fun update(delta: Float) {
+		if(fireCooldown > 0f)
 			fireCooldown -= delta
-		}
 	}
 	
 	fun startFireCooldown() {

@@ -7,7 +7,13 @@ import com.oop.game.entity.WeakZombie;
 import com.oop.game.entity.Zombie;
 import com.oop.game.world.World;
 
-class ZombieSpawner(private val world: World, private val player: Player, private val spawnInterval: Float = 3f) {
+/**
+ * 좀비 소환기
+ *
+ * @param world			소속 세계
+ * @param spawnInterval	소환 간격
+ */
+class ZombieSpawner(val world: World, val spawnInterval: Float = 3f) {
     private var timer = 0f
 
     fun update(delta: Float): Zombie? {
@@ -26,9 +32,9 @@ class ZombieSpawner(private val world: World, private val player: Player, privat
         // 주사위를 굴려서 확률로 좀비 종류 뽑기
         val rand = kotlin.random.Random.nextInt(100)
         val newZombie = when {
-            rand < 60 	-> WeakZombie(world, randomX, randomY, player,angle=10f)		// 60% 확률
-            rand < 90	-> NormalZombie(world, randomX, randomY, player,angle=10f)		// 30% 확률
-            else		-> StrongZombie(world, randomX, randomY, player,angle=10f)		// 10% 확률
+            rand < 60 	-> WeakZombie(world, randomX, randomY, world.player, angle = 10f)		// 60% 확률
+            rand < 90	-> NormalZombie(world, randomX, randomY, world.player, angle = 10f)		// 30% 확률
+            else		-> StrongZombie(world, randomX, randomY, world.player, angle = 10f)		// 10% 확률
         }
 
         world.add(newZombie)

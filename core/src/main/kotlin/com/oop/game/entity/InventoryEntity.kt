@@ -15,12 +15,22 @@ interface InventoryEntity {
 			return inventory[index];
 		};
 	
+	/**
+	 * 인벤토리에 아이템 넣기
+	 *
+	 * @param item	추가할 아이템
+	 */
 	fun addItemToInventory(item: Item) {
 		inventory.add(item);
 		if(selectedItemIndex == null)
 			selectedItemIndex = 0;
 	}
 	
+	/**
+	 * 인벤토리에서 아이템 빼기
+	 *
+	 * @param index	아이템 위치
+	 */
 	fun removeItemFromInventory(index: Int) {
 		val currentIndex: Int? = selectedItemIndex;
 		inventory.removeAt(index);
@@ -32,6 +42,11 @@ interface InventoryEntity {
 		}
 	}
 	
+	/**
+	 * 인벤토리에서 아이템 빼기
+	 *
+	 * @param item	제거할 아이템
+	 */
 	fun removeItemFromInventory(item: Item) {
 		for(i in 0 until inventory.size)
 			if(inventory[i] == item)
@@ -40,6 +55,9 @@ interface InventoryEntity {
 			selectedItemIndex = null;
 	}
 	
+	/**
+	 * 인벤토리의 다음 아이템 선택
+	 */
 	fun selectNextItem() {
 		val index: Int? = selectedItemIndex;
 		if(inventory.isEmpty())
@@ -52,6 +70,9 @@ interface InventoryEntity {
 			selectedItemIndex = (selectedItemIndex ?: 0) + 1;
 	}
 	
+	/**
+	 * 인벤토리의 이전 아이템 선택
+	 */
 	fun selectPreviousItem() {
 		val index: Int? = selectedItemIndex;
 		if(inventory.isEmpty())

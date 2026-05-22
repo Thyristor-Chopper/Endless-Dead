@@ -76,7 +76,7 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
     private var state = GameState.IN_PLAY
     // 좀비들만 따로 모아두는 관리용 리스트
     private val zombies = mutableListOf<Zombie>()
-    private val zombieSpawner = ZombieSpawner(this, player,  3.0f)
+    private val zombieSpawner = ZombieSpawner(this, 3.0f)
     // ── 체스판 배경 설정 (drawBackground() 에서 사용) ──
     //   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
     //   학생은 자기 게임에선 다른 배경을 그리거나, 그냥 두면 검은 배경이다.
