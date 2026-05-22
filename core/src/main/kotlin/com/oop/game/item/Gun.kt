@@ -18,7 +18,6 @@ abstract class Gun(
 	override val bulletDamage = damage
 	override val bulletSpeed = speed
 	private var fireCooldown = 0f
-	
 	val canShoot: Boolean
 		get() = fireCooldown <= 0f;
 

@@ -29,10 +29,15 @@ class Player(
 	world: World,
     x: Float,
     y: Float
-) : LivingEntity(world, x, y, 30f, 30f, "player.png", 5), InventoryEntity {
+) : LivingEntity(world, x, y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player.png", 5), InventoryEntity {
 	override val inventory = mutableListOf<Item>();
 	override var selectedItemIndex: Int? = null;
     private val speed = 200f
+	
+	companion object {
+		val PLAYER_WIDTH = 30f;
+		val PLAYER_HEIGHT = 30f;
+	}
 	
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함

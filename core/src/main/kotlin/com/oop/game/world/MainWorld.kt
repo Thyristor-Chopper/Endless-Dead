@@ -51,12 +51,7 @@ import kotlin.math.floor
  * @param worldWidth   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
  * @param worldHeight  월드 전체 높이
  */
-class MainWorld(
-    screenWidth: Float,
-    screenHeight: Float,
-    width: Float,
-    height: Float
-) : World(screenWidth, screenHeight, width, height) {
+class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWidth, height: Float = screenHeight) : World(screenWidth, screenHeight, width, height) {
     /**
      * 게임의 현재 상태를 나타내는 열거형.
      *
@@ -68,43 +63,20 @@ class MainWorld(
      */
     private enum class GameState {
         IN_PLAY,
-        GAME_OVER
+        GAME_OVER;
     }
-
+	
     // 플레이어 — 월드 중앙 하단에서 시작.
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
-    override val player = Player(
-		this,
-        x = width / 2 - 15f,   // 가로 30 의 절반을 빼서 정확히 중앙
-        y = 50f
-    )
-
-    // 적 — 월드 상단에서 좌우 왕복.
-    /*private val zombie = Zombie(
-        this,
-        x = 100f,
-        y = worldHeight - 100f,
-        minX = 0f,
-        maxX = worldWidth,
-        minY = 0f,
-        maxY = worldHeight,
-        angle = 0f,
-        player = player
-    )
-
-     */
-	
+    override val player = Player(this, x = width / 2 - Player.PLAYER_WIDTH / 2, y = 50f);
 	// 예제 건물과 상자
 	private val building = Building(this, width / 2 - 20f, 50f);
 	private val chest = Chest(this, width / 2 - 30f, 90f);
-
     // 현재 게임 상태 — 입력/충돌에 따라 IN_PLAY ↔ GAME_OVER 로 전환된다.
     private var state = GameState.IN_PLAY
-
     // 좀비들만 따로 모아두는 관리용 리스트
     private val zombies = mutableListOf<Zombie>()
     private val zombieSpawner = ZombieSpawner(this, player,  3.0f)
-
     // ── 체스판 배경 설정 (drawBackground() 에서 사용) ──
     //   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
     //   학생은 자기 게임에선 다른 배경을 그리거나, 그냥 두면 검은 배경이다.
@@ -160,28 +132,25 @@ class MainWorld(
         // ── 1) 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
         updateAllObjects(delta)
         val newZombie = zombieSpawner.update(delta)
-        if (newZombie != null) {
+        if (newZombie != null)
             zombies.add(newZombie)
-        }
 
         // ── 2) 상호작용 결정 — 누가 누구와 부딪혀 어떻게 되는지 ──
         //   collidesWith 는 GameObject 의 메서드 → 모든 게임 객체가 자동으로 가짐.
         //   이 예제에선 충돌 시 객체를 죽이지 않고 게임 상태만 바꾼다.
         //   (총알 게임이라면 여기서 bullet.kill(), enemy.kill() 같은 처리)
         val deadZombies = mutableListOf<Zombie>()
-
         for (zombie in zombies) {
             if (player.collidesWith(zombie))
                 player.takeDamage(zombie.damage, 1.0f)
-
             if (!zombie.isAlive())
                 deadZombies.add(zombie)
         }
-
         for (dead in deadZombies) {
             zombies.remove(dead)
         }
-            //state = GameState.GAME_OVER
+		
+        //state = GameState.GAME_OVER
         if (!player.isAlive()) {
             state = GameState.GAME_OVER // 피가 0 이하가 되면 진짜 게임 오버!
         }
