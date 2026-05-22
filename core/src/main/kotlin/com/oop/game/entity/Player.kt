@@ -25,11 +25,7 @@ import com.oop.game.world.World;
  *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 GameObject.dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(
-	world: World,
-    x: Float,
-    y: Float
-) : LivingEntity(world, x, y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player.png", 5), InventoryEntity {
+class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player.png", 5), InventoryEntity {
 	override val inventory = mutableListOf<Item>();
 	override var selectedItemIndex: Int? = null;
     private val speed = 200f

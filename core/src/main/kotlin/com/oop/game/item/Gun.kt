@@ -5,16 +5,7 @@ import com.oop.game.entity.Bullet;
 import com.oop.game.entity.Entity;
 import com.oop.game.world.World;
 
-abstract class Gun(
-	world: World,
-	id: String,
-	name: String,
-	damage: Int,
-	speed: Float,
-	val fireInterval: Float,
-	private val maxAmmo: Int,
-	var ammo: Int
-) : Item(world, id, name), Fireable {
+abstract class Gun(world: World, id: String, name: String, damage: Int, speed: Float, val fireInterval: Float, private val maxAmmo: Int, var ammo: Int) : Item(world, id, name), Fireable {
 	override val bulletDamage = damage
 	override val bulletSpeed = speed
 	private var fireCooldown = 0f

@@ -36,7 +36,6 @@ class OopGame : Game() {
     //   public(기본)으로 둔 이유: 외부(DesktopLauncher)에서 접근해야 하므로.
     val screenWidth = 480
     val screenHeight = 640
-
     // 월드 크기 — 화면의 1.5배. 카메라(WASD)로 탐험 가능한 영역.
     //   이 값은 내부 설정이므로 private.
     private val worldWidth = 720
@@ -62,6 +61,6 @@ class OopGame : Game() {
             width = worldWidth.toFloat(),
             height = worldHeight.toFloat()
         )
-        setScreen(firstWorld)   // 부모 Game 이 제공하는 메서드
+        setScreen(firstWorld)  // 부모 Game 이 제공하는 메서드
     }
 }

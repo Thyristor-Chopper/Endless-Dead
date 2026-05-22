@@ -54,12 +54,7 @@ import com.oop.game.entity.Player;
  * @param width        월드 전체 너비 (기본값: 화면과 동일 = 스크롤 없음)
  * @param height       월드 전체 높이
  */
-abstract class World(
-    val screenWidth: Float,
-    val screenHeight: Float,
-    val width: Float = screenWidth,
-    val height: Float = screenHeight
-) : ScreenAdapter() {
+abstract class World(val screenWidth: Float, val screenHeight: Float, val width: Float = screenWidth, val height: Float = screenHeight) : ScreenAdapter() {
 	abstract val player: Player;
     // OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     val camera = OrthographicCamera()

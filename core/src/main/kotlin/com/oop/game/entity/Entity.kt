@@ -45,19 +45,7 @@ import kotlin.math.sqrt;
  * @param width  가로 크기 (픽셀)
  * @param height 세로 크기 (픽셀)
  */
-abstract class Entity(
-	val world: World,
-    // var 로 선언한 이유: 객체는 게임 중 위치가 **변해야 하므로**.
-    //   val 로 만들면 한 번 생성된 이후 움직일 수 없다.
-    //   파이썬의 self.x = ... 와 같은 역할을 val/var 속성이 한다.
-    var x: Float,
-    var y: Float,
-    // 크기는 일반적으로 바뀌지 않지만, 폭발·성장 이펙트 같은 확장을 위해 var.
-    //   바뀔 일이 없다면 val 로 두는 것이 더 안전하다.
-    val width: Float,
-    val height: Float,
-	texture: String
-) {
+abstract class Entity(val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String) {
 	private val texture: Texture? = Texture(Gdx.files.internal(texture));
 	
     /**

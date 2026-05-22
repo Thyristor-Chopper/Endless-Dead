@@ -27,7 +27,6 @@ import com.badlogic.gdx.Input
  *  (파이썬이라면 모듈 수준 함수/변수와 비슷한 역할)
  */
 object InputHandler {
-
     /**
      * 키가 현재 '눌려 있는 중' 인지 — 꾹 누르고 있으면 매 프레임 true.
      *   이동(← → ↑ ↓) 처럼 '누르는 동안 계속' 일어나야 할 동작에 사용.

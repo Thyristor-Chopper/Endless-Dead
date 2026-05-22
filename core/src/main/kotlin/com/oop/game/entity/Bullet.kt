@@ -6,17 +6,9 @@ import com.oop.game.world.World;
 
 import kotlin.math.sqrt;
 
-class Bullet(
-	world: World,
-    x: Float,
-    y: Float,
-    val target: Position,
-    private val speed: Float,
-    val damage: Int
-) : Entity(world, x, y, 16.0f, 16.0f, "bullet.png") {
+class Bullet(world: World, x: Float, y: Float, val target: Position, private val speed: Float, val damage: Int) : Entity(world, x, y, 16.0f, 16.0f, "bullet.png") {
     var isAlive = true
 		private set;
-
     private val dx = target.x - x;
     private val dy = target.y - y;
     private val distance = sqrt(dx * dx + dy * dy);
