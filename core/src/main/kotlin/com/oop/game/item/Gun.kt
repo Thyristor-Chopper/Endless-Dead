@@ -11,10 +11,10 @@ abstract class Gun(
 	name: String,
 	damage: Int,
 	speed: Float,
-	val fireInterval : Float,
-	private val maxAmmo : Int,
-	var ammo : Int
-) : Item(world, id, name), Shootable {
+	val fireInterval: Float,
+	private val maxAmmo: Int,
+	var ammo: Int
+) : Item(world, id, name), Fireable {
 	override val bulletDamage = damage
 	override val bulletSpeed = speed
 	private var fireCooldown = 0f
@@ -32,7 +32,7 @@ abstract class Gun(
 		fireCooldown = fireInterval
 	}
 	
-	override fun shoot(target: Position, shooter: Entity) {
+	override fun fire(target: Position, shooter: Entity) {
 		val bullet = Bullet(world, shooter.x, shooter.y, target, bulletSpeed, bulletDamage);
 		world.add(bullet);
 	}

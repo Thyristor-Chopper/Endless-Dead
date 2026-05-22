@@ -42,7 +42,7 @@ class Player(
 				
 				val holding = holdingItem;
 				if(holding is Gun) {
-					holding.shoot(Position(x.toFloat() + world.offsetX, y.toFloat() - world.offsetY), this@Player);
+					holding.fire(Position(x.toFloat() + world.offsetX, y.toFloat() - world.offsetY), this@Player);
 					return true;
 				}
 				
