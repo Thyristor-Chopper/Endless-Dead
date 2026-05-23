@@ -204,7 +204,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		val windowTitle: String;
 			when(TitleInfoType.byIndex(currentTitleInfo)) {
 			TitleInfoType.OPENED	-> windowTitle = "${world.game.title} - 연 상자: ${openedContainerCount}개";
-			TitleInfoType.KILLED	-> windowTitle = "${world.game.title} - 공격한 좀비 수: ${killedZombieCount}";
+			TitleInfoType.KILLED	-> windowTitle = "${world.game.title} - 잡은 좀비 수: ${killedZombieCount}";
 		}
 		Gdx.graphics.setTitle(windowTitle);
     }
