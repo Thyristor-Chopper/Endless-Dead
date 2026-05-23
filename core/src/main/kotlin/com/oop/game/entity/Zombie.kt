@@ -39,7 +39,7 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
         radian = (angle + variation) * 3.14f / 180
     }
 
-    fun distanceToPlayer(player: Player = world.player): Float {
+    private fun distanceToPlayer(player: Player = world.player): Float {
         val dx = x - player.x;
         val dy = y - player.y;
         return sqrt(dx * dx + dy * dy);

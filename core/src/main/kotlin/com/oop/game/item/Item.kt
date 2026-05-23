@@ -10,7 +10,6 @@ import com.oop.game.world.World;
  * @param name	총 이름
  */
 abstract class Item(val world: World, val id: String, val name: String) {
-	// TODO 월드에서 update 호출
 	open fun update(delta: Float) {}
 
 	fun equals(other: Item): Boolean {
