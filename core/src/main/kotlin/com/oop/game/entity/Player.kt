@@ -43,7 +43,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 				
 				val holding = holdingItem;
 				if(holding is Gun) {
-					holding.fire(Position(x.toFloat() + world.offsetX, y.toFloat() - world.offsetY), this@Player);
+					holding.fire(Position(x.toFloat() + world.offsetX, world.screenHeight - y.toFloat() + world.offsetY), this@Player);
 					return true;
 				}
 				
