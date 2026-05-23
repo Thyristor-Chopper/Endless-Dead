@@ -40,6 +40,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 			onDamage();
 			if(attacker != null) {
 				onDamage(attacker);
+				attacker.onAttack(this);
 				latestAttacker = attacker;
 			}
 		}
