@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
+import com.oop.game.GameState;
 import com.oop.game.InputHandler
 import com.oop.game.Position;
 import com.oop.game.entity.container.Container;
@@ -42,6 +43,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		Gdx.input.setInputProcessor(object : InputProcessor {
 			// 클릭 감지 - 누르면 총을 쏜다
 			override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
+				if(world.state != GameState.IN_PLAY) return false;
 				if(button != Input.Buttons.LEFT) return false;
 				
 				val holding = holdingItem;
@@ -55,11 +57,14 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			
 			// 휠 감지 - 선택된 아이템 전환
 			override fun scrolled(amountX: Float, amountY: Float): Boolean {
+				if(world.state != GameState.IN_PLAY) return false;
+				
 				if(amountY != 0.0f) {
 					if(amountY > 0.0f) selectNextItem();
 					else if(amountY < 0.0f) selectPreviousItem();
 					return true;
 				}
+				
 				return false;
 			}
 			

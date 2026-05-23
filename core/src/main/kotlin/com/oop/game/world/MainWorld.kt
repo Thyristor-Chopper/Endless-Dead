@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
+import com.oop.game.GameState;
 import com.oop.game.InputHandler;
 import com.oop.game.Utils;
 import com.oop.game.ZombieSpawner;
@@ -58,25 +59,12 @@ import kotlin.random.Random;
  * @param worldHeight  월드 전체 높이
  */
 class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWidth, height: Float = screenHeight) : World(screenWidth, screenHeight, width, height) {
-    /**
-     * 게임의 현재 상태를 나타내는 열거형.
-     *
-     * Boolean 깃발(isGameOver) 대신 enum 을 쓰는 이유:
-     *   ▸ 상태 가짓수가 늘어날 때 깔끔히 확장 가능 (예: PAUSED, MENU, VICTORY)
-     *   ▸ when 으로 분기하면 'else' 없이 모든 상태를 다뤘는지 컴파일러가 체크해줌
-     *   ▸ 코드를 읽을 때 "이 게임에 어떤 상태들이 있는가" 가 한눈에 보임
-     *   (7주차에서 배우는 enum class 의 전형적 활용)
-     */
-    private enum class GameState {
-        IN_PLAY,
-        GAME_OVER;
-    }
-	
     // 플레이어 — 월드 중앙 하단에서 시작.
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
     override val player = Player(this, x = width / 2 - Player.PLAYER_WIDTH / 2, y = height / 2 - Player.PLAYER_HEIGHT / 2);
     // 현재 게임 상태 — 입력/충돌에 따라 IN_PLAY ↔ GAME_OVER 로 전환된다.
-    private var state = GameState.IN_PLAY
+    override var state = GameState.IN_PLAY
+		protected set;
     // 좀비들만 따로 모아두는 관리용 리스트
     private val zombies = mutableListOf<Zombie>()
     private val zombieSpawner = ZombieSpawner(this, 3.0f)
@@ -87,8 +75,8 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
     //   tile.png 는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color 를
     //   바꿔가며 두 가지 색으로 그리는 트릭(틴트) 으로 체스판을 만든다.
     private val tileTexture = Texture(Gdx.files.internal("tile.png"))
-    private val bgColorDark = Color(0.08f, 0.08f, 0.08f, 1f)
-    private val bgColorLight = Color(0.15f, 0.15f, 0.15f, 1f)
+    private val bgColorDark = Color(0.1f, 0.24f, 0.1f, 1f)
+    private val bgColorLight = Color(0.1f, 0.3f, 0.1f, 1f)
     private val tileSize = 64f
 
     /**
@@ -273,7 +261,7 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
 				text = Utils.progressBar((holding.ammo.toFloat() / holding.maxAmmo.toFloat() * 100.0f).toInt()),
 				x = screenWidth - 180.0f,
 				y = 20.0f,
-				color = Color.GREEN,
+				color = Color.SKY,
 				scale = 1.0f,
 				fixedWidthChars = "#-"
 			);

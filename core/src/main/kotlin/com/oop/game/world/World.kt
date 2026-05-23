@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
+import com.oop.game.GameState;
 import com.oop.game.entity.Bullet;
 import com.oop.game.entity.Entity;
 import com.oop.game.entity.InventoryEntity;
@@ -58,6 +59,8 @@ import com.oop.game.item.Item;
  * @param height       월드 전체 높이
  */
 abstract class World(val screenWidth: Float, val screenHeight: Float, val width: Float = screenWidth, val height: Float = screenHeight) : ScreenAdapter() {
+	abstract var state: GameState
+		protected set;
 	abstract val player: Player;
     // OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     val camera = OrthographicCamera()
