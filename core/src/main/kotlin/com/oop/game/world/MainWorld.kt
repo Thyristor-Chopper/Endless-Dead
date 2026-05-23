@@ -108,7 +108,10 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
      */
     override fun update(delta: Float) {
         when (state) {
-            GameState.IN_PLAY	-> updateInPlay(delta)
+            GameState.IN_PLAY	-> {
+				super.update(delta);
+				updateInPlay(delta);
+			}
             GameState.GAME_OVER	-> updateGameOver()
         }
     }
@@ -130,7 +133,6 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
         offsetY = offsetY.coerceIn(0f, height - screenHeight)
 
         // ── 1) 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
-        updateAllObjects(delta)
         val newZombie = zombieSpawner.update(delta)
         if (newZombie != null)
             zombies.add(newZombie)
@@ -154,10 +156,6 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
         if (!player.isAlive()) {
             state = GameState.GAME_OVER // 피가 0 이하가 되면 진짜 게임 오버!
         }
-        // ── 3) 죽은 객체 정리 ──
-        //   현재 예제에선 아무 것도 안 죽으므로 영향 없지만,
-        //   bullet/enemy 가 추가될 때를 대비한 표준 흐름이다.
-        removeDead()
     }
 
     /** GAME_OVER 상태에서 매 프레임 처리 — ESC 입력만 감시한다. */

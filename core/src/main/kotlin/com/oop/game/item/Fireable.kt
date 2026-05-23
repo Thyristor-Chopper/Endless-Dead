@@ -7,6 +7,7 @@ interface Fireable {
 	val bulletDamage: Int;
 	val bulletSpeed: Float;
 	val bulletPenetrable: Boolean;
+	val fireInterval: Float;
 	
-	fun fire(target: Position, shooter: Entity);
+	fun fire(target: Position, shooter: Entity): Boolean;
 }

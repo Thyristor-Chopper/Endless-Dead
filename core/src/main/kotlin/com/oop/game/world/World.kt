@@ -10,8 +10,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 import com.oop.game.entity.Bullet;
 import com.oop.game.entity.Entity;
+import com.oop.game.entity.InventoryEntity;
 import com.oop.game.entity.LivingEntity;
 import com.oop.game.entity.Player;
+import com.oop.game.entity.container.Container;
+import com.oop.game.item.Item;
 
 /**
  * 게임 한 장면 = '월드 하나' 의 추상 기본 클래스.
@@ -125,6 +128,19 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
         for(obj in gameObjects)
             obj.update(delta)
     }
+	
+	protected fun updateAllItems(delta: Float) {
+		for(entity in gameObjects) {
+			if(entity is InventoryEntity)
+				for(item in entity.inventory)
+					item.update(delta);
+			if(entity is Container) {
+				val contained: Item? = entity.containedItem;
+				if(contained != null)
+					contained.update(delta);
+			}
+		}
+	}
 
     /**
      * isAlive() 가 false 인 객체들을 한꺼번에 제거한다.
@@ -157,6 +173,7 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
      */
     open fun update(delta: Float) {
         updateAllObjects(delta)
+		updateAllItems(delta);
         removeDead()
     }
 
