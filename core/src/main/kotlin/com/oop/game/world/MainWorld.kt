@@ -134,20 +134,20 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
         //   collidesWith 는 GameObject 의 메서드 → 모든 게임 객체가 자동으로 가짐.
         //   이 예제에선 충돌 시 객체를 죽이지 않고 게임 상태만 바꾼다.
         //   (총알 게임이라면 여기서 bullet.kill(), enemy.kill() 같은 처리)
-        val deadZombies = mutableListOf<Zombie>()
-        for (zombie in zombies) {
-            if (player.collidesWith(zombie))
-                player.takeDamage(zombie.damage, 1.0f)
-            if (!zombie.isAlive())
-                deadZombies.add(zombie)
-        }
-        for (dead in deadZombies) {
-            zombies.remove(dead)
-        }
 		
-        if (!player.isAlive()) {
-            state = GameState.GAME_OVER // 피가 0 이하가 되면 진짜 게임 오버!
+		// 좀비 처리
+        val deadZombies = mutableListOf<Zombie>();
+        for(zombie in zombies) {
+            if(player.collidesWith(zombie))
+                player.takeDamage(zombie.damage, 1.0f);
+            if(!zombie.isAlive())
+                deadZombies.add(zombie);
         }
+        for(dead in deadZombies)
+            zombies.remove(dead);
+		
+        if(!player.isAlive())
+            state = GameState.GAME_OVER;  // 피가 0 이하가 되면 진짜 게임 오버!
     }
 
     /** GAME_OVER 상태에서 매 프레임 처리 — ESC 입력만 감시한다. */
@@ -226,8 +226,8 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
         //    WASD 로 카메라를 움직이면 이 글자도 화면에서 움직인다.
         drawTextInWorld(
             text = "*",
-            worldX = width / 2 - 24.0f,
-            worldY = height / 2 + 20.0f,
+            x = width / 2 - 24.0f,
+            y = height / 2 + 20.0f,
             color = Color.FOREST,
             scale = 8.0f,
 			skipBatch = true

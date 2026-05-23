@@ -288,14 +288,14 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
      */
     fun drawTextInWorld(
         text: String,
-        worldX: Float,
-        worldY: Float,
+        x: Float,
+        y: Float,
         color: Color = Color.WHITE,
         scale: Float = 1f,
 		skipBatch: Boolean = false
     ) {
-        val screenX = worldX - offsetX
-        val screenY = worldY - offsetY
+        val screenX = x - offsetX
+        val screenY = y - offsetY
         drawTextOnScreen(text, screenX, screenY, color, scale, skipBatch=skipBatch);
     }
 
