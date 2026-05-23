@@ -15,9 +15,10 @@ import com.oop.game.world.World;
  * @param speed			총알 속도
  * @param fireInterval	공격 속도
  */
-abstract class Gun(world: World, id: String, name: String, damage: Int, speed: Float, val fireInterval: Float, private val maxAmmo: Int, var ammo: Int) : Item(world, id, name), Fireable {
+abstract class Gun(world: World, id: String, name: String, damage: Int, speed: Float, penetreble: Boolean, val fireInterval: Float, private val maxAmmo: Int, var ammo: Int) : Item(world, id, name), Fireable {
 	override val bulletDamage = damage
 	override val bulletSpeed = speed
+	override val bulletPenetrable = penetreble;
 	private var fireCooldown = 0f
 	val canShoot: Boolean
 		get() = fireCooldown <= 0f;
@@ -32,7 +33,7 @@ abstract class Gun(world: World, id: String, name: String, damage: Int, speed: F
 	}
 	
 	override fun fire(target: Position, shooter: Entity) {
-		val bullet = Bullet(world, shooter.x, shooter.y, target, bulletSpeed, bulletDamage);
+		val bullet = Bullet(world, shooter.x, shooter.y, target, bulletSpeed, bulletDamage, bulletPenetrable);
 		world.add(bullet);
 	}
 }//maxAmmo와 ammo 프로퍼티도 필요할 듯? fireinterval, fire 함수도
