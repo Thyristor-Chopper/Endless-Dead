@@ -1,8 +1,9 @@
-package com.oop.game.desktop
+package com.oop.game.desktop;
 
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration
-import com.oop.game.OopGame
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+
+import com.oop.game.OopGame;
 
 /**
  * ════════════════════════════════════════════════════════════
@@ -18,14 +19,13 @@ import com.oop.game.OopGame
  *  이 파일은 순수 'OS 에 창 띄우기' 역할만 한다.
  */
 fun main() {
-
     // ─────────────────────────────────────────
     // 1) 게임 객체 만들기
     // ─────────────────────────────────────────
     //   OopGame 은 LibGDX 의 Game 을 상속한 클래스 (OopGame.kt 참고).
     //   이 시점에는 단순히 설계도만 들고 있을 뿐, 실제 화면은 아직 안 만들어진다.
     //   화면 생성은 LibGDX 가 나중에 game.create() 를 호출할 때 일어난다.
-    val game = OopGame()
+    val game = OopGame();
 
     // ─────────────────────────────────────────
     // 2) 창(Window) 설정
@@ -37,11 +37,11 @@ fun main() {
     //   Lwjgl3ApplicationConfiguration().apply { setTitle(...); setWindowedMode(...); ... }
     //   처럼 더 간결하게 쓸 수 있다.
     val config = Lwjgl3ApplicationConfiguration()
-    config.setTitle("OOP Game")                                     // 창 제목
-    config.setWindowedMode(game.screenWidth, game.screenHeight)     // 창 크기 (OopGame 이 들고 있는 값 사용)
-    config.setResizable(false)                                      // 사용자가 창 크기 조절 못하게
-    config.useVsync(true)                                           // 수직동기화 (화면 찢어짐 방지)
-    config.setForegroundFPS(60)                                     // 최대 60 FPS
+    config.setTitle(game.title);									// 창 제목
+    config.setWindowedMode(game.screenWidth, game.screenHeight);	// 창 크기 (OopGame 이 들고 있는 값 사용)
+    config.setResizable(true);										// 사용자가 창 크기 조절 못하게
+    config.useVsync(true);											// 수직동기화 (화면 찢어짐 방지)
+    config.setForegroundFPS(60);									// 최대 60 FPS
 
     // ─────────────────────────────────────────
     // 3) 실행
@@ -54,5 +54,5 @@ fun main() {
     //        ExampleWorld 가 만들어진다
     //     ④ 매 프레임 screen.render(delta) 를 호출하며 루프를 돈다
     //   창이 닫힐 때까지 이 호출은 return 하지 않는다.
-    Lwjgl3Application(game, config)
+    Lwjgl3Application(game, config);
 }

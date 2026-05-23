@@ -32,6 +32,7 @@ import com.oop.game.world.MainWorld;
  *   ▸ create() 안에서 setScreen 에 넘기는 Screen 을 자기 Screen 으로 교체
  */
 class OopGame : Game() {
+	val title = "OOP Game";
     // 화면(창) 크기 — DesktopLauncher 가 창 크기 설정에도 이 값을 읽어간다.
     //   public(기본)으로 둔 이유: 외부(DesktopLauncher)에서 접근해야 하므로.
     val screenWidth = 480
