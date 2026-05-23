@@ -110,5 +110,11 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width - width)
         y = y.coerceIn(0f, world.height - height)
+		
+		// ammo가 다 떨어진 총은 파괴 (만약 충전 기능을 만든다면 이 코드는 비활성화할 수도 있음)
+		val holding: Item? = holdingItem;
+		if(holding != null && holding is Gun)
+			if(holding.ammo == 0)
+				removeItemFromInventory(holding);
     }
 }

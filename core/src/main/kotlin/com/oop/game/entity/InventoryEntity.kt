@@ -50,9 +50,14 @@ interface InventoryEntity {
 	 * @param item	제거할 아이템
 	 */
 	fun removeItemFromInventory(item: Item) {
-		for(i in 0 until inventory.size)
-			if(inventory[i] == item)
-				inventory.removeAt(i);
+		if(inventory.size > 0)
+			for(i in 0 until inventory.size)
+				if(inventory[i] === item) {
+					inventory.removeAt(i);
+					if(i == selectedItemIndex)
+						selectPreviousItem();
+					break;
+				}
 		if(inventory.isEmpty())
 			selectedItemIndex = null;
 	}
