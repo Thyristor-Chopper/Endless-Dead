@@ -75,22 +75,21 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
     override fun update(delta: Float) {
         super<LivingEntity>.update(delta)
 		
-        val cameraSpeed = 200.0f * delta;
-        if(InputHandler.isKeyPressed(InputHandler.LEFT)) {
+        if(InputHandler.isKeyPressed(InputHandler.LEFT) || InputHandler.isKeyPressed(InputHandler.A)) {
 			x -= speed * delta;
-			// world.offsetX -= cameraSpeed;
+			world.offsetX = x - world.screenWidth / 2.0f + width / 2.0f;
 		}
-        if(InputHandler.isKeyPressed(InputHandler.RIGHT)) {
+        if(InputHandler.isKeyPressed(InputHandler.RIGHT) || InputHandler.isKeyPressed(InputHandler.D)) {
 			x += speed * delta;
-			// world.offsetX += cameraSpeed;
+			world.offsetX = x - world.screenWidth / 2.0f + width / 2.0f;
 		}
-        if(InputHandler.isKeyPressed(InputHandler.UP)) {
+        if(InputHandler.isKeyPressed(InputHandler.UP) || InputHandler.isKeyPressed(InputHandler.W)) {
 			y += speed * delta;
-			// world.offsetY += cameraSpeed;
+			world.offsetY = y - world.screenHeight / 2.0f + height / 2.0f;
 		}
-        if(InputHandler.isKeyPressed(InputHandler.DOWN)) {
+        if(InputHandler.isKeyPressed(InputHandler.DOWN) || InputHandler.isKeyPressed(InputHandler.S)) {
 			y -= speed * delta;
-			// world.offsetY -= cameraSpeed;
+			world.offsetY = y - world.screenHeight / 2.0f + height / 2.0f;
 		}
 
         // 월드 경계 안쪽으로 가두기.

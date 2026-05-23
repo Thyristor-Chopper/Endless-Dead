@@ -69,7 +69,7 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
 	
     // 플레이어 — 월드 중앙 하단에서 시작.
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
-    override val player = Player(this, x = width / 2 - Player.PLAYER_WIDTH / 2, y = 50f);
+    override val player = Player(this, x = width / 2 - Player.PLAYER_WIDTH / 2, y = height / 2 - Player.PLAYER_HEIGHT / 2);
     // 현재 게임 상태 — 입력/충돌에 따라 IN_PLAY ↔ GAME_OVER 로 전환된다.
     private var state = GameState.IN_PLAY
     // 좀비들만 따로 모아두는 관리용 리스트
@@ -92,7 +92,7 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
      */
     init {
         add(player);
-		for(i in 0 until Random.nextInt(20) + 10) {  // 10~30개의 건물과 상자를 무작위로 추가
+		for(i in 0 until Random.nextInt(20) + 30) {  // 30~50개의 건물과 상자를 무작위로 추가
 			val width = Random.nextInt(this.width.toInt()).toFloat();
 			val height = Random.nextInt(this.height.toInt()).toFloat();
 			if(Random.nextInt(2) == 1)
@@ -122,14 +122,6 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
 
     /** IN_PLAY 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크. */
     private fun updateInPlay(delta: Float) {
-        // ── 카메라 이동 (WASD) ──
-        //   offsetX/Y 를 바꾸면 카메라가 월드 안에서 움직인다.
-        val cameraSpeed = 200f * delta
-        if (InputHandler.isKeyPressed(InputHandler.W)) offsetY += cameraSpeed
-        if (InputHandler.isKeyPressed(InputHandler.S)) offsetY -= cameraSpeed
-        if (InputHandler.isKeyPressed(InputHandler.A)) offsetX -= cameraSpeed
-        if (InputHandler.isKeyPressed(InputHandler.D)) offsetX += cameraSpeed
-
         // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
         //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
         //   offset 은 0 ~ (world - screen) 범위여야 한다.
@@ -247,8 +239,8 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
         // 2) 월드 텍스트 (월드 좌표) — 월드 정중앙에 "WORLD CENTER".
         //    WASD 로 카메라를 움직이면 이 글자도 화면에서 움직인다.
         drawTextInWorld(
-            text = "WORLD CENTER",
-            worldX = width / 2 - 70f,
+            text = "*",
+            worldX = width / 2,
             worldY = height / 2,
             color = Color.CYAN,
             scale = 1.5f

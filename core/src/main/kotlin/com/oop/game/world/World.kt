@@ -67,8 +67,8 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
     val font = BitmapFont()
     // 카메라 오프셋 — 월드의 어느 지점이 화면 좌하단에 오는지.
     //   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
-    var offsetX: Float = 0f
-    var offsetY: Float = 0.1f
+    var offsetX: Float = width / 2.0f - screenWidth / 2.0f;
+    var offsetY: Float = height / 2.0f - screenHeight / 2.0f;
     // 등록된 객체들만 update/draw 된다.
     // private 으로 감춘 이유: 외부가 직접 add/remove 하면
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. add(), remove() 라는 공식 창구만 허용.
