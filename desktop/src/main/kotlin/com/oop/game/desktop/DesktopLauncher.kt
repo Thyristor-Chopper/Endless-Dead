@@ -42,7 +42,7 @@ fun main() {
     config.setWindowedMode(game.screenWidth, game.screenHeight);	// 창 크기 (OopGame 이 들고 있는 값 사용)
     config.setResizable(false);									// 사용자가 창 크기 조절 못하게
     config.useVsync(true);											// 수직동기화 (화면 찢어짐 방지)
-    config.setForegroundFPS(60);									// 최대 60 FPS
+    config.setForegroundFPS(game.fps);								// 최대 60 FPS
 	config.setWindowIcon(FileType.Internal, "icon_16.png", "icon_32.png", "icon_128.png");
 
     // ─────────────────────────────────────────

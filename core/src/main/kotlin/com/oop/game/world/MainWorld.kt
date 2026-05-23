@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 import com.oop.game.GameState;
 import com.oop.game.InputHandler;
+import com.oop.game.OopGame;
+import com.oop.game.ScoreManager;
 import com.oop.game.Utils;
 import com.oop.game.ZombieSpawner;
 import com.oop.game.entity.Player;
@@ -58,7 +60,7 @@ import kotlin.random.Random;
  * @param worldWidth   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
  * @param worldHeight  월드 전체 높이
  */
-class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWidth, height: Float = screenHeight) : World(screenWidth, screenHeight, width, height) {
+class MainWorld(val game: OopGame, screenWidth: Float, screenHeight: Float, width: Float = screenWidth, height: Float = screenHeight) : World(screenWidth, screenHeight, width, height) {
     // 플레이어 — 월드 중앙 하단에서 시작.
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
     override val player = Player(this, x = width / 2 - Player.PLAYER_WIDTH / 2, y = height / 2 - Player.PLAYER_HEIGHT / 2);
@@ -79,6 +81,13 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
     private val bgColorDark = Color(0.1f, 0.24f, 0.1f, 1f)
     private val bgColorLight = Color(0.1f, 0.3f, 0.1f, 1f)
     private val tileSize = 64f
+	private var ALIVE_BONUS_COOLDOWN_MAX: Int = game.fps;
+	private var aliveBonusCooldown: Int = ALIVE_BONUS_COOLDOWN_MAX
+		set(value) {
+			if(value < 0) field = 0;
+			else if(value > ALIVE_BONUS_COOLDOWN_MAX) field = ALIVE_BONUS_COOLDOWN_MAX;
+			else field = value;
+		};
 
     /**
      * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -141,6 +150,14 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
 		
         if(!player.isAlive())
             state = GameState.GAME_OVER;  // 피가 0 이하가 되면 진짜 게임 오버!
+		
+		// 생존 시간 보너스.
+		if(aliveBonusCooldown == 0) {
+			ScoreManager.addScore(1);
+			aliveBonusCooldown = ALIVE_BONUS_COOLDOWN_MAX;
+		} else {
+			aliveBonusCooldown--;
+		}
     }
 
     /** GAME_OVER 상태에서 매 프레임 처리 — ESC 입력만 감시한다. */
@@ -238,7 +255,8 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
             color = Color.YELLOW,
             scale = 1.2f,
 			fixedWidthChars = "#-"
-        )
+        );
+		
         // 2) HP를 시각적 미터기로 표시
 		drawTextOnScreen(
             text = Utils.progressBar(player.hp.toFloat() / player.maxHp.toFloat()),
@@ -247,7 +265,7 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
             color = Color.YELLOW,
             scale = 1.0f,
 			fixedWidthChars = "#-"
-        )
+        );
 		
 		// 3) 현재 플레이어가 들고 있는 아이템
 		val holding: Item? = player.holdingItem;
@@ -271,6 +289,16 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
 				scale = 1.0f,
 				fixedWidthChars = "#-"
 			);
+		
+		// 5) 점수
+		drawTextOnScreen(
+            text = "Score: ${ScoreManager.score}",
+            x = screenWidth - 120.0f,
+            y = screenHeight - 10f,
+            color = Color.LIME,
+            scale = 1.2f,
+			fixedWidthChars = "#-"
+        );
     }
 
     /** 게임 오버 시 화면 중앙에 띄우는 안내 메시지. */
