@@ -120,6 +120,9 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 					break;  // 한 번에 한 아이템씩만 가져가게.
 				}
 			}
+		
+		if(InputHandler.isKeyJustPressed(InputHandler.SPACE))
+			world.drawSubtitles("test", 3);
 
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width - width)

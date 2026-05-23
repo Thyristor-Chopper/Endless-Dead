@@ -79,6 +79,8 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. add(), remove() 라는 공식 창구만 허용.
     //   (5주차에서 배운 캡슐화의 실제 사례)
     private val entities = mutableListOf<Entity>();
+	private var subtitlesTimer = 0;
+	private var subtitlesMessage: String? = null;
 
     init {
         // 카메라를 '왼쪽 아래 = (0,0), 오른쪽 위 = (screenWidth, screenHeight)' 로 설정.
@@ -204,6 +206,21 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
         drawBackgroundOverlay()
         drawAllObjects()
         batch.end()
+		
+		// 자막
+		val message: String? = subtitlesMessage;
+		if(subtitlesTimer > 0 && message != null) {
+			drawTextOnScreen(
+				text = message,
+				x = 0f,
+				y = 20f,
+				color = Color.WHITE,
+				scale = 1.0f,
+				width = screenWidth,
+				align = Align.center
+			);
+			subtitlesTimer--;
+		}
     }
 	
 	/**
@@ -310,6 +327,11 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
         val screenY = y - offsetY
         drawTextOnScreen(text, screenX, screenY, color, scale, width, align, fixedWidthChars, skipBatch);
     }
+	
+	fun drawSubtitles(message: String, duration: Int = 3) {
+		subtitlesTimer = duration * game.fps;
+		subtitlesMessage = message;
+	}
 
     // ────────────────────────────────────────────────────────
     //  자원 정리
