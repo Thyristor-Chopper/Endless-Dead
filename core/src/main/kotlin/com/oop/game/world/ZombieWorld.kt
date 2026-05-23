@@ -16,6 +16,7 @@ import com.oop.game.entity.Player;
 import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Building;
 import com.oop.game.entity.container.Chest;
+import com.oop.game.entity.container.Container;
 import com.oop.game.item.Item;
 import com.oop.game.item.Gun;
 import com.oop.game.item.MachineGun;
@@ -82,6 +83,8 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
     private val bgColorDark = Color(0.15f, 0.34f, 0.17f, 1f)
     private val bgColorLight = Color(0.15f, 0.4f, 0.17f, 1f)
     private val tileSize = 64f
+	private val MAX_REFILL_COOLDOWN_MAX = 30 * game.fps;
+	private var refillCooldown = MAX_REFILL_COOLDOWN_MAX;
 
     /**
      * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -91,10 +94,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		for(i in 0 until Random.nextInt(20) + 30) {  // 30~50개의 건물과 상자를 무작위로 추가
 			val x = Random.nextInt(this.width.toInt()).toFloat();
 			val y = Random.nextInt(this.height.toInt()).toFloat();
-			val item: Item = when(Random.nextInt(2)) {  // 들어있을 아이템
-				0		-> MachineGun(this)
-				else	-> Shotgun(this)
-			};
+			val item: Item = generateRandomItem();  // 들어있을 아이템
 			if(Random.nextInt(2) == 1)
 				add(Building(this, x, y, item));
 			else
@@ -102,6 +102,13 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		}
         add(player);
     }
+	
+	private fun generateRandomItem(): Item {
+		return when(Random.nextInt(2)) {
+			0		-> MachineGun(this)
+			else	-> Shotgun(this)
+		};
+	}
 
     /**
      * 매 프레임 게임 로직 — 모든 '입력 처리·상태 변경' 은 이 안에서.
@@ -139,6 +146,18 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		
         if(!player.isAlive())
             state = GameState.GAME_OVER;  // 피가 0 이하가 되면 진짜 게임 오버!
+		
+		// 30초마다 빈 상자 리필
+		if(refillCooldown == 0) {
+			for(entity in getEntities().shuffled())
+				if(entity is Container && entity.isEmpty) {
+					entity.putItem(generateRandomItem());
+					break;
+				}
+			refillCooldown = MAX_REFILL_COOLDOWN_MAX;
+		} else {
+			refillCooldown--;
+		}
     }
 
     /** GAME_OVER 상태에서 매 프레임 처리 — ESC 입력만 감시한다. */

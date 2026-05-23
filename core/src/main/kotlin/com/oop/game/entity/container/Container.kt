@@ -15,15 +15,21 @@ import com.oop.game.world.World;
  */
 abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, initialItem: Item? = null) : Entity(world, x, y, width, height, texture) {
 	open protected val emptyTexture: Texture? = null;
-	open var containedItem: Item? = initialItem;  // 들어있는 아이템
+	open protected val flagTexture: Texture? = null;
+	var containedItem: Item? = initialItem  // 들어있는 아이템
+		protected set;
+	protected var flag: Boolean = false;
 	val isEmpty: Boolean
 		get() = (containedItem == null);
 	
 	override fun draw(batch: SpriteBatch) {
 		val texture = this.texture;
-		val empty = this.emptyTexture;
-		if(isEmpty && empty != null) {
-			batch.draw(empty, x, y, width, height);
+		val flagTexture = this.flagTexture;
+		val emptyTexture = this.emptyTexture;
+		if(isEmpty && emptyTexture != null) {
+			batch.draw(emptyTexture, x, y, width, height);
+		} else if(flag && flagTexture != null) {
+			batch.draw(flagTexture, x, y, width, height);
 		} else if(texture != null) {
 			batch.draw(texture, x, y, width, height);
 		}
@@ -42,5 +48,15 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		}
 		taker.addItemToInventory(target, select);
 		containedItem = null;
+	}
+	
+	/**
+	 * 아이템 넣기
+	 *
+	 * @param item	넣을 아이템
+	 */
+	fun putItem(item: Item, setFlag: Boolean = false) {
+		containedItem = item;
+		if(setFlag) flag = true;
 	}
 }

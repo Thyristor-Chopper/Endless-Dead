@@ -16,4 +16,5 @@ import com.oop.game.world.World;
  */
 class Chest(world: World, x: Float, y: Float, initialItem: Item? = null): Container(world, x, y, 24.0f, 25.0f, "chest.png", initialItem) {
 	override protected val emptyTexture = Texture(Gdx.files.internal("empty_chest.png"));
+	override protected val flagTexture = Texture(Gdx.files.internal("chest_player_added.png"));
 }

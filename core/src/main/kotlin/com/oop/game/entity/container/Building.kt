@@ -16,4 +16,5 @@ import com.oop.game.world.World;
  */
 class Building(world: World, x: Float, y: Float, initialItem: Item? = null): Container(world, x, y, 23.0f, 24.0f, "building.png", initialItem) {
 	override protected val emptyTexture = Texture(Gdx.files.internal("empty_building.png"));
+	override protected val flagTexture = Texture(Gdx.files.internal("building_player_added.png"));
 }

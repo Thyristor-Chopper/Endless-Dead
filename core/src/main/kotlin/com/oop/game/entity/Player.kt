@@ -40,15 +40,15 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	override var selectedItemIndex: Int? = null;
     private val speed = 200f
 	private var mouseDown: Boolean = false;
-	private var ALIVE_BONUS_COOLDOWN_MAX: Int = world.game.fps;
-	private var aliveBonusCooldown: Int = ALIVE_BONUS_COOLDOWN_MAX
+	private var MAX_ALIVE_BONUS_COOLDOWN = 1 * world.game.fps;
+	private var aliveBonusCooldown = MAX_ALIVE_BONUS_COOLDOWN
 		set(value) {
 			if(value < 0) field = 0;
-			else if(value > ALIVE_BONUS_COOLDOWN_MAX) field = ALIVE_BONUS_COOLDOWN_MAX;
+			else if(value > MAX_ALIVE_BONUS_COOLDOWN) field = MAX_ALIVE_BONUS_COOLDOWN;
 			else field = value;
 		};
-	private val HEAL_COOLDOWN_MAX: Int = 30 * world.game.fps;
-	private var healCooldown: Int = HEAL_COOLDOWN_MAX;
+	private val MAX_HEAL_COOLDOWN = 30 * world.game.fps;
+	private var healCooldown = MAX_HEAL_COOLDOWN;
 	
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
@@ -85,18 +85,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		});
 	}
 	
-	private fun takeItemFromContainer(): Boolean {
-		for(entity in world.getEntities()) {
-			if(!(entity is Container)) continue;
-			if(collidesWith(entity) && !entity.isEmpty) {
-				world.drawSubtitles("Took ${entity.containedItem!!.name} from the container");
-				entity.takeItem(this, true);
-				return true;
-			}
-		}
-		return false;
-	}
-
     override fun update(delta: Float) {
         super<LivingEntity>.update(delta)
 		
@@ -125,9 +113,24 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 				holding.fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), this@Player);
 		}
 		
-		// 아이템 가져가기
+		// 아이템 가져가기 & 넣기
 		if(InputHandler.isKeyJustPressed(InputHandler.SPACE) || InputHandler.isButtonJustPressed(InputHandler.RIGHT_MOUSE))
-			takeItemFromContainer();
+			for(entity in world.getEntities()) {
+				if(!(entity is Container)) continue;
+				if(collidesWith(entity)) {
+					if(entity.isEmpty) {
+						val holding: Item? = holdingItem;
+						if(holding != null) {
+							world.drawSubtitles("Put ${holding.name} into the container");
+							entity.putItem(holding, true);
+							removeItemFromInventory(holding);
+						}
+					} else {
+						world.drawSubtitles("Took ${entity.containedItem!!.name} from the container");
+						entity.takeItem(this, true);
+					}
+				}
+			}
 		
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width - width)
@@ -153,7 +156,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		// 생존 시간 보너스
 		if(aliveBonusCooldown == 0) {
 			ScoreManager.addScore(1);
-			aliveBonusCooldown = ALIVE_BONUS_COOLDOWN_MAX;
+			aliveBonusCooldown = MAX_ALIVE_BONUS_COOLDOWN;
 		} else {
 			aliveBonusCooldown--;
 		}
@@ -161,13 +164,13 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		// 자연 회복
 		if(healCooldown == 0) {
 			heal(3);
-			healCooldown = HEAL_COOLDOWN_MAX;
+			healCooldown = MAX_HEAL_COOLDOWN;
 		} else {
 			healCooldown--;
 		}
     }
 	
 	override fun onDamage() {
-		healCooldown = HEAL_COOLDOWN_MAX;
+		healCooldown = MAX_HEAL_COOLDOWN;
 	}
 }
