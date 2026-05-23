@@ -316,7 +316,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
             scale = 1.2f,
 			width = 120.0f,
 			align = Align.right,
-			fixedWidthChars = "#-"
+			fixedWidthChars = "${Utils.PROGRESS_BAR_FILLED}${Utils.PROGRESS_BAR_EMPTY}"
         );
     }
 
