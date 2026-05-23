@@ -40,6 +40,10 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 		fireCooldown = fireInterval
 	}
 	
+	fun getRemainingCooldownPercentage(): Float {
+		return fireCooldown / fireInterval;
+	}
+	
 	override fun fire(target: Position, shooter: Entity): Boolean {
 		if(!canFire) return false;
 		

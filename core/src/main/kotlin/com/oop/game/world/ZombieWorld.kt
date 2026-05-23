@@ -164,9 +164,8 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
     private fun updateGameOver() {
         // ESC 키가 '막 눌린 순간' 앱 종료.
         //   isKeyJustPressed 로 한 이유: 누르고 있는 동안 매 프레임 exit 호출되지 않게.
-        if (InputHandler.isKeyJustPressed(InputHandler.ESCAPE)) {
-            Gdx.app.exit()
-        }
+        if(InputHandler.isKeyJustPressed(InputHandler.ESCAPE))
+            Gdx.app.exit();
     }
 
     /**
@@ -292,7 +291,23 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 				fixedWidthChars = "${Utils.PROGRESS_BAR_FILLED}${Utils.PROGRESS_BAR_EMPTY}"
 			);
 		
-		// 5) 점수
+		// 5) 들고 있는 아이템이 총인 경우 총의 ammo를 미터기로 표시
+		if(holding != null && holding is Gun) {
+			val cooldown = holding.getRemainingCooldownPercentage();
+			if(cooldown > 0f)
+				drawTextOnScreen(
+					text = Utils.progressBar(cooldown, 5),
+					x = screenWidth - 390.0f,
+					y = 20.0f,
+					color = Color.SCARLET,
+					scale = 1.0f,
+					width = 180.0f,
+					align = Align.right,
+					fixedWidthChars = "${Utils.PROGRESS_BAR_FILLED}${Utils.PROGRESS_BAR_EMPTY}"
+				);
+		}
+		
+		// 6) 점수
 		drawTextOnScreen(
             text = "Score: ${ScoreManager.score}",
             x = screenWidth - 130.0f,
