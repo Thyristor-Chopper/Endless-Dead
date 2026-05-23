@@ -226,8 +226,8 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
         //    WASD 로 카메라를 움직이면 이 글자도 화면에서 움직인다.
         drawTextInWorld(
             text = "*",
-            worldX = width / 2,
-            worldY = height / 2,
+            worldX = width / 2 - 24.0f,
+            worldY = height / 2 + 20.0f,
             color = Color.FOREST,
             scale = 8.0f,
 			skipBatch = true

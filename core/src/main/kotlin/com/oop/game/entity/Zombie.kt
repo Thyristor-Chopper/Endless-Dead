@@ -2,10 +2,6 @@ package com.oop.game.entity;
 
 import com.oop.game.world.World;
 
-import java.lang.Math
-
-import kotlin.math.cos
-import kotlin.math.sin
 import kotlin.math.sqrt;
 
 /**
@@ -39,18 +35,12 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
         radian = (angle + variation) * 3.14f / 180
     }
 
-    private fun distanceToPlayer(player: Player = world.player): Float {
-        val dx = x - player.x;
-        val dy = y - player.y;
-        return sqrt(dx * dx + dy * dy);
-    }
-
     override fun update(delta: Float) {
         super.update(delta) // 부모(LivingGameObject)의 무적 타이머 갱신 로직 실행
 
-        val distance = distanceToPlayer()
-        val dx = world.player.x - x
-        val dy = world.player.y - y
+        val dx = (world.player.x + Player.PLAYER_WIDTH / 2.0f - width / 2.0f) - x;
+        val dy = (world.player.y + Player.PLAYER_HEIGHT / 2.0f - height / 2.0f) - y;
+        val distance = sqrt(dx * dx + dy * dy);
         if (distance > 0f) {
             x += dx / distance * speed * delta
             y += dy / distance * speed * delta
