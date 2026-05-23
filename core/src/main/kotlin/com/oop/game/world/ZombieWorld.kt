@@ -88,7 +88,6 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
      *   이렇게 등록해야 update / draw 루프에 포함된다.
      */
     init {
-        add(player);
 		for(i in 0 until Random.nextInt(20) + 30) {  // 30~50개의 건물과 상자를 무작위로 추가
 			val x = Random.nextInt(this.width.toInt()).toFloat();
 			val y = Random.nextInt(this.height.toInt()).toFloat();
@@ -101,6 +100,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 			else
 				add(Chest(this, x, y, item));
 		}
+        add(player);
     }
 
     /**
