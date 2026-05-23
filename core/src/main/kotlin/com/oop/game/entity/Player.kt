@@ -9,6 +9,7 @@ import com.oop.game.GameState;
 import com.oop.game.InputHandler
 import com.oop.game.Position;
 import com.oop.game.ScoreManager;
+import com.oop.game.Utils;
 import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Container;
 import com.oop.game.item.Gun;
@@ -40,7 +41,9 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	
 	enum class TitleInfoType {
 		OPENED,
-		KILLED;
+		KILLED,
+		FIRED,
+		SURVIVED;
 		
 		companion object {
 			private val enumEntries = TitleInfoType.entries;
@@ -73,6 +76,10 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			else field = value;
 		};
 	private var killedZombieCount = 0;
+	private var firedBullets = 0;
+	private val MAX_SURVIVED_COOLTIME = world.game.fps;
+	private var survivedCooldown = MAX_SURVIVED_COOLTIME;
+	private var survivedDuration = 0;
 	
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
@@ -134,7 +141,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		if(InputHandler.isButtonPressed(InputHandler.LEFT_MOUSE)) {
 			val holding = holdingItem;
 			if(holding is Gun)
-				holding.fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), this@Player);
+				if(holding.fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), this@Player))
+					firedBullets++;
 		}
 		
 		// 아이템 가져가기 & 넣기
@@ -195,6 +203,13 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			healCooldown--;
 		}
 		
+		if(survivedCooldown == 0) {
+			survivedDuration++;
+			survivedCooldown = MAX_SURVIVED_COOLTIME;
+		} else {
+			survivedCooldown--;
+		}
+		
 		if(titleInfoCooldown == 0) {
 			currentTitleInfo++;
 			titleInfoCooldown = MAX_TITLE_INFO_COOLDOWN;
@@ -205,6 +220,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			when(TitleInfoType.byIndex(currentTitleInfo)) {
 			TitleInfoType.OPENED	-> windowTitle = "${world.game.title} - 연 상자: ${openedContainerCount}개";
 			TitleInfoType.KILLED	-> windowTitle = "${world.game.title} - 잡은 좀비 수: ${killedZombieCount}";
+			TitleInfoType.FIRED		-> windowTitle = "${world.game.title} - 발사한 총알 수: ${firedBullets}";
+			TitleInfoType.SURVIVED	-> windowTitle = "${world.game.title} - 생존 시간: ${Utils.parseSeconds(survivedDuration)}";
 		}
 		Gdx.graphics.setTitle(windowTitle);
     }

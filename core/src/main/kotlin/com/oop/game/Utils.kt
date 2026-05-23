@@ -29,4 +29,9 @@ object Utils {
 		ret += "]";
 		return ret;
 	}
+	
+	fun parseSeconds(seconds: Int): String {
+		if(seconds < 60) return "${seconds}초";
+		return "${seconds / 60}분 ${seconds % 60}초";
+	}
 }
