@@ -243,10 +243,20 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
             x = 10f,
             y = screenHeight - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
             color = Color.YELLOW,
-            scale = 1.2f
+            scale = 1.2f,
+			fixedWidthChars = "#-"
+        )
+        // 2) HP를 시각적 미터기로 표시
+		drawTextOnScreen(
+            text = Utils.progressBar(player.hp.toFloat() / player.maxHp.toFloat()),
+            x = 70.0f,
+            y = screenHeight - 10f,
+            color = Color.YELLOW,
+            scale = 1.0f,
+			fixedWidthChars = "#-"
         )
 		
-		// 2) 현재 플레이어가 들고 있는 아이템
+		// 3) 현재 플레이어가 들고 있는 아이템
 		val holding: Item? = player.holdingItem;
 		val holdingIndex: Int? = player.selectedItemIndex;
 		if(holding != null && holdingIndex != null)
@@ -258,10 +268,10 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
 				scale = 1.0f
 			);
 		
-		// 3) 들고 있는 아이템이 총인 경우 총의 ammo를 미터기로 표시
+		// 4) 들고 있는 아이템이 총인 경우 총의 ammo를 미터기로 표시
 		if(holding != null && holding is Gun)
 			drawTextOnScreen(
-				text = Utils.progressBar((holding.ammo.toFloat() / holding.maxAmmo.toFloat() * 100.0f).toInt()),
+				text = Utils.progressBar(holding.ammo.toFloat() / holding.maxAmmo.toFloat()),
 				x = screenWidth - 180.0f,
 				y = 20.0f,
 				color = Color.SKY,

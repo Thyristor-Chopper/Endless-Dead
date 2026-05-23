@@ -1,6 +1,20 @@
 package com.oop.game;
 
 object Utils {
+	/**
+	 * 미터기를 그린다.
+	 *
+	 * @param value	실수 진행률(0.0~1.0)
+	 */
+	fun progressBar(value: Float): String {
+		return progressBar((value * 100.0f).toInt());
+	}
+	
+	/**
+	 * 미터기를 그린다.
+	 *
+	 * @param value	정수 진행률(1~100)
+	 */
 	fun progressBar(value: Int): String {
 		return when {
 			value == 100	-> "[####################]";
