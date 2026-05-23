@@ -29,7 +29,14 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		if (invincibilityTimer == 0f) {
 			if(damage > 0) hp -= damage
 			invincibilityTimer = duration  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
+			onDamage();
 		}
+	}
+	
+	open fun onDamage() {}
+	
+	open fun heal(amount: Int) {
+		hp += amount;
 	}
 
 	// 매프레임 무적 시간 감소 로직

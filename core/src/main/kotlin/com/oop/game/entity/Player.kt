@@ -47,6 +47,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			else if(value > ALIVE_BONUS_COOLDOWN_MAX) field = ALIVE_BONUS_COOLDOWN_MAX;
 			else field = value;
 		};
+	private val HEAL_COOLDOWN_MAX: Int = 30 * world.game.fps;
+	private var healCooldown: Int = HEAL_COOLDOWN_MAX;
 	
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
@@ -155,5 +157,17 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		} else {
 			aliveBonusCooldown--;
 		}
+		
+		// 자연 회복
+		if(healCooldown == 0) {
+			heal(3);
+			healCooldown = HEAL_COOLDOWN_MAX;
+		} else {
+			healCooldown--;
+		}
     }
+	
+	override fun onDamage() {
+		healCooldown = HEAL_COOLDOWN_MAX;
+	}
 }
