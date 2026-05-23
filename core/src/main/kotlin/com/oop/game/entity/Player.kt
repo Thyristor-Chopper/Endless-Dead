@@ -12,8 +12,6 @@ import com.oop.game.item.Gun;
 import com.oop.game.item.Item;
 import com.oop.game.world.World;
 
-import kotlin.concurrent.thread;
-
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  *  플레이어 예제 — player.png 이미지, 화살표 키로 조종.
@@ -30,16 +28,16 @@ import kotlin.concurrent.thread;
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
 class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player.png", 50), InventoryEntity {
-	override val inventory = mutableListOf<Item>();
-	override var selectedItemIndex: Int? = null;
-    private val speed = 200f
-	private var mouseDown: Boolean = false;
-	
 	companion object {
 		// 상수
 		val PLAYER_WIDTH = 30f;
 		val PLAYER_HEIGHT = 30f;
 	}
+	
+	override val inventory = mutableListOf<Item>();
+	override var selectedItemIndex: Int? = null;
+    private val speed = 200f
+	private var mouseDown: Boolean = false;
 	
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
@@ -105,7 +103,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		}
 		
 		// 아이템 가져가기
-		if(InputHandler.isKeyPressed(InputHandler.SPACE))
+		if(InputHandler.isKeyJustPressed(InputHandler.SPACE))
 			for(entity in world.getEntities()) {
 				if(!(entity is Container)) continue;
 				if(collidesWith(entity) && !entity.isEmpty) {
