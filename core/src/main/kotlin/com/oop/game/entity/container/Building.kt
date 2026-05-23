@@ -9,4 +9,4 @@ import com.oop.game.world.World;
  * @param x		개체 가로 위치
  * @param y		개체 세로 위치
  */
-class Building(world: World, x: Float, y: Float): Container(world, x, y, 32.0f, 32.0f, "building.png");
+class Building(world: World, x: Float, y: Float): Container(world, x, y, 23.0f, 24.0f, "building.png");
