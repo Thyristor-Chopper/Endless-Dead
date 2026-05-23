@@ -98,7 +98,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			for(entity in world.getEntities()) {
 				if(!(entity is Container)) continue;
 				if(collidesWith(entity) && !entity.isEmpty) {
-					entity.takeItem(this);
+					entity.takeItem(this, true);
 					break;  // 한 번에 한 아이템씩만 가져가게.
 				}
 			}

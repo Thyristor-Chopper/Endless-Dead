@@ -20,10 +20,12 @@ interface InventoryEntity {
 	 *
 	 * @param item	추가할 아이템
 	 */
-	fun addItemToInventory(item: Item) {
+	fun addItemToInventory(item: Item, select: Boolean = false) {
 		inventory.add(item);
 		if(selectedItemIndex == null)
 			selectedItemIndex = 0;
+		else if(select)
+			selectedItemIndex = inventory.size - 1;
 	}
 	
 	/**
