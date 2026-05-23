@@ -220,6 +220,19 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
             GameState.GAME_OVER	-> drawGameOverOverlay()
         }
     }
+	
+	override protected fun drawBackgroundOverlay() {
+		// 월드 텍스트 (월드 좌표) — 월드 정중앙에 표시
+        //    WASD 로 카메라를 움직이면 이 글자도 화면에서 움직인다.
+        drawTextInWorld(
+            text = "*",
+            worldX = width / 2,
+            worldY = height / 2,
+            color = Color.FOREST,
+            scale = 8.0f,
+			skipBatch = true
+        );
+	}
 
     /** 항상 화면에 표시되는 정보 — HP 표시와 월드 중앙 표지. */
     private fun drawHud() {
@@ -232,18 +245,8 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
             color = Color.YELLOW,
             scale = 1.2f
         )
-
-        // 2) 월드 텍스트 (월드 좌표) — 월드 정중앙에 "WORLD CENTER".
-        //    WASD 로 카메라를 움직이면 이 글자도 화면에서 움직인다.
-        drawTextInWorld(
-            text = "*",
-            worldX = width / 2,
-            worldY = height / 2,
-            color = Color.FOREST,
-            scale = 8.0f
-        )
 		
-		// 3) 현재 플레이어가 들고 있는 아이템
+		// 2) 현재 플레이어가 들고 있는 아이템
 		val holding: Item? = player.holdingItem;
 		val holdingIndex: Int? = player.selectedItemIndex;
 		if(holding != null && holdingIndex != null)
@@ -255,7 +258,7 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
 				scale = 1.0f
 			);
 		
-		// 4) 들고 있는 아이템이 총인 경우 총의 ammo를 미터기로 표시
+		// 3) 들고 있는 아이템이 총인 경우 총의 ammo를 미터기로 표시
 		if(holding != null && holding is Gun)
 			drawTextOnScreen(
 				text = Utils.progressBar((holding.ammo.toFloat() / holding.maxAmmo.toFloat() * 100.0f).toInt()),

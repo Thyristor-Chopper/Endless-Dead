@@ -199,9 +199,15 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
         // 4) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
         batch.begin()
         drawBackground(batch)
+        drawBackgroundOverlay()
         drawAllObjects()
         batch.end()
     }
+	
+	/**
+	 * 월드 중심 등 오버레이를 그리는 자리
+	 */
+	protected open fun drawBackgroundOverlay() {}
 
     /**
      * 배경을 그리는 자리 — 모든 서브클래스가 반드시 구현해야 한다.
@@ -259,15 +265,16 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
         y: Float,
         color: Color = Color.WHITE,
         scale: Float = 1f,
-		fixedWidthChars: String = ""  // null이 아닌 이유는 실제로 빈 문자열이면 고정폭이 없다는 뜻
+		fixedWidthChars: String = "",  // null이 아닌 이유는 실제로 빈 문자열이면 고정폭이 없다는 뜻
+		skipBatch: Boolean = false
     ) {
-        batch.projectionMatrix = camera.combined
+        if(!skipBatch) batch.projectionMatrix = camera.combined;
 		font.setFixedWidthGlyphs(fixedWidthChars);
         font.color = color
         font.data.setScale(scale)
-        batch.begin()
+        if(!skipBatch) batch.begin();
         font.draw(batch, text, x, y)
-        batch.end()
+        if(!skipBatch) batch.end();
     }
 
     /**
@@ -284,11 +291,12 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
         worldX: Float,
         worldY: Float,
         color: Color = Color.WHITE,
-        scale: Float = 1f
+        scale: Float = 1f,
+		skipBatch: Boolean = false
     ) {
         val screenX = worldX - offsetX
         val screenY = worldY - offsetY
-        drawTextOnScreen(text, screenX, screenY, color, scale)
+        drawTextOnScreen(text, screenX, screenY, color, scale, skipBatch=skipBatch);
     }
 
     // ────────────────────────────────────────────────────────
