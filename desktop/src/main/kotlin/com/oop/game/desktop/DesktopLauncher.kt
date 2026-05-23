@@ -2,6 +2,7 @@ package com.oop.game.desktop;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.Files.FileType;
 
 import com.oop.game.OopGame;
 
@@ -36,12 +37,13 @@ fun main() {
     // TODO (10주차 이후): 영역함수 'apply' 를 배우면
     //   Lwjgl3ApplicationConfiguration().apply { setTitle(...); setWindowedMode(...); ... }
     //   처럼 더 간결하게 쓸 수 있다.
-    val config = Lwjgl3ApplicationConfiguration()
+    val config = Lwjgl3ApplicationConfiguration();
     config.setTitle(game.title);									// 창 제목
     config.setWindowedMode(game.screenWidth, game.screenHeight);	// 창 크기 (OopGame 이 들고 있는 값 사용)
     config.setResizable(true);										// 사용자가 창 크기 조절 못하게
     config.useVsync(true);											// 수직동기화 (화면 찢어짐 방지)
     config.setForegroundFPS(60);									// 최대 60 FPS
+	config.setWindowIcon(FileType.Internal, "icon_16.png", "icon_32.png", "icon_128.png");
 
     // ─────────────────────────────────────────
     // 3) 실행
