@@ -32,6 +32,13 @@ class Bullet(world: World, x: Float, y: Float, val target: Position, private val
 		// 화면 밖으로 나가면 소멸
 		if(x < 0f || x > world.width || y < 0f || y > world.height)
 			isAlive = false
+		
+		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지 주고 총알은 폭파.
+		for(entity in world.getEntities())
+			if(entity !== this && entity != world.player && !(entity is Bullet) && entity is LivingEntity && collidesWith(entity)) {
+				entity.takeDamage(damage);  // 무적 시간이 필요하면 추가...
+				// world.remove(this);
+			}
 	}
 
 	/*
