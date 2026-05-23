@@ -1,5 +1,9 @@
 package com.oop.game.entity.container;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+
+import com.oop.game.item.Item;
 import com.oop.game.world.World;
 
 /**
@@ -8,5 +12,8 @@ import com.oop.game.world.World;
  * @param world	개체가 속한 세계
  * @param x		개체 가로 위치
  * @param y		개체 세로 위치
+ * @param initialItem	처음 들어있는 아이템
  */
-class Chest(world: World, x: Float, y: Float): Container(world, x, y, 24.0f, 25.0f, "chest.png");
+class Chest(world: World, x: Float, y: Float, initialItem: Item? = null): Container(world, x, y, 24.0f, 25.0f, "chest.png", initialItem) {
+	override protected val emptyTexture = Texture(Gdx.files.internal("empty_chest.png"));
+}

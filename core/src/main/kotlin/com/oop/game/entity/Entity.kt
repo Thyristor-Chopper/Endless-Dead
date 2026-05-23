@@ -2,7 +2,7 @@ package com.oop.game.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle
 
 import com.oop.game.Position;
@@ -48,7 +48,7 @@ import kotlin.math.sqrt;
  * @param texture	아이템 텍스처(없을 수도 있음)
  */
 abstract class Entity(val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) {
-	private val texture: Texture?;
+	protected val texture: Texture?;
 	
 	init {
 		val texturePath = texture;

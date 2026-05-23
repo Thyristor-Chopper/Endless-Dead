@@ -11,6 +11,8 @@ import com.oop.game.entity.Player;
 import com.oop.game.entity.container.Building;
 import com.oop.game.entity.container.Chest;
 import com.oop.game.item.Item;
+import com.oop.game.item.MachineGun;
+import com.oop.game.item.Shotgun;
 import com.oop.game.ZombieSpawner;
 
 import kotlin.math.floor
@@ -94,12 +96,16 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
     init {
         add(player);
 		for(i in 0 until Random.nextInt(20) + 30) {  // 30~50개의 건물과 상자를 무작위로 추가
-			val width = Random.nextInt(this.width.toInt()).toFloat();
-			val height = Random.nextInt(this.height.toInt()).toFloat();
+			val x = Random.nextInt(this.width.toInt()).toFloat();
+			val y = Random.nextInt(this.height.toInt()).toFloat();
+			val item: Item = when(Random.nextInt(2)) {  // 들어있을 아이템
+				0		-> MachineGun(this)
+				else	-> Shotgun(this)
+			};
 			if(Random.nextInt(2) == 1)
-				add(Building(this, width, height));
+				add(Building(this, x, y, item));
 			else
-				add(Chest(this, width, height));
+				add(Chest(this, x, y, item));
 		}
     }
 

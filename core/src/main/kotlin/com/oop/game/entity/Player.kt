@@ -68,9 +68,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			
 			override fun scrolled(amountX: Float, amountY: Float): Boolean = false;
 		});
-		
-		// 예시
-		addItemToInventory(com.oop.game.item.ShotGun(world));
 	}
 
     override fun update(delta: Float) {
