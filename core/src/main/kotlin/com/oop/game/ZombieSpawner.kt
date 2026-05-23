@@ -33,8 +33,8 @@ class ZombieSpawner(val world: World, val spawnInterval: Float = 3f) {
         val rand = kotlin.random.Random.nextInt(100)
         val newZombie = when {
             rand < 60 	-> WeakZombie(world, randomX, randomY, world.player, angle = 10f)		// 60% 확률
-            rand < 90	-> NormalZombie(world, randomX, randomY, world.player, angle = 10f)		// 30% 확률
-            else		-> StrongZombie(world, randomX, randomY, world.player, angle = 10f)		// 10% 확률
+            rand < 90	-> NormalZombie(world, randomX, randomY, world.player, angle = 10f)	// 30% 확률
+            else		-> StrongZombie(world, randomX, randomY, world.player, angle = 10f)	// 10% 확률
         }
 
         world.add(newZombie)
