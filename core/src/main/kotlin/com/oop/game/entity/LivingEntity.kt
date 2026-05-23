@@ -22,7 +22,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		private set(value) {
 			if(value < 0.0f) field = 0.0f;
 			else field = value;
-		}
+		};
 
 	open fun takeDamage(damage: Int, duration: Float = 0f) {
 		// 무적 시간이 다 끝났을 때만 피격당함

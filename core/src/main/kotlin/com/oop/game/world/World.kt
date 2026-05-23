@@ -73,7 +73,7 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
     // private 으로 감춘 이유: 외부가 직접 add/remove 하면
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. add(), remove() 라는 공식 창구만 허용.
     //   (5주차에서 배운 캡슐화의 실제 사례)
-    private val gameObjects = mutableListOf<Entity>()
+    private val entities = mutableListOf<Entity>()
 
     init {
         // 카메라를 '왼쪽 아래 = (0,0), 오른쪽 위 = (screenWidth, screenHeight)' 로 설정.
@@ -87,12 +87,12 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
 
     /** 객체를 월드에 등록 — 이후부터 자동으로 update/draw 된다. */
     fun add(obj: Entity) {
-        gameObjects.add(obj)
+        entities.add(obj)
     }
 
     /** 특정 객체를 수동 제거. 보통은 isAlive()=false 후 removeDead() 로 정리. */
     fun remove(obj: Entity) {
-        gameObjects.remove(obj)
+        entities.remove(obj)
     }
 
     /**
@@ -102,7 +102,7 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
      *   외부가 받은 리스트에 add/remove 하면 내부 상태가 망가진다.
      *   복사본을 줘서 '훔쳐보기만 하고 건드리진 못하게' 한다.
      */
-    fun getEntities(): List<Entity> = gameObjects.toList()
+    fun getEntities(): List<Entity> = entities.toList();
 
     // ────────────────────────────────────────────────────────
     //  매 프레임 로직
@@ -118,12 +118,12 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
      *   gameObjects.forEach { it.update(delta) } 처럼 줄일 수 있다.
      */
     protected fun updateAllObjects(delta: Float) {
-        for(obj in gameObjects)
+        for(obj in entities)
             obj.update(delta)
     }
 	
 	protected fun updateAllItems(delta: Float) {
-		for(entity in gameObjects) {
+		for(entity in entities) {
 			if(entity is InventoryEntity)
 				for(item in entity.inventory)
 					item.update(delta);
@@ -147,11 +147,11 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
      */
     protected fun removeDead() {
 		val toRemove = mutableListOf<Entity>()
-        for(obj in gameObjects)
+        for(obj in entities)
             if((obj is LivingEntity && !obj.isAlive()) || (obj is Bullet && !obj.isAlive))
                 toRemove.add(obj)
         for(obj in toRemove)
-            gameObjects.remove(obj)
+            entities.remove(obj)
     }
 
     /**
@@ -227,7 +227,7 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
      *   카메라가 움직이든 말든 신경 쓸 필요가 없다.
      */
     private fun drawAllObjects() {
-        for (obj in gameObjects) {
+        for(obj in entities) {
             val originalX = obj.x
             val originalY = obj.y
             obj.x -= offsetX
@@ -297,7 +297,7 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
     override fun dispose() {
         batch.dispose()
         font.dispose()
-        for(obj in gameObjects)
+        for(obj in entities)
             obj.dispose()
     }
 }
