@@ -11,7 +11,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	// 최대hp,  initialhp: 객체 만들 떄 지정할 체력
 	open val maxHp: Int = initialHp
 	// HP
-	var hp: Int = initialHp
+	var hp = initialHp
 		private set(value) {
 			if(value > maxHp) field = maxHp
 			else if(value < 0) field = 0
@@ -23,17 +23,35 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 			if(value < 0.0f) field = 0.0f;
 			else field = value;
 		};
+	var latestAttacker: Entity? = null;
 
-	open fun takeDamage(damage: Int, duration: Float = 0f) {
+	open fun takeDamage(damage: Int, duration: Float = 0f, attacker: Entity? = null) {
 		// 무적 시간이 다 끝났을 때만 피격당함
 		if (invincibilityTimer == 0f) {
-			if(damage > 0) hp -= damage
+			if(damage > 0) hp -= damage;
+			if(hp == 0) {
+				onDeath();
+				if(attacker != null) {
+					onDeath(attacker);
+					attacker.onKill(this);
+				}
+			}
 			invincibilityTimer = duration  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
 			onDamage();
+			if(attacker != null) {
+				onDamage(attacker);
+				latestAttacker = attacker;
+			}
 		}
 	}
 	
 	open fun onDamage() {}
+	
+	open fun onDamage(attacker: Entity) {}
+	
+	open fun onDeath() {}
+	
+	open fun onDeath(killer: Entity) {}
 	
 	open fun heal(amount: Int) {
 		hp += amount;

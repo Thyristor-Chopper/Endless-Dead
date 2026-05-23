@@ -38,7 +38,7 @@ class Bullet(world: World, val shooter: Entity, val target: Position, private va
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지 주고 총알은 소멸.
 		for(entity in world.getEntities())
 			if(entity !== this && entity !== world.player && !(entity is Bullet) && entity is LivingEntity && collidesWith(entity)) {
-				entity.takeDamage(damage, 1.0f);  // 무적 시간이 필요하면 추가...
+				entity.takeDamage(damage, 1.0f, shooter);  // 무적 시간이 필요하면 추가...
 				if(shooter === world.player)
 					ScoreManager.addScore(10);
 				if(!penetrable) isAlive = false;

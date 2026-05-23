@@ -127,4 +127,7 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
 		if(texture == null) return;
 		texture.dispose();
 	}
+	
+	// 개체가 다른 누군가를 처치했을 때 콜백 함수
+	open fun onKill(victim: LivingEntity) {}
 }

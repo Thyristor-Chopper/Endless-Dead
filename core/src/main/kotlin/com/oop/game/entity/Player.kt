@@ -9,6 +9,7 @@ import com.oop.game.GameState;
 import com.oop.game.InputHandler
 import com.oop.game.Position;
 import com.oop.game.ScoreManager;
+import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Container;
 import com.oop.game.item.Gun;
 import com.oop.game.item.Item;
@@ -37,6 +38,18 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		val PLAYER_HEIGHT = 30f;
 	}
 	
+	enum class TitleInfoType {
+		OPENED,
+		KILLED;
+		
+		companion object {
+			private val enumEntries = TitleInfoType.entries;
+			val size = enumEntries.size;
+		
+			fun byIndex(index: Int) = enumEntries[index];
+		}
+	}
+	
 	override val inventory = mutableListOf<Item>();
 	override var selectedItemIndex: Int? = null;
     private val speed = 200f
@@ -50,6 +63,16 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		};
 	private val MAX_HEAL_COOLDOWN = 30 * world.game.fps;
 	private var healCooldown = MAX_HEAL_COOLDOWN;
+	private var openedContainerCount = 0;
+	private val MAX_TITLE_INFO_COOLDOWN = 3 * world.game.fps;
+	private var titleInfoCooldown = 0;
+	private var currentTitleInfo = 0
+		set(value) {
+			if(value >= TitleInfoType.size) field = 0;
+			else if(value < 0) field = TitleInfoType.size - 1;
+			else field = value;
+		};
+	private var killedZombieCount = 0;
 	
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
@@ -129,6 +152,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 					} else {
 						world.drawSubtitles("Took ${entity.containedItem!!.name} from the container");
 						entity.takeItem(this, true);
+						if(!entity.flag)
+							openedContainerCount++;
 					}
 				}
 			}
@@ -169,9 +194,27 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		} else {
 			healCooldown--;
 		}
+		
+		if(titleInfoCooldown == 0) {
+			currentTitleInfo++;
+			titleInfoCooldown = MAX_TITLE_INFO_COOLDOWN;
+		} else {
+			titleInfoCooldown--;
+		}
+		val windowTitle: String;
+			when(TitleInfoType.byIndex(currentTitleInfo)) {
+			TitleInfoType.OPENED	-> windowTitle = "${world.game.title} - 연 상자: ${openedContainerCount}개";
+			TitleInfoType.KILLED	-> windowTitle = "${world.game.title} - 공격한 좀비 수: ${killedZombieCount}";
+		}
+		Gdx.graphics.setTitle(windowTitle);
     }
 	
 	override fun onDamage() {
 		healCooldown = MAX_HEAL_COOLDOWN;
+	}
+	
+	override fun onKill(victim: LivingEntity) {
+		if(victim is Zombie)
+			killedZombieCount++;
 	}
 }
