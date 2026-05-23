@@ -1,5 +1,6 @@
 package com.oop.game.entity;
 
+import com.oop.game.entity.Player;
 import com.oop.game.world.World;
 
 import java.lang.Math
@@ -40,8 +41,8 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
     }
 
     private fun distanceToPlayer(player: Player = world.player): Float {
-        val dx = x - player.x;
-        val dy = y - player.y;
+        val dx = x - player.x + Player.PLAYER_WIDTH;
+        val dy = y - player.y + Player.PLAYER_HEIGHT;
         return sqrt(dx * dx + dy * dy);
     }
 
