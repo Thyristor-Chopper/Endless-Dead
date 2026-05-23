@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.utils.Align;
 
 import com.oop.game.GameState;
 import com.oop.game.InputHandler;
@@ -240,7 +241,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         // 2) HP를 시각적 미터기로 표시
 		drawTextOnScreen(
             text = Utils.progressBar(player.hp.toFloat() / player.maxHp.toFloat()),
-            x = 70.0f,
+            x = 90.0f,
             y = screenHeight - 10f,
             color = Color.YELLOW,
             scale = 1.0f,
@@ -263,20 +264,24 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		if(holding != null && holding is Gun)
 			drawTextOnScreen(
 				text = Utils.progressBar(holding.ammo.toFloat() / holding.maxAmmo.toFloat()),
-				x = screenWidth - 180.0f,
+				x = screenWidth - 190.0f,
 				y = 20.0f,
 				color = Color.SKY,
 				scale = 1.0f,
+				width = 180.0f,
+				align = Align.right,
 				fixedWidthChars = "${Utils.PROGRESS_BAR_FILLED}${Utils.PROGRESS_BAR_EMPTY}"
 			);
 		
 		// 5) 점수
 		drawTextOnScreen(
             text = "Score: ${ScoreManager.score}",
-            x = screenWidth - 120.0f,
+            x = screenWidth - 130.0f,
             y = screenHeight - 10f,
             color = Color.LIME,
             scale = 1.2f,
+			width = 120.0f,
+			align = Align.right,
 			fixedWidthChars = "#-"
         );
     }

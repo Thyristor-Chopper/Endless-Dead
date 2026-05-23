@@ -1,8 +1,8 @@
 package com.oop.game;
 
 object Utils {
-	val PROGRESS_BAR_FILLED = '#';
-	val PROGRESS_BAR_EMPTY = '-';
+	val PROGRESS_BAR_FILLED = '=';
+	val PROGRESS_BAR_EMPTY = ' ';
 	
 	/**
 	 * 미터기를 그린다.

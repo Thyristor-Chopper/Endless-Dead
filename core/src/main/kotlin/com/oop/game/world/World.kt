@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.utils.Align;
 
 import com.oop.game.GameState;
 import com.oop.game.ZombieGame;
@@ -266,6 +267,8 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
         y: Float,
         color: Color = Color.WHITE,
         scale: Float = 1f,
+		width: Float? = null,  // 오른쪽이나 가운데 정렬 시 필요
+		align: Int? = null,  // 글자 정렬(없으면 왼쪽 정렬)
 		fixedWidthChars: String = "",  // null이 아닌 이유는 실제로 빈 문자열이면 고정폭이 없다는 뜻
 		skipBatch: Boolean = false
     ) {
@@ -274,7 +277,12 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
         font.color = color
         font.data.setScale(scale)
         if(!skipBatch) batch.begin();
-        font.draw(batch, text, x, y)
+		val boxWidth: Float? = width;
+		val textAlign: Int? = align;
+		if(boxWidth != null && textAlign != null)
+			font.draw(batch, text, x, y, boxWidth, textAlign, false);
+		else
+			font.draw(batch, text, x, y);
         if(!skipBatch) batch.end();
     }
 
@@ -293,11 +301,14 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
         y: Float,
         color: Color = Color.WHITE,
         scale: Float = 1f,
+		width: Float? = null,  // 오른쪽이나 가운데 정렬 시 필요
+		align: Int? = null,  // 글자 정렬
+		fixedWidthChars: String = "",  // null이 아닌 이유는 실제로 빈 문자열이면 고정폭이 없다는 뜻
 		skipBatch: Boolean = false
     ) {
         val screenX = x - offsetX
         val screenY = y - offsetY
-        drawTextOnScreen(text, screenX, screenY, color, scale, skipBatch=skipBatch);
+        drawTextOnScreen(text, screenX, screenY, color, scale, width, align, fixedWidthChars, skipBatch);
     }
 
     // ────────────────────────────────────────────────────────
