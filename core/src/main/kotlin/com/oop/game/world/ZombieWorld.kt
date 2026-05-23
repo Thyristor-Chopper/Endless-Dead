@@ -244,7 +244,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
             y = screenHeight - 10f,
             color = Color.YELLOW,
             scale = 1.0f,
-			fixedWidthChars = "#-"
+			fixedWidthChars = "${Utils.PROGRESS_BAR_FILLED}${Utils.PROGRESS_BAR_EMPTY}"
         );
 		
 		// 3) 현재 플레이어가 들고 있는 아이템
@@ -267,7 +267,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 				y = 20.0f,
 				color = Color.SKY,
 				scale = 1.0f,
-				fixedWidthChars = "#-"
+				fixedWidthChars = "${Utils.PROGRESS_BAR_FILLED}${Utils.PROGRESS_BAR_EMPTY}"
 			);
 		
 		// 5) 점수
