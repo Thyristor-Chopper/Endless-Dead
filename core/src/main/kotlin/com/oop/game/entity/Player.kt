@@ -150,7 +150,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 					takeDamage(zombie.damage, 1.0f);
 				}
 		
-		// 생존 시간 보너스.
+		// 생존 시간 보너스
 		if(aliveBonusCooldown == 0) {
 			ScoreManager.addScore(1);
 			aliveBonusCooldown = ALIVE_BONUS_COOLDOWN_MAX;
