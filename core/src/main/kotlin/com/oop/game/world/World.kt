@@ -94,13 +94,6 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
     fun remove(obj: Entity) {
         gameObjects.remove(obj)
     }
-	
-	/**
-	 * 월드 내 개체 목록 반환 (읽기 전용!)
-	 */
-	fun getEntities(): List<Entity> {
-		return gameObjects.toList();
-	}
 
     /**
      * 현재 등록된 객체 목록의 '읽기용 복사본'.
@@ -109,7 +102,7 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
      *   외부가 받은 리스트에 add/remove 하면 내부 상태가 망가진다.
      *   복사본을 줘서 '훔쳐보기만 하고 건드리진 못하게' 한다.
      */
-    fun getObjects(): List<Entity> = gameObjects.toList()
+    fun getEntities(): List<Entity> = gameObjects.toList()
 
     // ────────────────────────────────────────────────────────
     //  매 프레임 로직

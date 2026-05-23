@@ -152,7 +152,6 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
             zombies.remove(dead)
         }
 		
-        //state = GameState.GAME_OVER
         if (!player.isAlive()) {
             state = GameState.GAME_OVER // 피가 0 이하가 되면 진짜 게임 오버!
         }

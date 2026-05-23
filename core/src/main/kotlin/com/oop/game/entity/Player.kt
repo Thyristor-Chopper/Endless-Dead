@@ -31,6 +31,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
     private val speed = 200f
 	
 	companion object {
+		// 상수
 		val PLAYER_WIDTH = 30f;
 		val PLAYER_HEIGHT = 30f;
 	}
