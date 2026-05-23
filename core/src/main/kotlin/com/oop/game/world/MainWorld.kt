@@ -9,8 +9,8 @@ import com.oop.game.GameState;
 import com.oop.game.InputHandler;
 import com.oop.game.Utils;
 import com.oop.game.ZombieSpawner;
-import com.oop.game.entity.Zombie;
 import com.oop.game.entity.Player;
+import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Building;
 import com.oop.game.entity.container.Chest;
 import com.oop.game.item.Item;
@@ -66,7 +66,8 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
     override var state = GameState.IN_PLAY
 		protected set;
     // 좀비들만 따로 모아두는 관리용 리스트
-    private val zombies = mutableListOf<Zombie>()
+    private val zombies: List<Zombie>
+		get() = getEntities().filterIsInstance<Zombie>();
     private val zombieSpawner = ZombieSpawner(this, 3.0f)
     // ── 체스판 배경 설정 (drawBackground() 에서 사용) ──
     //   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
@@ -126,9 +127,7 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
         offsetY = offsetY.coerceIn(0f, height - screenHeight)
 
         // ── 1) 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
-        val newZombie = zombieSpawner.update(delta)
-        if (newZombie != null)
-            zombies.add(newZombie)
+        zombieSpawner.update(delta);
 
         // ── 2) 상호작용 결정 — 누가 누구와 부딪혀 어떻게 되는지 ──
         //   collidesWith 는 GameObject 의 메서드 → 모든 게임 객체가 자동으로 가짐.
@@ -136,15 +135,9 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
         //   (총알 게임이라면 여기서 bullet.kill(), enemy.kill() 같은 처리)
 		
 		// 좀비 처리
-        val deadZombies = mutableListOf<Zombie>();
-        for(zombie in zombies) {
+        for(zombie in zombies)
             if(player.collidesWith(zombie))
                 player.takeDamage(zombie.damage, 1.0f);
-            if(!zombie.isAlive())
-                deadZombies.add(zombie);
-        }
-        for(dead in deadZombies)
-            zombies.remove(dead);
 		
         if(!player.isAlive())
             state = GameState.GAME_OVER;  // 피가 0 이하가 되면 진짜 게임 오버!
