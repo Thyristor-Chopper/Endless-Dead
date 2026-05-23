@@ -40,6 +40,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
 		Gdx.input.setInputProcessor(object : InputProcessor {
+			// 클릭 감지 - 누르면 총을 쏜다
 			override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
 				if(button != Input.Buttons.LEFT) return false;
 				
@@ -52,6 +53,17 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 				return false;
 			}
 			
+			// 휠 감지 - 선택된 아이템 전환
+			override fun scrolled(amountX: Float, amountY: Float): Boolean {
+				if(amountY != 0.0f) {
+					if(amountY > 0.0f) selectNextItem();
+					else if(amountY < 0.0f) selectPreviousItem();
+					return true;
+				}
+				return false;
+			}
+			
+			// 나머지 (스텁)
 			override fun keyDown(code: Int): Boolean = false;
 			
 			override fun keyUp(code: Int): Boolean = false;
@@ -65,21 +77,13 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean = false;
 			
 			override fun mouseMoved(x: Int, y: Int): Boolean = false;
-			
-			override fun scrolled(amountX: Float, amountY: Float): Boolean {
-				if(amountY != 0.0f) {
-					if(amountY > 0.0f) selectNextItem();
-					else if(amountY < 0.0f) selectPreviousItem();
-					return true;
-				}
-				return false;
-			}
 		});
 	}
 
     override fun update(delta: Float) {
         super<LivingEntity>.update(delta)
 		
+		// 이동
         if(InputHandler.isKeyPressed(InputHandler.LEFT) || InputHandler.isKeyPressed(InputHandler.A)) {
 			x -= speed * delta;
 			world.offsetX = x - world.screenWidth / 2.0f + width / 2.0f;
