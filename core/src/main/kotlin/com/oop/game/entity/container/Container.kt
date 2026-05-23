@@ -10,6 +10,8 @@ import com.oop.game.world.World;
  */
 abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: String) : Entity(world, x, y, width, height, texture) {
 	open var containedItem: Item? = null;  // 들어있는 아이템
+	val isEmpty: Boolean
+		get() = (containedItem == null);
 	
 	/**
 	 * 아이템 가져가기

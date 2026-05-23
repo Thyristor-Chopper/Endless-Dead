@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 
 import com.oop.game.InputHandler
 import com.oop.game.Position;
+import com.oop.game.entity.container.Container;
 import com.oop.game.item.Gun;
 import com.oop.game.item.Item;
 import com.oop.game.world.World;
@@ -91,6 +92,16 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			y -= speed * delta;
 			world.offsetY = y - world.screenHeight / 2.0f + height / 2.0f;
 		}
+		
+		// 아이템 가져가기
+		if(InputHandler.isKeyPressed(InputHandler.SPACE))
+			for(entity in world.getEntities()) {
+				if(!(entity is Container)) continue;
+				if(collidesWith(entity) && !entity.isEmpty) {
+					entity.takeItem(this);
+					break;  // 한 번에 한 아이템씩만 가져가게.
+				}
+			}
 
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width - width)
