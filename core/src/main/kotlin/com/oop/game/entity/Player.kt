@@ -66,7 +66,14 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			
 			override fun mouseMoved(x: Int, y: Int): Boolean = false;
 			
-			override fun scrolled(amountX: Float, amountY: Float): Boolean = false;
+			override fun scrolled(amountX: Float, amountY: Float): Boolean {
+				if(amountY != 0.0f) {
+					if(amountY > 0.0f) selectNextItem();
+					else if(amountY < 0.0f) selectPreviousItem();
+					return true;
+				}
+				return false;
+			}
 		});
 	}
 
