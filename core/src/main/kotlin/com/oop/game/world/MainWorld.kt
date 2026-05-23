@@ -10,6 +10,7 @@ import com.oop.game.entity.Zombie;
 import com.oop.game.entity.Player;
 import com.oop.game.entity.container.Building;
 import com.oop.game.entity.container.Chest;
+import com.oop.game.item.Item;
 import com.oop.game.ZombieSpawner;
 
 import kotlin.math.floor
@@ -245,6 +246,17 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
             color = Color.CYAN,
             scale = 1.5f
         )
+		
+		// 3) 현재 플레이어가 들고 있는 아이템
+		val holding: Item? = player.holdingItem;
+		if(holding != null)
+			drawTextOnScreen(
+				text = holding.name,
+				x = 10.0f,
+				y = 10.0f,
+				color = Color.WHITE,
+				scale = 1.0f,
+			);
     }
 
     /** 게임 오버 시 화면 중앙에 띄우는 안내 메시지. */
