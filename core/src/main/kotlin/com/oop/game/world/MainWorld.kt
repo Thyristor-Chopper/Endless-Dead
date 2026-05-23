@@ -13,6 +13,7 @@ import com.oop.game.entity.container.Chest;
 import com.oop.game.ZombieSpawner;
 
 import kotlin.math.floor
+import kotlin.random.Random;
 
 /**
  * ════════════════════════════════════════════════════════════
@@ -69,9 +70,6 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
     // 플레이어 — 월드 중앙 하단에서 시작.
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
     override val player = Player(this, x = width / 2 - Player.PLAYER_WIDTH / 2, y = 50f);
-	// 예제 건물과 상자
-	private val building = Building(this, width / 2 - 20f, 50f);
-	private val chest = Chest(this, width / 2 - 30f, 90f);
     // 현재 게임 상태 — 입력/충돌에 따라 IN_PLAY ↔ GAME_OVER 로 전환된다.
     private var state = GameState.IN_PLAY
     // 좀비들만 따로 모아두는 관리용 리스트
@@ -93,9 +91,15 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
      *   이렇게 등록해야 update / draw 루프에 포함된다.
      */
     init {
-        add(player)
-		add(building);
-		add(chest);
+        add(player);
+		for(i in 0 until Random.nextInt(20) + 10) {  // 10~30개의 건물과 상자를 무작위로 추가
+			val width = Random.nextInt(this.width.toInt()).toFloat();
+			val height = Random.nextInt(this.height.toInt()).toFloat();
+			if(Random.nextInt(2) == 1)
+				add(Building(this, width, height));
+			else
+				add(Chest(this, width, height));
+		}
     }
 
     /**
