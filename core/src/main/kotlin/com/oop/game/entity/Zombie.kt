@@ -25,7 +25,6 @@ import kotlin.math.sqrt;
  * @param minY
  * @param maxY
  */
-
 open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, val damage: Int, private val angle: Float, private val player: Player, private val speed: Float = 100f, texture: String = "zombie_front.png") : LivingEntity(world, x, y, width, height, texture, hp) {
     private var radian : Float = 0f
     private var direction = 1f  // 현재 진행 방향 — +1 이면 오른쪽, -1 이면 왼쪽. var 로 선언한 이유: 경계에서 반대로 뒤집혀야 하므로 값이 변함.
@@ -36,7 +35,7 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
     }
 
     override fun update(delta: Float) {
-        super.update(delta) // 부모(LivingGameObject)의 무적 타이머 갱신 로직 실행
+        super.update(delta)  // 부모(LivingGameObject)의 무적 타이머 갱신 로직 실행
 
         val dx = (world.player.x + Player.PLAYER_WIDTH / 2.0f - width / 2.0f) - x;
         val dy = (world.player.y + Player.PLAYER_HEIGHT / 2.0f - height / 2.0f) - y;
