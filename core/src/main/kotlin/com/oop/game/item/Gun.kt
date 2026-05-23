@@ -15,11 +15,7 @@ import com.oop.game.world.World;
  * @param speed			총알 속도
  * @param fireInterval	공격 속도
  */
-abstract class Gun(world: World, id: String, name: String, damage: Int, speed: Float, penetreble: Boolean, fireCooldownInterval: Float, private val maxAmmo: Int, initialAmmo: Int) : Item(world, id, name), Fireable {
-	override val bulletDamage = damage
-	override val bulletSpeed = speed
-	override val bulletPenetrable = penetreble;
-	override val fireInterval = fireCooldownInterval;
+abstract class Gun(world: World, id: String, name: String, override val bulletDamage: Int, override val bulletSpeed: Float, override val bulletPenetrable: Boolean, override val fireInterval: Float, private val maxAmmo: Int, initialAmmo: Int) : Item(world, id, name), Fireable {
 	private var fireCooldown = 0f
 		set(value) {
 			if(value < 0.0f) field = 0.0f;
