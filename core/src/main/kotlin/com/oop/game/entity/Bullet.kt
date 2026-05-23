@@ -9,14 +9,15 @@ import kotlin.math.sqrt;
 /**
  * 총알 개체
  *
- * @param world		총알이 있는 세계
- * @param x 		처음 위치
- * @param y 		처음 위치
- * @param target	조준 위치
- * @param speed 	총알 속도
- * @param damage	총알이 주는 피해량
+ * @param world			총알이 있는 세계
+ * @param x 			처음 위치
+ * @param y 			처음 위치
+ * @param target		조준 위치
+ * @param speed 		총알 속도
+ * @param damage		총알이 주는 피해량
+ * @param penetrable	총알 관통 가능 여부
  */
-class Bullet(world: World, x: Float, y: Float, val target: Position, private val speed: Float, val damage: Int) : Entity(world, x, y, 16.0f, 16.0f, "bullet.png") {
+class Bullet(world: World, x: Float, y: Float, val target: Position, private val speed: Float, val damage: Int, val penetrable: Boolean = false) : Entity(world, x, y, 16.0f, 16.0f, "bullet.png") {
     var isAlive = true
 		private set;
     private val dx = target.x - x;
@@ -37,7 +38,7 @@ class Bullet(world: World, x: Float, y: Float, val target: Position, private val
 		for(entity in world.getEntities())
 			if(entity !== this && entity != world.player && !(entity is Bullet) && entity is LivingEntity && collidesWith(entity)) {
 				entity.takeDamage(damage);  // 무적 시간이 필요하면 추가...
-				// world.remove(this);
+				if(!penetrable) isAlive = false;
 			}
 	}
 
