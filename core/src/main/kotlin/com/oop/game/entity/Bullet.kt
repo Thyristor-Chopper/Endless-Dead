@@ -41,15 +41,4 @@ class Bullet(world: World, x: Float, y: Float, val target: Position, private val
 				if(!penetrable) isAlive = false;
 			}
 	}
-
-	/*
-	fun bulletTarget(
-		bullet: Bullet,
-		target: Position
-	): Float {
-		val dx = target.x - bullet.x
-		val dy = target.y - bullet.y
-		return sqrt(dx * dx + dy * dy)
-	}
-	*/
 }

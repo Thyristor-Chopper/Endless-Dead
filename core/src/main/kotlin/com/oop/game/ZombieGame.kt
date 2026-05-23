@@ -2,7 +2,7 @@ package com.oop.game
 
 import com.badlogic.gdx.Game
 
-import com.oop.game.world.MainWorld;
+import com.oop.game.world.ZombieWorld;
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -31,7 +31,7 @@ import com.oop.game.world.MainWorld;
  *   ▸ worldWidth  / worldHeight    : 스크롤 가능한 월드 크기
  *   ▸ create() 안에서 setScreen 에 넘기는 Screen 을 자기 Screen 으로 교체
  */
-class OopGame : Game() {
+class ZombieGame : Game() {
 	val title = "좀비 파밍";
 	val fps = 60;
     // 화면(창) 크기 — DesktopLauncher 가 창 크기 설정에도 이 값을 읽어간다.
@@ -57,13 +57,13 @@ class OopGame : Game() {
      *  GameWorld 가 LibGDX 의 Screen 인터페이스를 상속하므로 setScreen 인자로 넘길 수 있다.
      */
     override fun create() {
-        val firstWorld = MainWorld(
+        val zombieWorld = ZombieWorld(
 			this,
             screenWidth = screenWidth.toFloat(),
             screenHeight = screenHeight.toFloat(),
             width = worldWidth.toFloat(),
             height = worldHeight.toFloat()
-        )
-        setScreen(firstWorld)  // 부모 Game 이 제공하는 메서드
+        );
+        setScreen(zombieWorld);  // 부모 Game 이 제공하는 메서드
     }
 }

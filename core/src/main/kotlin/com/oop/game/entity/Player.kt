@@ -7,10 +7,12 @@ import com.badlogic.gdx.InputProcessor;
 import com.oop.game.GameState;
 import com.oop.game.InputHandler
 import com.oop.game.Position;
+import com.oop.game.ScoreManager;
 import com.oop.game.entity.container.Container;
 import com.oop.game.item.Gun;
 import com.oop.game.item.Item;
 import com.oop.game.world.World;
+import com.oop.game.world.ZombieWorld;
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -38,6 +40,13 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	override var selectedItemIndex: Int? = null;
     private val speed = 200f
 	private var mouseDown: Boolean = false;
+	private var ALIVE_BONUS_COOLDOWN_MAX: Int = world.game.fps;
+	private var aliveBonusCooldown: Int = ALIVE_BONUS_COOLDOWN_MAX
+		set(value) {
+			if(value < 0) field = 0;
+			else if(value > ALIVE_BONUS_COOLDOWN_MAX) field = ALIVE_BONUS_COOLDOWN_MAX;
+			else field = value;
+		};
 	
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
@@ -121,5 +130,22 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		if(holding != null && holding is Gun)
 			if(holding.ammo == 0)
 				removeItemFromInventory(holding);
+		
+		// 좀비 처리
+		if(world is ZombieWorld)
+			for(zombie in world.zombies)
+				if(collidesWith(zombie)) {
+					if(invincibilityTimer == 0.0f)
+						ScoreManager.subtractScore(5);
+					takeDamage(zombie.damage, 1.0f);
+				}
+		
+		// 생존 시간 보너스.
+		if(aliveBonusCooldown == 0) {
+			ScoreManager.addScore(1);
+			aliveBonusCooldown = ALIVE_BONUS_COOLDOWN_MAX;
+		} else {
+			aliveBonusCooldown--;
+		}
     }
 }

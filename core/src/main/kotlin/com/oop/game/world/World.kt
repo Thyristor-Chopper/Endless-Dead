@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 import com.oop.game.GameState;
+import com.oop.game.ZombieGame;
 import com.oop.game.entity.Bullet;
 import com.oop.game.entity.Entity;
 import com.oop.game.entity.InventoryEntity;
@@ -58,7 +59,7 @@ import com.oop.game.item.Item;
  * @param width        월드 전체 너비 (기본값: 화면과 동일 = 스크롤 없음)
  * @param height       월드 전체 높이
  */
-abstract class World(val screenWidth: Float, val screenHeight: Float, val width: Float = screenWidth, val height: Float = screenHeight) : ScreenAdapter() {
+abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHeight: Float, val width: Float = screenWidth, val height: Float = screenHeight) : ScreenAdapter() {
 	abstract var state: GameState
 		protected set;
 	abstract val player: Player;
@@ -76,7 +77,7 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
     // private 으로 감춘 이유: 외부가 직접 add/remove 하면
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. add(), remove() 라는 공식 창구만 허용.
     //   (5주차에서 배운 캡슐화의 실제 사례)
-    private val entities = mutableListOf<Entity>()
+    private val entities = mutableListOf<Entity>();
 
     init {
         // 카메라를 '왼쪽 아래 = (0,0), 오른쪽 위 = (screenWidth, screenHeight)' 로 설정.
