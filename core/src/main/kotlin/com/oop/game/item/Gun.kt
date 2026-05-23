@@ -43,7 +43,7 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	override fun fire(target: Position, shooter: Entity): Boolean {
 		if(!canFire) return false;
 		
-		val bullet = Bullet(world, shooter.x, shooter.y, target, bulletSpeed, bulletDamage, penetrable);
+		val bullet = Bullet(world, shooter, target, bulletSpeed, bulletDamage, penetrable);
 		world.add(bullet);
 		startFireCooldown();
 		ammo--;
