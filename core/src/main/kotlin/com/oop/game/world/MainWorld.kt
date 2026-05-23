@@ -248,7 +248,7 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
 		val holdingIndex: Int? = player.selectedItemIndex;
 		if(holding != null && holdingIndex != null)
 			drawTextOnScreen(
-				text = "${holding.name} (${holdingIndex + 1}/${player.inventory.size})",
+				text = "${holding.name} [${holdingIndex + 1}/${player.inventory.size}]",
 				x = 10.0f,
 				y = 20.0f,
 				color = Color.WHITE,
