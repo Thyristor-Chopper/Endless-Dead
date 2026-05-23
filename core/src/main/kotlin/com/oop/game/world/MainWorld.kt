@@ -239,8 +239,8 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
             text = "*",
             worldX = width / 2,
             worldY = height / 2,
-            color = Color.CYAN,
-            scale = 1.5f
+            color = Color.FOREST,
+            scale = 8.0f
         )
 		
 		// 3) 현재 플레이어가 들고 있는 아이템
