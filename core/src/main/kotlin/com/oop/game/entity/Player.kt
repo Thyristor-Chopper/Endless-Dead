@@ -82,6 +82,18 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			override fun mouseMoved(x: Int, y: Int): Boolean = false;
 		});
 	}
+	
+	private fun takeItemFromContainer(): Boolean {
+		for(entity in world.getEntities()) {
+			if(!(entity is Container)) continue;
+			if(collidesWith(entity) && !entity.isEmpty) {
+				world.drawSubtitles("Took ${entity.containedItem!!.name} from the container");
+				entity.takeItem(this, true);
+				return true;
+			}
+		}
+		return false;
+	}
 
     override fun update(delta: Float) {
         super<LivingEntity>.update(delta)
@@ -112,15 +124,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		}
 		
 		// 아이템 가져가기
-		if(InputHandler.isKeyJustPressed(InputHandler.SPACE))
-			for(entity in world.getEntities()) {
-				if(!(entity is Container)) continue;
-				if(collidesWith(entity) && !entity.isEmpty) {
-					world.drawSubtitles("Took ${entity.containedItem!!.name} from the container");
-					entity.takeItem(this, true);
-					break;  // 한 번에 한 아이템씩만 가져가게.
-				}
-			}
+		if(InputHandler.isKeyJustPressed(InputHandler.SPACE) || InputHandler.isButtonJustPressed(InputHandler.RIGHT_MOUSE))
+			takeItemFromContainer();
 		
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width - width)

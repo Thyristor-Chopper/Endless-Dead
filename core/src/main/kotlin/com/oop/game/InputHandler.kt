@@ -65,4 +65,5 @@ object InputHandler {
     val S = Input.Keys.S
     val D = Input.Keys.D
     val LEFT_MOUSE = Input.Buttons.LEFT;
+    val RIGHT_MOUSE = Input.Buttons.RIGHT;
 }
