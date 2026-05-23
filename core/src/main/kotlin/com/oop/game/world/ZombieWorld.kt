@@ -292,7 +292,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 			);
 		
 		// 5) 들고 있는 아이템이 총인 경우 총의 ammo를 미터기로 표시
-		if(holding != null && holding is Gun && holding.fireInterval > 2.0f) {
+		if(holding != null && holding is Gun && holding.fireInterval > 0.2f) {
 			val cooldown = holding.getRemainingCooldownPercentage();
 			if(cooldown > 0f)
 				drawTextOnScreen(
