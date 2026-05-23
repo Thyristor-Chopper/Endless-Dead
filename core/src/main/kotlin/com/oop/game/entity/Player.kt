@@ -12,6 +12,8 @@ import com.oop.game.item.Gun;
 import com.oop.game.item.Item;
 import com.oop.game.world.World;
 
+import kotlin.concurrent.thread;
+
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  *  플레이어 예제 — player.png 이미지, 화살표 키로 조종.
@@ -31,6 +33,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	override val inventory = mutableListOf<Item>();
 	override var selectedItemIndex: Int? = null;
     private val speed = 200f
+	private var mouseDown: Boolean = false;
 	
 	companion object {
 		// 상수
@@ -41,20 +44,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
 		Gdx.input.setInputProcessor(object : InputProcessor {
-			// 클릭 감지 - 누르면 총을 쏜다
-			override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
-				if(world.state != GameState.IN_PLAY) return false;
-				if(button != Input.Buttons.LEFT) return false;
-				
-				val holding = holdingItem;
-				if(holding is Gun) {
-					holding.fire(Position(x.toFloat() + world.offsetX, world.screenHeight - y.toFloat() + world.offsetY), this@Player);
-					return true;
-				}
-				
-				return false;
-			}
-			
 			// 휠 감지 - 선택된 아이템 전환
 			override fun scrolled(amountX: Float, amountY: Float): Boolean {
 				if(world.state != GameState.IN_PLAY) return false;
@@ -69,13 +58,15 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			}
 			
 			// 나머지 (스텁)
+			override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
+			
+			override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
+			
 			override fun keyDown(code: Int): Boolean = false;
 			
 			override fun keyUp(code: Int): Boolean = false;
 			
 			override fun keyTyped(char: Char): Boolean = false;
-			
-			override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
 			
 			override fun touchCancelled(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
 			
@@ -104,6 +95,13 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
         if(InputHandler.isKeyPressed(InputHandler.DOWN) || InputHandler.isKeyPressed(InputHandler.S)) {
 			y -= speed * delta;
 			world.offsetY = y - world.screenHeight / 2.0f + height / 2.0f;
+		}
+		
+		// 총 쏘기
+		if(InputHandler.isButtonPressed(InputHandler.LEFT_MOUSE)) {
+			val holding = holdingItem;
+			if(holding is Gun)
+				holding.fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), this@Player);
 		}
 		
 		// 아이템 가져가기

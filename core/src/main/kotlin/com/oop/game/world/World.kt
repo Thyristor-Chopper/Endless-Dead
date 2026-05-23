@@ -121,7 +121,7 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
      *   gameObjects.forEach { it.update(delta) } 처럼 줄일 수 있다.
      */
     protected fun updateAllObjects(delta: Float) {
-        for(obj in entities)
+        for(obj in entities.toList())
             obj.update(delta)
     }
 	
