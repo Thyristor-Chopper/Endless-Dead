@@ -81,6 +81,7 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
     private val entities = mutableListOf<Entity>();
 	private var subtitlesTimer = 0;
 	private var subtitlesMessage: String? = null;
+	private var subtitlesColor = Color.WHITE;
 
     init {
         // 카메라를 '왼쪽 아래 = (0,0), 오른쪽 위 = (screenWidth, screenHeight)' 로 설정.
@@ -214,7 +215,7 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
 				text = message,
 				x = 0f,
 				y = 20f,
-				color = Color.WHITE,
+				color = subtitlesColor,
 				scale = 1.0f,
 				width = screenWidth,
 				align = Align.center
@@ -328,9 +329,10 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
         drawTextOnScreen(text, screenX, screenY, color, scale, width, align, fixedWidthChars, skipBatch);
     }
 	
-	fun drawSubtitles(message: String, duration: Int = 3) {
+	fun drawSubtitles(message: String, duration: Int = 3, color: Color = Color.WHITE) {
 		subtitlesTimer = duration * game.fps;
 		subtitlesMessage = message;
+		subtitlesColor = color;
 	}
 
     // ────────────────────────────────────────────────────────

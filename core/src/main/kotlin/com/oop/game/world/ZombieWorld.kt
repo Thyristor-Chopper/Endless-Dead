@@ -80,8 +80,8 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
     //   tile.png 는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color 를
     //   바꿔가며 두 가지 색으로 그리는 트릭(틴트) 으로 체스판을 만든다.
     private val tileTexture = Texture(Gdx.files.internal("tile.png"))
-    private val bgColorDark = Color(0.15f, 0.34f, 0.17f, 1f)
-    private val bgColorLight = Color(0.15f, 0.4f, 0.17f, 1f)
+    private val bgColorDark = Color(0.15f, 0.34f, 0.16f, 1f)
+    private val bgColorLight = Color(0.15f, 0.4f, 0.16f, 1f)
     private val tileSize = 64f
 	private val MAX_REFILL_COOLDOWN_MAX = 30 * game.fps;
 	private var refillCooldown = MAX_REFILL_COOLDOWN_MAX;
@@ -258,7 +258,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		
         // 2) HP를 시각적 미터기로 표시
 		drawTextOnScreen(
-            text = Utils.progressBar(player.hp.toFloat() / player.maxHp.toFloat()),
+            text = Utils.progressBar(player.hp.toFloat() / player.maxHp.toFloat(), 25),
             x = 90.0f,
             y = screenHeight - 10f,
             color = Color.YELLOW,
@@ -274,14 +274,14 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 				text = "${holding.name} [${holdingIndex + 1}/${player.inventory.size}]",
 				x = 10.0f,
 				y = 20.0f,
-				color = Color.WHITE,
+				color = Color(1.0f, 1.0f, 0.75f, 1.0f),
 				scale = 1.0f
 			);
 		
 		// 4) 들고 있는 아이템이 총인 경우 총의 ammo를 미터기로 표시
 		if(holding != null && holding is Gun) {
 			drawTextOnScreen(
-				text = Utils.progressBar(holding.ammo.toFloat() / holding.maxAmmo.toFloat()),
+				text = Utils.progressBar(holding.ammo.toFloat() / holding.maxAmmo.toFloat(), 14),
 				x = screenWidth - 190.0f,
 				y = 20.0f,
 				color = Color.SKY,
@@ -297,7 +297,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 				if(cooldown > 0f)
 					drawTextOnScreen(
 						text = Utils.progressBar(cooldown, 5),
-						x = screenWidth - 390.0f,
+						x = screenWidth - 340.0f,
 						y = 20.0f,
 						color = Color.SCARLET,
 						scale = 1.0f,

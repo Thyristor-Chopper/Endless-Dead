@@ -3,6 +3,7 @@ package com.oop.game.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 
 import com.oop.game.GameState;
 import com.oop.game.InputHandler
@@ -141,7 +142,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		if(holding != null && holding is Gun)
 			if(holding.ammo == 0) {
 				removeItemFromInventory(holding);
-				world.drawSubtitles("Gun destroyed; no more bullets left");
+				world.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
 			}
 		
 		// 좀비 처리
