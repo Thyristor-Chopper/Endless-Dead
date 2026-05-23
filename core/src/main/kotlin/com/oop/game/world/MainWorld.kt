@@ -253,9 +253,9 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
 			drawTextOnScreen(
 				text = holding.name,
 				x = 10.0f,
-				y = 10.0f,
+				y = 20.0f,
 				color = Color.WHITE,
-				scale = 1.0f,
+				scale = 1.0f
 			);
     }
 
