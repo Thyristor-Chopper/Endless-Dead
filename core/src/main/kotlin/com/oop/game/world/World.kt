@@ -255,9 +255,11 @@ abstract class World(val screenWidth: Float, val screenHeight: Float, val width:
         x: Float,
         y: Float,
         color: Color = Color.WHITE,
-        scale: Float = 1f
+        scale: Float = 1f,
+		fixedWidthChars: String = ""  // null이 아닌 이유는 실제로 빈 문자열이면 고정폭이 없다는 뜻
     ) {
         batch.projectionMatrix = camera.combined
+		font.setFixedWidthGlyphs(fixedWidthChars);
         font.color = color
         font.data.setScale(scale)
         batch.begin()

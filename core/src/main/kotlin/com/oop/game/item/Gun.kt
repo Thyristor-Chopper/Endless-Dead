@@ -16,7 +16,7 @@ import com.oop.game.world.World;
  * @param penetrable	총알 관통 가능 여부
  * @param fireInterval	공격 속도
  */
-abstract class Gun(world: World, id: String, name: String, override val bulletDamage: Int, override val bulletSpeed: Float, override val penetrable: Boolean, override val fireInterval: Float, private val maxAmmo: Int, initialAmmo: Int) : Item(world, id, name), Fireable {
+abstract class Gun(world: World, id: String, name: String, override val bulletDamage: Int, override val bulletSpeed: Float, override val penetrable: Boolean, override val fireInterval: Float, val maxAmmo: Int, initialAmmo: Int) : Item(world, id, name), Fireable {
 	private var fireCooldown = 0f
 		set(value) {
 			if(value < 0.0f) field = 0.0f;

@@ -6,14 +6,16 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 
 import com.oop.game.InputHandler;
+import com.oop.game.Utils;
+import com.oop.game.ZombieSpawner;
 import com.oop.game.entity.Zombie;
 import com.oop.game.entity.Player;
 import com.oop.game.entity.container.Building;
 import com.oop.game.entity.container.Chest;
 import com.oop.game.item.Item;
+import com.oop.game.item.Gun;
 import com.oop.game.item.MachineGun;
 import com.oop.game.item.Shotgun;
-import com.oop.game.ZombieSpawner;
 
 import kotlin.math.floor
 import kotlin.random.Random;
@@ -263,6 +265,17 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
 				y = 20.0f,
 				color = Color.WHITE,
 				scale = 1.0f
+			);
+		
+		// 4) 들고 있는 아이템이 총인 경우 총의 ammo를 미터기로 표시
+		if(holding != null && holding is Gun)
+			drawTextOnScreen(
+				text = Utils.progressBar((holding.ammo.toFloat() / holding.maxAmmo.toFloat() * 100.0f).toInt()),
+				x = screenWidth - 180.0f,
+				y = 20.0f,
+				color = Color.GREEN,
+				scale = 1.0f,
+				fixedWidthChars = "#-"
 			);
     }
 
