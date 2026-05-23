@@ -1,6 +1,7 @@
 package com.oop.game
 
-import com.badlogic.gdx.Game
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 
 import com.oop.game.world.ZombieWorld;
 
@@ -66,4 +67,9 @@ class ZombieGame : Game() {
         );
         setScreen(zombieWorld);  // 부모 Game 이 제공하는 메서드
     }
+	
+	override fun render() {
+		super.render();
+		Gdx.graphics.setTitle("$title - 점수: ${ScoreManager.score}");
+	}
 }
