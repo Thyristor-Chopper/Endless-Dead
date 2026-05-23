@@ -255,10 +255,9 @@ class MainWorld(screenWidth: Float, screenHeight: Float, width: Float = screenWi
 		
 		// 3) 현재 플레이어가 들고 있는 아이템
 		val holding: Item? = player.holdingItem;
-		val holdingIndex: Int? = player.selectedItemIndex;
-		if(holding != null && holdingIndex != null)
+		if(holding != null)
 			drawTextOnScreen(
-				text = "${holding.name} (${holdingIndex + 1}/${player.inventory.size})",
+				text = holding.name,
 				x = 10.0f,
 				y = 20.0f,
 				color = Color.WHITE,
