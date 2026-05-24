@@ -12,6 +12,7 @@ import com.badlogic.gdx.utils.Align;
 import com.oop.game.GameState;
 import com.oop.game.TimerExecutor;
 import com.oop.game.Updatable;
+import com.oop.game.WorldObject;
 import com.oop.game.ZombieGame;
 import com.oop.game.entity.Bullet;
 import com.oop.game.entity.Entity;
@@ -119,7 +120,7 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
     // ────────────────────────────────────────────────────────
 	
 	// 월드 내 모든 아이템과 개체를 순회
-	private fun forEachObjects(callback: (Any) -> Unit) {
+	private fun forEachObjects(callback: (WorldObject) -> Unit) {
 		for(entity in entities.toList()) {
 			callback(entity);
 			if(entity is InventoryEntity)

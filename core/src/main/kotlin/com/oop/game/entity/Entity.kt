@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle
 
 import com.oop.game.Position;
 import com.oop.game.Updatable;
+import com.oop.game.WorldObject;
 import com.oop.game.entity.Entity;
 import com.oop.game.world.World;
 
@@ -48,7 +49,8 @@ import kotlin.math.sqrt;
  * @param height	세로 크기 (픽셀)
  * @param texture	아이템 텍스처(없을 수도 있음)
  */
-abstract class Entity(val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) : Updatable {
+abstract class Entity(world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) : WorldObject, Updatable {
+	override val world = world;
 	protected val texture: Texture?;
 	
 	init {

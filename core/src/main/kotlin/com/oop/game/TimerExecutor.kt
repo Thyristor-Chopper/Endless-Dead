@@ -18,8 +18,7 @@ interface TimerExecutor {
 		for(timer in timers) {
 			var skip = false;
 			if(timer.onlyInPlay) {
-				if(this is Entity && this.world.state != GameState.IN_PLAY) skip = true;
-				if(this is Item && this.world.state != GameState.IN_PLAY) skip = true;
+				if(this is WorldObject && this.world.state != GameState.IN_PLAY) skip = true;
 				if(this is World && this.state != GameState.IN_PLAY) skip = true;
 			}
 			if(skip) continue;

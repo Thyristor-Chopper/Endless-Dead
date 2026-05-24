@@ -1,6 +1,7 @@
 package com.oop.game.item;
 
 import com.oop.game.Updatable;
+import com.oop.game.WorldObject;
 import com.oop.game.world.World;
 
 /**
@@ -10,7 +11,9 @@ import com.oop.game.world.World;
  * @param id	총 식별자
  * @param name	총 이름
  */
-abstract class Item(val world: World, val id: String, val name: String) : Updatable {
+abstract class Item(world: World, val id: String, val name: String) : WorldObject, Updatable {
+	override val world = world;
+	
 	fun equals(other: Item): Boolean {
 		return id == other.id;
 	}
