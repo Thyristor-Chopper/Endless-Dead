@@ -116,6 +116,21 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
     // ────────────────────────────────────────────────────────
     //  매 프레임 로직
     // ────────────────────────────────────────────────────────
+	
+	// 월드 내 모든 아이템과 개체를 순회
+	private fun forEachObjects(callback: (Any) -> Unit) {
+		for(entity in entities.toList()) {
+			callback(entity);
+			if(entity is InventoryEntity)
+				for(item in entity.inventory.toList())
+					callback(item);
+			if(entity is Container) {
+				val contained: Item? = entity.containedItem;
+				if(contained != null)
+					callback(contained);
+			}
+		}
+	}
 
     /**
      * 등록된 모든 객체에게 'update(delta) 한 프레임 진행' 을 시킨다.
@@ -127,28 +142,13 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
      *   gameObjects.forEach { it.update(delta) } 처럼 줄일 수 있다.
      */
     protected fun updateAllObjects(delta: Float) {
-        for(obj in entities.toList())
-            obj.update(delta);
-    }
-	
-	protected fun updateAllItems(delta: Float) {
-		for(entity in entities) {
-			if(entity is InventoryEntity)
-				for(item in entity.inventory) {
-					item.update(delta);
-					if(item is TimerExecutor)
-						item.executeTimers();
-				}
-			if(entity is Container) {
-				val contained: Item? = entity.containedItem;
-				if(contained != null) {
-					contained.update(delta);
-					if(contained is TimerExecutor)
-						contained.executeTimers();
-				}
+		forEachObjects {
+			when(it) {
+				is Item		-> it.update(delta);
+				is Entity	-> it.update(delta);
 			}
-		}
-	}
+		};
+    }
 
     /**
      * isAlive() 가 false 인 객체들을 한꺼번에 제거한다.
@@ -181,29 +181,23 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
      */
     open fun update(delta: Float) {
         updateAllObjects(delta);
-		updateAllItems(delta);
         removeDead();
     }
 	
 	private fun executeAllTimers() {
-		// 개체에 등록된 타이머
-		for(obj in entities)
-			if(obj is TimerExecutor)
-				obj.executeTimers();
-		
-		// 아이템에 등록된 타이머
-		for(entity in entities) {
-			if(entity is InventoryEntity)
-				for(item in entity.inventory)
-					if(item is TimerExecutor)
-						item.executeTimers();
-			if(entity is Container) {
-				val contained: Item? = entity.containedItem;
-				if(contained != null)
-					if(contained is TimerExecutor)
-						contained.executeTimers();
+		// 개체와 아이템에 등록된 타이머
+		forEachObjects {
+			when(it) {
+				is Item		-> {
+					if(it is TimerExecutor)
+						it.executeTimers();
+				}
+				is Entity	-> {
+					if(it is TimerExecutor)
+						it.executeTimers();
+				}
 			}
-		}
+		};
 		
 		// 월드의 타이머
 		if(this is TimerExecutor)
