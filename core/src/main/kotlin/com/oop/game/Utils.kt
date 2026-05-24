@@ -6,7 +6,7 @@ package com.oop.game;
 object Utils {
 	val PROGRESS_BAR_FILLED = '=';
 	val PROGRESS_BAR_EMPTY = ' ';
-	val DEFAULT_PROGRESS_BAR_SIZE = 20;
+	private val DEFAULT_PROGRESS_BAR_SIZE = 20;
 	
 	/**
 	 * 미터기를 그린다.

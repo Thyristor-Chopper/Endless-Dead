@@ -78,4 +78,12 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		containedItem = null;
 		if(isPlayerItem) isPlayerItem = false;
 	}
+	
+	override fun dispose() {
+		val flagTexture = this.flagTexture;
+		val emptyTexture = this.emptyTexture;
+		if(flagTexture != null) flagTexture.dispose();
+		if(emptyTexture != null) emptyTexture.dispose();
+		super.dispose();
+	}
 }

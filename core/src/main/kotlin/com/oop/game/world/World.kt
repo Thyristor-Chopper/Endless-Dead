@@ -68,11 +68,11 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
 		protected set;
 	abstract val player: Player;
     // OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
-    val camera = OrthographicCamera()
+    val camera = OrthographicCamera();
     // SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
     //   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
-    val batch = SpriteBatch()
-    val font = BitmapFont()
+    val batch = SpriteBatch();
+    val font = BitmapFont();
     // 카메라 오프셋 — 월드의 어느 지점이 화면 좌하단에 오는지.
     //   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
     var offsetX: Float = width / 2.0f - screenWidth / 2.0f;
@@ -181,8 +181,10 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
         for(obj in entities)
             if((obj is LivingEntity && !obj.isAlive()) || (obj is Bullet && !obj.isAlive))
                 toRemove.add(obj);
-        for(obj in toRemove)
+        for(obj in toRemove) {
             entities.remove(obj);
+			obj.dispose();
+		}
     }
 
     /**

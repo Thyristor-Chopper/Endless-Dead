@@ -16,7 +16,7 @@ import kotlin.random.Random;
  * @param spawnInterval	소환 간격
  */
 class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : Spawner {
-    private var timer = 0f
+    private var timer = 0f;
 
 	/**
 	 * 매 프레임 실행해서 소환할 시간이 되면 좀비를 스폰한다
@@ -42,9 +42,9 @@ class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : 
             rand < 6 	-> WeakZombie(world, randomX, randomY, world.player, angle = 10f)		// 60% 확률
             rand < 9	-> NormalZombie(world, randomX, randomY, world.player, angle = 10f)	// 30% 확률
             else		-> StrongZombie(world, randomX, randomY, world.player, angle = 10f)	// 10% 확률
-        }
+        };
 
-        world.add(newZombie)
-        return newZombie
+        world.add(newZombie);
+        return newZombie;
     }
 }

@@ -204,8 +204,8 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
         //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
         //   offset 은 0 ~ (world - screen) 범위여야 한다.
-        offsetX = offsetX.coerceIn(0f, width - screenWidth)
-        offsetY = offsetY.coerceIn(0f, height - screenHeight)
+        offsetX = offsetX.coerceIn(0f, width - screenWidth);
+        offsetY = offsetY.coerceIn(0f, height - screenHeight);
 
         // ── 1) 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
 		for(spawner in spawners)
@@ -252,26 +252,25 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
      */
     override fun drawBackground(batch: SpriteBatch) {
         // 현재 카메라 시작점이 속한 타일 인덱스 (여유분으로 -1)
-        val startCol = floor(offsetX / tileSize).toInt() - 1
-        val startRow = floor(offsetY / tileSize).toInt() - 1
+        val startCol = floor(offsetX / tileSize).toInt() - 1;
+        val startRow = floor(offsetY / tileSize).toInt() - 1;
         // 화면을 채우는 데 필요한 타일 개수 (여유분 +3)
-        val cols = (screenWidth / tileSize).toInt() + 3
-        val rows = (screenHeight / tileSize).toInt() + 3
+        val cols = (screenWidth / tileSize).toInt() + 3;
+        val rows = (screenHeight / tileSize).toInt() + 3;
 
-        for (row in startRow until startRow + rows) {
-            for (col in startCol until startCol + cols) {
+        for(row in startRow until startRow + rows)
+            for(col in startCol until startCol + cols) {
                 // 행+열이 짝수면 어둡게, 홀수면 밝게 → 체스판 패턴
-                batch.color = if ((row + col) % 2 == 0) bgColorDark else bgColorLight
+                batch.color = if ((row + col) % 2 == 0) bgColorDark else bgColorLight;
 
                 // 월드 좌표의 타일 위치에서 offset 만큼 빼면 화면 좌표
-                val drawX = col * tileSize - offsetX
-                val drawY = row * tileSize - offsetY
-                batch.draw(tileTexture, drawX, drawY, tileSize, tileSize)
+                val drawX = col * tileSize - offsetX;
+                val drawY = row * tileSize - offsetY;
+                batch.draw(tileTexture, drawX, drawY, tileSize, tileSize);
             }
-        }
 
         // 배경에 입힌 색이 다음 그리기(게임 객체)에 영향을 주지 않도록 흰색으로 복원.
-        batch.color = Color.WHITE
+        batch.color = Color.WHITE;
     }
 
     /**
@@ -283,17 +282,17 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
      *       텍스트는 반드시 super 호출 **이후** 그려야 가려지지 않는다.
      */
     override fun render(delta: Float) {
-        super.render(delta)
+        super.render(delta);
 
         // ── 항상 보이는 UI ──
-        drawHud()
+        drawHud();
 
         // ── 상태별로 그리는 것이 다름 ──
         when (state) {
             GameState.IN_PLAY 	-> {
                 // 플레이 중에는 추가로 그릴 것 없음
             }
-            GameState.GAME_OVER	-> drawGameOverOverlay()
+            GameState.GAME_OVER	-> drawGameOverOverlay();
         }
     }
 	
@@ -402,21 +401,21 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
             y = screenHeight / 2,
             color = Color.RED,
             scale = 2f
-        )
+        );
         drawTextOnScreen(
             text = "Press ESC to exit",
             x = screenWidth / 2 - 70f,
             y = screenHeight / 2 - 40f,
             color = Color.WHITE,
             scale = 1f
-        )
+        );
     }
 
     /**
 	 * 화면이 닫힐 때 — 부모도 dispose 한 뒤 우리만의 자원도 해제.
 	 */
     override fun dispose() {
-        super.dispose()
-        tileTexture.dispose()
+        super.dispose();
+        tileTexture.dispose();
     }
 }

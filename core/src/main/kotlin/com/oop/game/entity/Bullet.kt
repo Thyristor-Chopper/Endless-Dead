@@ -30,14 +30,14 @@ class Bullet(world: World, val shooter: Entity, val target: Position, private va
     private val distance = sqrt(dx * dx + dy * dy);
 	
 	override fun update(delta: Float) {
-		if (distance > 0f) {
-			x += dx / distance * speed * delta
-			y += dy / distance * speed * delta
+		if(distance > 0f) {
+			x += dx / distance * speed * delta;
+			y += dy / distance * speed * delta;
 		}
 		
 		// 화면 밖으로 나가면 소멸
 		if(x < 0f || x > world.width || y < 0f || y > world.height)
-			isAlive = false
+			isAlive = false;
 		
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지 주고 총알은 소멸.
 		for(entity in world.getEntities())
