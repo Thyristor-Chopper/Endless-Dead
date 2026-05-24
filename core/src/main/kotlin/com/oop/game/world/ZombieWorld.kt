@@ -73,7 +73,8 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		OPENED,
 		KILLED,
 		FIRED,
-		SURVIVED;
+		SURVIVED,
+		DAMAGE;
 		
 		companion object {
 			private val enumEntries = TitleInfoType.entries;
@@ -177,6 +178,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 			TitleInfoType.KILLED	-> windowTitle = "잡은 좀비 수: ${player.killedZombieCount}";
 			TitleInfoType.FIRED		-> windowTitle = "발사한 총알 수: ${player.firedBullets}";
 			TitleInfoType.SURVIVED	-> windowTitle = "생존 시간: ${Utils.parseSeconds(player.survivedDuration)}";
+			TitleInfoType.DAMAGE	-> windowTitle = "누적 피해량: ${player.totalDamage}";
 		}
 		Gdx.graphics.setTitle("${game.title} - $windowTitle");
 		
@@ -206,6 +208,11 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         //   collidesWith 는 GameObject 의 메서드 → 모든 게임 객체가 자동으로 가짐.
         //   이 예제에선 충돌 시 객체를 죽이지 않고 게임 상태만 바꾼다.
         //   (총알 게임이라면 여기서 bullet.kill(), enemy.kill() 같은 처리)
+		
+		// 좀비 처리
+		for(zombie in zombies)
+			if(player.collidesWith(zombie))
+				player.takeDamage(zombie.damage, 1.0f);
 		
         if(!player.isAlive())
             state = GameState.GAME_OVER;  // 피가 0 이하가 되면 진짜 게임 오버!

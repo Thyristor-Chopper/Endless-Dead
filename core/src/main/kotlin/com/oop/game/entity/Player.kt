@@ -63,6 +63,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		private set;
 	var firedBullets = 0
 		private set;
+	var totalDamage = 0
+		private set;
 	
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
@@ -136,7 +138,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			world.offsetY = y - world.screenHeight / 2.0f + height / 2.0f;
 		}
 		
-		// 총 쏘기
+		// 아이템 사용
 		if(holding != null && holding is Usable && (InputHandler.isButtonJustPressed(InputHandler.LEFT_MOUSE) || (holding.allowContinuousUse && InputHandler.isButtonPressed(InputHandler.LEFT_MOUSE)))) {
 			val succeeded = holding.use();
 			if(succeeded && holding is Gun)
@@ -165,21 +167,14 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			}
 		
         // 월드 경계 안쪽으로 가두기.
-        x = x.coerceIn(0f, world.width - width)
-        y = y.coerceIn(0f, world.height - height)
-		
-		// 좀비 처리
-		if(world is ZombieWorld)
-			for(zombie in world.zombies)
-				if(collidesWith(zombie)) {
-					if(invincibilityTimer == 0.0f)
-						ScoreManager.subtractScore(5);
-					takeDamage(zombie.damage, 1.0f);
-				}
+        x = x.coerceIn(0f, world.width - width);
+        y = y.coerceIn(0f, world.height - height);
     }
 	
-	override fun onDamage() {
+	override fun onDamage(damage: Int, attacker: Entity?) {
 		healTimer.reset();
+		ScoreManager.subtractScore(5);
+		totalDamage += damage;
 	}
 	
 	override fun onKill(victim: LivingEntity) {

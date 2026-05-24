@@ -23,23 +23,21 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 			if(value < 0.0f) field = 0.0f;
 			else field = value;
 		};
-	var latestAttacker: Entity? = null;
+	var latestAttacker: Entity? = null
+		private set;
 
 	open fun takeDamage(damage: Int, duration: Float = 0f, attacker: Entity? = null) {
 		// 무적 시간이 다 끝났을 때만 피격당함
 		if (invincibilityTimer == 0f) {
 			if(damage > 0) hp -= damage;
 			if(hp == 0) {
-				onDeath();
-				if(attacker != null) {
-					onDeath(attacker);
+				onDeath(attacker);
+				if(attacker != null)
 					attacker.onKill(this);
-				}
 			}
 			invincibilityTimer = duration  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
-			onDamage();
+			onDamage(damage, attacker);
 			if(attacker != null) {
-				onDamage(attacker);
 				attacker.onAttack(this);
 				latestAttacker = attacker;
 			}
@@ -50,13 +48,9 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		hp += amount;
 	}
 	
-	open fun onDamage() {}
+	open fun onDamage(damage: Int, attacker: Entity?) {}
 	
-	open fun onDamage(attacker: Entity) {}
-	
-	open fun onDeath() {}
-	
-	open fun onDeath(killer: Entity) {}
+	open fun onDeath(killer: Entity?) {}
 
 	// 매프레임 무적 시간 감소 로직
 	override fun update(delta: Float) {
