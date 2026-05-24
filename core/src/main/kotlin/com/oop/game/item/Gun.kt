@@ -22,7 +22,7 @@ import com.oop.game.world.World;
  * @param initialAmmo	초기 총알 개수
  */
 abstract class Gun(world: World, id: String, name: String, override val bulletDamage: Int, override val bulletSpeed: Float, override val penetrable: Boolean, val fireInterval: Float, val maxAmmo: Int, initialAmmo: Int) : Item(world, id, name), Fireable, Usable {
-	override val allowContinuousUse = true;
+	override val allowContinuousUse = false;
 	private var fireCooldown = 0f
 		set(value) {
 			if(value < 0.0f) field = 0.0f;
