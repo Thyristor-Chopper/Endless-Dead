@@ -14,7 +14,7 @@ import com.oop.game.world.World;
  * @param y		개체 세로 위치
  * @param initialItem	처음 들어있는 아이템
  */
-class Chest(world: World, x: Float, y: Float, initialItem: Item? = null): Container(world, x, y, 24.0f, 25.0f, "chest.png", initialItem) {
-	override protected val emptyTexture = Texture(Gdx.files.internal("empty_chest.png"));
-	override protected val flagTexture = Texture(Gdx.files.internal("chest_player_added.png"));
+class Chest(world: World, x: Float, y: Float, initialItem: Item? = null): Container(world, x, y, 24.0f, 25.0f, "chest.bmp", initialItem) {
+	override protected val emptyTexture = Texture(Gdx.files.internal("empty_chest.bmp"));
+	override protected val flagTexture = Texture(Gdx.files.internal("chest_player_added.bmp"));
 }

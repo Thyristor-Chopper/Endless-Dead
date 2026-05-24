@@ -32,14 +32,17 @@ import com.oop.game.world.ZombieWorld;
  *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 GameObject.dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player.png", 50), InventoryEntity {
+class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player.bmp", 50), InventoryEntity {
 	companion object {
 		// 상수
 		val PLAYER_WIDTH = 30f;
 		val PLAYER_HEIGHT = 30f;
 	}
 	
-	enum class TitleInfoType {
+	/**
+	 * 제목 표시줄에 표시할 정보 종류를 담는 enumeration
+	 */
+	private enum class TitleInfoType {
 		OPENED,
 		KILLED,
 		FIRED,
@@ -57,6 +60,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	override var selectedItemIndex: Int? = null;
     private val speed = 200f
 	private var mouseDown: Boolean = false;
+	// 각종 타이머들
 	private var MAX_ALIVE_BONUS_COOLDOWN = 1 * world.game.fps;
 	private var aliveBonusCooldown = MAX_ALIVE_BONUS_COOLDOWN
 		set(value) {
@@ -65,21 +69,38 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			else field = value;
 		};
 	private val MAX_HEAL_COOLDOWN = 30 * world.game.fps;
-	private var healCooldown = MAX_HEAL_COOLDOWN;
-	private var openedContainerCount = 0;
-	private val MAX_TITLE_INFO_COOLDOWN = 3 * world.game.fps;
-	private var titleInfoCooldown = 0;
+	private var healCooldown = MAX_HEAL_COOLDOWN
+		set(value) {
+			if(value < 0) field = 0;
+			else if(value > MAX_HEAL_COOLDOWN) field = MAX_HEAL_COOLDOWN;
+			else field = value;
+		};
+	private val MAX_TITLE_INFO_TIMER = 3 * world.game.fps;
+	private var titleInfoTimer = 0
+		set(value) {
+			if(value < 0) field = 0;
+			else if(value > MAX_TITLE_INFO_TIMER) field = MAX_TITLE_INFO_TIMER;
+			else field = value;
+		};
+	private val MAX_SURVIVED_TIMER = world.game.fps;
+	private var survivedTimer = MAX_SURVIVED_TIMER
+		set(value) {
+			if(value < 0) field = 0;
+			else if(value > MAX_SURVIVED_TIMER) field = MAX_SURVIVED_TIMER;
+			else field = value;
+		};
+	// 제목 표시줄에 표시할 정보의 인덱스
 	private var currentTitleInfo = 0
 		set(value) {
 			if(value >= TitleInfoType.size) field = 0;
 			else if(value < 0) field = TitleInfoType.size - 1;
 			else field = value;
 		};
+	// 통계
+	private var survivedDuration = 0;
+	private var openedContainerCount = 0;
 	private var killedZombieCount = 0;
 	private var firedBullets = 0;
-	private val MAX_SURVIVED_COOLTIME = world.game.fps;
-	private var survivedCooldown = MAX_SURVIVED_COOLTIME;
-	private var survivedDuration = 0;
 	
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
@@ -203,27 +224,29 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			healCooldown--;
 		}
 		
-		if(survivedCooldown == 0) {
+		// 생존 시간 기록
+		if(survivedTimer == 0) {
 			survivedDuration++;
-			survivedCooldown = MAX_SURVIVED_COOLTIME;
+			survivedTimer = MAX_SURVIVED_TIMER;
 		} else {
-			survivedCooldown--;
+			survivedTimer--;
 		}
 		
-		if(titleInfoCooldown == 0) {
+		// 제목 표시줄에 정보 표시
+		if(titleInfoTimer == 0) {
 			currentTitleInfo++;
-			titleInfoCooldown = MAX_TITLE_INFO_COOLDOWN;
+			titleInfoTimer = MAX_TITLE_INFO_TIMER;
 		} else {
-			titleInfoCooldown--;
+			titleInfoTimer--;
 		}
 		val windowTitle: String;
-			when(TitleInfoType.byIndex(currentTitleInfo)) {
-			TitleInfoType.OPENED	-> windowTitle = "${world.game.title} - 연 상자: ${openedContainerCount}개";
-			TitleInfoType.KILLED	-> windowTitle = "${world.game.title} - 잡은 좀비 수: ${killedZombieCount}";
-			TitleInfoType.FIRED		-> windowTitle = "${world.game.title} - 발사한 총알 수: ${firedBullets}";
-			TitleInfoType.SURVIVED	-> windowTitle = "${world.game.title} - 생존 시간: ${Utils.parseSeconds(survivedDuration)}";
+		when(TitleInfoType.byIndex(currentTitleInfo)) {
+			TitleInfoType.OPENED	-> windowTitle = "연 상자: ${openedContainerCount}개";
+			TitleInfoType.KILLED	-> windowTitle = "잡은 좀비 수: ${killedZombieCount}";
+			TitleInfoType.FIRED		-> windowTitle = "발사한 총알 수: ${firedBullets}";
+			TitleInfoType.SURVIVED	-> windowTitle = "생존 시간: ${Utils.parseSeconds(survivedDuration)}";
 		}
-		Gdx.graphics.setTitle(windowTitle);
+		Gdx.graphics.setTitle("${world.game.title} - $windowTitle");
     }
 	
 	override fun onDamage() {

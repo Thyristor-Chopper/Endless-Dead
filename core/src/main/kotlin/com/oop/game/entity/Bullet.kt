@@ -18,7 +18,7 @@ import kotlin.math.sqrt;
  * @param damage		총알이 주는 피해량
  * @param penetrable	총알 관통 가능 여부
  */
-class Bullet(world: World, val shooter: Entity, val target: Position, private val speed: Float, val damage: Int, val penetrable: Boolean) : Entity(world, shooter.x, shooter.y, 16.0f, 16.0f, "bullet.png") {
+class Bullet(world: World, val shooter: Entity, val target: Position, private val speed: Float, val damage: Int, val penetrable: Boolean) : Entity(world, shooter.x, shooter.y, 16.0f, 16.0f, "bullet.bmp") {
     var isAlive = true
 		private set;
     private val dx = target.x - shooter.x;
