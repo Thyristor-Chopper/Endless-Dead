@@ -187,16 +187,8 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
 	private fun executeAllTimers() {
 		// 개체와 아이템에 등록된 타이머
 		forEachObjects {
-			when(it) {
-				is Item		-> {
-					if(it is TimerExecutor)
-						it.executeTimers();
-				}
-				is Entity	-> {
-					if(it is TimerExecutor)
-						it.executeTimers();
-				}
-			}
+			if(it is TimerExecutor)
+				it.executeTimers();
 		};
 		
 		// 월드의 타이머
