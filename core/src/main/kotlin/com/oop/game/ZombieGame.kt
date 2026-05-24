@@ -32,6 +32,11 @@ import com.oop.game.world.ZombieWorld;
  *   ▸ create() 안에서 setScreen 에 넘기는 Screen 을 자기 Screen 으로 교체
  */
 class ZombieGame : Game() {
+	companion object {
+		val TITLE = "좀비 파밍";  // 창 제목
+		val FPS = 60;  // FPS (타이머에 필요함)
+	}
+	
     // 화면(창) 크기 — DesktopLauncher 가 창 크기 설정에도 이 값을 읽어간다.
     //   public(기본)으로 둔 이유: 외부(DesktopLauncher)에서 접근해야 하므로.
     val screenWidth = 800;
@@ -40,11 +45,6 @@ class ZombieGame : Game() {
     //   이 값은 내부 설정이므로 private.
     private val worldWidth = 1600;
     private val worldHeight = 1600;
-	
-	companion object {
-		val TITLE = "좀비 파밍";  // 창 제목
-		val FPS = 60;  // FPS (타이머에 필요함)
-	}
 
     /**
      * LibGDX 가 게임 시작 시 한 번 호출하는 라이프사이클 메서드.

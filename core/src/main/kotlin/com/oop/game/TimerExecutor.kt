@@ -9,12 +9,12 @@ import com.oop.game.world.World;
  * 지정한 시간마다 특정 작업(타이머)을 실행할 수 있는 객체
  */
 interface TimerExecutor {
-	var unitTimer: Int;
-	val timers: MutableList<Timer>;
-	
 	companion object {
 		val MAX_UNIT_TIMER = ZombieGame.FPS;
 	}
+	
+	var unitTimer: Int;
+	val timers: MutableList<Timer>;
 	
 	/**
 	 * 매 초마다 timers의 타이머들을 갱신하여 대기시간을 줄이고 대기 시간이 0이 된 타이머를 실행한다.
