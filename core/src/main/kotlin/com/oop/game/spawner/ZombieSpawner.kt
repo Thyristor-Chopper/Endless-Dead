@@ -1,4 +1,4 @@
-package com.oop.game
+package com.oop.game.spawner;
 
 import com.oop.game.entity.NormalZombie;
 import com.oop.game.entity.Player;
@@ -15,19 +15,18 @@ import kotlin.random.Random;
  * @param world			소속 세계
  * @param spawnInterval	소환 간격
  */
-class ZombieSpawner(val world: World, val spawnInterval: Float = 3f) {
+class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : Spawner {
     private var timer = 0f
 
 	/**
 	 * 매 프레임 실행해서 소환할 시간이 되면 좀비를 스폰한다
 	 */
-    fun tick(delta: Float): Zombie? {
-        timer += delta
-        if (timer >= spawnInterval) {
-            timer -= spawnInterval
-            return spawnRandomZombie()
+    override fun tick(delta: Float) {
+        timer += delta;
+        if(timer >= spawnInterval) {
+            timer -= spawnInterval;
+            spawnRandomZombie();
         }
-        return null
     }
 
 	/**

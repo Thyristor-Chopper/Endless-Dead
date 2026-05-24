@@ -13,7 +13,6 @@ import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
 import com.oop.game.TimerExecutor;
 import com.oop.game.Utils;
-import com.oop.game.ZombieSpawner;
 import com.oop.game.entity.Player;
 import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Building;
@@ -24,6 +23,8 @@ import com.oop.game.item.Bandage;
 import com.oop.game.item.Gun;
 import com.oop.game.item.MachineGun;
 import com.oop.game.item.Shotgun;
+import com.oop.game.spawner.Spawner;
+import com.oop.game.spawner.ZombieSpawner;
 
 import kotlin.math.floor
 import kotlin.random.Random;
@@ -93,7 +94,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
     // 좀비들만 따로 모아두는 관리용 리스트
     val zombies: List<Zombie>
 		get() = getEntities().filterIsInstance<Zombie>();
-    private val zombieSpawner = ZombieSpawner(this, 3.0f)
+	private val spawners = mutableListOf<Spawner>();
     // ── 체스판 배경 설정 (drawBackground() 에서 사용) ──
     //   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
     //   학생은 자기 게임에선 다른 배경을 그리거나, 그냥 두면 검은 배경이다.
@@ -138,6 +139,9 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 				add(Chest(this, x, y, item));
 		}
         add(player);
+		
+		// 스포너들
+		spawners.add(ZombieSpawner(this, 3.0f));
 		
 		// 30초마다 빈 상자 하나 리필
 		registerTimer(Timer(30) {
@@ -207,7 +211,8 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         offsetY = offsetY.coerceIn(0f, height - screenHeight)
 
         // ── 1) 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
-        zombieSpawner.tick(delta);
+		for(spawner in spawners)
+			spawner.tick(delta);
 
         // ── 2) 상호작용 결정 — 누가 누구와 부딪혀 어떻게 되는지 ──
         //   collidesWith 는 GameObject 의 메서드 → 모든 게임 객체가 자동으로 가짐.
