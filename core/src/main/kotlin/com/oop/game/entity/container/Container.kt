@@ -44,6 +44,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	 * 아이템 가져가기
 	 *
 	 * @param 	taker	아이템을 가져가는 인벤토리를 가진 개체
+	 * @param	select	아이템을 가져간 후 자동으로 선택할지 여부
 	 * @return 	성공하면 들어있는 아이템, 실패하면 null
 	 */
 	fun takeItem(taker: InventoryEntity, select: Boolean = false): Item? {
