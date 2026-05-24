@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.Align;
 
 import com.oop.game.GameState;
+import com.oop.game.TimerExecutor;
 import com.oop.game.ZombieGame;
 import com.oop.game.entity.Bullet;
 import com.oop.game.entity.Entity;
@@ -127,18 +128,24 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
      */
     protected fun updateAllObjects(delta: Float) {
         for(obj in entities.toList())
-            obj.update(delta)
+            obj.update(delta);
     }
 	
 	protected fun updateAllItems(delta: Float) {
 		for(entity in entities) {
 			if(entity is InventoryEntity)
-				for(item in entity.inventory)
+				for(item in entity.inventory) {
 					item.update(delta);
+					if(item is TimerExecutor)
+						item.executeTimers();
+				}
 			if(entity is Container) {
 				val contained: Item? = entity.containedItem;
-				if(contained != null)
+				if(contained != null) {
 					contained.update(delta);
+					if(contained is TimerExecutor)
+						contained.executeTimers();
+				}
 			}
 		}
 	}
@@ -154,12 +161,12 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
      *   gameObjects.removeAll { !it.isAlive() } 한 줄로 대체 가능.
      */
     protected fun removeDead() {
-		val toRemove = mutableListOf<Entity>()
+		val toRemove = mutableListOf<Entity>();
         for(obj in entities)
             if((obj is LivingEntity && !obj.isAlive()) || (obj is Bullet && !obj.isAlive))
-                toRemove.add(obj)
+                toRemove.add(obj);
         for(obj in toRemove)
-            entities.remove(obj)
+            entities.remove(obj);
     }
 
     /**
@@ -173,10 +180,30 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
      * 위 두 호출 사이에 그 로직을 끼워 넣는다 (ExampleWorld 참고).
      */
     open fun update(delta: Float) {
-        updateAllObjects(delta)
+        updateAllObjects(delta);
 		updateAllItems(delta);
-        removeDead()
+        removeDead();
     }
+	
+	private fun executeAllTimers() {
+		for(obj in entities.toList())
+			if(obj is TimerExecutor)
+				obj.executeTimers();
+		for(entity in entities) {
+			if(entity is InventoryEntity)
+				for(item in entity.inventory)
+					if(item is TimerExecutor)
+						item.executeTimers();
+			if(entity is Container) {
+				val contained: Item? = entity.containedItem;
+				if(contained != null)
+					if(contained is TimerExecutor)
+						contained.executeTimers();
+			}
+		}
+		if(this is TimerExecutor)
+			this.executeTimers();
+	}
 
     // ────────────────────────────────────────────────────────
     //  매 프레임 그리기
@@ -200,6 +227,9 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
 
         // 3) 게임 로직 업데이트
         update(delta)
+		
+		// 타이머 실행
+		executeAllTimers();
 
         // 4) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
         batch.begin()

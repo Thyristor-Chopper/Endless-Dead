@@ -11,7 +11,6 @@ import com.oop.game.Position;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
 import com.oop.game.TimerExecutor;
-import com.oop.game.Utils;
 import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Container;
 import com.oop.game.item.Gun;
@@ -41,23 +40,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		val PLAYER_HEIGHT = 30f;
 	}
 	
-	/**
-	 * 제목 표시줄에 표시할 정보 종류를 담는 enumeration
-	 */
-	private enum class TitleInfoType {
-		OPENED,
-		KILLED,
-		FIRED,
-		SURVIVED;
-		
-		companion object {
-			private val enumEntries = TitleInfoType.entries;
-			val size = enumEntries.size;
-		
-			fun byIndex(index: Int) = enumEntries[index];
-		}
-	}
-	
 	override val inventory = mutableListOf<Item>();
 	override var selectedItemIndex: Int? = null;
     private val speed = 200f;
@@ -71,18 +53,15 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		};
 	override val timers = mutableListOf<Timer>();
 	private val healTimer: Timer;
-	// 제목 표시줄에 표시할 정보의 인덱스
-	private var currentTitleInfo = 0
-		set(value) {
-			if(value >= TitleInfoType.size) field = 0;
-			else if(value < 0) field = TitleInfoType.size - 1;
-			else field = value;
-		};
 	// 통계
-	private var survivedDuration = 0;
-	private var openedContainerCount = 0;
-	private var killedZombieCount = 0;
-	private var firedBullets = 0;
+	var survivedDuration = 0
+		private set;
+	var openedContainerCount = 0
+		private set;
+	var killedZombieCount = 0
+		private set;
+	var firedBullets = 0
+		private set;
 	
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
@@ -120,19 +99,14 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		
 		// 타이머들
 		
-		// 제목 표시줄 정보 전환
-		registerTimer(Timer(3) {
-			currentTitleInfo++;
-		});
-		
 		// 생존 시간 기록 & 생존 시간 보너스
-		registerTimer(Timer(1) {
+		registerTimer(Timer(1, true) {
 			survivedDuration++;
 			ScoreManager.addScore(1);
 		});
 		
-		// 지얀 회복
-		healTimer = Timer(30) {
+		// 자연 회복
+		healTimer = Timer(30, true) {
 			heal(3);
 		};
 		registerTimer(healTimer);
@@ -208,18 +182,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 						ScoreManager.subtractScore(5);
 					takeDamage(zombie.damage, 1.0f);
 				}
-		
-		executeTimers();
-		
-		// 제목 표시줄에 정보 표시
-		val windowTitle: String;
-		when(TitleInfoType.byIndex(currentTitleInfo)) {
-			TitleInfoType.OPENED	-> windowTitle = "연 상자: ${openedContainerCount}개";
-			TitleInfoType.KILLED	-> windowTitle = "잡은 좀비 수: ${killedZombieCount}";
-			TitleInfoType.FIRED		-> windowTitle = "발사한 총알 수: ${firedBullets}";
-			TitleInfoType.SURVIVED	-> windowTitle = "생존 시간: ${Utils.parseSeconds(survivedDuration)}";
-		}
-		Gdx.graphics.setTitle("${world.game.title} - $windowTitle");
     }
 	
 	override fun onDamage() {

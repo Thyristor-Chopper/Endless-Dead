@@ -65,6 +65,23 @@ import kotlin.random.Random;
  * @param worldHeight  월드 전체 높이
  */
 class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, width: Float = screenWidth, height: Float = screenHeight) : World(game, screenWidth, screenHeight, width, height), TimerExecutor {
+	/**
+	 * 제목 표시줄에 표시할 정보 종류를 담는 enumeration
+	 */
+	private enum class TitleInfoType {
+		OPENED,
+		KILLED,
+		FIRED,
+		SURVIVED;
+		
+		companion object {
+			private val enumEntries = TitleInfoType.entries;
+			val size = enumEntries.size;
+		
+			fun byIndex(index: Int) = enumEntries[index];
+		}
+	}
+	
     // 플레이어 — 월드 중앙 하단에서 시작.
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
     override val player = Player(this, x = width / 2 - Player.PLAYER_WIDTH / 2, y = height / 2 - Player.PLAYER_HEIGHT / 2);
@@ -96,6 +113,13 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 			else field = value;
 		};
 	override val timers = mutableListOf<Timer>();
+	// 제목 표시줄에 표시할 정보의 인덱스
+	private var currentTitleInfo = 0
+		set(value) {
+			if(value >= TitleInfoType.size) field = 0;
+			else if(value < 0) field = TitleInfoType.size - 1;
+			else field = value;
+		};
 
     /**
      * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -114,12 +138,17 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         add(player);
 		
 		// 30초마다 빈 상자 하나 리필
-		registerTimer(Timer(30) {
+		registerTimer(Timer(30, true) {
 			for(entity in getEntities().shuffled())
 				if(entity is Container && entity.isEmpty) {
 					entity.putItem(generateRandomItem());
 					break;
 				}
+		});
+		
+		// 제목 표시줄 정보 전환
+		registerTimer(Timer(3) {
+			currentTitleInfo++;
 		});
     }
 	
@@ -139,12 +168,24 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
      *  상태 변화·입력은 update 가 책임진다.)
      */
     override fun update(delta: Float) {
+		// 제목 표시줄에 정보 표시
+		val windowTitle: String;
+		when(TitleInfoType.byIndex(currentTitleInfo)) {
+			TitleInfoType.OPENED	-> windowTitle = "연 상자: ${player.openedContainerCount}개";
+			TitleInfoType.KILLED	-> windowTitle = "잡은 좀비 수: ${player.killedZombieCount}";
+			TitleInfoType.FIRED		-> windowTitle = "발사한 총알 수: ${player.firedBullets}";
+			TitleInfoType.SURVIVED	-> windowTitle = "생존 시간: ${Utils.parseSeconds(player.survivedDuration)}";
+		}
+		Gdx.graphics.setTitle("${game.title} - $windowTitle");
+		
         when (state) {
             GameState.IN_PLAY	-> {
 				super.update(delta);
 				updateInPlay(delta);
 			}
-            GameState.GAME_OVER	-> updateGameOver()
+            GameState.GAME_OVER	-> {
+				updateGameOver();
+			}
         }
     }
 
@@ -166,8 +207,6 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		
         if(!player.isAlive())
             state = GameState.GAME_OVER;  // 피가 0 이하가 되면 진짜 게임 오버!
-		
-		executeTimers();
     }
 
     /** GAME_OVER 상태에서 매 프레임 처리 — ESC 입력만 감시한다. */
