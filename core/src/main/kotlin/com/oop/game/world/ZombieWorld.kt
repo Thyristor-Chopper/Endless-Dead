@@ -212,7 +212,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		// 좀비 처리
 		for(zombie in zombies)
 			if(player.collidesWith(zombie))
-				player.takeDamage(zombie.damage, 1.0f);
+				player.takeDamage(zombie.damage, 1.0f, zombie);
 		
         if(!player.isAlive())
             state = GameState.GAME_OVER;  // 피가 0 이하가 되면 진짜 게임 오버!
