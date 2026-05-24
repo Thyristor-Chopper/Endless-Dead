@@ -1,9 +1,9 @@
 package com.oop.game.world;
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
 import com.oop.game.GameState;
@@ -26,7 +26,7 @@ import com.oop.game.item.Shotgun;
 import com.oop.game.spawner.Spawner;
 import com.oop.game.spawner.ZombieSpawner;
 
-import kotlin.math.floor
+import kotlin.math.floor;
 import kotlin.random.Random;
 
 /**

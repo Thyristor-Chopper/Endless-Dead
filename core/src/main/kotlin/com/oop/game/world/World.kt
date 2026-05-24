@@ -1,15 +1,16 @@
 package com.oop.game.world;
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.ScreenAdapter
-import com.badlogic.gdx.graphics.Color
-import com.badlogic.gdx.graphics.GL20
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
 import com.oop.game.GameState;
+import com.oop.game.ItemHolder;
 import com.oop.game.TimerExecutor;
 import com.oop.game.Updatable;
 import com.oop.game.WorldObject;
@@ -156,12 +157,11 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
 			if(it is Updatable)
 				it.update(delta);
 			if(it is Item && it.toBeDestroyed) {
-				val holder: InventoryEntity? = it.holder;
-				val container: Container? = it.container;
-				if(holder != null)
-					holder.removeItemFromInventory(it);
-				if(container != null)
-					container.destroyItem();
+				val holder: ItemHolder? = it.holder;
+				when(holder) {  // null이면 아무 작업도 안 됨
+					is InventoryEntity	-> holder.removeItemFromInventory(it);
+					is Container		-> holder.destroyItem();
+				}
 			}
 		};
     }
