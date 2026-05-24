@@ -1,6 +1,5 @@
 package com.oop.game;
 
-import com.oop.game.GameState;
 import com.oop.game.entity.Entity;
 import com.oop.game.item.Item;
 import com.oop.game.world.World;
