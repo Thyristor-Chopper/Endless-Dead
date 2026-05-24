@@ -44,16 +44,16 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	 * 아이템 가져가기
 	 *
 	 * @param 	taker	아이템을 가져가는 인벤토리를 가진 개체
-	 * @return 	성공 여부
+	 * @return 	성공하면 들어있는 아이템, 실패하면 null
 	 */
-	fun takeItem(taker: InventoryEntity, select: Boolean = false): Boolean {
+	fun takeItem(taker: InventoryEntity, select: Boolean = false): Item? {
 		val target = containedItem;  // https://stackoverflow.com/questions/44595529/smart-cast-to-type-is-impossible-because-variable-is-a-mutable-property-tha
-		if(target == null) return false;
+		if(target == null) return null;
 		taker.addItemToInventory(target, select);
 		target.holder = taker;
 		containedItem = null;
 		if(isPlayerItem) isPlayerItem = false;
-		return true;
+		return target;
 	}
 	
 	/**

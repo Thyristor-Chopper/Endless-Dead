@@ -155,12 +155,19 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 							world.drawSubtitles("Put ${currentHolding.name} into the container");
 							entity.putItem(currentHolding, true);
 							removeItemFromInventory(currentHolding);
+						} else {
+							world.drawSubtitles("Can't take any item; container is empty");
 						}
 					} else {
-						world.drawSubtitles("Took ${entity.containedItem!!.name} from the container");
-						entity.takeItem(this, true);
-						if(!entity.isPlayerItem)
-							openedContainerCount++;
+						val isPlayerItem = entity.isPlayerItem;
+						val item: Item? = entity.takeItem(this, true);
+						if(item == null) {
+							world.drawSubtitles("Failed to take the item in the container");
+						} else {
+							world.drawSubtitles("Took ${item.name} from the container");
+							if(!isPlayerItem)
+								openedContainerCount++;
+						}
 					}
 				}
 			}
