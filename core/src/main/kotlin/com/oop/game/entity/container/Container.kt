@@ -49,6 +49,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		}
 		taker.addItemToInventory(target, select);
 		containedItem = null;
+		if(flag) flag = false;
 	}
 	
 	/**
