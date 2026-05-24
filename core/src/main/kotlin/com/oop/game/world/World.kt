@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Align;
 
 import com.oop.game.GameState;
 import com.oop.game.TimerExecutor;
+import com.oop.game.Updatable;
 import com.oop.game.ZombieGame;
 import com.oop.game.entity.Bullet;
 import com.oop.game.entity.Entity;
@@ -61,7 +62,7 @@ import com.oop.game.item.Item;
  * @param width        월드 전체 너비 (기본값: 화면과 동일 = 스크롤 없음)
  * @param height       월드 전체 높이
  */
-abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHeight: Float, val width: Float = screenWidth, val height: Float = screenHeight) : ScreenAdapter() {
+abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHeight: Float, val width: Float = screenWidth, val height: Float = screenHeight) : ScreenAdapter(), Updatable {
 	abstract var state: GameState
 		protected set;
 	abstract val player: Player;
@@ -143,10 +144,8 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
      */
     protected fun updateAllObjects(delta: Float) {
 		forEachObjects {
-			when(it) {
-				is Item		-> it.update(delta);
-				is Entity	-> it.update(delta);
-			}
+			if(it is Updatable)
+				it.update(delta);
 		};
     }
 
@@ -179,7 +178,7 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
      * 객체 간 상호작용(충돌·점수·생사 결정) 이 있는 게임이면 override 해서
      * 위 두 호출 사이에 그 로직을 끼워 넣는다 (ExampleWorld 참고).
      */
-    open fun update(delta: Float) {
+    override fun update(delta: Float) {
         updateAllObjects(delta);
         removeDead();
     }

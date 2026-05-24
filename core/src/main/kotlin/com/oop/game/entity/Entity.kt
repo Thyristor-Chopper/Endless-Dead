@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle
 
 import com.oop.game.Position;
+import com.oop.game.Updatable;
 import com.oop.game.entity.Entity;
 import com.oop.game.world.World;
 
@@ -47,7 +48,7 @@ import kotlin.math.sqrt;
  * @param height	세로 크기 (픽셀)
  * @param texture	아이템 텍스처(없을 수도 있음)
  */
-abstract class Entity(val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) {
+abstract class Entity(val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) : Updatable {
 	protected val texture: Texture?;
 	
 	init {
@@ -57,19 +58,6 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
 		else
 			this.texture = Texture(Gdx.files.internal(texturePath));
 	}
-	
-    /**
-     * 매 프레임 호출되어 **상태를 갱신**한다.
-     *
-     * abstract 인 이유: 객체마다 '움직이는 방식'이 완전히 다르기 때문.
-     *   Player 는 키 입력을 읽고, Enemy 는 AI 로직을 돌리고, Bullet 은 직진한다.
-     *   공통 구현을 한 가지로 정할 수 없으니, 서브클래스가 강제로 구현하게 한다.
-     *
-     * @param delta 직전 프레임과의 시간 간격(초). 60fps 면 약 0.0167.
-     *              '픽셀/초' 단위의 속도에 delta 를 곱하면 '이번 프레임 이동량' 이 된다.
-     *              (프레임 속도가 달라져도 같은 속도로 움직이게 하려는 공식)
-     */
-    open fun update(delta: Float) {}
 
     /**
      * 매 프레임 호출되어 **자신을 그린다**.
