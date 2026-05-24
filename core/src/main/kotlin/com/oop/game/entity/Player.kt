@@ -155,6 +155,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 							world.drawSubtitles("Put ${currentHolding.name} into the container");
 							entity.putItem(currentHolding, true);
 							removeItemFromInventory(currentHolding);
+							break;  // 하나씩만
 						} else {
 							world.drawSubtitles("Can't take any item; container is empty");
 						}
@@ -167,6 +168,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 							world.drawSubtitles("Took ${item.name} from the container");
 							if(!isPlayerItem)
 								openedContainerCount++;
+							break;  // 하나씩만
 						}
 					}
 				}
