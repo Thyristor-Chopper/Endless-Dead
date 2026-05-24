@@ -30,6 +30,11 @@ object Utils {
 		return ret;
 	}
 	
+	/**
+	 * 초를 X분 X초로 변환한다
+	 *
+	 * @param seconds	초
+	 */
 	fun parseSeconds(seconds: Int): String {
 		if(seconds < 60) return "${seconds}초";
 		return "${seconds / 60}분 ${seconds % 60}초";

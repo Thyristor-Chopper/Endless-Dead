@@ -18,7 +18,7 @@ import kotlin.random.Random;
 class ZombieSpawner(val world: World, val spawnInterval: Float = 3f) {
     private var timer = 0f
 
-    fun update(delta: Float): Zombie? {
+    fun tick(delta: Float): Zombie? {
         timer += delta
         if (timer >= spawnInterval) {
             timer -= spawnInterval
