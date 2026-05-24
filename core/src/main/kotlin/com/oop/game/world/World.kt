@@ -96,12 +96,16 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
     //  객체 관리
     // ────────────────────────────────────────────────────────
 
-    /** 객체를 월드에 등록 — 이후부터 자동으로 update/draw 된다. */
+    /**
+	 * 객체를 월드에 등록 — 이후부터 자동으로 update/draw 된다.
+	 */
     fun add(obj: Entity) {
         entities.add(obj);
     }
 
-    /** 특정 객체를 수동 제거. 보통은 isAlive()=false 후 removeDead() 로 정리. */
+    /**
+	 * 특정 객체를 수동 제거. 보통은 isAlive()=false 후 removeDead() 로 정리.
+	 */
     fun remove(obj: Entity) {
         entities.remove(obj);
     }
@@ -119,7 +123,11 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
     //  매 프레임 로직
     // ────────────────────────────────────────────────────────
 	
-	// 월드 내 모든 아이템과 개체를 순회
+	/**
+	 * 월드 내 모든 아이템과 개체를 순회한다.
+	 *
+	 * @param callback	실행할 서브루틴
+	 */
 	private fun forEachObjects(callback: (WorldObject) -> Unit) {
 		for(entity in entities.toList()) {
 			callback(entity);
@@ -192,6 +200,9 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
         removeDead();
     }
 	
+	/**
+	 * 월드 내 모든 아이템과 개체에 붙어 있는 타이머를 실행하고 갱신해준다.
+	 */
 	private fun executeAllTimers() {
 		// 개체와 아이템에 등록된 타이머
 		forEachObjects {
@@ -227,17 +238,17 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
         // 3) 게임 로직 업데이트
         update(delta);
 		
-		// 타이머 실행
+		// 4) 타이머 실행
 		executeAllTimers();
 
-        // 4) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
+        // 5) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
         batch.begin();
         drawBackground(batch);
         drawBackgroundOverlay();
         drawAllObjects();
         batch.end();
 		
-		// 자막
+		// 6) 자막이 있으면 표시
 		val message: String? = subtitlesMessage;
 		if(subtitlesTimer > 0 && message != null) {
 			drawTextOnScreen(
@@ -358,6 +369,13 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
         drawTextOnScreen(text, screenX, screenY, color, scale, width, align, fixedWidthChars, skipBatch);
     }
 	
+	/**
+	 * 화면 하단에 자막을 표시한다.
+	 *
+	 * @param message	표시할 내용
+	 * @param duration	표시 시간(초)
+	 * @param color		글자 색
+	 */
 	fun drawSubtitles(message: String, duration: Int = 3, color: Color = Color.WHITE) {
 		subtitlesTimer = duration * game.fps;
 		subtitlesMessage = message;

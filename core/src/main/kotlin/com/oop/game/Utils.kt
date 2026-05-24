@@ -1,5 +1,8 @@
 package com.oop.game;
 
+/**
+ * 유용한 함수 모음
+ */
 object Utils {
 	val PROGRESS_BAR_FILLED = '=';
 	val PROGRESS_BAR_EMPTY = ' ';

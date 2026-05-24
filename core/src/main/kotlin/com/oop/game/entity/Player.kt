@@ -171,12 +171,18 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
         y = y.coerceIn(0f, world.height - height);
     }
 	
+	/**
+	 * 대미지를 받았을 때 자연 회복 타이머를 초기화하고 점수를 감점한다
+	 */
 	override fun onDamage(damage: Int, attacker: Entity?) {
 		healTimer.reset();
 		ScoreManager.subtractScore(5);
 		totalDamage += damage;
 	}
 	
+	/**
+	 * 처치한 좀비 수를 갱신한다.
+	 */
 	override fun onKill(victim: LivingEntity) {
 		if(victim is Zombie)
 			killedZombieCount++;

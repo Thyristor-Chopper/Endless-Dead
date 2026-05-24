@@ -4,11 +4,17 @@ import com.oop.game.entity.Entity;
 import com.oop.game.item.Item;
 import com.oop.game.world.World;
 
+/**
+ * 지정한 시간마다 특정 작업(타이머)을 실행할 수 있는 객체
+ */
 interface TimerExecutor {
-	val MAX_UNIT_TIMER: Int;
+	val MAX_UNIT_TIMER: Int;  // ZombieGame#fps로 해야 한다.
 	var unitTimer: Int;
 	val timers: MutableList<Timer>;
 	
+	/**
+	 * 매 초마다 timers의 타이머들을 갱신하여 대기시간을 줄이고 대기 시간이 0이 된 타이머를 실행한다.
+	 */
 	fun executeTimers() {
 		if(unitTimer != 0) {
 			unitTimer--;
@@ -33,10 +39,20 @@ interface TimerExecutor {
 		unitTimer = MAX_UNIT_TIMER;
 	}
 	
+	/**
+	 * 타이머를 등록한다.
+	 *
+	 * @param timer	등록할 타이머 객체
+	 */
 	fun registerTimer(timer: Timer) {
 		timers.add(timer);
 	}
 	
+	/**
+	 * 타이머를 등록을 해제한다.
+	 *
+	 * @param timer	대상 타이머 객체
+	 */
 	fun unregisterTimer(timer: Timer) {
 		timers.remove(timer);
 	}

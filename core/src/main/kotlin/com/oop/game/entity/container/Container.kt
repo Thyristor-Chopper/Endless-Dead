@@ -23,6 +23,9 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	val isEmpty: Boolean
 		get() = (containedItem == null);
 	
+	/**
+	 * 상자를 화면에 그린다. 비어 있을 때와 아닐 때 텍스처가 다르기 때문에 override해서 처리한다.
+	 */
 	override fun draw(batch: SpriteBatch) {
 		val texture = this.texture;
 		val flagTexture = this.flagTexture;
@@ -66,7 +69,10 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		item.container = this;
 	}
 	
-	internal fun destroyItem() {
+	/**
+	 * 안에 들어 있는 아이템을 제거(파괴)한다.
+	 */
+	fun destroyItem() {
 		if(containedItem == null) throw IllegalStateException("no item to destroy");
 		containedItem!!.toBeDestroyed = true;
 		containedItem = null;

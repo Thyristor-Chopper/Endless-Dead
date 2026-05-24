@@ -25,7 +25,14 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		};
 	var latestAttacker: Entity? = null
 		private set;
-
+	
+	/**
+	 * 체력 감소(대미지를 입는다.)
+	 *
+	 * @param damage	피해량
+	 * @param duration	무적 타이머
+	 * @param attacker	공격자
+	 */
 	open fun takeDamage(damage: Int, duration: Float = 0f, attacker: Entity? = null) {
 		// 무적 시간이 다 끝났을 때만 피격당함
 		if (invincibilityTimer == 0f) {
@@ -44,15 +51,33 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		}
 	}
 	
+	/**
+	 * 체력을 회복한다.
+	 *
+	 * @param amount	회복할 양
+	 */
 	open fun heal(amount: Int) {
 		hp += amount;
 	}
 	
+	/**
+	 * 대미지를 받았을 때 실행할 콜백 함수
+	 *
+	 * @param damage	받은 피해량
+	 * @param attacker	공격자
+	 */
 	open fun onDamage(damage: Int, attacker: Entity?) {}
 	
+	/**
+	 * 죽었을 때 실행할 콜백 함수
+	 *
+	 * @param killer	공격자
+	 */
 	open fun onDeath(killer: Entity?) {}
 
-	// 매프레임 무적 시간 감소 로직
+	/**
+	 * 매 프레임 무적 시간 감소
+	 */
 	override fun update(delta: Float) {
 		super.update(delta);
 		

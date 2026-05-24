@@ -154,6 +154,9 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		});
     }
 	
+	/**
+	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다
+	 */
 	private fun generateRandomItem(): Item {
 		return when(Random.nextInt(3)) {
 			0		-> MachineGun(this)
@@ -193,7 +196,9 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         }
     }
 
-    /** IN_PLAY 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크. */
+    /**
+	 * IN_PLAY 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
+	 */
     private fun updateInPlay(delta: Float) {
         // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
         //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
@@ -218,7 +223,9 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
             state = GameState.GAME_OVER;  // 피가 0 이하가 되면 진짜 게임 오버!
     }
 
-    /** GAME_OVER 상태에서 매 프레임 처리 — ESC 입력만 감시한다. */
+    /**
+	 * GAME_OVER 상태에서 매 프레임 처리 — ESC 입력만 감시한다.
+	 */
     private fun updateGameOver() {
         // ESC 키가 '막 눌린 순간' 앱 종료.
         //   isKeyJustPressed 로 한 이유: 누르고 있는 동안 매 프레임 exit 호출되지 않게.
@@ -288,6 +295,9 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         }
     }
 	
+	/**
+	 * 월드 중심처럼 배경에 오버레이되는 것을 그린다
+	 */
 	override protected fun drawBackgroundOverlay() {
 		// 월드 텍스트 (월드 좌표) — 월드 정중앙에 표시
         //    WASD 로 카메라를 움직이면 이 글자도 화면에서 움직인다.
@@ -301,7 +311,9 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         );
 	}
 
-    /** 항상 화면에 표시되는 정보 — HP 표시와 월드 중앙 표지. */
+    /**
+	 * 항상 화면에 표시되는 정보 — HP 표시와 월드 중앙 표지.
+	 */
     private fun drawHud() {
         // 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
         //    카메라가 움직여도 항상 이 위치에 있다.
@@ -378,7 +390,9 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         );
     }
 
-    /** 게임 오버 시 화면 중앙에 띄우는 안내 메시지. */
+    /**
+	 * 게임 오버 시 화면 중앙에 띄우는 안내 메시지.
+	 */
     private fun drawGameOverOverlay() {
         drawTextOnScreen(
             text = "YOU DIED!",
@@ -396,7 +410,9 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         )
     }
 
-    /** 화면이 닫힐 때 — 부모도 dispose 한 뒤 우리만의 자원도 해제. */
+    /**
+	 * 화면이 닫힐 때 — 부모도 dispose 한 뒤 우리만의 자원도 해제.
+	 */
     override fun dispose() {
         super.dispose()
         tileTexture.dispose()

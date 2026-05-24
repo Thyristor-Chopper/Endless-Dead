@@ -18,6 +18,9 @@ import kotlin.random.Random;
 class ZombieSpawner(val world: World, val spawnInterval: Float = 3f) {
     private var timer = 0f
 
+	/**
+	 * 매 프레임 실행해서 소환할 시간이 되면 좀비를 스폰한다
+	 */
     fun tick(delta: Float): Zombie? {
         timer += delta
         if (timer >= spawnInterval) {
@@ -27,6 +30,9 @@ class ZombieSpawner(val world: World, val spawnInterval: Float = 3f) {
         return null
     }
 
+	/**
+	 * 무작위로 좀비 종류를 골라서 월드에 추가하고 반환한다
+	 */
     private fun spawnRandomZombie(): Zombie {
         val randomX = Random.nextFloat() * (world.width - 70f);
         val randomY = Random.nextFloat() * (world.height - 70f);

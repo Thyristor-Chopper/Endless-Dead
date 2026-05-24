@@ -18,8 +18,10 @@ import com.oop.game.world.World;
  * @param bulletSpeed	총알 속도
  * @param penetrable	총알 관통 가능 여부
  * @param fireInterval	공격 속도
+ * @param maxAmmo		최대 총알 개수
+ * @param initialAmmo	초기 총알 개수
  */
-abstract class Gun(world: World, id: String, name: String, override val bulletDamage: Int, override val bulletSpeed: Float, override val penetrable: Boolean, override val fireInterval: Float, val maxAmmo: Int, initialAmmo: Int) : Item(world, id, name), Fireable, Usable {
+abstract class Gun(world: World, id: String, name: String, override val bulletDamage: Int, override val bulletSpeed: Float, override val penetrable: Boolean, val fireInterval: Float, val maxAmmo: Int, initialAmmo: Int) : Item(world, id, name), Fireable, Usable {
 	override val allowContinuousUse = true;
 	private var fireCooldown = 0f
 		set(value) {
@@ -34,20 +36,34 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 			else if(value > maxAmmo) field = maxAmmo;
 			else field = value;
 		};
-
+	
+	/**
+	 * 남은 쿨타임을 갱신한다.
+	 */
 	override fun update(delta: Float) {
 		if(fireCooldown > 0f)
 			fireCooldown -= delta
 	}
 	
+	/**
+	 * 총을 쏘고 쿨타임을 건다.
+	 */
 	private fun startFireCooldown() {
 		fireCooldown = fireInterval
 	}
 	
+	/**
+	 * 남은 쿨타임을 전체 공격 간격에 비례하여 0~1로 정규화하여 반환한다.
+	 */
 	fun getRemainingCooldownPercentage(): Float {
 		return fireCooldown / fireInterval;
 	}
 	
+	/**
+	 * 총 쏘기
+	 *
+	 * @return 발사 성공 여부
+	 */
 	override fun fire(target: Position, shooter: Entity): Boolean {
 		if(!canFire) return false;
 		
@@ -66,6 +82,11 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 		return true;
 	}
 	
+	/**
+	 * 아이템 사용 처리
+	 *
+	 * @return 사용 성공 여부
+	 */
 	override fun use(): Boolean {
 		return fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), world.player);
 	}

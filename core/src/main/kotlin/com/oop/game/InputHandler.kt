@@ -43,10 +43,20 @@ object InputHandler {
         return Gdx.input.isKeyJustPressed(key)
     }
 	
+	/**
+     * 지정한 마우스 단추가 눌려 있는지 확인
+	 *
+	 * @param button	단추의 종류
+     */
     fun isButtonPressed(button: Int): Boolean {
         return Gdx.input.isButtonPressed(button)
     }
 
+	/**
+     * 지정한 마우스 단추를 막 눌렀는지 확인
+	 *
+	 * @param button	단추의 종류
+     */
     fun isButtonJustPressed(button: Int): Boolean {
         return Gdx.input.isButtonJustPressed(button)
     }
