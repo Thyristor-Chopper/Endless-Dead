@@ -5,7 +5,7 @@ import com.oop.game.world.World;
 /**
  * 붕대 - 회복 아이템
  *
- * @param world			아이템이 있는 세계
+ * @param world	아이템이 있는 세계
  */
 class Bandage(world: World) : Item(world, "bandage", "Bandage"), Usable {
 	override val allowContinuousUse = false;

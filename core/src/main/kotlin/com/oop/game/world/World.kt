@@ -377,7 +377,7 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
 	 * @param color		글자 색
 	 */
 	fun drawSubtitles(message: String, duration: Int = 3, color: Color = Color.WHITE) {
-		subtitlesTimer = duration * game.fps;
+		subtitlesTimer = duration * ZombieGame.FPS;
 		subtitlesMessage = message;
 		subtitlesColor = color;
 	}

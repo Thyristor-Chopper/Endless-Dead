@@ -101,18 +101,15 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
     //
     //   tile.png 는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color 를
     //   바꿔가며 두 가지 색으로 그리는 트릭(틴트) 으로 체스판을 만든다.
-    private val tileTexture = Texture(Gdx.files.internal("tile.bmp"))
-    private val bgColorDark = Color(0.15f, 0.34f, 0.16f, 1f)
-    private val bgColorLight = Color(0.15f, 0.4f, 0.16f, 1f)
-    private val tileSize = 64f
-	private val MAX_REFILL_COOLDOWN_MAX = 30 * game.fps;
-	private var refillCooldown = MAX_REFILL_COOLDOWN_MAX;
+    private val tileTexture = Texture(Gdx.files.internal("tile.bmp"));
+    private val bgColorDark = Color(0.15f, 0.34f, 0.16f, 1f);
+    private val bgColorLight = Color(0.15f, 0.4f, 0.16f, 1f);
+    private val tileSize = 64f;
 	// 타이머
-	override val MAX_UNIT_TIMER = game.fps;
-	override var unitTimer = MAX_UNIT_TIMER
+	override var unitTimer = TimerExecutor.MAX_UNIT_TIMER
 		set(value) {
 			if(value < 0) field = 0;
-			else if(value > MAX_UNIT_TIMER) field = MAX_UNIT_TIMER;
+			else if(value > TimerExecutor.MAX_UNIT_TIMER) field = TimerExecutor.MAX_UNIT_TIMER;
 			else field = value;
 		};
 	override val timers = mutableListOf<Timer>();
@@ -187,7 +184,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 			TitleInfoType.SURVIVED	-> windowTitle = "생존 시간: ${Utils.parseSeconds(player.survivedDuration)}";
 			TitleInfoType.DAMAGE	-> windowTitle = "누적 피해량: ${player.totalDamage}";
 		}
-		Gdx.graphics.setTitle("${game.title} - $windowTitle");
+		Gdx.graphics.setTitle("${ZombieGame.TITLE} - $windowTitle");
 		
         when (state) {
             GameState.IN_PLAY	-> {
