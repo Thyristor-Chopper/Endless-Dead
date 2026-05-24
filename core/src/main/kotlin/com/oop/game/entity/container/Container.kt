@@ -18,7 +18,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	open protected val flagTexture: Texture? = null;
 	var containedItem: Item? = initialItem  // 들어있는 아이템
 		protected set;
-	var flag: Boolean = false
+	var flag = false
 		protected set;
 	val isEmpty: Boolean
 		get() = (containedItem == null);

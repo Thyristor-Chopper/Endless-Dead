@@ -46,6 +46,10 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		}
 	}
 	
+	open fun heal(amount: Int) {
+		hp += amount;
+	}
+	
 	open fun onDamage() {}
 	
 	open fun onDamage(attacker: Entity) {}
@@ -53,16 +57,13 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	open fun onDeath() {}
 	
 	open fun onDeath(killer: Entity) {}
-	
-	open fun heal(amount: Int) {
-		hp += amount;
-	}
 
 	// 매프레임 무적 시간 감소 로직
 	override fun update(delta: Float) {
-		if (invincibilityTimer > 0f) {
-			invincibilityTimer -= delta
-		}
+		super.update(delta);
+		
+		if(invincibilityTimer > 0f)
+			invincibilityTimer -= delta;
 	}
 
 	/**

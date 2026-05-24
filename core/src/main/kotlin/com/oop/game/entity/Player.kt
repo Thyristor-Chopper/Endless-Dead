@@ -9,6 +9,8 @@ import com.oop.game.GameState;
 import com.oop.game.InputHandler
 import com.oop.game.Position;
 import com.oop.game.ScoreManager;
+import com.oop.game.Timer;
+import com.oop.game.TimerExecutor;
 import com.oop.game.Utils;
 import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Container;
@@ -32,7 +34,7 @@ import com.oop.game.world.ZombieWorld;
  *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 GameObject.dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player.bmp", 50), InventoryEntity {
+class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player.bmp", 50), InventoryEntity, TimerExecutor {
 	companion object {
 		// 상수
 		val PLAYER_WIDTH = 30f;
@@ -58,37 +60,17 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	
 	override val inventory = mutableListOf<Item>();
 	override var selectedItemIndex: Int? = null;
-    private val speed = 200f
-	private var mouseDown: Boolean = false;
-	// 각종 타이머들
-	private var MAX_ALIVE_BONUS_COOLDOWN = 1 * world.game.fps;
-	private var aliveBonusCooldown = MAX_ALIVE_BONUS_COOLDOWN
+    private val speed = 200f;
+	// 타이머
+	override val MAX_UNIT_TIMER = world.game.fps;
+	override var unitTimer = MAX_UNIT_TIMER
 		set(value) {
 			if(value < 0) field = 0;
-			else if(value > MAX_ALIVE_BONUS_COOLDOWN) field = MAX_ALIVE_BONUS_COOLDOWN;
+			else if(value > MAX_UNIT_TIMER) field = MAX_UNIT_TIMER;
 			else field = value;
 		};
-	private val MAX_HEAL_COOLDOWN = 30 * world.game.fps;
-	private var healCooldown = MAX_HEAL_COOLDOWN
-		set(value) {
-			if(value < 0) field = 0;
-			else if(value > MAX_HEAL_COOLDOWN) field = MAX_HEAL_COOLDOWN;
-			else field = value;
-		};
-	private val MAX_TITLE_INFO_TIMER = 3 * world.game.fps;
-	private var titleInfoTimer = 0
-		set(value) {
-			if(value < 0) field = 0;
-			else if(value > MAX_TITLE_INFO_TIMER) field = MAX_TITLE_INFO_TIMER;
-			else field = value;
-		};
-	private val MAX_SURVIVED_TIMER = world.game.fps;
-	private var survivedTimer = MAX_SURVIVED_TIMER
-		set(value) {
-			if(value < 0) field = 0;
-			else if(value > MAX_SURVIVED_TIMER) field = MAX_SURVIVED_TIMER;
-			else field = value;
-		};
+	override val timers = mutableListOf<Timer>();
+	private val healTimer: Timer;
 	// 제목 표시줄에 표시할 정보의 인덱스
 	private var currentTitleInfo = 0
 		set(value) {
@@ -135,6 +117,25 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			
 			override fun mouseMoved(x: Int, y: Int): Boolean = false;
 		});
+		
+		// 타이머들
+		
+		// 제목 표시줄 정보 전환
+		registerTimer(Timer(3) {
+			currentTitleInfo++;
+		});
+		
+		// 생존 시간 기록 & 생존 시간 보너스
+		registerTimer(Timer(1) {
+			survivedDuration++;
+			ScoreManager.addScore(1);
+		});
+		
+		// 지얀 회복
+		healTimer = Timer(30) {
+			heal(3);
+		};
+		registerTimer(healTimer);
 	}
 	
     override fun update(delta: Float) {
@@ -208,37 +209,9 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 					takeDamage(zombie.damage, 1.0f);
 				}
 		
-		// 생존 시간 보너스
-		if(aliveBonusCooldown == 0) {
-			ScoreManager.addScore(1);
-			aliveBonusCooldown = MAX_ALIVE_BONUS_COOLDOWN;
-		} else {
-			aliveBonusCooldown--;
-		}
-		
-		// 자연 회복
-		if(healCooldown == 0) {
-			heal(3);
-			healCooldown = MAX_HEAL_COOLDOWN;
-		} else {
-			healCooldown--;
-		}
-		
-		// 생존 시간 기록
-		if(survivedTimer == 0) {
-			survivedDuration++;
-			survivedTimer = MAX_SURVIVED_TIMER;
-		} else {
-			survivedTimer--;
-		}
+		executeTimers();
 		
 		// 제목 표시줄에 정보 표시
-		if(titleInfoTimer == 0) {
-			currentTitleInfo++;
-			titleInfoTimer = MAX_TITLE_INFO_TIMER;
-		} else {
-			titleInfoTimer--;
-		}
 		val windowTitle: String;
 		when(TitleInfoType.byIndex(currentTitleInfo)) {
 			TitleInfoType.OPENED	-> windowTitle = "연 상자: ${openedContainerCount}개";
@@ -250,7 +223,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
     }
 	
 	override fun onDamage() {
-		healCooldown = MAX_HEAL_COOLDOWN;
+		healTimer.reset();
 	}
 	
 	override fun onKill(victim: LivingEntity) {

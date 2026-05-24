@@ -10,6 +10,8 @@ import com.oop.game.GameState;
 import com.oop.game.InputHandler;
 import com.oop.game.ZombieGame;
 import com.oop.game.ScoreManager;
+import com.oop.game.Timer;
+import com.oop.game.TimerExecutor;
 import com.oop.game.Utils;
 import com.oop.game.ZombieSpawner;
 import com.oop.game.entity.Player;
@@ -62,7 +64,7 @@ import kotlin.random.Random;
  * @param worldWidth   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
  * @param worldHeight  월드 전체 높이
  */
-class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, width: Float = screenWidth, height: Float = screenHeight) : World(game, screenWidth, screenHeight, width, height) {
+class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, width: Float = screenWidth, height: Float = screenHeight) : World(game, screenWidth, screenHeight, width, height), TimerExecutor {
     // 플레이어 — 월드 중앙 하단에서 시작.
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
     override val player = Player(this, x = width / 2 - Player.PLAYER_WIDTH / 2, y = height / 2 - Player.PLAYER_HEIGHT / 2);
@@ -85,6 +87,15 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
     private val tileSize = 64f
 	private val MAX_REFILL_COOLDOWN_MAX = 30 * game.fps;
 	private var refillCooldown = MAX_REFILL_COOLDOWN_MAX;
+	// 타이머
+	override val MAX_UNIT_TIMER = game.fps;
+	override var unitTimer = MAX_UNIT_TIMER
+		set(value) {
+			if(value < 0) field = 0;
+			else if(value > MAX_UNIT_TIMER) field = MAX_UNIT_TIMER;
+			else field = value;
+		};
+	override val timers = mutableListOf<Timer>();
 
     /**
      * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -101,6 +112,15 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 				add(Chest(this, x, y, item));
 		}
         add(player);
+		
+		// 30초마다 빈 상자 하나 리필
+		registerTimer(Timer(30) {
+			for(entity in getEntities().shuffled())
+				if(entity is Container && entity.isEmpty) {
+					entity.putItem(generateRandomItem());
+					break;
+				}
+		});
     }
 	
 	private fun generateRandomItem(): Item {
@@ -147,17 +167,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         if(!player.isAlive())
             state = GameState.GAME_OVER;  // 피가 0 이하가 되면 진짜 게임 오버!
 		
-		// 30초마다 빈 상자 리필
-		if(refillCooldown == 0) {
-			for(entity in getEntities().shuffled())
-				if(entity is Container && entity.isEmpty) {
-					entity.putItem(generateRandomItem());
-					break;
-				}
-			refillCooldown = MAX_REFILL_COOLDOWN_MAX;
-		} else {
-			refillCooldown--;
-		}
+		executeTimers();
     }
 
     /** GAME_OVER 상태에서 매 프레임 처리 — ESC 입력만 감시한다. */
