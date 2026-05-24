@@ -63,6 +63,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	 * @param item	넣을 아이템
 	 */
 	fun putItem(item: Item, setFlag: Boolean = false) {
+		if(!isEmpty) throw IllegalStateException("container is not empty");
 		containedItem = item;
 		if(setFlag) isPlayerItem = true;
 		item.holder = this;
@@ -70,11 +71,14 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	
 	/**
 	 * 안에 들어 있는 아이템을 제거한다.
+	 *
+	 * @return 성공 여부
 	 */
-	fun removeItem() {
-		if(containedItem == null) throw IllegalStateException("no item to destroy");
+	fun removeItem(): Boolean {
+		if(containedItem == null) return false;
 		containedItem = null;
 		if(isPlayerItem) isPlayerItem = false;
+		return true;
 	}
 	
 	override fun dispose() {
@@ -83,5 +87,22 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		if(flagTexture != null) flagTexture.dispose();
 		if(emptyTexture != null) emptyTexture.dispose();
 		super.dispose();
+	}
+	
+	override fun getHoldingItem(): Item? = containedItem;
+	
+	override fun setHoldingItem(item: Item) {
+		removeItem();
+		putItem(item);
+	}
+	
+	override fun destroyHoldingItem(): Boolean {
+		return removeItem();
+	}
+	
+	override fun destroyItem(item: Item): Boolean {
+		if(containedItem === item)
+			return removeItem();
+		return false;
 	}
 }

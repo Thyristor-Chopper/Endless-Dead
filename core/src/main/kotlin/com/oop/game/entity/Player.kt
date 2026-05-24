@@ -117,7 +117,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
     override fun update(delta: Float) {
         super<LivingEntity>.update(delta);
 		
-		val holding: Item? = holdingItem;
+		val holding: Item? = selectedItem;
 		
 		// 이동
         if(InputHandler.isKeyPressed(InputHandler.LEFT) || InputHandler.isKeyPressed(InputHandler.A)) {
@@ -150,7 +150,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 				if(!(entity is Container)) continue;
 				if(collidesWith(entity)) {
 					if(entity.isEmpty) {
-						val currentHolding: Item? = holdingItem;
+						val currentHolding: Item? = selectedItem;
 						if(currentHolding != null) {
 							world.drawSubtitles("Put ${currentHolding.name} into the container");
 							entity.putItem(currentHolding, true);

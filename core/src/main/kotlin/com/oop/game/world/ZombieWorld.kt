@@ -338,7 +338,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         );
 		
 		// 3) 현재 플레이어가 들고 있는 아이템
-		val holding: Item? = player.holdingItem;
+		val holding: Item? = player.selectedItem;
 		val holdingIndex: Int? = player.selectedItemIndex;
 		if(holding != null && holdingIndex != null)
 			drawTextOnScreen(

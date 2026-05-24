@@ -24,10 +24,8 @@ abstract class Item(world: World, val id: String, val name: String) : WorldObjec
 	
 	fun destroy() {
 		val holder: ItemHolder? = this.holder;
-		when(holder) {  // null이면 아무 작업도 안 됨
-			is InventoryEntity	-> holder.removeItemFromInventory(this);
-			is Container		-> holder.removeItem();
-		}
+		if(holder != null)
+			holder.destroyItem(this);
 		
 		// 나머지는 jvm이나 달빅이 알아서 gc 해주겠지.
 	}

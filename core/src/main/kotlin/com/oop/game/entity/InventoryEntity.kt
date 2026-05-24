@@ -9,7 +9,7 @@ import com.oop.game.item.Item;
 interface InventoryEntity : ItemHolder {
 	val inventory: MutableList<Item>;
 	var selectedItemIndex: Int?;
-	val holdingItem: Item?
+	val selectedItem: Item?
 		get() {
 			val index: Int? = selectedItemIndex;
 			if(index == null) return null;
@@ -48,12 +48,15 @@ interface InventoryEntity : ItemHolder {
 	/**
 	 * 인벤토리에서 아이템 빼기
 	 *
-	 * @param item	제거할 아이템
+	 * @param 	item	제거할 아이템
+	 * @return 	성공 여부
 	 */
-	fun removeItemFromInventory(item: Item) {
+	fun removeItemFromInventory(item: Item): Boolean {
+		var found = false;
 		if(inventory.size > 0)
 			for(i in 0 until inventory.size)
 				if(inventory[i] === item) {
+					found = true;
 					inventory.removeAt(i);
 					if(i == selectedItemIndex)
 						selectPreviousItem();
@@ -61,6 +64,7 @@ interface InventoryEntity : ItemHolder {
 				}
 		if(inventory.isEmpty())
 			selectedItemIndex = null;
+		return found;
 	}
 	
 	/**
@@ -91,5 +95,30 @@ interface InventoryEntity : ItemHolder {
 			selectedItemIndex = inventory.size - 1;
 		else
 			selectedItemIndex = (selectedItemIndex ?: 1) - 1;
+	}
+	
+	override fun getHoldingItem(): Item? = selectedItem;
+	
+	override fun setHoldingItem(item: Item) {
+		if(inventory.size > 0)
+			for(i in 0 until inventory.size)
+				if(inventory[i] === item) {
+					selectedItemIndex = i;
+					return;
+				}
+		
+		// 인벤토리에 없을 때
+		addItemToInventory(item, true);
+	}
+	
+	override fun destroyHoldingItem(): Boolean {
+		val index: Int? = selectedItemIndex;
+		if(index == null) return false;
+		removeItemFromInventory(index);
+		return true;
+	}
+	
+	override fun destroyItem(item: Item): Boolean {
+		return removeItemFromInventory(item);
 	}
 }
