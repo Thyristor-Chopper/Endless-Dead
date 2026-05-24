@@ -20,6 +20,7 @@ import com.oop.game.entity.container.Building;
 import com.oop.game.entity.container.Chest;
 import com.oop.game.entity.container.Container;
 import com.oop.game.item.Item;
+import com.oop.game.item.Bandage;
 import com.oop.game.item.Gun;
 import com.oop.game.item.MachineGun;
 import com.oop.game.item.Shotgun;
@@ -153,9 +154,10 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
     }
 	
 	private fun generateRandomItem(): Item {
-		return when(Random.nextInt(2)) {
+		return when(Random.nextInt(3)) {
 			0		-> MachineGun(this)
-			else	-> Shotgun(this)
+			1		-> Shotgun(this)
+			else	-> Bandage(this)
 		};
 	}
 

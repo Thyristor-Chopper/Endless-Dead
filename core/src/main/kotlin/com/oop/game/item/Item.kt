@@ -2,6 +2,8 @@ package com.oop.game.item;
 
 import com.oop.game.Updatable;
 import com.oop.game.WorldObject;
+import com.oop.game.entity.InventoryEntity;
+import com.oop.game.entity.container.Container;
 import com.oop.game.world.World;
 
 /**
@@ -13,8 +15,16 @@ import com.oop.game.world.World;
  */
 abstract class Item(world: World, val id: String, val name: String) : WorldObject, Updatable {
 	override val world = world;
+	internal var toBeDestroyed = false;  // world에서 접근 필요
+	internal var holder: InventoryEntity? = null;
+	internal var container: Container? = null;
 	
 	fun equals(other: Item): Boolean {
 		return id == other.id;
+	}
+	
+	fun destroy() {
+		toBeDestroyed = true;
+		// 나머지는 world에서 처리
 	}
 }

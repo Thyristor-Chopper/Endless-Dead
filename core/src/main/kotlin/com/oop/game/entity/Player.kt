@@ -15,6 +15,7 @@ import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Container;
 import com.oop.game.item.Gun;
 import com.oop.game.item.Item;
+import com.oop.game.item.Usable;
 import com.oop.game.world.World;
 import com.oop.game.world.ZombieWorld;
 
@@ -113,7 +114,9 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	}
 	
     override fun update(delta: Float) {
-        super<LivingEntity>.update(delta)
+        super<LivingEntity>.update(delta);
+		
+		val holding: Item? = holdingItem;
 		
 		// 이동
         if(InputHandler.isKeyPressed(InputHandler.LEFT) || InputHandler.isKeyPressed(InputHandler.A)) {
@@ -134,11 +137,10 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		}
 		
 		// 총 쏘기
-		if(InputHandler.isButtonPressed(InputHandler.LEFT_MOUSE)) {
-			val holding = holdingItem;
-			if(holding is Gun)
-				if(holding.fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), this@Player))
-					firedBullets++;
+		if(holding != null && holding is Usable && (InputHandler.isButtonJustPressed(InputHandler.LEFT_MOUSE) || (holding.allowContinuousUse && InputHandler.isButtonPressed(InputHandler.LEFT_MOUSE)))) {
+			val succeeded = holding.use();
+			if(succeeded && holding is Gun)
+				firedBullets++;
 		}
 		
 		// 아이템 가져가기 & 넣기
@@ -147,16 +149,16 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 				if(!(entity is Container)) continue;
 				if(collidesWith(entity)) {
 					if(entity.isEmpty) {
-						val holding: Item? = holdingItem;
-						if(holding != null) {
-							world.drawSubtitles("Put ${holding.name} into the container");
-							entity.putItem(holding, true);
-							removeItemFromInventory(holding);
+						val currentHolding: Item? = holdingItem;
+						if(currentHolding != null) {
+							world.drawSubtitles("Put ${currentHolding.name} into the container");
+							entity.putItem(currentHolding, true);
+							removeItemFromInventory(currentHolding);
 						}
 					} else {
 						world.drawSubtitles("Took ${entity.containedItem!!.name} from the container");
 						entity.takeItem(this, true);
-						if(!entity.flag)
+						if(!entity.isPlayerItem)
 							openedContainerCount++;
 					}
 				}
@@ -165,14 +167,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width - width)
         y = y.coerceIn(0f, world.height - height)
-		
-		// ammo가 다 떨어진 총은 파괴 (만약 충전 기능을 만든다면 이 코드는 비활성화할 수도 있음)
-		val holding: Item? = holdingItem;
-		if(holding != null && holding is Gun)
-			if(holding.ammo == 0) {
-				removeItemFromInventory(holding);
-				world.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
-			}
 		
 		// 좀비 처리
 		if(world is ZombieWorld)

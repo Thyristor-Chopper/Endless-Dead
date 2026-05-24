@@ -89,7 +89,7 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
     init {
         // 카메라를 '왼쪽 아래 = (0,0), 오른쪽 위 = (screenWidth, screenHeight)' 로 설정.
         //   false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
-        camera.setToOrtho(false, screenWidth, screenHeight)
+        camera.setToOrtho(false, screenWidth, screenHeight);
     }
 
     // ────────────────────────────────────────────────────────
@@ -98,12 +98,12 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
 
     /** 객체를 월드에 등록 — 이후부터 자동으로 update/draw 된다. */
     fun add(obj: Entity) {
-        entities.add(obj)
+        entities.add(obj);
     }
 
     /** 특정 객체를 수동 제거. 보통은 isAlive()=false 후 removeDead() 로 정리. */
     fun remove(obj: Entity) {
-        entities.remove(obj)
+        entities.remove(obj);
     }
 
     /**
@@ -147,6 +147,14 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
 		forEachObjects {
 			if(it is Updatable)
 				it.update(delta);
+			if(it is Item && it.toBeDestroyed) {
+				val holder: InventoryEntity? = it.holder;
+				val container: Container? = it.container;
+				if(holder != null)
+					holder.removeItemFromInventory(it);
+				if(container != null)
+					container.destroyItem();
+			}
 		};
     }
 
@@ -209,25 +217,25 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
      */
     override fun render(delta: Float) {
         // 1) 이전 프레임의 잔상 지우기 (검은색으로 채움)
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
+        Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         // 2) 카메라 상태 갱신 후, batch 에게 '이 카메라의 좌표계로 그려라' 알려줌
-        camera.update()
-        batch.projectionMatrix = camera.combined
+        camera.update();
+        batch.projectionMatrix = camera.combined;
 
         // 3) 게임 로직 업데이트
-        update(delta)
+        update(delta);
 		
 		// 타이머 실행
 		executeAllTimers();
 
         // 4) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
-        batch.begin()
-        drawBackground(batch)
-        drawBackgroundOverlay()
-        drawAllObjects()
-        batch.end()
+        batch.begin();
+        drawBackground(batch);
+        drawBackgroundOverlay();
+        drawAllObjects();
+        batch.end();
 		
 		// 자막
 		val message: String? = subtitlesMessage;
@@ -265,7 +273,7 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
      * @param batch 이미 begin() 된 SpriteBatch — 여기에 batch.draw(texture, ...) 로 그린다.
      *              begin/end 를 또 호출하면 안 된다.
      */
-    protected abstract fun drawBackground(batch: SpriteBatch)
+    protected abstract fun drawBackground(batch: SpriteBatch);
 
     /**
      * 등록된 모든 객체를 그린다 — 카메라 오프셋을 반영해서.
@@ -278,13 +286,13 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
      */
     private fun drawAllObjects() {
         for(obj in entities) {
-            val originalX = obj.x
-            val originalY = obj.y
-            obj.x -= offsetX
-            obj.y -= offsetY
-            obj.draw(batch)
-            obj.x = originalX
-            obj.y = originalY
+            val originalX = obj.x;
+            val originalY = obj.y;
+            obj.x -= offsetX;
+            obj.y -= offsetY;
+            obj.draw(batch);
+            obj.x = originalX;
+            obj.y = originalY;
         }
     }
 
@@ -313,8 +321,8 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
     ) {
         if(!skipBatch) batch.projectionMatrix = camera.combined;
 		font.setFixedWidthGlyphs(fixedWidthChars);
-        font.color = color
-        font.data.setScale(scale)
+        font.color = color;
+        font.data.setScale(scale);
         if(!skipBatch) batch.begin();
 		val boxWidth: Float? = width;
 		val textAlign: Int? = align;
@@ -345,8 +353,8 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
 		fixedWidthChars: String = "",  // null이 아닌 이유는 실제로 빈 문자열이면 고정폭이 없다는 뜻
 		skipBatch: Boolean = false
     ) {
-        val screenX = x - offsetX
-        val screenY = y - offsetY
+        val screenX = x - offsetX;
+        val screenY = y - offsetY;
         drawTextOnScreen(text, screenX, screenY, color, scale, width, align, fixedWidthChars, skipBatch);
     }
 	
@@ -365,9 +373,9 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
      * GPU 메모리에 올라간 것들은 수동으로 dispose 해줘야 한다.
      */
     override fun dispose() {
-        batch.dispose()
-        font.dispose()
+        batch.dispose();
+        font.dispose();
         for(obj in entities)
-            obj.dispose()
+            obj.dispose();
     }
 }

@@ -17,9 +17,9 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	open protected val emptyTexture: Texture? = null;
 	open protected val flagTexture: Texture? = null;
 	var containedItem: Item? = initialItem  // 들어있는 아이템
-		protected set;
-	var flag = false
-		protected set;
+		private set;
+	var isPlayerItem = false
+		private set;
 	val isEmpty: Boolean
 		get() = (containedItem == null);
 	
@@ -29,7 +29,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		val emptyTexture = this.emptyTexture;
 		if(isEmpty && emptyTexture != null) {
 			batch.draw(emptyTexture, x, y, width, height);
-		} else if(flag && flagTexture != null) {
+		} else if(isPlayerItem && flagTexture != null) {
 			batch.draw(flagTexture, x, y, width, height);
 		} else if(texture != null) {
 			batch.draw(texture, x, y, width, height);
@@ -48,8 +48,10 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 			return;
 		}
 		taker.addItemToInventory(target, select);
+		target.holder = taker;
+		target.container = null;
 		containedItem = null;
-		if(flag) flag = false;
+		if(isPlayerItem) isPlayerItem = false;
 	}
 	
 	/**
@@ -59,6 +61,15 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	 */
 	fun putItem(item: Item, setFlag: Boolean = false) {
 		containedItem = item;
-		if(setFlag) flag = true;
+		if(setFlag) isPlayerItem = true;
+		item.holder = null;
+		item.container = this;
+	}
+	
+	internal fun destroyItem() {
+		if(containedItem == null) throw IllegalStateException("no item to destroy");
+		containedItem!!.toBeDestroyed = true;
+		containedItem = null;
+		if(isPlayerItem) isPlayerItem = false;
 	}
 }
