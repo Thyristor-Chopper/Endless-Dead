@@ -138,7 +138,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         add(player);
 		
 		// 30초마다 빈 상자 하나 리필
-		registerTimer(Timer(30, true) {
+		registerTimer(Timer(30) {
 			for(entity in getEntities().shuffled())
 				if(entity is Container && entity.isEmpty) {
 					entity.putItem(generateRandomItem());
@@ -147,7 +147,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		});
 		
 		// 제목 표시줄 정보 전환
-		registerTimer(Timer(3) {
+		registerTimer(Timer(3, false) {
 			currentTitleInfo++;
 		});
     }

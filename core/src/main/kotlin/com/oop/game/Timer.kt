@@ -1,6 +1,6 @@
 package com.oop.game;
 
-class Timer(timerInterval: Int, val onlyInPlay: Boolean = false, internal val run: () -> Unit) {
+class Timer(timerInterval: Int, val onlyInPlay: Boolean = true, internal val run: () -> Unit) {
 	val interval = timerInterval - 1;
 	private var delta = interval
 		set(value) {
