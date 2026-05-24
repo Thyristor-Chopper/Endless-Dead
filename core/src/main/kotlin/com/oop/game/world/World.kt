@@ -156,13 +156,6 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
 		forEachObjects {
 			if(it is Updatable)
 				it.update(delta);
-			if(it is Item && it.toBeDestroyed) {
-				val holder: ItemHolder? = it.holder;
-				when(holder) {  // null이면 아무 작업도 안 됨
-					is InventoryEntity	-> holder.removeItemFromInventory(it);
-					is Container		-> holder.destroyItem();
-				}
-			}
 		};
     }
 

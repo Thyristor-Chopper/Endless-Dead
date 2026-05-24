@@ -43,18 +43,17 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	/**
 	 * 아이템 가져가기
 	 *
-	 * @param taker	아이템을 가져가는 인벤토리를 가진 개체
+	 * @param 	taker	아이템을 가져가는 인벤토리를 가진 개체
+	 * @return 	성공 여부
 	 */
-	fun takeItem(taker: InventoryEntity, select: Boolean = false) {
+	fun takeItem(taker: InventoryEntity, select: Boolean = false): Boolean {
 		val target = containedItem;  // https://stackoverflow.com/questions/44595529/smart-cast-to-type-is-impossible-because-variable-is-a-mutable-property-tha
-		if(target == null) {
-			// TODO 아이템이 없다는 메시지 표시
-			return;
-		}
+		if(target == null) return false;
 		taker.addItemToInventory(target, select);
 		target.holder = taker;
 		containedItem = null;
 		if(isPlayerItem) isPlayerItem = false;
+		return true;
 	}
 	
 	/**
@@ -69,11 +68,10 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	}
 	
 	/**
-	 * 안에 들어 있는 아이템을 제거(파괴)한다.
+	 * 안에 들어 있는 아이템을 제거한다.
 	 */
-	fun destroyItem() {
+	fun removeItem() {
 		if(containedItem == null) throw IllegalStateException("no item to destroy");
-		containedItem!!.destroy();
 		containedItem = null;
 		if(isPlayerItem) isPlayerItem = false;
 	}

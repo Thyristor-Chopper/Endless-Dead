@@ -16,8 +16,6 @@ import com.oop.game.world.World;
  */
 abstract class Item(world: World, val id: String, val name: String) : WorldObject, Updatable {
 	override val world = world;
-	internal var toBeDestroyed = false  // world에서 접근 필요
-		private set;
 	internal var holder: ItemHolder? = null;
 	
 	fun equals(other: Item): Boolean {
@@ -25,7 +23,12 @@ abstract class Item(world: World, val id: String, val name: String) : WorldObjec
 	}
 	
 	fun destroy() {
-		toBeDestroyed = true;
-		// 나머지는 world에서 처리
+		val holder: ItemHolder? = this.holder;
+		when(holder) {  // null이면 아무 작업도 안 됨
+			is InventoryEntity	-> holder.removeItemFromInventory(this);
+			is Container		-> holder.removeItem();
+		}
+		
+		// 나머지는 jvm이나 달빅이 알아서 gc 해주겠지.
 	}
 }
