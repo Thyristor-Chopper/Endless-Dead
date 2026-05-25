@@ -35,6 +35,7 @@ interface InventoryEntity {
 	 */
 	fun removeItemFromInventory(index: Int) {
 		val currentIndex: Int? = selectedItemIndex;
+		inventory[index].holder = null;
 		inventory.removeAt(index);
 		if(inventory.isEmpty())
 			selectedItemIndex = null;
@@ -56,6 +57,7 @@ interface InventoryEntity {
 			for(i in 0 until inventory.size)
 				if(inventory[i] === item) {
 					found = true;
+					inventory[i].holder = null;
 					inventory.removeAt(i);
 					if(i == selectedItemIndex)
 						selectPreviousItem();
