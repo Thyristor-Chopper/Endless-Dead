@@ -7,6 +7,7 @@ object Utils {
 	val PROGRESS_BAR_FILLED = '=';
 	val PROGRESS_BAR_EMPTY = ' ';
 	private val DEFAULT_PROGRESS_BAR_SIZE = 20;
+	val PROGRESS_BAR_CHARACTERS = "${PROGRESS_BAR_FILLED}${PROGRESS_BAR_EMPTY}";
 	
 	/**
 	 * 미터기를 그린다.

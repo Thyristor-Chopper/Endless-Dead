@@ -42,14 +42,14 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	 */
 	override fun update(delta: Float) {
 		if(fireCooldown > 0f)
-			fireCooldown -= delta
+			fireCooldown -= delta;
 	}
 	
 	/**
 	 * 총을 쏘고 쿨타임을 건다.
 	 */
 	private fun startFireCooldown() {
-		fireCooldown = fireInterval
+		fireCooldown = fireInterval;
 	}
 	
 	/**

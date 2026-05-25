@@ -334,7 +334,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
             y = screenHeight - 10f,
             color = Color.YELLOW,
             scale = 1.0f,
-			fixedWidthChars = "${Utils.PROGRESS_BAR_FILLED}${Utils.PROGRESS_BAR_EMPTY}"
+			fixedWidthChars = Utils.PROGRESS_BAR_CHARACTERS
         );
 		
 		// 3) 현재 플레이어가 들고 있는 아이템
@@ -359,7 +359,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 				scale = 1.0f,
 				width = 180.0f,
 				align = Align.right,
-				fixedWidthChars = "${Utils.PROGRESS_BAR_FILLED}${Utils.PROGRESS_BAR_EMPTY}"
+				fixedWidthChars = Utils.PROGRESS_BAR_CHARACTERS
 			);
 		
 		// 5) 총의 공격 쿨타임 표시
@@ -374,7 +374,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 						scale = 1.0f,
 						width = 180.0f,
 						align = Align.right,
-						fixedWidthChars = "${Utils.PROGRESS_BAR_FILLED}${Utils.PROGRESS_BAR_EMPTY}"
+						fixedWidthChars = Utils.PROGRESS_BAR_CHARACTERS
 					);
 			}
 		}
