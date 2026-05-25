@@ -7,7 +7,7 @@ LibGDX 기반의 고정 화면 아케이드 게임을 만들기 위한 코드와
 
 ## 1. 사전 준비
 
-### Java JDK 17 (필수)
+### Java JDK 17 (권장) 또는 JDK 8 이상 (필수)
 Mac:
 ```bash
 brew install openjdk@17
