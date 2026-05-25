@@ -1,6 +1,5 @@
 package com.oop.game.item;
 
-import com.oop.game.ItemHolder;
 import com.oop.game.Updatable;
 import com.oop.game.WorldObject;
 import com.oop.game.entity.InventoryEntity;
@@ -16,16 +15,17 @@ import com.oop.game.world.World;
  */
 abstract class Item(world: World, val id: String, val name: String) : WorldObject, Updatable {
 	override val world = world;
-	internal var holder: ItemHolder? = null;
+	var holder: InventoryEntity? = null
+		internal set;
 	
 	fun equals(other: Item): Boolean {
 		return id == other.id;
 	}
 	
 	fun destroy() {
-		val holder: ItemHolder? = this.holder;
+		val holder: InventoryEntity? = this.holder;
 		if(holder != null)
-			holder.destroyItem(this);
+			holder.removeItemFromInventory(this);
 		
 		// 나머지는 jvm이나 달빅이 알아서 gc 해주겠지.
 	}

@@ -1,12 +1,11 @@
 package com.oop.game.entity;
 
-import com.oop.game.ItemHolder;
 import com.oop.game.item.Item;
 
 /**
  * 인벤토리를 가지는 개체에 대한 인터페이스
  */
-interface InventoryEntity : ItemHolder {
+interface InventoryEntity {
 	val inventory: MutableList<Item>;
 	var selectedItemIndex: Int?;
 	val selectedItem: Item?
@@ -95,30 +94,5 @@ interface InventoryEntity : ItemHolder {
 			selectedItemIndex = inventory.size - 1;
 		else
 			selectedItemIndex = (selectedItemIndex ?: 1) - 1;
-	}
-	
-	override fun getHoldingItem(): Item? = selectedItem;
-	
-	override fun setHoldingItem(item: Item) {
-		if(inventory.size > 0)
-			for(i in 0 until inventory.size)
-				if(inventory[i] === item) {
-					selectedItemIndex = i;
-					return;
-				}
-		
-		// 인벤토리에 없을 때
-		addItemToInventory(item, true);
-	}
-	
-	override fun destroyHoldingItem(): Boolean {
-		val index: Int? = selectedItemIndex;
-		if(index == null) return false;
-		removeItemFromInventory(index);
-		return true;
-	}
-	
-	override fun destroyItem(item: Item): Boolean {
-		return removeItemFromInventory(item);
 	}
 }

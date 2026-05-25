@@ -3,7 +3,6 @@ package com.oop.game.entity.container;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import com.oop.game.ItemHolder;
 import com.oop.game.entity.Entity;
 import com.oop.game.entity.InventoryEntity;
 import com.oop.game.item.Item;
@@ -14,7 +13,7 @@ import com.oop.game.world.World;
  *
  * @param initialItem	처음 들어있는 아이템
  */
-abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, initialItem: Item? = null) : Entity(world, x, y, width, height, texture), ItemHolder {
+abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, initialItem: Item? = null) : Entity(world, x, y, width, height, texture) {
 	open protected val emptyTexture: Texture? = null;
 	open protected val flagTexture: Texture? = null;
 	var containedItem: Item? = initialItem  // 들어있는 아이템
@@ -66,7 +65,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		if(!isEmpty) throw IllegalStateException("container is not empty");
 		containedItem = item;
 		if(setFlag) isPlayerItem = true;
-		item.holder = this;
+		item.holder = null;
 	}
 	
 	/**
@@ -82,27 +81,10 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	}
 	
 	override fun dispose() {
+		super.dispose();
 		val flagTexture = this.flagTexture;
 		val emptyTexture = this.emptyTexture;
 		if(flagTexture != null) flagTexture.dispose();
 		if(emptyTexture != null) emptyTexture.dispose();
-		super.dispose();
-	}
-	
-	override fun getHoldingItem(): Item? = containedItem;
-	
-	override fun setHoldingItem(item: Item) {
-		removeItem();
-		putItem(item);
-	}
-	
-	override fun destroyHoldingItem(): Boolean {
-		return removeItem();
-	}
-	
-	override fun destroyItem(item: Item): Boolean {
-		if(containedItem === item)
-			return removeItem();
-		return false;
 	}
 }

@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
 import com.oop.game.GameState;
-import com.oop.game.ItemHolder;
 import com.oop.game.TimerExecutor;
 import com.oop.game.Updatable;
 import com.oop.game.WorldObject;
