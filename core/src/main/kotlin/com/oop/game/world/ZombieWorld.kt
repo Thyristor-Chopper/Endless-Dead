@@ -90,8 +90,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
     override val player = Player(this, x = width / 2 - Player.PLAYER_WIDTH / 2, y = height / 2 - Player.PLAYER_HEIGHT / 2);
     // 현재 게임 상태 — 입력/충돌에 따라 IN_PLAY ↔ GAME_OVER 로 전환된다.
-    override var state = GameState.IN_PLAY
-		protected set;
+    override var state = GameState.IN_PLAY;
     // 좀비들만 따로 모아두는 관리용 리스트
     val zombies: List<Zombie>
 		inline get() = getEntities().filterIsInstance<Zombie>();
@@ -289,7 +288,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         drawHud();
 
         // ── 상태별로 그리는 것이 다름 ──
-        when (state) {
+        when(state) {
             GameState.IN_PLAY 	-> {
                 // 플레이 중에는 추가로 그릴 것 없음
             }
@@ -300,7 +299,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 	/**
 	 * 월드 중심처럼 배경에 오버레이되는 것을 그린다
 	 */
-	override protected fun drawBackgroundOverlay() {
+	override fun drawBackgroundOverlay() {
 		// 월드 텍스트 (월드 좌표) — 월드 정중앙에 표시
         //    WASD 로 카메라를 움직이면 이 글자도 화면에서 움직인다.
         drawTextInWorld(

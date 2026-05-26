@@ -15,6 +15,6 @@ import com.oop.game.world.World;
  * @param initialItem	처음 들어있는 아이템
  */
 class Chest(world: World, x: Float, y: Float, initialItem: Item? = null): Container(world, x, y, 24.0f, 25.0f, "chest.bmp", initialItem) {
-	override protected val emptyTexture = Texture(Gdx.files.internal("chest_empty.bmp"));
-	override protected val flagTexture = Texture(Gdx.files.internal("chest_player_added.bmp"));
+	override val emptyTexture = Texture(Gdx.files.internal("chest_empty.bmp"));
+	override val flagTexture = Texture(Gdx.files.internal("chest_player_added.bmp"));
 }
