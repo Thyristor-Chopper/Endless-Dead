@@ -35,6 +35,8 @@ class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: 
         val dx = (world.player.x + world.player.width / 2f - width / 2f) - x;
         val dy = (world.player.y + world.player.height / 2f - height / 2f) - y;
         val distance = sqrt(dx * dx + dy * dy);
+		
+		// 플레이어의 중심으로 정확히 모이면 어색하니까 살짝은 거리를 두게 하자.
         if(distance > world.player.width * (3f / 4f)) {
             x += dx / distance * speed * delta;
             y += dy / distance * speed * delta;
