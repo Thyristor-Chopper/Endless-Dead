@@ -1,12 +1,12 @@
-package com.oop.game.item;
+package com.oop.game.item
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 
-import com.oop.game.Position;
-import com.oop.game.entity.Bullet;
-import com.oop.game.entity.Entity;
-import com.oop.game.world.World;
+import com.oop.game.Position
+import com.oop.game.entity.Bullet
+import com.oop.game.entity.Entity
+import com.oop.game.world.World
 
 /**
  * 총 아이템 추상 클래스

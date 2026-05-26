@@ -1,4 +1,4 @@
-package com.oop.game.item;
+package com.oop.game.item
 
 import com.badlogic.gdx.graphics.Color
 import com.oop.game.Position
