@@ -29,7 +29,7 @@ abstract class Item(override val world: World, val id: String, val name: String)
 	 *
 	 * @return 성공 여부
 	 */
-	inline fun destroy(): Boolean {
+	fun destroy(): Boolean {
 		val holder: InventoryEntity? = this.holder;
 		if(holder == null) return false;
 		return holder.removeItemFromInventory(this);
