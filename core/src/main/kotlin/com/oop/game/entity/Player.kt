@@ -42,7 +42,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	override val inventory = mutableListOf<Item>();
 	override var selectedItemIndex: Int? = null;
     private val speed = 200f;
-	override val defaultInvincibleDuration = 0.0f;
+	override val defaultInvincibleDuration = 1.0f;
 	// 타이머
 	override var unitTimer = TimerExecutor.MAX_UNIT_TIMER
 		set(value) {
