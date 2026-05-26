@@ -46,7 +46,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	// 타이머
 	override var unitTimer = TimerExecutor.MAX_UNIT_TIMER
 		set(value) {
-			if(value < 0.0f) field = 0.0f;
+			if(value < 0f) field = 0f;
 			else if(value > TimerExecutor.MAX_UNIT_TIMER) field = TimerExecutor.MAX_UNIT_TIMER;
 			else field = value;
 		};
@@ -72,8 +72,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 				if(world.state != GameState.IN_PLAY) return false;
 				
 				if(amountY != 0.0f) {
-					if(amountY > 0.0f) selectNextItem();
-					else if(amountY < 0.0f) selectPreviousItem();
+					if(amountY > 0f) selectNextItem();
+					else if(amountY < 0f) selectPreviousItem();
 					return true;
 				}
 				

@@ -14,6 +14,6 @@ import com.oop.game.world.World;
  * @param y		개체 세로 위치
  * @param initialItem	처음 들어있는 아이템
  */
-class Building(world: World, x: Float, y: Float, initialItem: Item? = null): Container(world, x, y, 23.0f, 24.0f, "building.bmp", "building_empty.bmp", initialItem) {
+class Building(world: World, x: Float, y: Float, initialItem: Item? = null): Container(world, x, y, 23f, 24f, "building.bmp", "building_empty.bmp", initialItem) {
 	override val playerItemTexture = Texture(Gdx.files.internal("building_player_added.bmp"));
 }

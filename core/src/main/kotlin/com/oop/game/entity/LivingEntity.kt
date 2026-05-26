@@ -23,19 +23,19 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	// 피격 시 잠깐 동안 대미지를 안 받게 해주는 무적 타이머.
 	private var invincibilityTimer: Float = 0f
 		set(value) {
-			if(value < 0.0f) field = 0.0f;
+			if(value < 0f) field = 0f;
 			else field = value;
 		};
 	// 무적 타이머가 가동 중인지의 여부
 	val isInvincible: Boolean
-		get() = (invincibilityTimer > 0.0f);
+		get() = (invincibilityTimer > 0f);
 	// 가장 최근 대미지를 입힌 개체
 	var latestAttacker: Entity? = null
 		private set;
 	// 대미지를 입으면 0.5초 동안 붉게 표시할 때 사용되는 타이머
-	private var damagedIndicatorTimer: Float = 0.0f
+	private var damagedIndicatorTimer: Float = 0f
 		set(value) {
-			if(value < 0.0f) field = 0.0f;
+			if(value < 0f) field = 0f;
 			else field = value;
 		};
 	protected open val showDamagedIndicator = true;
@@ -118,14 +118,14 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		
 		// 몸빵 처리
 		for(entity in world.getEntities())
-			if(entity !== this && collidesWith(entity) && distanceTo(entity) < 4.0f && entity.bodyDamage > 0 && (!ignoreFriendBodyDamage || (ignoreFriendBodyDamage && this::class != entity::class))) {
+			if(entity !== this && collidesWith(entity) && distanceTo(entity) < 4f && entity.bodyDamage > 0 && (!ignoreFriendBodyDamage || (ignoreFriendBodyDamage && this::class != entity::class))) {
 				val attacker = if(entity is Bullet) entity.shooter else entity;  // 일단 총알은 Bullet 클래스에서 자체적으로 처리하고 bodyDamage는 0이기 때문에 의미는 없지만...
 				takeDamage(entity.bodyDamage, attacker=attacker);
 			}
 	}
 	
 	override fun draw(batch: SpriteBatch) {
-		val showDamaged = (showDamagedIndicator && damagedIndicatorTimer > 0.0f);
+		val showDamaged = (showDamagedIndicator && damagedIndicatorTimer > 0f);
 		if(showDamaged) batch.color = Color.RED;
 		super.draw(batch);
 		if(showDamaged) batch.color = Color.WHITE;

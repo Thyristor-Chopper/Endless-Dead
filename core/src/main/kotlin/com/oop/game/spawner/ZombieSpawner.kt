@@ -36,7 +36,7 @@ class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : 
 		do {
 			randomX = Random.nextFloat() * (world.width - 70f);
 			randomY = Random.nextFloat() * (world.height - 70f);
-		} while(Position(randomX, randomY).distanceTo(world.player.position) < 64.0f);
+		} while(Position(randomX, randomY).distanceTo(world.player.position) < 64f);
 
         // 주사위를 굴려서 확률로 좀비 종류 뽑기
         val rand = Random.nextInt(10);

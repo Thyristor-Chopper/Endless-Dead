@@ -75,14 +75,14 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
     val font = BitmapFont();
     // 카메라 오프셋 — 월드의 어느 지점이 화면 좌하단에 오는지.
     //   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
-    var offsetX: Float = width / 2.0f - game.screenWidth / 2.0f;
-    var offsetY: Float = height / 2.0f - game.screenHeight / 2.0f;
+    var offsetX: Float = width / 2f - game.screenWidth / 2f;
+    var offsetY: Float = height / 2f - game.screenHeight / 2f;
     // 등록된 객체들만 update/draw 된다.
     // private 으로 감춘 이유: 외부가 직접 add/remove 하면
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. add(), remove() 라는 공식 창구만 허용.
     //   (5주차에서 배운 캡슐화의 실제 사례)
     private val entities = mutableListOf<Entity>();
-	private var subtitlesTimer = 0.0f;
+	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
 
@@ -258,7 +258,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 		
 		// 6) 자막이 있으면 표시
 		val message: String? = subtitlesMessage;
-		if(subtitlesTimer > 0.0f && message != null) {
+		if(subtitlesTimer > 0f && message != null) {
 			drawTextOnScreen(
 				text = message,
 				x = 0f,
@@ -319,8 +319,8 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 	 * 플레이어 위치에 따라 카메라 위치 변경
 	 */
 	inline fun updateCameraOffset() {
-		offsetX = player.x - game.screenWidth / 2.0f + player.width / 2.0f;
-		offsetY = player.y - game.screenHeight / 2.0f + player.height / 2.0f;
+		offsetX = player.x - game.screenWidth / 2f + player.width / 2f;
+		offsetY = player.y - game.screenHeight / 2f + player.height / 2f;
 	}
 
     // ────────────────────────────────────────────────────────

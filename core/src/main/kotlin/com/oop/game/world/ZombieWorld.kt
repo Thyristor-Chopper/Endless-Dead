@@ -108,7 +108,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 	// 타이머
 	override var unitTimer = TimerExecutor.MAX_UNIT_TIMER
 		set(value) {
-			if(value < 0) field = 0.0f;
+			if(value < 0) field = 0f;
 			else if(value > TimerExecutor.MAX_UNIT_TIMER) field = TimerExecutor.MAX_UNIT_TIMER;
 			else field = value;
 		};
@@ -138,7 +138,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
         add(player);
 		
 		// 스포너들
-		spawners.add(ZombieSpawner(this, 3.0f));
+		spawners.add(ZombieSpawner(this, 3f));
 		
 		// 10초마다 빈 상자 하나 리필
 		registerTimer(Timer(10) {
@@ -295,8 +295,8 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
         //    WASD 로 카메라를 움직이면 이 글자도 화면에서 움직인다.
         drawTextInWorld(
             text = "*",
-            x = width / 2 - 24.0f,
-            y = height / 2 + 20.0f,
+            x = width / 2 - 24f,
+            y = height / 2 + 20f,
             color = Color.FOREST,
             scale = 8.0f,
 			skipBatch = true
@@ -321,7 +321,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
         // 2) HP를 시각적 미터기로 표시
 		drawTextOnScreen(
             text = Utils.progressBar(player.hp.toFloat() / player.maxHp.toFloat(), 25),
-            x = 90.0f,
+            x = 90f,
             y = game.screenHeight - 10f,
             color = Color.YELLOW,
             scale = 1.0f,
@@ -334,8 +334,8 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		if(holding != null && holdingIndex != null)
 			drawTextOnScreen(
 				text = "${holding.name} [${holdingIndex + 1}/${player.inventory.size}]",
-				x = 10.0f,
-				y = 20.0f,
+				x = 10f,
+				y = 20f,
 				color = Color(1.0f, 1.0f, 0.75f, 1.0f),
 				scale = 1.0f
 			);
@@ -344,11 +344,11 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		if(holding != null && holding is Gun) {
 			drawTextOnScreen(
 				text = Utils.progressBar(holding.ammo.toFloat() / holding.maxAmmo.toFloat(), 14),
-				x = game.screenWidth - 190.0f,
-				y = 20.0f,
+				x = game.screenWidth - 190f,
+				y = 20f,
 				color = Color.SKY,
 				scale = 1.0f,
-				width = 180.0f,
+				width = 180f,
 				align = Align.right,
 				fixedWidthChars = Utils.PROGRESS_BAR_CHARACTERS
 			);
@@ -359,11 +359,11 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 				if(cooldown > 0f)
 					drawTextOnScreen(
 						text = Utils.progressBar(cooldown, 5),
-						x = game.screenWidth - 340.0f,
-						y = 20.0f,
+						x = game.screenWidth - 340f,
+						y = 20f,
 						color = Color.SCARLET,
 						scale = 1.0f,
-						width = 180.0f,
+						width = 180f,
 						align = Align.right,
 						fixedWidthChars = Utils.PROGRESS_BAR_CHARACTERS
 					);
@@ -373,11 +373,11 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		// 6) 점수
 		drawTextOnScreen(
             text = "Score: ${ScoreManager.score}",
-            x = game.screenWidth - 130.0f,
+            x = game.screenWidth - 130f,
             y = game.screenHeight - 10f,
             color = Color.LIME,
             scale = 1.2f,
-			width = 120.0f,
+			width = 120f,
 			align = Align.right
         );
     }
@@ -388,17 +388,17 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
     private fun drawGameOverOverlay() {
         drawTextOnScreen(
             text = "YOU DIED!",
-            x = game.screenWidth / 2 - 80f,
-            y = game.screenHeight / 2.0f,
+            x = game.screenWidth / 2f - 80f,
+            y = game.screenHeight / 2f,
             color = Color.RED,
-            scale = 2f
+            scale = 2.0f
         );
         drawTextOnScreen(
             text = "Press ESC to exit",
-            x = game.screenWidth / 2 - 70f,
-            y = game.screenHeight / 2 - 40f,
+            x = game.screenWidth / 2f - 70f,
+            y = game.screenHeight / 2f - 40f,
             color = Color.WHITE,
-            scale = 1f
+            scale = 1.0f
         );
     }
 

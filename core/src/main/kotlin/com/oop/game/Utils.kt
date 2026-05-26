@@ -17,7 +17,7 @@ object Utils {
 	 * @param value	실수 진행률(0.0~1.0)
 	 */
 	fun progressBar(value: Float, size: Int = DEFAULT_PROGRESS_BAR_SIZE): String {
-		return progressBar((value * 100.0f).toInt(), size);
+		return progressBar((value * 100f).toInt(), size);
 	}
 	
 	/**
@@ -27,7 +27,7 @@ object Utils {
 	 */
 	fun progressBar(value: Int, size: Int = DEFAULT_PROGRESS_BAR_SIZE): String {
 		var ret = "$PROGRESS_BAR_OPEN";
-		val filled = (value / 100.0f * size).toInt();
+		val filled = (value / 100f * size).toInt();
 		for(i in 1..filled)
 			ret += PROGRESS_BAR_FILLED;
 		for(i in 1..(size - filled))

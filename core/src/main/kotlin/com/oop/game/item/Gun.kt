@@ -25,7 +25,7 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	override val allowContinuousUse = false;
 	private var fireCooldown = 0f
 		set(value) {
-			if(value < 0.0f) field = 0.0f;
+			if(value < 0f) field = 0f;
 			else field = value;
 		};
 	val canFire: Boolean

@@ -23,7 +23,7 @@ interface TimerExecutor {
 	 * 매 초마다 timers의 타이머들을 갱신하여 대기시간을 줄이고 대기 시간이 0이 된 타이머를 실행한다.
 	 */
 	fun executeTimers(delta: Float) {
-		if(unitTimer > 0.0f) {
+		if(unitTimer > 0f) {
 			unitTimer -= delta;
 			return;
 		}
