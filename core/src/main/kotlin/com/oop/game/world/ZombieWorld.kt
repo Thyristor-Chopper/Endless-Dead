@@ -188,7 +188,6 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		
         when (state) {
             GameState.IN_PLAY	-> {
-				super.update(delta);
 				updateInPlay(delta);
 			}
             GameState.GAME_OVER	-> {
@@ -207,7 +206,8 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         offsetX = offsetX.coerceIn(0f, width - screenWidth);
         offsetY = offsetY.coerceIn(0f, height - screenHeight);
 
-        // ── 1) 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
+        // ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
+		super.update(delta);  // updateAllObjects과 removeDead
 		for(spawner in spawners)
 			spawner.tick(delta);
 
@@ -215,11 +215,6 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         //   collidesWith 는 GameObject 의 메서드 → 모든 게임 객체가 자동으로 가짐.
         //   이 예제에선 충돌 시 객체를 죽이지 않고 게임 상태만 바꾼다.
         //   (총알 게임이라면 여기서 bullet.kill(), enemy.kill() 같은 처리)
-		
-		// 좀비 처리
-		for(zombie in zombies)
-			if(player.collidesWith(zombie))
-				player.takeDamage(zombie.damage, 1.0f, zombie);
 		
         if(!player.isAlive())
             state = GameState.GAME_OVER;  // 피가 0 이하가 되면 진짜 게임 오버!

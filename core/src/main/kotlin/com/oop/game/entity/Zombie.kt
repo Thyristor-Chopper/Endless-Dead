@@ -36,5 +36,8 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
             x += dx / distance * speed * delta;
             y += dy / distance * speed * delta;
         }
+		
+		if(collidesWith(world.player))
+			world.player.takeDamage(damage, 1.0f, this);
     }
 }
