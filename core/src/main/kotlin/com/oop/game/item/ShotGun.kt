@@ -34,7 +34,7 @@ class Shotgun(world: World) : Gun(world, "G002", "Shotgun", 20, 500f, true, 1f, 
 
         if(ammo == 0) {
             if(holder === world.player)
-                world.drawSubtitles("Shotgun destroyed; no more shells left", color = Color.SALMON)
+                world.drawSubtitles("Shotgun destroyed", color = Color.SALMON)
             destroy()
         }
 
