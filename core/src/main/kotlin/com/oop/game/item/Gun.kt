@@ -64,7 +64,7 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	 *
 	 * @return 발사 성공 여부
 	 */
-	open override fun fire(target: Position, shooter: Entity): Boolean {
+	override fun fire(target: Position, shooter: Entity): Boolean {
 		if(!canFire) return false;
 		
 		val bullet = Bullet(world, shooter, target, bulletSpeed, bulletDamage, penetrable);
