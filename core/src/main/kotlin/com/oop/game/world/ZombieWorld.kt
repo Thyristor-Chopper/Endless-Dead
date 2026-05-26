@@ -93,7 +93,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		protected set;
     // 좀비들만 따로 모아두는 관리용 리스트
     val zombies: List<Zombie>
-		get() = getEntities().filterIsInstance<Zombie>();
+		inline get() = getEntities().filterIsInstance<Zombie>();
 	private val spawners = mutableListOf<Spawner>();
     // ── 체스판 배경 설정 (drawBackground() 에서 사용) ──
     //   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
@@ -200,7 +200,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
     /**
 	 * IN_PLAY 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
 	 */
-    private fun updateInPlay(delta: Float) {
+    private inline fun updateInPlay(delta: Float) {
         // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
         //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
         //   offset 은 0 ~ (world - screen) 범위여야 한다.
@@ -228,7 +228,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
     /**
 	 * GAME_OVER 상태에서 매 프레임 처리 — ESC 입력만 감시한다.
 	 */
-    private fun updateGameOver() {
+    private inline fun updateGameOver() {
         // ESC 키가 '막 눌린 순간' 앱 종료.
         //   isKeyJustPressed 로 한 이유: 누르고 있는 동안 매 프레임 exit 호출되지 않게.
         if(InputHandler.isKeyJustPressed(InputHandler.ESCAPE))

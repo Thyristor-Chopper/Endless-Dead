@@ -32,7 +32,7 @@ class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : 
 	/**
 	 * 무작위로 좀비 종류를 골라서 월드에 추가하고 반환한다
 	 */
-    private fun spawnRandomZombie(): Zombie {
+    private inline fun spawnRandomZombie(): Zombie {
         val randomX = Random.nextFloat() * (world.width - 70f);
         val randomY = Random.nextFloat() * (world.height - 70f);
 

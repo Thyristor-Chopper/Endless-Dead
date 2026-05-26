@@ -31,7 +31,7 @@ object InputHandler {
      * 키가 현재 '눌려 있는 중' 인지 — 꾹 누르고 있으면 매 프레임 true.
      *   이동(← → ↑ ↓) 처럼 '누르는 동안 계속' 일어나야 할 동작에 사용.
      */
-    fun isKeyPressed(key: Int): Boolean {
+    inline fun isKeyPressed(key: Int): Boolean {
         return Gdx.input.isKeyPressed(key)
     }
 
@@ -39,7 +39,7 @@ object InputHandler {
      * 키가 '이번 프레임에 막 눌렸는지' — 꾹 눌러도 첫 프레임에만 true.
      *   총알 발사, 메뉴 선택처럼 '한 번만' 실행되어야 할 동작에 사용.
      */
-    fun isKeyJustPressed(key: Int): Boolean {
+    inline fun isKeyJustPressed(key: Int): Boolean {
         return Gdx.input.isKeyJustPressed(key)
     }
 	
@@ -48,7 +48,7 @@ object InputHandler {
 	 *
 	 * @param button	단추의 종류
      */
-    fun isButtonPressed(button: Int): Boolean {
+    inline fun isButtonPressed(button: Int): Boolean {
         return Gdx.input.isButtonPressed(button)
     }
 
@@ -57,7 +57,7 @@ object InputHandler {
 	 *
 	 * @param button	단추의 종류
      */
-    fun isButtonJustPressed(button: Int): Boolean {
+    inline fun isButtonJustPressed(button: Int): Boolean {
         return Gdx.input.isButtonJustPressed(button)
     }
 	

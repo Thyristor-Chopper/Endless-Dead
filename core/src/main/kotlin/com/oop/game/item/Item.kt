@@ -20,7 +20,7 @@ abstract class Item(override val world: World, val id: String, val name: String)
 	/**
 	 * 같은 종류의 아이템인지를 비교한다.
 	 */
-	fun equals(other: Item): Boolean {
+	inline fun equals(other: Item): Boolean {
 		return id == other.id;
 	}
 	
@@ -29,7 +29,7 @@ abstract class Item(override val world: World, val id: String, val name: String)
 	 *
 	 * @return 성공 여부
 	 */
-	fun destroy(): Boolean {
+	inline fun destroy(): Boolean {
 		val holder: InventoryEntity? = this.holder;
 		if(holder == null) return false;
 		return holder.removeItemFromInventory(this);
