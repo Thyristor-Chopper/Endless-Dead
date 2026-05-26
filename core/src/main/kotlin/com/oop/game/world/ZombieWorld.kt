@@ -13,6 +13,7 @@ import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
 import com.oop.game.TimerExecutor;
 import com.oop.game.Utils;
+import com.oop.game.entity.Entity;
 import com.oop.game.entity.Player;
 import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Building;
@@ -130,12 +131,10 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 			val x = Random.nextInt(this.width.toInt()).toFloat();
 			val y = Random.nextInt(this.height.toInt()).toFloat();
 			val item: Item = generateRandomItem();  // 들어있을 아이템
-			val toAdd: Entity;
-			if(Random.nextInt(2) == 1)
-				toAdd = Building(this, x, y, item);
-			else
-				toAdd = Chest(this, x, y, item);
-			add(toAdd);
+			add(when(Random.nextInt(2)) {
+				0		-> Building(this, x, y, item);
+				else	-> Chest(this, x, y, item);
+			});
 		}
         add(player);
 		
