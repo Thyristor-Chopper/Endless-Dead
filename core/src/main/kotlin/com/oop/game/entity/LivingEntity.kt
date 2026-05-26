@@ -23,11 +23,13 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	val isAlive: Boolean
 		get() = hp > 0;
 	// 피격 시 잠깐 동안 데미지를 안 받게 해주는 무적 타이머. 자식들도 알 수 있게 protected로 설정.
-	protected var invincibilityTimer: Float = 0f
-		private set(value) {
+	private var invincibilityTimer: Float = 0f
+		set(value) {
 			if(value < 0.0f) field = 0.0f;
 			else field = value;
 		};
+	val isInvincible: Boolean
+		get() = (invincibilityTimer > 0.0f);
 	var latestAttacker: Entity? = null
 		private set;
 	private var damagedIndicatorTimer: Float = 0.0f
@@ -35,8 +37,8 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 			if(value < 0.0f) field = 0.0f;
 			else field = value;
 		};
-	open val showDamagedIndicator = true;
-	open val damagedIndicatorDuration = 0.5f;
+	protected open val showDamagedIndicator = true;
+	protected open val damagedIndicatorDuration = 0.5f;
 	
 	/**
 	 * 체력 감소(대미지를 입는다.)
@@ -46,9 +48,11 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 * @param attacker	공격자
 	 */
 	open fun takeDamage(damage: Int, duration: Float = 0f, attacker: Entity? = null) {
+		if(damage < 0) throw IllegalArgumentException("damage must not be negative");
+		
 		// 무적 시간이 다 끝났을 때만 피격당함
-		if (invincibilityTimer == 0f) {
-			if(damage > 0) hp -= damage;
+		if(!isInvincible) {
+			hp -= damage;
 			if(hp == 0) {
 				onDeath(attacker);
 				if(attacker != null)
@@ -104,7 +108,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	}
 	
 	override fun draw(batch: SpriteBatch) {
-		val showDamaged = damagedIndicatorTimer > 0.0f;
+		val showDamaged = (showDamagedIndicator && damagedIndicatorTimer > 0.0f);
 		if(showDamaged) batch.color = Color.RED;
 		super.draw(batch);
 		if(showDamaged) batch.color = Color.WHITE;
