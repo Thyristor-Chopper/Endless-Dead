@@ -11,6 +11,8 @@ import com.oop.game.WorldObject;
 import com.oop.game.entity.Entity;
 import com.oop.game.world.World;
 
+import kotlin.math.sqrt;
+
 /**
  * 게임에 등장하는 모든 '무엇인가'의 공통 부모.
  *
@@ -51,7 +53,8 @@ abstract class Entity(override val world: World, var x: Float, var y: Float, val
 	protected val texture: Texture?;
 	val position: Position
 		get() = Position(x, y);
-	open val bodyDamage: Int = 0;
+	open val bodyDamage = 0;
+	open val ignoreFriendBodyDamage = true;
 	
 	init {
 		val texturePath = texture;
@@ -131,4 +134,10 @@ abstract class Entity(override val world: World, var x: Float, var y: Float, val
 	 * @param victim	공격 대상
 	 */
 	open fun onKill(victim: LivingEntity) {}
+	
+	fun distanceTo(other: Entity): Float {
+		val dx = (other.x + other.width / 2f - width / 2f) - x;
+        val dy = (other.y + other.height / 2f - height / 2f) - y;
+        return sqrt(dx * dx + dy * dy);
+	}
 }

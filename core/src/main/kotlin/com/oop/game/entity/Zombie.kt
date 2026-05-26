@@ -25,19 +25,26 @@ import kotlin.math.sqrt;
  * @param minY
  * @param maxY
  */
-open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, val attackDamage: Int, private val angle: Float, private val player: Player, private val speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp) {
-    override fun update(delta: Float) {
+class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, val attackDamage: Int, private val angle: Float, private val player: Player, private val speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp) {
+    override val bodyDamage = 1;
+	
+	override fun update(delta: Float) {
         super.update(delta);  // 부모(LivingGameObject)의 무적 타이머 갱신 로직 실행
 
-        val dx = (world.player.x + Player.PLAYER_WIDTH / 2.0f - width / 2.0f) - x;
-        val dy = (world.player.y + Player.PLAYER_HEIGHT / 2.0f - height / 2.0f) - y;
+        val dx = (world.player.x + world.player.width / 2f - width / 2f) - x;
+        val dy = (world.player.y + world.player.height / 2f - height / 2f) - y;
         val distance = sqrt(dx * dx + dy * dy);
-        if (distance > 0f) {
+        if(distance > world.player.width * (3f / 4f)) {
             x += dx / distance * speed * delta;
             y += dy / distance * speed * delta;
-        }
-		
-		if(collidesWith(world.player))
+        } else {
 			world.player.takeDamage(attackDamage, attacker=this);
+		}
     }
+	
+	companion object {
+		fun weak(world: World, x: Float, y: Float, player: Player, angle: Float) = Zombie(world, x, y, width=21f, height=30f, hp=3, speed=150f, angle=angle, player=player, attackDamage=1);
+		fun normal(world: World, x: Float, y: Float, player: Player, angle: Float) = Zombie(world, x, y, width=32f, height=45f, hp=5, speed=100f, angle=angle, player=player, attackDamage=3);
+		fun strong(world: World, x: Float, y: Float, player: Player, angle: Float) = Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, angle=angle, player=player, attackDamage=5);
+	}
 }

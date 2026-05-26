@@ -17,6 +17,7 @@ import kotlin.math.sqrt;
  * @param speed 		총알 속도
  * @param damage		총알이 주는 피해량
  * @param penetrable	총알 관통 가능 여부
+ * @param hp			총알 체력(관통 시 감소)
  */
 class Bullet(world: World, val gun: Fireable, val shooter: Entity, val target: Position, private val speed: Float, val damage: Int, val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.x, shooter.y, 16.0f, 16.0f, "bullet.bmp", hp) {
 	override val showDamagedIndicator = false;

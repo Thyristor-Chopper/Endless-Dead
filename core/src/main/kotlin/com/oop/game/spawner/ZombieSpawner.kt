@@ -1,10 +1,7 @@
 package com.oop.game.spawner;
 
 import com.oop.game.Position;
-import com.oop.game.entity.NormalZombie;
 import com.oop.game.entity.Player;
-import com.oop.game.entity.StrongZombie;
-import com.oop.game.entity.WeakZombie;
 import com.oop.game.entity.Zombie;
 import com.oop.game.world.World;
 
@@ -44,9 +41,9 @@ class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : 
         // 주사위를 굴려서 확률로 좀비 종류 뽑기
         val rand = Random.nextInt(10);
         val newZombie = when {
-            rand < 6	-> WeakZombie(world, randomX, randomY, world.player, angle = 10f)		// 60% 확률
-            rand < 9	-> NormalZombie(world, randomX, randomY, world.player, angle = 10f)	// 30% 확률
-            else		-> StrongZombie(world, randomX, randomY, world.player, angle = 10f)	// 10% 확률
+            rand < 6	-> Zombie.weak(world, randomX, randomY, world.player, angle = 10f)		// 60% 확률
+            rand < 9	-> Zombie.normal(world, randomX, randomY, world.player, angle = 10f)	// 30% 확률
+            else		-> Zombie.strong(world, randomX, randomY, world.player, angle = 10f)	// 10% 확률
         };
 
         world.add(newZombie);
