@@ -31,11 +31,11 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	val canFire: Boolean
 		get() = fireCooldown == 0f && ammo > 0;
 	var ammo: Int = initialAmmo
-		private set(value) {
+		protected set(value) {
 			if(value < 0) field = 0;
 			else if(value > maxAmmo) field = maxAmmo;
 			else field = value;
-		};
+		} //샷건이라는 하위클래스에서도 사용해야할 것 같아 private를 protected로 변경
 	
 	/**
 	 * 남은 쿨타임을 갱신한다.
@@ -48,7 +48,7 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	/**
 	 * 총을 쏘고 쿨타임을 건다.
 	 */
-	private fun startFireCooldown() {
+	protected fun startFireCooldown() {
 		fireCooldown = fireInterval;
 	}
 	
@@ -64,7 +64,7 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	 *
 	 * @return 발사 성공 여부
 	 */
-	override fun fire(target: Position, shooter: Entity): Boolean {
+	open override fun fire(target: Position, shooter: Entity): Boolean {
 		if(!canFire) return false;
 		
 		val bullet = Bullet(world, shooter, target, bulletSpeed, bulletDamage, penetrable);
