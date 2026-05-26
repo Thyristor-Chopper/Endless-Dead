@@ -24,8 +24,9 @@ abstract class Item(world: World, val id: String, val name: String) : WorldObjec
 	
 	fun destroy() {
 		val holder: InventoryEntity? = this.holder;
-		if(holder != null)
-			holder.removeItemFromInventory(this);
+		if(holder == null)
+			throw IllegalStateException("only items held by entities with inventory can be destroyed");
+		holder.removeItemFromInventory(this);
 		
 		// 나머지는 jvm이나 달빅이 알아서 gc 해주겠지.
 	}

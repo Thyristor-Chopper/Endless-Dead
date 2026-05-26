@@ -46,7 +46,7 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	}
 	
 	/**
-	 * 총을 쏘고 쿨타임을 건다.
+	 * 총의 쿨타임을 건다.
 	 */
 	protected fun startFireCooldown() {
 		fireCooldown = fireInterval;
@@ -93,4 +93,3 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 		return fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), world.player);
 	}
 }
-
