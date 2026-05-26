@@ -1,6 +1,7 @@
 package com.oop.game;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 
 import com.oop.game.world.ZombieWorld;
 
@@ -35,6 +36,10 @@ class ZombieGame : Game() {
 	companion object {
 		val TITLE = "좀비 파밍";  // 창 제목
 		val FPS = 60;  // FPS (타이머에 필요함)
+		
+		inline fun setTitleBarInfo(info: String) {
+			Gdx.graphics.setTitle("${ZombieGame.TITLE} - $info");
+		}
 	}
 	
     // 화면(창) 크기 — DesktopLauncher 가 창 크기 설정에도 이 값을 읽어간다.

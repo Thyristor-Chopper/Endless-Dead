@@ -176,25 +176,23 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
      */
     override fun update(delta: Float) {
 		// 제목 표시줄에 정보 표시
-		val windowTitle: String;
-		when(TitleInfoType.byIndex(currentTitleInfo)) {
-			TitleInfoType.OPENED	-> windowTitle = "연 상자: ${player.openedContainerCount}개";
-			TitleInfoType.KILLED	-> windowTitle = "잡은 좀비 수: ${player.killedZombieCount}";
-			TitleInfoType.FIRED		-> windowTitle = "발사한 총알 수: ${player.firedBullets}";
-			TitleInfoType.SURVIVED	-> windowTitle = "생존 시간: ${Utils.parseSeconds(player.survivedDuration)}";
-			TitleInfoType.DAMAGE	-> windowTitle = "누적 피해량: ${player.totalDamage}";
-		}
-		Gdx.graphics.setTitle("${ZombieGame.TITLE} - $windowTitle");
+		updateTitle();
 		
-        when (state) {
-            GameState.IN_PLAY	-> {
-				updateInPlay(delta);
-			}
-            GameState.GAME_OVER	-> {
-				updateGameOver();
-			}
+        when(state) {
+            GameState.IN_PLAY	-> updateInPlay(delta);
+            GameState.GAME_OVER	-> updateGameOver();
         }
     }
+	
+	private inline fun updateTitle() {
+		ZombieGame.setTitleBarInfo(when(TitleInfoType.byIndex(currentTitleInfo)) {
+			TitleInfoType.OPENED	-> "연 상자: ${player.openedContainerCount}개";
+			TitleInfoType.KILLED	-> "잡은 좀비 수: ${player.killedZombieCount}";
+			TitleInfoType.FIRED		-> "발사한 총알 수: ${player.firedBullets}";
+			TitleInfoType.SURVIVED	-> "생존 시간: ${Utils.parseSeconds(player.survivedDuration)}";
+			TitleInfoType.DAMAGE	-> "누적 피해량: ${player.totalDamage}";
+		});
+	}
 
     /**
 	 * IN_PLAY 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.

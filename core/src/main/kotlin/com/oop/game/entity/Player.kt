@@ -114,65 +114,76 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		registerTimer(healTimer);
 	}
 	
-    override fun update(delta: Float) {
-        super<LivingEntity>.update(delta);
-		
-		val holding: Item? = selectedItem;
-		
-		// 이동
-        if(InputHandler.isKeyPressed(InputHandler.LEFT) || InputHandler.isKeyPressed(InputHandler.A)) {
-			x -= speed * delta;
-			world.offsetX = x - world.screenWidth / 2.0f + width / 2.0f;
-		}
-        if(InputHandler.isKeyPressed(InputHandler.RIGHT) || InputHandler.isKeyPressed(InputHandler.D)) {
-			x += speed * delta;
-			world.offsetX = x - world.screenWidth / 2.0f + width / 2.0f;
-		}
-        if(InputHandler.isKeyPressed(InputHandler.UP) || InputHandler.isKeyPressed(InputHandler.W)) {
-			y += speed * delta;
-			world.offsetY = y - world.screenHeight / 2.0f + height / 2.0f;
-		}
-        if(InputHandler.isKeyPressed(InputHandler.DOWN) || InputHandler.isKeyPressed(InputHandler.S)) {
-			y -= speed * delta;
-			world.offsetY = y - world.screenHeight / 2.0f + height / 2.0f;
-		}
-		
-		// 아이템 사용
-		if(holding != null && holding is Usable && (InputHandler.isButtonJustPressed(InputHandler.LEFT_MOUSE) || (holding.allowContinuousUse && InputHandler.isButtonPressed(InputHandler.LEFT_MOUSE)))) {
-			val succeeded = holding.use();
-			if(succeeded && holding is Gun)
-				firedBullets++;
-		}
-		
-		// 아이템 가져가기 & 넣기
-		if(InputHandler.isKeyJustPressed(InputHandler.SPACE) || InputHandler.isButtonJustPressed(InputHandler.RIGHT_MOUSE))
-			for(entity in world.getEntities()) {
-				if(!(entity is Container)) continue;
-				if(collidesWith(entity)) {
-					if(entity.isEmpty) {
-						val currentHolding: Item? = selectedItem;
-						if(currentHolding != null) {
-							world.drawSubtitles("Put ${currentHolding.name} into the container");
-							entity.putItem(currentHolding, true);
-							removeItemFromInventory(currentHolding);
-							break;  // 하나씩만
-						} else {
-							world.drawSubtitles("Can't take any item; container is empty");
-						}
+	private inline fun updatePosition(dx: Float, dy: Float) {
+		x += dx;
+		y += dy;
+	}
+	
+	private inline fun updateCameraOffset(x: Float, y: Float) {
+		world.offsetX = x - world.screenWidth / 2.0f + width / 2.0f;
+		world.offsetY = y - world.screenHeight / 2.0f + height / 2.0f;
+	}
+	
+	private inline fun useItem(item: Item) {
+		val succeeded = item.use();
+		if(succeeded && item is Gun)
+			firedBullets++;
+	}
+	
+	private inline interactContainer() {
+		for(entity in world.getEntities()) {
+			if(!(entity is Container)) continue;
+			if(collidesWith(entity)) {
+				if(entity.isEmpty) {
+					val currentHolding: Item? = selectedItem;
+					if(currentHolding != null) {
+						world.drawSubtitles("Put ${currentHolding.name} into the container");
+						entity.putItem(currentHolding, true);
+						removeItemFromInventory(currentHolding);
+						break;  // 하나씩만
 					} else {
-						val isPlayerItem = entity.isPlayerItem;
-						val item: Item? = entity.takeItem(this, true);
-						if(item == null) {
-							world.drawSubtitles("Failed to take the item in the container");
-						} else {
-							world.drawSubtitles("Took ${item.name} from the container");
-							if(!isPlayerItem)
-								openedContainerCount++;
-							break;  // 하나씩만
-						}
+						world.drawSubtitles("Can't take any item; container is empty");
+					}
+				} else {
+					val isPlayerItem = entity.isPlayerItem;
+					val item: Item? = entity.takeItem(this, true);
+					if(item == null) {
+						world.drawSubtitles("Failed to take the item in the container");
+					} else {
+						world.drawSubtitles("Took ${item.name} from the container");
+						if(!isPlayerItem)
+							openedContainerCount++;
+						break;  // 하나씩만
 					}
 				}
 			}
+		}
+	}
+	
+    override fun update(delta: Float) {
+        super<LivingEntity>.update(delta);
+		
+		// 이동
+		val dx: Float;
+		val dy: Float;
+		if(InputHandler.isKeyPressed(InputHandler.LEFT) || InputHandler.isKeyPressed(InputHandler.A))
+			dx = -speed * delta;
+		else if(InputHandler.isKeyPressed(InputHandler.RIGHT) || InputHandler.isKeyPressed(InputHandler.D))
+			dx = speed * delta;
+        if(InputHandler.isKeyPressed(InputHandler.UP) || InputHandler.isKeyPressed(InputHandler.W))
+			dy = speed * delta;
+        else if(InputHandler.isKeyPressed(InputHandler.DOWN) || InputHandler.isKeyPressed(InputHandler.S))
+			dy = -speed * delta;
+		updatePosition(dx, dy);
+		
+		// 아이템 사용
+		val holding: Item? = selectedItem;
+		if(holding != null && holding is Usable && (InputHandler.isButtonJustPressed(InputHandler.LEFT_MOUSE) || (holding.allowContinuousUse && InputHandler.isButtonPressed(InputHandler.LEFT_MOUSE))))
+			useItem(holding);
+		
+		// 아이템 가져가기 & 넣기
+		if(InputHandler.isKeyJustPressed(InputHandler.SPACE) || InputHandler.isButtonJustPressed(InputHandler.RIGHT_MOUSE))
+			interactContainer();
 		
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width - width);
