@@ -1,10 +1,12 @@
 package com.oop.game.item
 
 import com.badlogic.gdx.graphics.Color
+
 import com.oop.game.Position
 import com.oop.game.entity.Bullet
 import com.oop.game.entity.Entity
 import com.oop.game.world.World
+
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
