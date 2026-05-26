@@ -11,9 +11,7 @@ import com.oop.game.world.World;
  * @param initialHp	초기(최대) 체력
  */
 abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, initialHp: Int) : Entity(world, x, y, width, height, texture) {
-	// 최대hp,  initialhp: 객체 만들 떄 지정할 체력
 	open val maxHp: Int = initialHp;
-	// HP
 	var hp = initialHp
 		private set(value) {
 			if(value > maxHp) field = maxHp;
@@ -22,16 +20,19 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		};
 	val isAlive: Boolean
 		get() = hp > 0;
-	// 피격 시 잠깐 동안 데미지를 안 받게 해주는 무적 타이머. 자식들도 알 수 있게 protected로 설정.
+	// 피격 시 잠깐 동안 대미지를 안 받게 해주는 무적 타이머.
 	private var invincibilityTimer: Float = 0f
 		set(value) {
 			if(value < 0.0f) field = 0.0f;
 			else field = value;
 		};
+	// 무적 타이머가 가동 중인지의 여부
 	val isInvincible: Boolean
 		get() = (invincibilityTimer > 0.0f);
+	// 가장 최근 대미지를 입힌 개체
 	var latestAttacker: Entity? = null
 		private set;
+	// 대미지를 입으면 0.5초 동안 붉게 표시할 때 사용되는 타이머
 	private var damagedIndicatorTimer: Float = 0.0f
 		set(value) {
 			if(value < 0.0f) field = 0.0f;
@@ -53,10 +54,9 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		// 무적 시간이 다 끝났을 때만 피격당함
 		if(!isInvincible) {
 			hp -= damage;
-			if(hp == 0) {
-				onDeath(attacker);
-				if(attacker != null)
-					attacker.onKill(this);
+			if(hp == 0) {  // 사망
+				onDeath(attacker);  // 콜백 호출
+				if(attacker != null) attacker.onKill(this);
 			}
 			invincibilityTimer = duration;  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
 			onDamage(damage, attacker);
