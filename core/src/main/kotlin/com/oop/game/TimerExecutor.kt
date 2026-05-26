@@ -60,4 +60,9 @@ interface TimerExecutor {
 	fun unregisterTimer(timer: Timer) {
 		timers.remove(timer);
 	}
+	
+	/**
+	 * 등록된 모든 타이머를 담은 목록을 반환한다.
+	 */
+	fun getRegisteredTimers(): List<Timer> = timers.toList();
 }

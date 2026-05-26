@@ -97,4 +97,9 @@ interface InventoryEntity {
 		else
 			selectedItemIndex = (selectedItemIndex ?: 1) - 1;
 	}
+	
+	/**
+	 * 지정한 아이템이 있는지 확인
+	 */
+	fun hasItem(item: Item): Boolean = item in inventory;
 }

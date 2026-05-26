@@ -99,38 +99,78 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			override fun mouseMoved(x: Int, y: Int): Boolean = false;
 		});
 		
-		// 타이머들
-		
-		// 생존 시간 기록 & 생존 시간 보너스
+		// -- 타이머들 --
+		// 1. 생존 시간 기록 & 생존 시간 보너스
 		registerTimer(Timer(1) {
 			survivedDuration++;
 			ScoreManager.addScore(1);
 		});
 		
-		// 자연 회복
+		// 2. 30초마다 자연 회복
 		healTimer = Timer(30) {
 			heal(3);
 		};
 		registerTimer(healTimer);
 	}
 	
-	private inline fun updatePosition(dx: Float, dy: Float) {
-		x += dx;
-		y += dy;
+	/**
+	 * 자판 방향 글쇠 눌림 상태에 따라 위치 변경
+	 * update()에서만 한 번 쓰이기 때문에 inline
+	 *
+	 * @return 조금이라도 이동했는지 여부
+	 */
+	private inline fun updatePosition(delta: Float): Boolean {
+		var moved = false;
+		if(InputHandler.isKeyPressed(InputHandler.LEFT) || InputHandler.isKeyPressed(InputHandler.A)) {
+			x -= speed * delta;
+			moved = true;
+		}
+		if(InputHandler.isKeyPressed(InputHandler.RIGHT) || InputHandler.isKeyPressed(InputHandler.D)) {
+			x += speed * delta;
+			moved = true;
+        }
+		if(InputHandler.isKeyPressed(InputHandler.UP) || InputHandler.isKeyPressed(InputHandler.W)) {
+			y += speed * delta;
+			moved = true;
+        }
+		if(InputHandler.isKeyPressed(InputHandler.DOWN) || InputHandler.isKeyPressed(InputHandler.S)) {
+			y -= speed * delta;
+			moved = true;
+		}
+		return moved;
 	}
 	
-	private inline fun updateCameraOffset(x: Float, y: Float) {
+	/**
+	 * 플레이어 위치에 따라 카메라 위치 변경
+	 * update()에서만 한 번 쓰이기 때문에 inline
+	 */
+	private inline fun updateCameraOffset() {
 		world.offsetX = x - world.screenWidth / 2.0f + width / 2.0f;
 		world.offsetY = y - world.screenHeight / 2.0f + height / 2.0f;
 	}
 	
-	private inline fun useItem(item: Item) {
+	/**
+	 * 플레이어가 갖고 있는 아이템을 사용한다.
+	 *
+	 * 들고 있지 않은 아이템이거나 사용 가능한 아이템이 아니라면 실패한다.
+	 *
+	 * @return 성공 여부
+	 */
+	fun useItem(item: Item): Boolean {
+		if(!hasItem(item) || !(item is Usable)) return false;
+		
 		val succeeded = item.use();
-		if(succeeded && item is Gun)
-			firedBullets++;
+		if(succeeded)
+			if(item is Gun)  // 확장성을 고려하려 && 안 쓰고 중첩 if문 사용함
+				firedBullets++;
+		return succeeded;
 	}
 	
-	private inline interactContainer() {
+	/**
+	 * 닿아 있는 상자와 상호작용한다.
+	 * update()에서만 한 번 쓰이기 때문에 inline
+	 */
+	private inline fun interactContainer() {
 		for(entity in world.getEntities()) {
 			if(!(entity is Container)) continue;
 			if(collidesWith(entity)) {
@@ -164,17 +204,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
         super<LivingEntity>.update(delta);
 		
 		// 이동
-		val dx: Float;
-		val dy: Float;
-		if(InputHandler.isKeyPressed(InputHandler.LEFT) || InputHandler.isKeyPressed(InputHandler.A))
-			dx = -speed * delta;
-		else if(InputHandler.isKeyPressed(InputHandler.RIGHT) || InputHandler.isKeyPressed(InputHandler.D))
-			dx = speed * delta;
-        if(InputHandler.isKeyPressed(InputHandler.UP) || InputHandler.isKeyPressed(InputHandler.W))
-			dy = speed * delta;
-        else if(InputHandler.isKeyPressed(InputHandler.DOWN) || InputHandler.isKeyPressed(InputHandler.S))
-			dy = -speed * delta;
-		updatePosition(dx, dy);
+		val moved = updatePosition(delta);
+		if(moved) updateCameraOffset();
 		
 		// 아이템 사용
 		val holding: Item? = selectedItem;

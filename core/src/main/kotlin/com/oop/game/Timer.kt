@@ -34,7 +34,7 @@ class Timer(timerInterval: Int, val onlyInPlay: Boolean = true, internal val run
 	/**
 	 * 대기시간 초기화
 	 */
-	internal fun reset() {
+	fun reset() {
 		delta = interval;
 	}
 }
