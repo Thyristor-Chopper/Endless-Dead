@@ -27,6 +27,7 @@ import kotlin.math.sqrt;
  */
 class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, val attackDamage: Int, private val angle: Float, private val player: Player, private val speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp) {
     override val bodyDamage = 1;
+	override val defaultInvincibleDuration = 0.25f;
 	
 	override fun update(delta: Float) {
         super.update(delta);  // 부모(LivingGameObject)의 무적 타이머 갱신 로직 실행
