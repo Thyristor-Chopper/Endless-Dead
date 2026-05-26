@@ -51,6 +51,8 @@ import kotlin.math.sqrt;
  */
 abstract class Entity(override val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) : WorldObject, Updatable {
 	protected val texture: Texture?;
+	val position: Position
+		get() = Position(x, y);
 	
 	init {
 		val texturePath = texture;

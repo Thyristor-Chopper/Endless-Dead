@@ -1,5 +1,6 @@
 package com.oop.game.spawner;
 
+import com.oop.game.Position;
 import com.oop.game.entity.NormalZombie;
 import com.oop.game.entity.Player;
 import com.oop.game.entity.StrongZombie;
@@ -33,8 +34,12 @@ class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : 
 	 * 무작위로 좀비 종류를 골라서 월드에 추가하고 반환한다
 	 */
     private inline fun spawnRandomZombie(): Zombie {
-        val randomX = Random.nextFloat() * (world.width - 70f);
-        val randomY = Random.nextFloat() * (world.height - 70f);
+        var randomX: Float;
+        var randomY: Float;
+		do {
+			randomX = Random.nextFloat() * (world.width - 70f);
+			randomY = Random.nextFloat() * (world.height - 70f);
+		} while(Position(randomX, randomY).distanceTo(world.player.position) < 64.0f);
 
         // 주사위를 굴려서 확률로 좀비 종류 뽑기
         val rand = Random.nextInt(10);

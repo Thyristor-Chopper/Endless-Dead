@@ -6,8 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 
 import com.oop.game.GameState;
-import com.oop.game.InputHandler
-import com.oop.game.Position;
+import com.oop.game.InputHandler;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
 import com.oop.game.TimerExecutor;

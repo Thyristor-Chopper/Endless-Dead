@@ -43,9 +43,9 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
     var screenHeight = screenHeight
 		internal set;
     // 월드 크기 — 화면의 1.5배. 카메라(WASD)로 탐험 가능한 영역.
-    //   이 값은 내부 설정이므로 private.
-    private val worldWidth = 1600;
-    private val worldHeight = 1600;
+    //   외부(DesktopLauncher)에서 접근해야 하므로 public.
+    val worldWidth = 1920;
+    val worldHeight = 1920;
 
     /**
      * LibGDX 가 게임 시작 시 한 번 호출하는 라이프사이클 메서드.
