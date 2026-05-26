@@ -130,10 +130,12 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 			val x = Random.nextInt(this.width.toInt()).toFloat();
 			val y = Random.nextInt(this.height.toInt()).toFloat();
 			val item: Item = generateRandomItem();  // 들어있을 아이템
+			val toAdd: Entity;
 			if(Random.nextInt(2) == 1)
-				add(Building(this, x, y, item));
+				toAdd = Building(this, x, y, item);
 			else
-				add(Chest(this, x, y, item));
+				toAdd = Chest(this, x, y, item);
+			add(toAdd);
 		}
         add(player);
 		
