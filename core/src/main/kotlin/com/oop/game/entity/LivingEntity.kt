@@ -40,15 +40,16 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		};
 	protected open val showDamagedIndicator = true;
 	protected open val damagedIndicatorDuration = 0.5f;
+	protected open val defaultInvincibleDuration = 0.0f;
 	
 	/**
 	 * 체력 감소(대미지를 입는다.)
 	 *
-	 * @param damage	피해량
-	 * @param duration	무적 타이머
-	 * @param attacker	공격자
+	 * @param damage				피해량
+	 * @param invincibleDuration	무적 타이머
+	 * @param attacker				공격자
 	 */
-	open fun takeDamage(damage: Int, duration: Float = 0f, attacker: Entity? = null) {
+	open fun takeDamage(damage: Int, invincibleDuration: Float = defaultInvincibleDuration, attacker: Entity? = null) {
 		if(damage < 0) throw IllegalArgumentException("damage must not be negative");
 		
 		// 무적 시간이 다 끝났을 때만 피격당함
@@ -58,7 +59,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 				onDeath(attacker);  // 콜백 호출
 				if(attacker != null) attacker.onKill(this);
 			}
-			invincibilityTimer = duration;  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
+			invincibilityTimer = invincibleDuration;  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
 			onDamage(damage, attacker);
 			if(attacker != null) {
 				attacker.onAttack(this);
