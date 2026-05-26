@@ -1,5 +1,8 @@
 package com.oop.game.entity;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
 import com.oop.game.world.World;
 
 /**
@@ -27,6 +30,13 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		};
 	var latestAttacker: Entity? = null
 		private set;
+	private var damagedIndicatorTimer: Float = 0.0f
+		set(value) {
+			if(value < 0.0f) field = 0.0f;
+			else field = value;
+		};
+	open val showDamagedIndicator = true;
+	open val damagedIndicatorDuration = 0.5f;
 	
 	/**
 	 * 체력 감소(대미지를 입는다.)
@@ -50,6 +60,10 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 				attacker.onAttack(this);
 				latestAttacker = attacker;
 			}
+			
+			// 타격 시 붉게 표시 타이머
+			if(showDamagedIndicator)
+				damagedIndicatorTimer = damagedIndicatorDuration;
 		}
 	}
 	
@@ -85,5 +99,14 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		
 		if(invincibilityTimer > 0f)
 			invincibilityTimer -= delta;
+		if(damagedIndicatorTimer > 0f)
+			damagedIndicatorTimer -= delta;
+	}
+	
+	override fun draw(batch: SpriteBatch) {
+		val showDamaged = damagedIndicatorTimer > 0.0f;
+		if(showDamaged) batch.color = Color.RED;
+		super.draw(batch);
+		if(showDamaged) batch.color = Color.WHITE;
 	}
 }
