@@ -26,14 +26,6 @@ import kotlin.math.sqrt;
  * @param maxY
  */
 open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, val damage: Int, private val angle: Float, private val player: Player, private val speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp) {
-    private var radian : Float = 0f;
-    private var direction = 1f;  // 현재 진행 방향 — +1 이면 오른쪽, -1 이면 왼쪽. var 로 선언한 이유: 경계에서 반대로 뒤집혀야 하므로 값이 변함.
-	
-    private fun changeRandomAngle() {
-        val variation = (-30..30).random();
-        radian = (angle + variation) * 3.14f / 180;
-    }
-
     override fun update(delta: Float) {
         super.update(delta);  // 부모(LivingGameObject)의 무적 타이머 갱신 로직 실행
 
