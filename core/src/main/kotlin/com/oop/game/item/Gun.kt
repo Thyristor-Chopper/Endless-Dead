@@ -21,7 +21,7 @@ import com.oop.game.world.World
  * @param maxAmmo		최대 총알 개수
  * @param initialAmmo	초기 총알 개수
  */
-abstract class Gun(world: World, id: String, name: String, override val bulletDamage: Int, override val bulletSpeed: Float, override val penetrable: Boolean, val fireInterval: Float, val maxAmmo: Int, initialAmmo: Int) : Item(world, id, name), Fireable, Usable {
+abstract class Gun(world: World, id: String, name: String, override val bulletDamage: Int, override val bulletSpeed: Float, override val bulletHp: Int, override val penetrable: Boolean, val fireInterval: Float, val maxAmmo: Int, initialAmmo: Int) : Item(world, id, name), Fireable, Usable {
 	override val allowContinuousUse = false;
 	private var fireCooldown = 0f
 		set(value) {
@@ -69,7 +69,7 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	override fun fire(target: Position, shooter: Entity): Boolean {
 		if(!canFire) return false;
 		
-		val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, penetrable);
+		val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, penetrable, bulletHp);
 		world.add(bullet);
 		startFireCooldown();
 		ammo--;

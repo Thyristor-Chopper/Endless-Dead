@@ -10,6 +10,7 @@ interface Fireable {
 	val bulletDamage: Int;
 	val bulletSpeed: Float;
 	val penetrable: Boolean;
+	val bulletHp: Int;
 	
 	/**
 	 * 총 쏘기
