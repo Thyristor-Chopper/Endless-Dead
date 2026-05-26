@@ -1,5 +1,8 @@
 package com.oop.game;
 
+import com.badlogic.gdx.Gdx;
+
+import com.oop.game.WorldObject;
 import com.oop.game.ZombieGame;
 import com.oop.game.entity.Entity;
 import com.oop.game.item.Item;
@@ -9,10 +12,16 @@ import com.oop.game.world.World;
  * 지정한 시간마다 특정 작업(타이머)을 실행할 수 있는 객체
  */
 interface TimerExecutor {
-	companion object {
-		val MAX_UNIT_TIMER = ZombieGame.FPS;
-	}
-	
+	val MAX_UNIT_TIMER: Int
+		get() {
+			if(this is World)
+				return this.game.fps;
+			else if(this is WorldObject)
+				return this.world.game.fps;
+			// 우리 게임에서 TimerExecutor는 World, Item, Entity에만 있기 때문에 원칙적으로 아래 코드는 실행되면 안 된다.
+			// 하지만 확실한 예외 처리를 위해 현재 실제 렌더링되는 fps를 반환한다. 하지만 render()/update()는 타깃 fps에 맞춰지기 때문에 원래는 정확하지 않다.
+			return Gdx.graphics.getFramesPerSecond();
+		};
 	var unitTimer: Int;
 	val timers: MutableList<Timer>;
 	

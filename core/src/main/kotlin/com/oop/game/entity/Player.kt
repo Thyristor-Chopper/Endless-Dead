@@ -45,10 +45,10 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	override var selectedItemIndex: Int? = null;
     private val speed = 200f;
 	// 타이머
-	override var unitTimer = TimerExecutor.MAX_UNIT_TIMER
+	override var unitTimer = MAX_UNIT_TIMER
 		set(value) {
 			if(value < 0) field = 0;
-			else if(value > TimerExecutor.MAX_UNIT_TIMER) field = TimerExecutor.MAX_UNIT_TIMER;
+			else if(value > MAX_UNIT_TIMER) field = MAX_UNIT_TIMER;
 			else field = value;
 		};
 	override val timers = mutableListOf<Timer>();
@@ -145,8 +145,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	 * update()에서만 한 번 쓰이기 때문에 inline
 	 */
 	private inline fun updateCameraOffset() {
-		world.offsetX = x - world.screenWidth / 2.0f + width / 2.0f;
-		world.offsetY = y - world.screenHeight / 2.0f + height / 2.0f;
+		world.offsetX = x - world.game.screenWidth / 2.0f + width / 2.0f;
+		world.offsetY = y - world.game.screenHeight / 2.0f + height / 2.0f;
 	}
 	
 	/**
@@ -154,7 +154,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	 *
 	 * 들고 있지 않은 아이템이거나 사용 가능한 아이템이 아니라면 실패한다.
 	 *
-	 * @return 성공 여부
+	 * @param	item	사용할 아이템
+	 * @return	성공 여부
 	 */
 	fun useItem(item: Item): Boolean {
 		if(!hasItem(item) || !(item is Usable)) return false;
@@ -173,7 +174,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	private inline fun interactContainer() {
 		for(entity in world.getEntities()) {
 			if(!(entity is Container)) continue;
-			if(collidesWith(entity)) {
+			if(collidesWith(entity))
 				if(entity.isEmpty) {
 					val currentHolding: Item? = selectedItem;
 					if(currentHolding != null) {
@@ -196,7 +197,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 						break;  // 하나씩만
 					}
 				}
-			}
 		}
 	}
 	

@@ -67,7 +67,7 @@ import kotlin.random.Random;
  * @param worldWidth   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
  * @param worldHeight  월드 전체 높이
  */
-class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, width: Float = screenWidth, height: Float = screenHeight) : World(game, screenWidth, screenHeight, width, height), TimerExecutor {
+class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), height: Float = game.screenHeight.toFloat()) : World(game, width, height), TimerExecutor {
 	/**
 	 * 제목 표시줄에 표시할 정보 종류를 담는 enumeration
 	 */
@@ -106,10 +106,10 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
     private val bgColorLight = Color(0.15f, 0.4f, 0.16f, 1f);
     private val tileSize = 64f;
 	// 타이머
-	override var unitTimer = TimerExecutor.MAX_UNIT_TIMER
+	override var unitTimer = MAX_UNIT_TIMER
 		set(value) {
 			if(value < 0) field = 0;
-			else if(value > TimerExecutor.MAX_UNIT_TIMER) field = TimerExecutor.MAX_UNIT_TIMER;
+			else if(value > MAX_UNIT_TIMER) field = MAX_UNIT_TIMER;
 			else field = value;
 		};
 	override val timers = mutableListOf<Timer>();
@@ -185,7 +185,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
     }
 	
 	private inline fun updateTitleBarInfo() {
-		ZombieGame.setTitleBarInfo(when(TitleInfoType.byIndex(currentTitleInfo)) {
+		game.setTitleBarInfo(when(TitleInfoType.byIndex(currentTitleInfo)) {
 			TitleInfoType.OPENED	-> "연 상자: ${player.openedContainerCount}개";
 			TitleInfoType.KILLED	-> "잡은 좀비 수: ${player.killedZombieCount}";
 			TitleInfoType.FIRED		-> "발사한 총알 수: ${player.firedBullets}";
@@ -206,8 +206,8 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
         //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
         //   offset 은 0 ~ (world - screen) 범위여야 한다.
-        offsetX = offsetX.coerceIn(0f, width - screenWidth);
-        offsetY = offsetY.coerceIn(0f, height - screenHeight);
+        offsetX = offsetX.coerceIn(0f, width - game.screenWidth);
+        offsetY = offsetY.coerceIn(0f, height - game.screenHeight);
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
         if(!player.isAlive())
@@ -244,8 +244,8 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         val startCol = floor(offsetX / tileSize).toInt() - 1;
         val startRow = floor(offsetY / tileSize).toInt() - 1;
         // 화면을 채우는 데 필요한 타일 개수 (여유분 +3)
-        val cols = (screenWidth / tileSize).toInt() + 3;
-        val rows = (screenHeight / tileSize).toInt() + 3;
+        val cols = (game.screenWidth / tileSize).toInt() + 3;
+        val rows = (game.screenHeight / tileSize).toInt() + 3;
 
         for(row in startRow until startRow + rows)
             for(col in startCol until startCol + cols) {
@@ -310,7 +310,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         drawTextOnScreen(
             text = "HP: ${player.hp}",
             x = 10f,
-            y = screenHeight - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
+            y = game.screenHeight - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
             color = Color.YELLOW,
             scale = 1.2f,
 			fixedWidthChars = "#-"
@@ -320,7 +320,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		drawTextOnScreen(
             text = Utils.progressBar(player.hp.toFloat() / player.maxHp.toFloat(), 25),
             x = 90.0f,
-            y = screenHeight - 10f,
+            y = game.screenHeight - 10f,
             color = Color.YELLOW,
             scale = 1.0f,
 			fixedWidthChars = Utils.PROGRESS_BAR_CHARACTERS
@@ -342,7 +342,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		if(holding != null && holding is Gun) {
 			drawTextOnScreen(
 				text = Utils.progressBar(holding.ammo.toFloat() / holding.maxAmmo.toFloat(), 14),
-				x = screenWidth - 190.0f,
+				x = game.screenWidth - 190.0f,
 				y = 20.0f,
 				color = Color.SKY,
 				scale = 1.0f,
@@ -357,7 +357,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 				if(cooldown > 0f)
 					drawTextOnScreen(
 						text = Utils.progressBar(cooldown, 5),
-						x = screenWidth - 340.0f,
+						x = game.screenWidth - 340.0f,
 						y = 20.0f,
 						color = Color.SCARLET,
 						scale = 1.0f,
@@ -371,8 +371,8 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 		// 6) 점수
 		drawTextOnScreen(
             text = "Score: ${ScoreManager.score}",
-            x = screenWidth - 130.0f,
-            y = screenHeight - 10f,
+            x = game.screenWidth - 130.0f,
+            y = game.screenHeight - 10f,
             color = Color.LIME,
             scale = 1.2f,
 			width = 120.0f,
@@ -386,15 +386,15 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
     private fun drawGameOverOverlay() {
         drawTextOnScreen(
             text = "YOU DIED!",
-            x = screenWidth / 2 - 80f,
-            y = screenHeight / 2,
+            x = game.screenWidth / 2 - 80f,
+            y = game.screenHeight / 2.0f,
             color = Color.RED,
             scale = 2f
         );
         drawTextOnScreen(
             text = "Press ESC to exit",
-            x = screenWidth / 2 - 70f,
-            y = screenHeight / 2 - 40f,
+            x = game.screenWidth / 2 - 70f,
+            y = game.screenHeight / 2 - 40f,
             color = Color.WHITE,
             scale = 1f
         );

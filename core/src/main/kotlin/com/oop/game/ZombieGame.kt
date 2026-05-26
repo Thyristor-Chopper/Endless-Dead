@@ -32,20 +32,10 @@ import com.oop.game.world.ZombieWorld;
  *   ▸ worldWidth  / worldHeight    : 스크롤 가능한 월드 크기
  *   ▸ create() 안에서 setScreen 에 넘기는 Screen 을 자기 Screen 으로 교체
  */
-class ZombieGame : Game() {
-	companion object {
-		val TITLE = "좀비 파밍";  // 창 제목
-		val FPS = 60;  // FPS (타이머에 필요함)
-		
-		inline fun setTitleBarInfo(info: String) {
-			Gdx.graphics.setTitle("${ZombieGame.TITLE} - $info");
-		}
-	}
+class ZombieGame(val screenWidth: Int, val screenHeight: Int, val fps: Int) : Game() {
+	// 게임 제목
+	val title = "좀비 파밍";
 	
-    // 화면(창) 크기 — DesktopLauncher 가 창 크기 설정에도 이 값을 읽어간다.
-    //   public(기본)으로 둔 이유: 외부(DesktopLauncher)에서 접근해야 하므로.
-    val screenWidth = 800;
-    val screenHeight = 600;
     // 월드 크기 — 화면의 1.5배. 카메라(WASD)로 탐험 가능한 영역.
     //   이 값은 내부 설정이므로 private.
     private val worldWidth = 1600;
@@ -65,13 +55,16 @@ class ZombieGame : Game() {
      *  GameWorld 가 LibGDX 의 Screen 인터페이스를 상속하므로 setScreen 인자로 넘길 수 있다.
      */
     override fun create() {
+		Gdx.graphics.setForegroundFPS(fps);
         val zombieWorld = ZombieWorld(
 			this,
-            screenWidth = screenWidth.toFloat(),
-            screenHeight = screenHeight.toFloat(),
             width = worldWidth.toFloat(),
             height = worldHeight.toFloat()
         );
         setScreen(zombieWorld);  // 부모 Game 이 제공하는 메서드
     }
+	
+	inline fun setTitleBarInfo(info: String) {
+		Gdx.graphics.setTitle("$title - $info");
+	}
 }

@@ -90,6 +90,6 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	 * @return 사용 성공 여부
 	 */
 	override fun use(): Boolean {
-		return fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), world.player);
+		return fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.game.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), world.player);
 	}
 }

@@ -63,7 +63,7 @@ import com.oop.game.item.Item;
  * @param width        월드 전체 너비 (기본값: 화면과 동일 = 스크롤 없음)
  * @param height       월드 전체 높이
  */
-abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHeight: Float, val width: Float = screenWidth, val height: Float = screenHeight) : ScreenAdapter(), Updatable {
+abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : ScreenAdapter(), Updatable {
 	abstract var state: GameState
 		protected set;
 	abstract val player: Player;
@@ -75,8 +75,8 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
     val font = BitmapFont();
     // 카메라 오프셋 — 월드의 어느 지점이 화면 좌하단에 오는지.
     //   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
-    var offsetX: Float = width / 2.0f - screenWidth / 2.0f;
-    var offsetY: Float = height / 2.0f - screenHeight / 2.0f;
+    var offsetX: Float = width / 2.0f - game.screenWidth / 2.0f;
+    var offsetY: Float = height / 2.0f - game.screenHeight / 2.0f;
     // 등록된 객체들만 update/draw 된다.
     // private 으로 감춘 이유: 외부가 직접 add/remove 하면
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. add(), remove() 라는 공식 창구만 허용.
@@ -89,7 +89,7 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
     init {
         // 카메라를 '왼쪽 아래 = (0,0), 오른쪽 위 = (screenWidth, screenHeight)' 로 설정.
         //   false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
-        camera.setToOrtho(false, screenWidth, screenHeight);
+        camera.setToOrtho(false, game.screenWidth.toFloat(), game.screenHeight.toFloat());
     }
 
     // ────────────────────────────────────────────────────────
@@ -251,7 +251,7 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
 				y = 20f,
 				color = subtitlesColor,
 				scale = 1.0f,
-				width = screenWidth,
+				width = game.screenWidth.toFloat(),
 				align = Align.center
 			);
 			subtitlesTimer--;
@@ -371,7 +371,7 @@ abstract class World(val game: ZombieGame, val screenWidth: Float, val screenHei
 	 * @param color		글자 색
 	 */
 	fun drawSubtitles(message: String, duration: Int = 3, color: Color = Color.WHITE) {
-		subtitlesTimer = duration * ZombieGame.FPS;
+		subtitlesTimer = duration * game.fps;
 		subtitlesMessage = message;
 		subtitlesColor = color;
 	}
