@@ -87,10 +87,14 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 	private var subtitlesColor = Color.WHITE;
 
     init {
+        setCameraCenter();
+    }
+	
+	private inline fun setCameraCenter() {
         // 카메라를 '왼쪽 아래 = (0,0), 오른쪽 위 = (screenWidth, screenHeight)' 로 설정.
         //   false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
-        camera.setToOrtho(false, game.screenWidth.toFloat(), game.screenHeight.toFloat());
-    }
+		camera.setToOrtho(false, game.screenWidth.toFloat(), game.screenHeight.toFloat());
+	}
 
     // ────────────────────────────────────────────────────────
     //  객체 관리
@@ -122,6 +126,16 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
     // ────────────────────────────────────────────────────────
     //  매 프레임 로직
     // ────────────────────────────────────────────────────────
+	
+	/**
+	 * 크기 조절 시 호출된다.
+	 */
+	override fun resize(width: Int, height: Int) {
+		game.screenWidth = width;
+		game.screenHeight = height;
+		setCameraCenter();
+		updateCameraOffset();
+	}
 	
 	/**
 	 * 월드 내 모든 아이템과 개체를 순회한다.
@@ -300,6 +314,14 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
             obj.y = originalY;
         }
     }
+	
+	/**
+	 * 플레이어 위치에 따라 카메라 위치 변경
+	 */
+	inline fun updateCameraOffset() {
+		offsetX = player.x - game.screenWidth / 2.0f + player.width / 2.0f;
+		offsetY = player.y - game.screenHeight / 2.0f + player.height / 2.0f;
+	}
 
     // ────────────────────────────────────────────────────────
     //  텍스트 헬퍼

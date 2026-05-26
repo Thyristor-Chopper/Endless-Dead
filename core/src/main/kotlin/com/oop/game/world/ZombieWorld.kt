@@ -140,8 +140,8 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		// 스포너들
 		spawners.add(ZombieSpawner(this, 3.0f));
 		
-		// 30초마다 빈 상자 하나 리필
-		registerTimer(Timer(30) {
+		// 10초마다 빈 상자 하나 리필
+		registerTimer(Timer(10) {
 			for(entity in getEntities().shuffled())
 				if(entity is Container && entity.isEmpty) {
 					entity.putItem(generateRandomItem());

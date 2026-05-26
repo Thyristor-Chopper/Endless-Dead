@@ -141,15 +141,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	}
 	
 	/**
-	 * 플레이어 위치에 따라 카메라 위치 변경
-	 * update()에서만 한 번 쓰이기 때문에 inline
-	 */
-	private inline fun updateCameraOffset() {
-		world.offsetX = x - world.game.screenWidth / 2.0f + width / 2.0f;
-		world.offsetY = y - world.game.screenHeight / 2.0f + height / 2.0f;
-	}
-	
-	/**
 	 * 플레이어가 갖고 있는 아이템을 사용한다.
 	 *
 	 * 들고 있지 않은 아이템이거나 사용 가능한 아이템이 아니라면 실패한다.
@@ -205,7 +196,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		
 		// 이동
 		val moved = updatePosition(delta);
-		if(moved) updateCameraOffset();
+		if(moved) world.updateCameraOffset();
 		
 		// 아이템 사용
 		val holding: Item? = selectedItem;
