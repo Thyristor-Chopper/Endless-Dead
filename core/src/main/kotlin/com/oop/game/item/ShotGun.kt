@@ -9,7 +9,7 @@ import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Shotgun(world: World) : Gun(world, "G002", "Shotgun", 20, 500f, true, 1f, 10, 5) {
+class Shotgun(world: World) : Gun(world, "G002", "Shotgun", 5, 500f, true, 1f, 10, 5) {
     override fun fire(target: Position, shooter: Entity): Boolean {
         if(!canFire) return false
 

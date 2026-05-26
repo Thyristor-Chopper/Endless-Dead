@@ -29,7 +29,7 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 			else field = value;
 		};
 	val canFire: Boolean
-		get() = fireCooldown == 0f && ammo > 0;
+		get() = fireCooldown == 1f && ammo > 0;
 	var ammo: Int = initialAmmo
 		protected set(value) {
 			if(value < 0) field = 0;
