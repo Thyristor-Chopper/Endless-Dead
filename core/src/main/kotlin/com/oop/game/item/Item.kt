@@ -13,20 +13,26 @@ import com.oop.game.world.World;
  * @param id	총 식별자
  * @param name	총 이름
  */
-abstract class Item(world: World, val id: String, val name: String) : WorldObject, Updatable {
-	override val world = world;
+abstract class Item(override val world: World, val id: String, val name: String) : WorldObject, Updatable {
 	var holder: InventoryEntity? = null
 		internal set;
 	
+	/**
+	 * 같은 종류의 아이템인지를 비교한다.
+	 */
 	fun equals(other: Item): Boolean {
 		return id == other.id;
 	}
 	
-	fun destroy() {
+	/**
+	 * 인벤토리를 가진 개체가 이 아이템을 들고 있는 경우 파괴한다.
+	 *
+	 * @return 성공 여부
+	 */
+	fun destroy(): Boolean {
 		val holder: InventoryEntity? = this.holder;
-		if(holder == null)
-			throw IllegalStateException("only items held by entities with inventory can be destroyed");
-		holder.removeItemFromInventory(this);
+		if(holder == null) return false;
+		return holder.removeItemFromInventory(this);
 		
 		// 나머지는 jvm이나 달빅이 알아서 gc 해주겠지.
 	}
