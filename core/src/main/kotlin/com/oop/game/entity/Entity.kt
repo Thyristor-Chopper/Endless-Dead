@@ -11,8 +11,6 @@ import com.oop.game.WorldObject;
 import com.oop.game.entity.Entity;
 import com.oop.game.world.World;
 
-import kotlin.math.sqrt;
-
 /**
  * 게임에 등장하는 모든 '무엇인가'의 공통 부모.
  *

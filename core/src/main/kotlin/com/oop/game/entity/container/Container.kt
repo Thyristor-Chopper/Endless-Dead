@@ -1,5 +1,6 @@
 package com.oop.game.entity.container;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -13,9 +14,9 @@ import com.oop.game.world.World;
  *
  * @param initialItem	처음 들어있는 아이템
  */
-abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, initialItem: Item? = null) : Entity(world, x, y, width, height, texture) {
-	open protected val emptyTexture: Texture? = null;
-	open protected val flagTexture: Texture? = null;
+abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, emptyTexture: String? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture) {
+	open protected val emptyTexture: Texture?;
+	open protected val playerItemTexture: Texture? = null;
 	var containedItem: Item? = initialItem  // 들어있는 아이템
 		private set;
 	var isPlayerItem = false
@@ -23,19 +24,26 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	val isEmpty: Boolean
 		get() = (containedItem == null);
 	
+	init {
+		val emptyTexturePath = emptyTexture;
+		if(emptyTexturePath == null)
+			this.emptyTexture = null;
+		else
+			this.emptyTexture = Texture(Gdx.files.internal(emptyTexturePath));
+	}
+	
 	/**
 	 * 상자를 화면에 그린다. 비어 있을 때와 아닐 때 텍스처가 다르기 때문에 override해서 처리한다.
 	 */
 	override fun draw(batch: SpriteBatch) {
-		val texture = this.texture;
-		val flagTexture = this.flagTexture;
+		val playerItemTexture = this.playerItemTexture;
 		val emptyTexture = this.emptyTexture;
 		if(isEmpty && emptyTexture != null) {
 			batch.draw(emptyTexture, x, y, width, height);
-		} else if(isPlayerItem && flagTexture != null) {
-			batch.draw(flagTexture, x, y, width, height);
-		} else if(texture != null) {
-			batch.draw(texture, x, y, width, height);
+		} else if(isPlayerItem && playerItemTexture != null) {
+			batch.draw(playerItemTexture, x, y, width, height);
+		} else {
+			super.draw(batch);
 		}
 	}
 	
@@ -61,10 +69,10 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	 *
 	 * @param item	넣을 아이템
 	 */
-	fun putItem(item: Item, setFlag: Boolean = false) {
+	fun putItem(item: Item, isPlayerItem: Boolean = false) {
 		if(!isEmpty) throw IllegalStateException("container is not empty");
 		containedItem = item;
-		if(setFlag) isPlayerItem = true;
+		if(isPlayerItem) this.isPlayerItem = true;
 		item.holder = null;
 	}
 	
@@ -82,9 +90,9 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	
 	override fun dispose() {
 		super.dispose();
-		val flagTexture = this.flagTexture;
+		val playerItemTexture = this.playerItemTexture;
 		val emptyTexture = this.emptyTexture;
-		if(flagTexture != null) flagTexture.dispose();
+		if(playerItemTexture != null) playerItemTexture.dispose();
 		if(emptyTexture != null) emptyTexture.dispose();
 	}
 }

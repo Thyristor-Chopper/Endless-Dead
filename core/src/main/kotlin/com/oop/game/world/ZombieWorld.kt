@@ -210,7 +210,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
         offsetY = offsetY.coerceIn(0f, height - game.screenHeight);
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
-        if(!player.isAlive()) {
+        if(!player.isAlive) {
             state = GameState.GAME_OVER;
 			Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 게임 오버 시 비디오 카드 리소스를 낭비하지 않게 한다
 		}

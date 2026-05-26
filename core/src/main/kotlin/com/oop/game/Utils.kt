@@ -8,8 +8,8 @@ object Utils {
 	const val PROGRESS_BAR_CLOSE = ']';
 	const val PROGRESS_BAR_FILLED = '=';
 	const val PROGRESS_BAR_EMPTY = ' ';
-	private const val DEFAULT_PROGRESS_BAR_SIZE = 20;
 	const val PROGRESS_BAR_CHARACTERS = "${PROGRESS_BAR_FILLED}${PROGRESS_BAR_EMPTY}";
+	private const val DEFAULT_PROGRESS_BAR_SIZE = 20;
 	
 	/**
 	 * 미터기를 그린다.
