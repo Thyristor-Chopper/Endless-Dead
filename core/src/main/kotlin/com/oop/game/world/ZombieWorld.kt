@@ -159,7 +159,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 	/**
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다
 	 */
-	private fun generateRandomItem(): Item {
+	private inline fun generateRandomItem(): Item {
 		return when(Random.nextInt(3)) {
 			0		-> MachineGun(this)
 			1		-> Shotgun(this)
