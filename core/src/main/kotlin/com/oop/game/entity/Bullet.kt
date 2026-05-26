@@ -2,7 +2,7 @@ package com.oop.game.entity;
 
 import com.oop.game.Position;
 import com.oop.game.entity.Entity;
-import com.oop.game.item.Gun;
+import com.oop.game.item.Fireable;
 import com.oop.game.world.World;
 
 import kotlin.math.sqrt;
@@ -18,7 +18,7 @@ import kotlin.math.sqrt;
  * @param damage		총알이 주는 피해량
  * @param penetrable	총알 관통 가능 여부
  */
-class Bullet(world: World, val gun: Gun, val shooter: Entity, val target: Position, private val speed: Float, val damage: Int, val penetrable: Boolean) : LivingEntity(world, shooter.x, shooter.y, 16.0f, 16.0f, "bullet.bmp", 1) {
+class Bullet(world: World, val gun: Fireable, val shooter: Entity, val target: Position, private val speed: Float, val damage: Int, val penetrable: Boolean) : LivingEntity(world, shooter.x, shooter.y, 16.0f, 16.0f, "bullet.bmp", 1) {
 	override val showDamagedIndicator = false;
 	val amountX: Float;
 	val amountY: Float;
