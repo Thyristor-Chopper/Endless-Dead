@@ -62,7 +62,9 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	/**
 	 * 총 쏘기
 	 *
-	 * @return 발사 성공 여부
+	 * @param	target	총알이 향할 좌표
+	 * @param	shooter	총알을 쏜 개체
+	 * @return	발사 성공 여부
 	 */
 	override fun fire(target: Position, shooter: Entity): Boolean {
 		if(!canFire) return false;
