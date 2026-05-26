@@ -198,16 +198,16 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
 	 * IN_PLAY 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
 	 */
     private inline fun updateInPlay(delta: Float) {
+        // ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
+		super.update(delta);  // updateAllObjects과 removeDead
+		for(spawner in spawners)
+			spawner.tick(delta);
+		
         // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
         //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
         //   offset 은 0 ~ (world - screen) 범위여야 한다.
         offsetX = offsetX.coerceIn(0f, width - screenWidth);
         offsetY = offsetY.coerceIn(0f, height - screenHeight);
-
-        // ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
-		super.update(delta);  // updateAllObjects과 removeDead
-		for(spawner in spawners)
-			spawner.tick(delta);
 
         // ── 2) 상호작용 결정 — 누가 누구와 부딪혀 어떻게 되는지 ──
         //   collidesWith 는 GameObject 의 메서드 → 모든 게임 객체가 자동으로 가짐.
