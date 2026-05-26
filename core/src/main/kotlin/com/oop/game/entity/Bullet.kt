@@ -1,11 +1,6 @@
 package com.oop.game.entity;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import com.oop.game.Position;
-import com.oop.game.ScoreManager;
 import com.oop.game.entity.Entity;
 import com.oop.game.world.World;
 
