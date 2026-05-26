@@ -106,10 +106,10 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
     private val bgColorLight = Color(0.15f, 0.4f, 0.16f, 1f);
     private val tileSize = 64f;
 	// 타이머
-	override var unitTimer = MAX_UNIT_TIMER
+	override var unitTimer = TimerExecutor.MAX_UNIT_TIMER
 		set(value) {
-			if(value < 0) field = 0;
-			else if(value > MAX_UNIT_TIMER) field = MAX_UNIT_TIMER;
+			if(value < 0) field = 0.0f;
+			else if(value > TimerExecutor.MAX_UNIT_TIMER) field = TimerExecutor.MAX_UNIT_TIMER;
 			else field = value;
 		};
 	override val timers = mutableListOf<Timer>();

@@ -82,7 +82,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. add(), remove() 라는 공식 창구만 허용.
     //   (5주차에서 배운 캡슐화의 실제 사례)
     private val entities = mutableListOf<Entity>();
-	private var subtitlesTimer = 0;
+	private var subtitlesTimer = 0.0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
 
@@ -197,16 +197,16 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 	/**
 	 * 월드 내 모든 아이템과 개체에 붙어 있는 타이머를 실행하고 갱신해준다.
 	 */
-	private fun executeAllTimers() {
+	private fun executeAllTimers(delta: Float) {
 		// 개체와 아이템에 등록된 타이머
 		forEachObjects {
 			if(it is TimerExecutor)
-				it.executeTimers();
+				it.executeTimers(delta);
 		};
 		
 		// 월드의 타이머
 		if(this is TimerExecutor)
-			this.executeTimers();
+			this.executeTimers(delta);
 	}
 
     // ────────────────────────────────────────────────────────
@@ -233,7 +233,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
         update(delta);
 		
 		// 4) 타이머 실행
-		executeAllTimers();
+		executeAllTimers(delta);
 
         // 5) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
         batch.begin();
@@ -244,7 +244,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 		
 		// 6) 자막이 있으면 표시
 		val message: String? = subtitlesMessage;
-		if(subtitlesTimer > 0 && message != null) {
+		if(subtitlesTimer > 0.0f && message != null) {
 			drawTextOnScreen(
 				text = message,
 				x = 0f,
@@ -254,7 +254,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 				width = game.screenWidth.toFloat(),
 				align = Align.center
 			);
-			subtitlesTimer--;
+			subtitlesTimer -= delta;
 		}
     }
 	
@@ -371,7 +371,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 	 * @param color		글자 색
 	 */
 	fun drawSubtitles(message: String, duration: Int = 3, color: Color = Color.WHITE) {
-		subtitlesTimer = duration * game.fps;
+		subtitlesTimer = duration.toFloat();
 		subtitlesMessage = message;
 		subtitlesColor = color;
 	}

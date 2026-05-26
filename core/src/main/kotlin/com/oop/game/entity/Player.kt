@@ -45,10 +45,10 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	override var selectedItemIndex: Int? = null;
     private val speed = 200f;
 	// 타이머
-	override var unitTimer = MAX_UNIT_TIMER
+	override var unitTimer = TimerExecutor.MAX_UNIT_TIMER
 		set(value) {
-			if(value < 0) field = 0;
-			else if(value > MAX_UNIT_TIMER) field = MAX_UNIT_TIMER;
+			if(value < 0.0f) field = 0.0f;
+			else if(value > TimerExecutor.MAX_UNIT_TIMER) field = TimerExecutor.MAX_UNIT_TIMER;
 			else field = value;
 		};
 	override val timers = mutableListOf<Timer>();

@@ -26,7 +26,7 @@ fun main() {
     //   OopGame 은 LibGDX 의 Game 을 상속한 클래스 (OopGame.kt 참고).
     //   이 시점에는 단순히 설계도만 들고 있을 뿐, 실제 화면은 아직 안 만들어진다.
     //   화면 생성은 LibGDX 가 나중에 game.create() 를 호출할 때 일어난다.
-    val game = ZombieGame(800, 600, 60);
+    val game = ZombieGame(800, 600);
 
     // ─────────────────────────────────────────
     // 2) 창(Window) 설정
@@ -42,7 +42,7 @@ fun main() {
     config.setWindowedMode(game.screenWidth, game.screenHeight);	// 창 크기 (OopGame 이 들고 있는 값 사용)
     config.setResizable(false);									// 사용자가 창 크기 조절 못하게
     config.useVsync(true);											// 수직동기화 (화면 찢어짐 방지)
-    config.setForegroundFPS(game.fps);								// 최대 60 FPS
+    config.setForegroundFPS(60);									// 최대 60 FPS
 	config.setWindowIcon(FileType.Internal, "icon_16.png", "icon_32.png", "icon_128.png");
 
     // ─────────────────────────────────────────

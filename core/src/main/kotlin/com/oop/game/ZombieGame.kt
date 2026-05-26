@@ -32,7 +32,7 @@ import com.oop.game.world.ZombieWorld;
  *   ▸ worldWidth  / worldHeight    : 스크롤 가능한 월드 크기
  *   ▸ create() 안에서 setScreen 에 넘기는 Screen 을 자기 Screen 으로 교체
  */
-class ZombieGame(val screenWidth: Int, val screenHeight: Int, val fps: Int) : Game() {
+class ZombieGame(val screenWidth: Int, val screenHeight: Int) : Game() {
 	// 게임 제목
 	val title = "좀비 파밍";
 	
@@ -55,7 +55,6 @@ class ZombieGame(val screenWidth: Int, val screenHeight: Int, val fps: Int) : Ga
      *  GameWorld 가 LibGDX 의 Screen 인터페이스를 상속하므로 setScreen 인자로 넘길 수 있다.
      */
     override fun create() {
-		Gdx.graphics.setForegroundFPS(fps);
         val zombieWorld = ZombieWorld(
 			this,
             width = worldWidth.toFloat(),
