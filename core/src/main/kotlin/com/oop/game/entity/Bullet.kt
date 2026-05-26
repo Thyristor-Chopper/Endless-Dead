@@ -43,8 +43,6 @@ class Bullet(world: World, val shooter: Entity, val target: Position, private va
 		for(entity in world.getEntities())
 			if(entity !== this && entity !== world.player && !(entity is Bullet) && entity is LivingEntity && collidesWith(entity)) {
 				entity.takeDamage(damage, 1.0f, shooter);  // 무적 시간이 필요하면 추가...
-				if(shooter === world.player)
-					ScoreManager.addScore(10);
 				if(!penetrable) isActive = false;
 			}
 	}

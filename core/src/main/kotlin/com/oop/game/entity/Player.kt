@@ -223,6 +223,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	 * 처치한 좀비 수를 갱신한다.
 	 */
 	override fun onKill(victim: LivingEntity) {
+		ScoreManager.addScore(10);
 		if(victim is Zombie)
 			killedZombieCount++;
 	}
