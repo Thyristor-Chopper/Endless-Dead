@@ -13,7 +13,7 @@ import com.oop.game.world.World;
  */
 interface TimerExecutor {
 	companion object {
-		val MAX_UNIT_TIMER: Float = 1.0f;
+		const val MAX_UNIT_TIMER: Float = 1.0f;
 	}
 	
 	var unitTimer: Float;

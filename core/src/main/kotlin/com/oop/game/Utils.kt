@@ -4,10 +4,12 @@ package com.oop.game;
  * 유용한 함수 모음
  */
 object Utils {
-	val PROGRESS_BAR_FILLED = '=';
-	val PROGRESS_BAR_EMPTY = ' ';
-	private val DEFAULT_PROGRESS_BAR_SIZE = 20;
-	val PROGRESS_BAR_CHARACTERS = "${PROGRESS_BAR_FILLED}${PROGRESS_BAR_EMPTY}";
+	const val PROGRESS_BAR_OPEN = '[';
+	const val PROGRESS_BAR_CLOSE = ']';
+	const val PROGRESS_BAR_FILLED = '=';
+	const val PROGRESS_BAR_EMPTY = ' ';
+	private const val DEFAULT_PROGRESS_BAR_SIZE = 20;
+	const val PROGRESS_BAR_CHARACTERS = "${PROGRESS_BAR_FILLED}${PROGRESS_BAR_EMPTY}";
 	
 	/**
 	 * 미터기를 그린다.
@@ -24,13 +26,13 @@ object Utils {
 	 * @param value	정수 진행률(1~100)
 	 */
 	fun progressBar(value: Int, size: Int = DEFAULT_PROGRESS_BAR_SIZE): String {
-		var ret = "[";
+		var ret = "$PROGRESS_BAR_OPEN";
 		val filled = (value / 100.0f * size).toInt();
 		for(i in 1..filled)
 			ret += PROGRESS_BAR_FILLED;
 		for(i in 1..(size - filled))
 			ret += PROGRESS_BAR_EMPTY;
-		ret += "]";
+		ret += "$PROGRESS_BAR_CLOSE";
 		return ret;
 	}
 	

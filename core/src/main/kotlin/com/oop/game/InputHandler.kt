@@ -64,16 +64,16 @@ object InputHandler {
     // 자주 쓰는 키 상수를 짧은 이름으로 재노출.
     //   원본은 Input.Keys.LEFT 처럼 길어서 자주 쓸수록 번거롭다.
     //   필요하면 Input.Keys.XXX 에서 다른 키를 직접 import 해서 써도 된다.
-    val LEFT = Input.Keys.LEFT
-    val RIGHT = Input.Keys.RIGHT
-    val UP = Input.Keys.UP
-    val DOWN = Input.Keys.DOWN
-    val SPACE = Input.Keys.SPACE
-    val ESCAPE = Input.Keys.ESCAPE
-    val W = Input.Keys.W
-    val A = Input.Keys.A
-    val S = Input.Keys.S
-    val D = Input.Keys.D
-    val LEFT_MOUSE = Input.Buttons.LEFT;
-    val RIGHT_MOUSE = Input.Buttons.RIGHT;
+    const val LEFT = Input.Keys.LEFT
+    const val RIGHT = Input.Keys.RIGHT
+    const val UP = Input.Keys.UP
+    const val DOWN = Input.Keys.DOWN
+    const val SPACE = Input.Keys.SPACE
+    const val ESCAPE = Input.Keys.ESCAPE
+    const val W = Input.Keys.W
+    const val A = Input.Keys.A
+    const val S = Input.Keys.S
+    const val D = Input.Keys.D
+    const val LEFT_MOUSE = Input.Buttons.LEFT;
+    const val RIGHT_MOUSE = Input.Buttons.RIGHT;
 }
