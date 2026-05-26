@@ -190,16 +190,16 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	}
 	
     override fun update(delta: Float) {
-        super<LivingEntity>.update(delta);
-		
-		// 이동
-		val moved = updatePosition(delta);
-		if(moved) world.updateCameraOffset();
+        super.update(delta);
 		
 		// 아이템 사용
 		val holding: Item? = selectedItem;
 		if(holding != null && holding is Usable && (InputHandler.isButtonJustPressed(InputHandler.LEFT_MOUSE) || (holding.allowContinuousUse && InputHandler.isButtonPressed(InputHandler.LEFT_MOUSE))))
 			useItem(holding);
+		
+		// 이동
+		val moved = updatePosition(delta);
+		if(moved) world.updateCameraOffset();
 		
 		// 아이템 가져가기 & 넣기
 		if(InputHandler.isKeyJustPressed(InputHandler.SPACE) || InputHandler.isButtonJustPressed(InputHandler.RIGHT_MOUSE))

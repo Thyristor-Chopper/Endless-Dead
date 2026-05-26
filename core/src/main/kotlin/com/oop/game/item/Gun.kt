@@ -74,7 +74,7 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 		startFireCooldown();
 		ammo--;
 		
-		// ammo가 다 떨어진 총은 파괴 (만약 충전 기능을 만든다면 이 코드는 비활성화할 수도 있음)
+		// ammo가 다 떨어진 총은 파괴
 		if(ammo == 0) {
 			if(holder === world.player)
 				world.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
