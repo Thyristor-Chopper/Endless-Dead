@@ -185,7 +185,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
     protected fun removeDead() {
 		val toRemove = mutableListOf<Entity>();
         for(obj in entities)
-            if((obj is LivingEntity && !obj.isAlive) || (obj is Bullet && !obj.isActive))
+            if(obj is LivingEntity && !obj.isAlive)
                 toRemove.add(obj);
         for(obj in toRemove) {
             entities.remove(obj);

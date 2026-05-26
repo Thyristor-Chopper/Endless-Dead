@@ -29,7 +29,7 @@ class Shotgun(world: World) : Gun(world, "G002", "Shotgun", 5, 500f, true, 1f, 1
                 centerY + sin(finalAngle) * 100f //구글링했음
             )
 
-            world.add(Bullet(world, shooter, pelletTarget, bulletSpeed, bulletDamage, penetrable))
+            world.add(Bullet(world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, penetrable))
         }
 
         startFireCooldown()

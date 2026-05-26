@@ -82,6 +82,15 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	}
 	
 	/**
+	 * 개체를 죽인다.
+	 */
+	fun kill(attacker: Entity? = null) {
+		hp = 0;
+		onDeath(attacker);
+		if(attacker != null) attacker.onKill(this);
+	}
+	
+	/**
 	 * 대미지를 받았을 때 실행할 콜백 함수
 	 *
 	 * @param damage	받은 피해량

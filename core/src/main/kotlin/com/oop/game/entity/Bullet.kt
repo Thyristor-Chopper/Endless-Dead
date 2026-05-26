@@ -2,6 +2,7 @@ package com.oop.game.entity;
 
 import com.oop.game.Position;
 import com.oop.game.entity.Entity;
+import com.oop.game.item.Gun;
 import com.oop.game.world.World;
 
 import kotlin.math.sqrt;
@@ -17,9 +18,8 @@ import kotlin.math.sqrt;
  * @param damage		총알이 주는 피해량
  * @param penetrable	총알 관통 가능 여부
  */
-class Bullet(world: World, val shooter: Entity, val target: Position, private val speed: Float, val damage: Int, val penetrable: Boolean) : Entity(world, shooter.x, shooter.y, 16.0f, 16.0f, "bullet.bmp") {
-    var isActive = true
-		private set;
+class Bullet(world: World, val gun: Gun, val shooter: Entity, val target: Position, private val speed: Float, val damage: Int, val penetrable: Boolean) : LivingEntity(world, shooter.x, shooter.y, 16.0f, 16.0f, "bullet.bmp", 1) {
+	override val showDamagedIndicator = false;
 	val amountX: Float;
 	val amountY: Float;
 	
@@ -32,7 +32,7 @@ class Bullet(world: World, val shooter: Entity, val target: Position, private va
 			amountX = dx / distance * speed;
 			amountY = dy / distance * speed;
 		} else {
-			isActive = false;
+			this.kill();
 			amountX = 0.0f;
 			amountY = 0.0f;
 		}
@@ -44,13 +44,16 @@ class Bullet(world: World, val shooter: Entity, val target: Position, private va
 		
 		// 화면 밖으로 나가면 소멸
 		if(x < 0f || x > world.width || y < 0f || y > world.height)
-			isActive = false;
+			this.kill();
 		
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지 주고 총알은 소멸.
 		for(entity in world.getEntities())
-			if(entity !== this && entity !== world.player && entity is LivingEntity && collidesWith(entity)) {
+			if(entity !== this && entity !== world.player && entity is LivingEntity && (!(entity is Bullet) || (entity is Bullet && entity.gun !== this.gun)) && collidesWith(entity)) {
 				entity.takeDamage(damage, attacker=shooter);  // 무적 시간이 필요하면 추가...
-				if(!penetrable) isActive = false;
+				if(penetrable)
+					this.takeDamage(entity.bodyDamage, attacker=entity);
+				else
+					this.kill();
 			}
 	}
 }

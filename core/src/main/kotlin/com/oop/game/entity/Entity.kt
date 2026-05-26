@@ -51,6 +51,7 @@ abstract class Entity(override val world: World, var x: Float, var y: Float, val
 	protected val texture: Texture?;
 	val position: Position
 		get() = Position(x, y);
+	open val bodyDamage: Int = 0;
 	
 	init {
 		val texturePath = texture;
