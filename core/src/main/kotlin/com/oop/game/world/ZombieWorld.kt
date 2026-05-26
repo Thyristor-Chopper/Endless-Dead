@@ -176,7 +176,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
      */
     override fun update(delta: Float) {
 		// 제목 표시줄에 정보 표시
-		updateTitle();
+		updateTitleBarInfo();
 		
         when(state) {
             GameState.IN_PLAY	-> updateInPlay(delta);
@@ -184,7 +184,7 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         }
     }
 	
-	private inline fun updateTitle() {
+	private inline fun updateTitleBarInfo() {
 		ZombieGame.setTitleBarInfo(when(TitleInfoType.byIndex(currentTitleInfo)) {
 			TitleInfoType.OPENED	-> "연 상자: ${player.openedContainerCount}개";
 			TitleInfoType.KILLED	-> "잡은 좀비 수: ${player.killedZombieCount}";
@@ -209,8 +209,9 @@ class ZombieWorld(game: ZombieGame, screenWidth: Float, screenHeight: Float, wid
         offsetX = offsetX.coerceIn(0f, width - screenWidth);
         offsetY = offsetY.coerceIn(0f, height - screenHeight);
 
+		// 피가 0 이하가 되면 진짜 게임 오버!
         if(!player.isAlive())
-            state = GameState.GAME_OVER;  // 피가 0 이하가 되면 진짜 게임 오버!
+            state = GameState.GAME_OVER;
     }
 
     /**
