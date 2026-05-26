@@ -12,6 +12,8 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class Shotgun(world: World) : Gun(world, "G002", "Shotgun", 5, 500f, true, 1f, 10, 5) {
+    private val spreadAngles = listOf(-0.2f, -0.1f, 0f, 0.1f, 0.2f)
+
     override fun fire(target: Position, shooter: Entity): Boolean {
         if(!canFire) return false
 
@@ -19,7 +21,6 @@ class Shotgun(world: World) : Gun(world, "G002", "Shotgun", 5, 500f, true, 1f, 1
         val centerY = shooter.y + shooter.height / 2f
 
         val angle = atan2(target.y - centerY, target.x - centerX) //360 돌리는 거 구글링
-        val spreadAngles = listOf(-0.2f, -0.1f, 0f, 0.1f, 0.2f)
 
         for(spread in spreadAngles) {
             val finalAngle = angle + spread
