@@ -30,11 +30,11 @@ class Shotgun(world: World) : Gun(world, "G002", "Shotgun", 20, 500f, true, 1f, 
         }
 
         startFireCooldown()
-        ammo--
+        ammo -= 5
 
         if(ammo == 0) {
             if(holder === world.player)
-                world.drawSubtitles("Shotgun destroyed", color = Color.SALMON)
+                world.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON)
             destroy()
         }
 

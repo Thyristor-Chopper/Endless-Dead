@@ -91,4 +91,4 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 		return fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), world.player);
 	}
 }
-//maxAmmo와 ammo 프로퍼티도 필요할 듯? fireinterval, fire 함수도
+
