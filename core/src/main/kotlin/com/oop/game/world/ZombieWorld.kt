@@ -325,7 +325,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		val holdingIndex: Int? = player.selectedItemIndex;
 		if(holding != null && holdingIndex != null)
 			drawTextOnScreen(
-				text = "${holding.name} [${holdingIndex + 1}/${player.inventory.size}]",
+				text = "${holding.name} [${holdingIndex + 1}/${player.inventoryItemCount}]",
 				x = 10f,
 				y = 20f,
 				color = Color(1.0f, 1.0f, 0.75f, 1.0f),

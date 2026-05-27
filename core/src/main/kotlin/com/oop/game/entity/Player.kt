@@ -39,8 +39,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		const val PLAYER_HEIGHT = 30f;
 	}
 	
-	override val inventory = mutableListOf<Item>();
-	override var selectedItemIndex: Int? = null;
     private val speed = 200f;
 	override val defaultInvincibleDuration = 1.0f;
 	// 타이머

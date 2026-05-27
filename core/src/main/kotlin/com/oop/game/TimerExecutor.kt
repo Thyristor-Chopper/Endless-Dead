@@ -33,7 +33,7 @@ interface TimerExecutor {
 			return;
 		}
 		
-		for(timer in timers.getOrPut(this, { mutableListOf<Timer>() })) {
+		for(timer in timersOf(this)) {
 			var skip = false;
 			if(timer.onlyInPlay) {
 				if(this is WorldObject && this.world.state != GameState.IN_PLAY) skip = true;
@@ -57,7 +57,7 @@ interface TimerExecutor {
 	 * @param timer	등록할 타이머 객체
 	 */
 	fun registerTimer(timer: Timer) {
-		val timerList = timers.getOrPut(this, { mutableListOf<Timer>() });
+		val timerList = timersOf(this);
 		timerList.add(timer);
 	}
 	
@@ -67,12 +67,14 @@ interface TimerExecutor {
 	 * @param timer	제거할 타이머 객체
 	 */
 	fun unregisterTimer(timer: Timer) {
-		val timerList = timers.getOrPut(this, { mutableListOf<Timer>() });
+		val timerList = timersOf(this);
 		timerList.remove(timer);
 	}
 	
 	/**
 	 * 등록된 모든 타이머를 담은 목록을 반환한다.
 	 */
-	fun getRegisteredTimers(): List<Timer> = timers.getOrPut(this, { mutableListOf<Timer>() }).toList();
+	fun getRegisteredTimers(): List<Timer> = timersOf(this).toList();
 }
+
+private inline fun timersOf(timerExecutor: TimerExecutor) = timers.getOrPut(timerExecutor, { mutableListOf<Timer>() });
