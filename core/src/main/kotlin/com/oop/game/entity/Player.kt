@@ -60,7 +60,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		Gdx.input.setInputProcessor(object : InputProcessor {
 			// 휠 감지 - 선택된 아이템 전환
 			override fun scrolled(amountX: Float, amountY: Float): Boolean {
-				if(world.state != GameState.IN_PLAY) return false;
+				if(game.state != GameState.IN_PLAY) return false;
 				
 				if(amountY != 0.0f) {
 					if(amountY > 0f) selectNextItem();
