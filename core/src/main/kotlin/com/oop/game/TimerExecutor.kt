@@ -8,27 +8,32 @@ import com.oop.game.entity.Entity;
 import com.oop.game.item.Item;
 import com.oop.game.world.World;
 
+import java.util.WeakHashMap;
+
+// 전역 private 맵으로 한 이유:
+//   이것은 내부 데이타로 원래 외부에서 접근하면 안 되지만
+//   interface는 private/protected 필드를 지원하지 않기 때문.
+// 또한 WeakHashMap를 쓴 이유는 removeDead에 의해 클래스가 더 이상 사용되지 않더라도
+//   일반 맵을 쓰면 해당 객체를 키로 아직 갖고 있어서 계속 메모리에 남아있고 gc가 안 돼서 그렇다.
+private val unitTimers = WeakHashMap<TimerExecutor, Float>();
+private val timers = WeakHashMap<TimerExecutor, MutableList<Timer>>();
+private const val MAX_UNIT_TIMER: Float = 1.0f;
+
 /**
  * 지정한 시간마다 특정 작업(타이머)을 실행할 수 있는 객체
  */
 interface TimerExecutor {
-	companion object {
-		const val MAX_UNIT_TIMER: Float = 1.0f;
-	}
-	
-	var unitTimer: Float;
-	val timers: MutableList<Timer>;
-	
 	/**
 	 * 매 초마다 timers의 타이머들을 갱신하여 대기시간을 줄이고 대기 시간이 0이 된 타이머를 실행한다.
 	 */
 	fun executeTimers(delta: Float) {
-		if(unitTimer > 0f) {
-			unitTimer -= delta;
+		if(unitTimers.getOrPut(this, { MAX_UNIT_TIMER }) > 0f) {
+			val currentTimerValue = unitTimers[this] ?: MAX_UNIT_TIMER;
+			unitTimers[this] = currentTimerValue - delta;
 			return;
 		}
 		
-		for(timer in timers) {
+		for(timer in timers.getOrPut(this, { mutableListOf<Timer>() })) {
 			var skip = false;
 			if(timer.onlyInPlay) {
 				if(this is WorldObject && this.world.state != GameState.IN_PLAY) skip = true;
@@ -43,7 +48,7 @@ interface TimerExecutor {
 				timer.tick();
 			}
 		}
-		unitTimer = TimerExecutor.MAX_UNIT_TIMER;
+		unitTimers[this] = MAX_UNIT_TIMER;
 	}
 	
 	/**
@@ -52,7 +57,8 @@ interface TimerExecutor {
 	 * @param timer	등록할 타이머 객체
 	 */
 	fun registerTimer(timer: Timer) {
-		timers.add(timer);
+		val timerList = timers.getOrPut(this, { mutableListOf<Timer>() });
+		timerList.add(timer);
 	}
 	
 	/**
@@ -61,11 +67,12 @@ interface TimerExecutor {
 	 * @param timer	제거할 타이머 객체
 	 */
 	fun unregisterTimer(timer: Timer) {
-		timers.remove(timer);
+		val timerList = timers.getOrPut(this, { mutableListOf<Timer>() });
+		timerList.remove(timer);
 	}
 	
 	/**
 	 * 등록된 모든 타이머를 담은 목록을 반환한다.
 	 */
-	fun getRegisteredTimers(): List<Timer> = timers.toList();
+	fun getRegisteredTimers(): List<Timer> = timers.getOrPut(this, { mutableListOf<Timer>() }).toList();
 }

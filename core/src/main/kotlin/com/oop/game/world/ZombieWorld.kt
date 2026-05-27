@@ -105,14 +105,6 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
     private val bgColorDark = Color(0.15f, 0.34f, 0.16f, 1f);
     private val bgColorLight = Color(0.15f, 0.4f, 0.16f, 1f);
     private val tileSize = 64f;
-	// 타이머
-	override var unitTimer = TimerExecutor.MAX_UNIT_TIMER
-		set(value) {
-			if(value < 0) field = 0f;
-			else if(value > TimerExecutor.MAX_UNIT_TIMER) field = TimerExecutor.MAX_UNIT_TIMER;
-			else field = value;
-		};
-	override val timers = mutableListOf<Timer>();
 	// 제목 표시줄에 표시할 정보의 인덱스
 	private var currentTitleInfo = 0
 		set(value) {

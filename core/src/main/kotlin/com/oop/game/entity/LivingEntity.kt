@@ -55,20 +55,21 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		// 무적 시간이 다 끝났을 때만 피격당함
 		if(!isInvincible) {
 			hp -= damage;
-			if(hp == 0) {  // 사망
+			val killed = (hp == 0);
+			if(killed) {  // 사망
 				onDeath(attacker);  // 콜백 호출
 				if(attacker != null) attacker.onKill(this);
+			} else {
+				invincibilityTimer = invincibleDuration;  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
+				onDamage(damage, attacker);
+				// 타격 시 붉게 표시 타이머
+				if(showDamagedIndicator)
+					damagedIndicatorTimer = damagedIndicatorDuration;
 			}
-			invincibilityTimer = invincibleDuration;  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
-			onDamage(damage, attacker);
 			if(attacker != null) {
-				attacker.onAttack(this);
+				if(!killed) attacker.onAttack(this);
 				latestAttacker = attacker;
 			}
-			
-			// 타격 시 붉게 표시 타이머
-			if(showDamagedIndicator)
-				damagedIndicatorTimer = damagedIndicatorDuration;
 		}
 	}
 	
@@ -82,7 +83,9 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	}
 	
 	/**
-	 * 개체를 죽인다.
+	 * 개체를 즉시 죽인다.
+	 *
+	 * @param attacker	공격자
 	 */
 	fun kill(attacker: Entity? = null) {
 		hp = 0;

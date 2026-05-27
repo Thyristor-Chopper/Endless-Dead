@@ -44,13 +44,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
     private val speed = 200f;
 	override val defaultInvincibleDuration = 1.0f;
 	// 타이머
-	override var unitTimer = TimerExecutor.MAX_UNIT_TIMER
-		set(value) {
-			if(value < 0f) field = 0f;
-			else if(value > TimerExecutor.MAX_UNIT_TIMER) field = TimerExecutor.MAX_UNIT_TIMER;
-			else field = value;
-		};
-	override val timers = mutableListOf<Timer>();
 	private val healTimer: Timer;
 	// 통계
 	var survivedDuration = 0
