@@ -4,6 +4,7 @@ import com.oop.game.item.Item;
 
 import java.util.WeakHashMap;
 
+// 원래는 객체의 private 필드로써 기능하는 변수들
 // 전역 private 맵으로 한 이유:
 //   이것은 내부 데이타로 원래 외부에서 접근하면 안 되지만
 //   interface는 private/protected 필드를 지원하지 않기 때문.
