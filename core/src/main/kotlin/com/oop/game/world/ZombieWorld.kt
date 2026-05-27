@@ -190,6 +190,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 
     /**
 	 * IN_PLAY 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
+	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
     private inline fun updateInPlay(delta: Float) {
         // ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
@@ -212,6 +213,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 
     /**
 	 * GAME_OVER 상태에서 매 프레임 처리 — ESC 입력만 감시한다.
+	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
     private inline fun updateGameOver() {
         // ESC 키가 '막 눌린 순간' 앱 종료.
