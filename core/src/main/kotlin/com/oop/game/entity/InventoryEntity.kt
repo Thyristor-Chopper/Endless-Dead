@@ -117,6 +117,26 @@ interface InventoryEntity {
 	}
 	
 	/**
+	 * 지정한 아이템을 갖고 있다면 선택한다.
+	 *
+	 * @return 성공 여부
+	 */
+	fun selectItem(item: Item): Boolean {
+		val index = inventoryOf(this).indexOfFirst({ it === item });
+		if(index == -1) return false;
+		selectedItemIndexes[this] = index;
+		return true;
+	}
+	
+	/**
+	 * 지정한 인덱스의 아이템을 선택한다.
+	 */
+	fun selectItem(index: Int) {
+		if(index < 0 || index >= inventoryOf(this).size) throw IllegalArgumentException("index out of bounds");
+		selectedItemIndexes[this] = index;
+	}
+	
+	/**
 	 * 지정한 아이템이 있는지 확인
 	 */
 	fun hasItem(item: Item): Boolean = item in inventoryOf(this);
