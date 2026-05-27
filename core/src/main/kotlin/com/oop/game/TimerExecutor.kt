@@ -42,12 +42,7 @@ interface TimerExecutor {
 			}
 			if(skip) continue;
 			
-			if(timer.canRun) {
-				timer.run();
-				timer.reset();
-			} else {
-				timer.tick();
-			}
+			timer.tick();
 		}
 		unitTimers[this] = MAX_UNIT_TIMER;
 	}
