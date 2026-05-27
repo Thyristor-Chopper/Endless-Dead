@@ -310,8 +310,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
             x = 10f,
             y = game.screenHeight - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
             color = Color.YELLOW,
-            scale = 1.2f,
-			fixedWidthChars = "#-"
+            scale = 1.2f
         );
 		
         // 2) HP를 시각적 미터기로 표시
