@@ -20,7 +20,7 @@ import kotlin.math.sqrt;
  * @param hp			총알 체력(관통 시 감소)
  */
 class Bullet(world: World, val gun: Fireable, val shooter: Entity, val target: Position, private val speed: Float, val damage: Int, val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.x, shooter.y, 16f, 16f, "bullet.bmp", hp) {
-	override val defaultInvincibleDuration = 0.25f;
+	override val defaultInvincibleDuration = 0f;
 	override val showDamagedIndicator = false;
 	val amountX: Float;
 	val amountY: Float;
