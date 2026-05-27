@@ -121,7 +121,7 @@ interface InventoryEntity {
 	 */
 	fun hasItem(item: Item): Boolean = item in inventoryOf(this);
 	
-	fun getInventory(): List<Item> = inventoryOf(this);
+	fun getInventory(): List<Item> = inventoryOf(this).toList();
 }
 
 private inline fun inventoryOf(entity: InventoryEntity) = inventories.getOrPut(entity, { mutableListOf<Item>() });

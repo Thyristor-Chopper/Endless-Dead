@@ -146,7 +146,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 		for(entity in entities.toList()) {
 			callback(entity);
 			if(entity is InventoryEntity)
-				for(item in entity.getInventory().toList())
+				for(item in entity.getInventory())
 					callback(item);
 			if(entity is Container) {
 				val contained: Item? = entity.containedItem;
