@@ -75,7 +75,7 @@ interface TimerExecutor {
 	/**
 	 * 등록된 모든 타이머를 담은 목록을 반환한다.
 	 */
-	fun getRegisteredTimers(): List<Timer> = timersOf(this).toList();
+	fun getTimers(): List<Timer> = timersOf(this).toList();
 }
 
 private inline fun timersOf(timerExecutor: TimerExecutor) = timers.getOrPut(timerExecutor, { mutableListOf<Timer>() });
