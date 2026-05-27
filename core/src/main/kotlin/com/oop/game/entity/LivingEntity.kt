@@ -40,7 +40,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		};
 	protected open val showDamagedIndicator = true;
 	protected open val damagedIndicatorDuration = 0.5f;
-	protected open val defaultInvincibleDuration = 0.0f;
+	open val defaultInvincibleDuration = 0.0f;
 	
 	/**
 	 * 체력 감소(대미지를 입는다.)
@@ -118,7 +118,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		
 		// 몸빵 처리
 		for(entity in world.getEntities())
-			if(entity !== this && collidesWith(entity) && distanceTo(entity) < 4f && entity.bodyDamage > 0 && (!ignoreFriendBodyDamage || (ignoreFriendBodyDamage && this::class != entity::class))) {
+			if(entity !== this && collidesWith(entity) && distanceTo(entity) < 8f && entity.bodyDamage > 0 && (!ignoreFriendBodyDamage || (ignoreFriendBodyDamage && this::class != entity::class))) {
 				val attacker = if(entity is Bullet) entity.shooter else entity;  // 일단 총알은 Bullet 클래스에서 자체적으로 처리하고 bodyDamage는 0이기 때문에 의미는 없지만...
 				takeDamage(entity.bodyDamage, attacker=attacker);
 			}

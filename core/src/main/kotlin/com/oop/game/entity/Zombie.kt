@@ -25,8 +25,8 @@ import kotlin.math.sqrt;
  * @param minY
  * @param maxY
  */
-class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, val attackDamage: Int, private val angle: Float, private val player: Player, private val speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp) {
-    override val bodyDamage = 1;
+open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, val attackDamage: Int, private val angle: Float, private val player: Player, private val speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp) {
+    override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
 	
 	override fun update(delta: Float) {

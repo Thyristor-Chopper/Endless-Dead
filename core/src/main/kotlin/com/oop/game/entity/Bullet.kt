@@ -20,6 +20,7 @@ import kotlin.math.sqrt;
  * @param hp			총알 체력(관통 시 감소)
  */
 class Bullet(world: World, val gun: Fireable, val shooter: Entity, val target: Position, private val speed: Float, val damage: Int, val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.x, shooter.y, 16f, 16f, "bullet.bmp", hp) {
+	override val defaultInvincibleDuration = 0.25f;
 	override val showDamagedIndicator = false;
 	val amountX: Float;
 	val amountY: Float;
@@ -52,7 +53,7 @@ class Bullet(world: World, val gun: Fireable, val shooter: Entity, val target: P
 			if(entity !== this && entity !== world.player && entity is LivingEntity && (!(entity is Bullet) || (entity is Bullet && entity.gun !== this.gun)) && collidesWith(entity)) {
 				entity.takeDamage(damage, attacker=shooter);  // 무적 시간이 필요하면 추가...
 				if(penetrable)
-					this.takeDamage(entity.bodyDamage, attacker=entity);
+					this.takeDamage(entity.penetrationDamage, attacker=entity);
 				else
 					this.kill();
 			}

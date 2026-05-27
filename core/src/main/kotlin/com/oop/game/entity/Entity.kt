@@ -53,8 +53,9 @@ abstract class Entity(override val world: World, var x: Float, var y: Float, val
 	protected val texture: Texture?;
 	val position: Position
 		get() = Position(x, y);
-	open val bodyDamage = 0;
-	open val ignoreFriendBodyDamage = true;
+	open val bodyDamage = 0;  // 다른 개체에 닿았을 때 몸빵 대미지(아직 활용하는 개체 없음)
+	protected open val ignoreFriendBodyDamage = true;  // 동일 개체에 대해 몸빵 무시
+	open val penetrationDamage = 0;  // 총알이 관통할 때 총알에게 주는 대미지
 	
 	init {
 		val texturePath = texture;
