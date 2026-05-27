@@ -121,6 +121,9 @@ interface InventoryEntity {
 	 */
 	fun hasItem(item: Item): Boolean = item in inventoryOf(this);
 	
+	/**
+	 * 인벤토리의 읽기용 사본을 가져온다.
+	 */
 	fun getInventory(): List<Item> = inventoryOf(this).toList();
 }
 
