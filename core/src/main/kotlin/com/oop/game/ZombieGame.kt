@@ -33,6 +33,9 @@ import com.oop.game.world.ZombieWorld;
  *   ▸ create() 안에서 setScreen 에 넘기는 Screen 을 자기 Screen 으로 교체
  */
 class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
+	var state = GameState.IN_PLAY
+		internal set;
+	
 	// 게임 제목
 	val title = "좀비 파밍";
     // 화면(창) 크기 — DesktopLauncher 가 창 크기 설정에도 이 값을 읽어간다.

@@ -2,8 +2,7 @@ package com.oop.game;
 
 import com.badlogic.gdx.Gdx;
 
-import com.oop.game.WorldObject;
-import com.oop.game.ZombieGame;
+import com.oop.game.GameObject;
 import com.oop.game.entity.Entity;
 import com.oop.game.item.Item;
 import com.oop.game.world.World;
@@ -28,23 +27,18 @@ interface TimerExecutor {
 	 * 매 초마다 timers의 타이머들을 갱신하여 대기시간을 줄이고 대기 시간이 0이 된 타이머를 실행한다.
 	 */
 	fun executeTimers(delta: Float) {
-		if(unitTimers.getOrPut(this, { MAX_UNIT_TIMER }) > 0f) {
+		if(unitTimers.getOrPut(this, { MAX_UNIT_TIMER }) > 0f) {  // 아직 1초가 안 지났다면
 			val currentTimerValue = unitTimers[this] ?: MAX_UNIT_TIMER;
 			unitTimers[this] = currentTimerValue - delta;
-			return;
-		}
-		
-		for(timer in timersOf(this)) {
-			var skip = false;
-			if(timer.onlyInPlay) {
-				if(this is WorldObject && this.world.state != GameState.IN_PLAY) skip = true;
-				if(this is World && this.state != GameState.IN_PLAY) skip = true;
+		} else {  // 타이머 갱신
+			for(timer in timersOf(this)) {
+				val skip = (timer.onlyInPlay && this is GameObject && this.game.state != GameState.IN_PLAY);
+				if(skip) continue;
+				
+				timer.tick();
 			}
-			if(skip) continue;
-			
-			timer.tick();
+			unitTimers[this] = MAX_UNIT_TIMER;
 		}
-		unitTimers[this] = MAX_UNIT_TIMER;
 	}
 	
 	/**

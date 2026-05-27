@@ -1,5 +1,6 @@
 package com.oop.game.item;
 
+import com.oop.game.GameObject;
 import com.oop.game.Updatable;
 import com.oop.game.WorldObject;
 import com.oop.game.entity.InventoryEntity;
@@ -13,7 +14,8 @@ import com.oop.game.world.World;
  * @param id	총 식별자
  * @param name	총 이름
  */
-abstract class Item(override val world: World, val id: String, val name: String) : WorldObject, Updatable {
+abstract class Item(override val world: World, val id: String, val name: String) : GameObject, WorldObject, Updatable {
+	override val game = world.game;
 	var holder: InventoryEntity? = null
 		internal set;
 	

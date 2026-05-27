@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
-import com.oop.game.GameState;
+import com.oop.game.GameObject;
 import com.oop.game.TimerExecutor;
 import com.oop.game.Updatable;
 import com.oop.game.WorldObject;
@@ -63,9 +63,7 @@ import com.oop.game.item.Item;
  * @param width        월드 전체 너비 (기본값: 화면과 동일 = 스크롤 없음)
  * @param height       월드 전체 높이
  */
-abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : ScreenAdapter(), Updatable {
-	abstract var state: GameState
-		protected set;
+abstract class World(override val game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : ScreenAdapter(), GameObject, Updatable {
 	abstract val player: Player;
     // OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     val camera = OrthographicCamera();

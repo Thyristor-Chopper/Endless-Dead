@@ -89,8 +89,6 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
     // 플레이어 — 월드 중앙 하단에서 시작.
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
     override val player = Player(this, x = width / 2 - Player.PLAYER_WIDTH / 2, y = height / 2 - Player.PLAYER_HEIGHT / 2);
-    // 현재 게임 상태 — 입력/충돌에 따라 IN_PLAY ↔ GAME_OVER 로 전환된다.
-    override var state = GameState.IN_PLAY;
     // 좀비들만 따로 모아두는 관리용 리스트
     val zombies: List<Zombie>
 		inline get() = getEntities().filterIsInstance<Zombie>();
@@ -170,12 +168,16 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		// 제목 표시줄에 정보 표시
 		updateTitleBarInfo();
 		
-        when(state) {
+        when(game.state) {
             GameState.IN_PLAY	-> updateInPlay(delta);
             GameState.GAME_OVER	-> updateGameOver();
         }
     }
 	
+	/**
+	 * 창 제목에 정보를 표시한다.
+	 * update에서만 한 번 쓰이기 때문에 inline이다.
+	 */
 	private inline fun updateTitleBarInfo() {
 		game.setTitleBarInfo(when(TitleInfoType.byIndex(currentTitleInfo)) {
 			TitleInfoType.OPENED	-> "연 상자: ${player.openedContainerCount}개";
@@ -203,7 +205,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
         if(!player.isAlive) {
-            state = GameState.GAME_OVER;
+            game.state = GameState.GAME_OVER;
 			Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 게임 오버 시 비디오 카드 리소스를 낭비하지 않게 한다
 		}
     }
@@ -271,7 +273,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
         drawHud();
 
         // ── 상태별로 그리는 것이 다름 ──
-        when(state) {
+        when(game.state) {
             GameState.IN_PLAY 	-> {
                 // 플레이 중에는 추가로 그릴 것 없음
             }
