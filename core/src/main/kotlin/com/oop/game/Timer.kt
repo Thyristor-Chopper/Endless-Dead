@@ -1,5 +1,7 @@
 package com.oop.game;
 
+import com.badlogic.gdx.Screen;
+
 /**
  * 일정 시간마다 특정 작업을 실행하게 해 주는 클래스
  *
@@ -19,6 +21,7 @@ class Timer(val interval: Int, val onlyInPlay: Boolean = true, private val opera
 	 * 대기시간 감소 및 때가 되면 실행
 	 */
 	internal fun tick() {
+		
 		if(delta == 0) {
 			operation();
 			reset();

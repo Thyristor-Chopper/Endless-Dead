@@ -6,12 +6,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
+import com.oop.game.GameManager;
 import com.oop.game.GameState;
 import com.oop.game.InputHandler;
 import com.oop.game.ZombieGame;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
-import com.oop.game.TimerExecutor;
+import com.oop.game.TimerManager;
 import com.oop.game.Utils;
 import com.oop.game.entity.Entity;
 import com.oop.game.entity.Player;
@@ -68,7 +69,7 @@ import kotlin.random.Random;
  * @param worldWidth   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
  * @param worldHeight  월드 전체 높이
  */
-class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), height: Float = game.screenHeight.toFloat()) : World(game, width, height), TimerExecutor {
+class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), height: Float = game.screenHeight.toFloat()) : World(game, width, height) {
 	/**
 	 * 제목 표시줄에 표시할 정보 종류를 담는 enumeration
 	 */
@@ -111,6 +112,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 			else if(value < 0) field = TitleInfoType.size - 1;
 			else field = value;
 		};
+	private val timerManager = TimerManager();
 
     /**
      * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -132,7 +134,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		spawners.add(ZombieSpawner(this, 3f));
 		
 		// 10초마다 빈 상자 하나 리필
-		registerTimer(Timer(10) {
+		timerManager.registerTimer(Timer(10) {
 			for(entity in getEntities().shuffled())
 				if(entity is Container && entity.isEmpty) {
 					entity.putItem(generateRandomItem());
@@ -141,7 +143,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		});
 		
 		// 제목 표시줄 정보 전환
-		registerTimer(Timer(3, false) {
+		timerManager.registerTimer(Timer(3, false) {
 			currentTitleInfo++;
 		});
     }
@@ -170,7 +172,10 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		// 제목 표시줄에 정보 표시
 		updateTitleBarInfo();
 		
-        when(game.state) {
+		// 타이머 갱신
+		timerManager.tick(delta);
+		
+        when(GameManager.state) {
             GameState.IN_PLAY	-> updateInPlay(delta);
             GameState.GAME_OVER	-> updateGameOver();
         }
@@ -208,7 +213,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
         if(!player.isAlive) {
-            game.state = GameState.GAME_OVER;
+            GameManager.state = GameState.GAME_OVER;
 			Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 게임 오버 시 비디오 카드 리소스를 낭비하지 않게 한다
 		}
     }
@@ -277,7 +282,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
         drawHud();
 
         // ── 상태별로 그리는 것이 다름 ──
-        when(game.state) {
+        when(GameManager.state) {
             GameState.IN_PLAY 	-> {
                 // 플레이 중에는 추가로 그릴 것 없음
             }

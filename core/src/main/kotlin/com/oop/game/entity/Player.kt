@@ -5,11 +5,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 
+import com.oop.game.GameManager;
 import com.oop.game.GameState;
 import com.oop.game.InputHandler;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
-import com.oop.game.TimerExecutor;
+import com.oop.game.TimerManager;
 import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Container;
 import com.oop.game.item.Gun;
@@ -33,7 +34,7 @@ import com.oop.game.world.ZombieWorld;
  *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 GameObject.dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player.bmp", 50), InventoryEntity, TimerExecutor {
+class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player.bmp", 50), InventoryEntity {
 	companion object {
 		const val PLAYER_WIDTH = 30f;
 		const val PLAYER_HEIGHT = 30f;
@@ -42,6 +43,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
     private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
+	private val timerManager = TimerManager();
 	private val healTimer: Timer
 	// 통계
 	var survivedDuration = 0
@@ -60,7 +62,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		Gdx.input.setInputProcessor(object : InputProcessor {
 			// 휠 감지 - 선택된 아이템 전환
 			override fun scrolled(amountX: Float, amountY: Float): Boolean {
-				if(game.state != GameState.IN_PLAY) return false;
+				if(GameManager.state != GameState.IN_PLAY) return false;
 				
 				if(amountY != 0.0f) {
 					if(amountY > 0f) selectNextItem();
@@ -91,7 +93,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		
 		// -- 타이머들 --
 		// 1. 생존 시간 기록 & 생존 시간 보너스
-		registerTimer(Timer(1) {
+		timerManager.registerTimer(Timer(1) {
 			survivedDuration++;
 			ScoreManager.addScore(1);
 		});
@@ -100,7 +102,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		healTimer = Timer(30) {
 			heal(3);
 		};
-		registerTimer(healTimer);
+		timerManager.registerTimer(healTimer);
 	}
 	
 	/**
@@ -200,6 +202,9 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width - width);
         y = y.coerceIn(0f, world.height - height);
+		
+		// 타이머 갱신
+		timerManager.tick(delta);
     }
 	
 	/**
