@@ -28,6 +28,7 @@ import com.oop.game.item.Shotgun;
 import com.oop.game.spawner.Spawner;
 import com.oop.game.spawner.ZombieSpawner;
 import com.oop.game.widget.ProgressBar;
+import com.oop.game.widget.ProgressBarStyle;
 
 import kotlin.math.floor;
 import kotlin.random.Random;
@@ -131,7 +132,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		
 		addWidget("hp_indicator", ProgressBar(80f, game.screenHeight - 24f, 220f, value = player.hp.toFloat() / player.maxHp, color = Color.YELLOW));
 		addWidget("gun_ammo_indicator", ProgressBar(game.screenWidth - 145f, 10f, 130f, color = Color.ROYAL).apply { visible = false });
-		addWidget("gun_cooldown_indicator", ProgressBar(game.screenWidth - 215f, 10f, 60f, value=0.42f, color = Color.SCARLET).apply { visible = false });
+		addWidget("gun_cooldown_indicator", ProgressBar(game.screenWidth - 215f, 10f, 60f, value=0.42f, color = Color.SCARLET).apply { visible = false; style = ProgressBarStyle.SMOOTH });
 		
 		// 스포너들
 		spawners.add(ZombieSpawner(this, 3f));

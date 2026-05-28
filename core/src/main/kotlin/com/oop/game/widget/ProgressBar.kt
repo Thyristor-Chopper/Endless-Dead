@@ -14,12 +14,7 @@ private const val CHUNK_WIDTH = 6;
 private const val CHUNK_MARGIN = 2;
 
 class ProgressBar(x: Float, y: Float, width: Float, height: Float = 15f, var value: Float = 0f, val color: Color = Color.WHITE) : Widget(x, y, width, height) {
-	enum class Style {
-		CHUNKED,
-		SMOOTH;
-	}
-	
-	var style = Style.CHUNKED;
+	var style = ProgressBarStyle.CHUNKED;
 	private val rawBarTexture = Texture(Gdx.files.internal("progress_bar.bmp"));
 	private val rawIndicatorTexture = Texture(Gdx.files.internal("progress_indicator.bmp"));
 	private val chunkTexture = Texture(Gdx.files.internal("progress_chunk.bmp"));
@@ -34,7 +29,7 @@ class ProgressBar(x: Float, y: Float, width: Float, height: Float = 15f, var val
 			val drawableBarWidth = (width - BAR_HORIZONTAL_PADDING * 2);
 			val indicatorWidth = drawableBarWidth * value;
 			when(style) {
-				Style.CHUNKED	-> {
+				ProgressBarStyle.CHUNKED	-> {
 					val chunkCount = ceil(indicatorWidth / (CHUNK_WIDTH + CHUNK_MARGIN)).toInt();
 					for(i in 1..chunkCount) {
 						val x = this.x + BAR_HORIZONTAL_PADDING + (CHUNK_WIDTH + CHUNK_MARGIN) * (i - 1);
@@ -46,7 +41,7 @@ class ProgressBar(x: Float, y: Float, width: Float, height: Float = 15f, var val
 						batch.draw(chunkTexture, x, y + BAR_VERTICAL_PADDING, width, height - BAR_VERTICAL_PADDING * 2);
 					}
 				}
-				Style.SMOOTH	-> {
+				ProgressBarStyle.SMOOTH		-> {
 					indicatorTexture.draw(batch, x + BAR_HORIZONTAL_PADDING, y + BAR_VERTICAL_PADDING, indicatorWidth, height - BAR_VERTICAL_PADDING * 2);
 				}
 			}
