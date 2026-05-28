@@ -21,7 +21,6 @@ class Timer(val interval: Int, val onlyInPlay: Boolean = true, private val opera
 	 * 대기시간 감소 및 때가 되면 실행
 	 */
 	internal fun tick() {
-		
 		if(delta == 0) {
 			operation();
 			reset();

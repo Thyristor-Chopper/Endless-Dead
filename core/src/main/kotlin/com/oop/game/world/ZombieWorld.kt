@@ -330,20 +330,17 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 			fixedWidthChars = Utils.PROGRESS_BAR_CHARACTERS
         );
 		
+		player.selectedItem?.let {
 		// 3) 현재 플레이어가 들고 있는 아이템
-		val holding: Item? = player.selectedItem;
-		val holdingIndex: Int? = player.selectedItemIndex;
-		if(holding != null && holdingIndex != null)
 			drawTextOnScreen(
-				text = "${holding.name} [${holdingIndex + 1}/${player.inventoryItemCount}]",
+				text = "${it.name} [${player.selectedItemIndex!! + 1}/${player.inventoryItemCount}]",
 				x = 10f,
 				y = 20f,
 				color = Color(1.0f, 1.0f, 0.75f, 1.0f),
 				scale = 1.0f
 			);
-		
+			
 		// 4) 들고 있는 아이템이 총인 경우 총의 ammo를 미터기로 표시
-		player.selectedItem?.let {
 			if(it is Gun) {
 				drawTextOnScreen(
 					text = Utils.progressBar(it.ammo.toFloat() / it.maxAmmo.toFloat(), 14),

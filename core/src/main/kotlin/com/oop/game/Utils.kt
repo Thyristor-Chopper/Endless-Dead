@@ -9,14 +9,14 @@ object Utils {
 	const val PROGRESS_BAR_FILLED = '=';
 	const val PROGRESS_BAR_EMPTY = ' ';
 	const val PROGRESS_BAR_CHARACTERS = "${PROGRESS_BAR_FILLED}${PROGRESS_BAR_EMPTY}";
-	private const val DEFAULT_PROGRESS_BAR_SIZE = 20;
+	const val DEFAULT_PROGRESS_BAR_SIZE = 20;
 	
 	/**
 	 * 미터기를 그린다.
 	 *
 	 * @param value	실수 진행률(0.0~1.0)
 	 */
-	fun progressBar(value: Float, size: Int = DEFAULT_PROGRESS_BAR_SIZE): String {
+	inline fun progressBar(value: Float, size: Int = DEFAULT_PROGRESS_BAR_SIZE): String {
 		return progressBar((value * 100f).toInt(), size);
 	}
 	
