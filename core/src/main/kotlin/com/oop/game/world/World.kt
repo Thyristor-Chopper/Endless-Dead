@@ -294,8 +294,8 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
 	 * 플레이어 위치에 따라 카메라 위치 변경
 	 */
 	inline fun updateCameraOffset() {
-		offsetX = player.x - game.screenWidth / 2f + player.width / 2f;
-		offsetY = player.y - game.screenHeight / 2f + player.height / 2f;
+		offsetX = player.x - game.screenWidth / 2f;
+		offsetY = player.y - game.screenHeight / 2f;
 	}
 
     // ────────────────────────────────────────────────────────

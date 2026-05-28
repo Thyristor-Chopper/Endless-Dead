@@ -19,6 +19,10 @@ import com.oop.game.item.Usable;
 import com.oop.game.world.World;
 import com.oop.game.world.ZombieWorld;
 
+import java.lang.Math.toDegrees;
+
+import kotlin.math.atan2;
+
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  *  플레이어 예제 — player.png 이미지, 화살표 키로 조종.
@@ -34,12 +38,7 @@ import com.oop.game.world.ZombieWorld;
  *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 GameObject.dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player.bmp", 50) {
-	companion object {
-		const val PLAYER_WIDTH = 24f;
-		const val PLAYER_HEIGHT = 57f;
-	}
-	
+class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 57f, "player.bmp", 50) {
     private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
@@ -81,6 +80,12 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 				return false;
 			}
 			
+			// 마우스 위치로 플레이어 회전
+			override fun mouseMoved(x: Int, y: Int): Boolean {
+				rotation = toDegrees(atan2((game.screenHeight - y) - (this@Player.y - world.offsetY), x - (this@Player.x - world.offsetX)).toDouble()).toFloat() - 90f;
+				return true;
+			}
+			
 			// 나머지 (스텁)
 			override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
 			
@@ -95,8 +100,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			override fun touchCancelled(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
 			
 			override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean = false;
-			
-			override fun mouseMoved(x: Int, y: Int): Boolean = false;
 		});
 		
 		// -- 타이머들 --
@@ -208,8 +211,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			interactContainer();
 		
         // 월드 경계 안쪽으로 가두기.
-        x = x.coerceIn(0f, world.width - width);
-        y = y.coerceIn(0f, world.height - height);
+        x = x.coerceIn(0f, world.width);
+        y = y.coerceIn(0f, world.height);
 		
 		// 타이머 갱신
 		timerManager.tick(delta);

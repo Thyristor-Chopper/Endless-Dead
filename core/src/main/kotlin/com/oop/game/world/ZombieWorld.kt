@@ -90,7 +90,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 	
     // 플레이어 — 월드 중앙 하단에서 시작.
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
-    override val player = Player(this, x = width / 2 - Player.PLAYER_WIDTH / 2, y = height / 2 - Player.PLAYER_HEIGHT / 2);
+    override val player = Player(this, x = width / 2, y = height / 2);
     // 좀비들만 따로 모아두는 관리용 리스트
     val zombies: List<Zombie>
 		inline get() = getEntities().filterIsInstance<Zombie>();
