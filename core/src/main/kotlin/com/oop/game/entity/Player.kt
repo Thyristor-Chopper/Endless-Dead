@@ -110,7 +110,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	
 	private inline fun rotatePlayer(x: Int, y: Int) {
 		// 샷건 내 360도 구현 참고함
-		rotation = toDegrees(atan2((game.screenHeight - y) - (this.y - world.offsetY), x - (this.x - world.offsetX)).toDouble()).toFloat() - 90f;
+		rotation = toDegrees(atan2((world.game.screenHeight - y) - (this.y - world.offsetY), x - (this.x - world.offsetX)).toDouble()).toFloat() - 90f;
 	}
 	
 	/**

@@ -15,8 +15,7 @@ import kotlin.random.Random;
  * @param spawnInterval	소환 간격
  */
 class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : Spawner {
-	override val game = world.game;
-    private var timer = 0f
+	private var timer = 0f
     var spawnPerZombie = 3
 	
     init {

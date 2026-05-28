@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-import com.oop.game.GameObject;
 import com.oop.game.Position;
 import com.oop.game.Updatable;
 import com.oop.game.WorldObject;
@@ -50,8 +49,7 @@ import kotlin.math.sqrt;
  * @param height	세로 크기 (픽셀)
  * @param texture	아이템 텍스처(없을 수도 있음)
  */
-abstract class Entity(override val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) : GameObject, WorldObject, Updatable {
-	override val game = world.game;
+abstract class Entity(override val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) : WorldObject, Updatable {
 	protected val texture: Texture? = texture?.let { Texture(Gdx.files.internal(it)) };
 	private val textureWidth: Int? = this.texture?.getWidth();
 	private val textureHeight: Int? = this.texture?.getHeight();
