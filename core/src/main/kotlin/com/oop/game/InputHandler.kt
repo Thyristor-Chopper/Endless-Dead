@@ -61,24 +61,6 @@ object InputHandler {
         return Gdx.input.isButtonJustPressed(button);
     }
 
-	/**
-     * 지정한 마우스 단추를 막 눌렀는지 확인
-	 *
-	 * @param button	단추의 종류
-     */
-    inline fun isTouched(): Boolean {
-        return Gdx.input.isTouched();
-    }
-
-	/**
-     * 막 터치됐는지 확인
-	 *
-	 * @param button	단추의 종류
-     */
-    inline fun isJustTouched(): Boolean {
-        return Gdx.input.justTouched();
-    }
-	
     // 자주 쓰는 키 상수를 짧은 이름으로 재노출.
     //   원본은 Input.Keys.LEFT 처럼 길어서 자주 쓸수록 번거롭다.
     //   필요하면 Input.Keys.XXX 에서 다른 키를 직접 import 해서 써도 된다.
