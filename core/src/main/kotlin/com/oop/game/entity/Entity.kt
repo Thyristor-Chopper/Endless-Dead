@@ -71,7 +71,7 @@ abstract class Entity(override val world: World, var x: Float, var y: Float, val
      *   private val texture = Texture(Gdx.files.internal("player.png"))
      */
     open fun draw(batch: SpriteBatch) {
-		texture?.let { batch.draw(it, x, y, width, height) };
+		texture?.let { batch.draw(it, x - width / 2f, y - height / 2f, width, height) };
 	}
 
     /**
