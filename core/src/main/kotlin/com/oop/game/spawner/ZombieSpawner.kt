@@ -57,7 +57,7 @@ class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : 
             else		-> Zombie.Strong(world, randomX, randomY, world.player, angle = 10f)	// 10% 확률
         }
 
-        world.add(newZombie)
+        world.addEntity(newZombie)
         return newZombie
     }
 }

@@ -19,6 +19,7 @@ import com.oop.game.entity.LivingEntity;
 import com.oop.game.entity.Player;
 import com.oop.game.entity.container.Container;
 import com.oop.game.item.Item;
+import com.oop.game.widget.Widget;
 
 /**
  * 게임 한 장면 = '월드 하나' 의 추상 기본 클래스.
@@ -78,6 +79,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. add(), remove() 라는 공식 창구만 허용.
     //   (5주차에서 배운 캡슐화의 실제 사례)
     private val entities = mutableListOf<Entity>();
+    private val widgets = mutableMapOf<String, Widget>();
 	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
@@ -99,16 +101,34 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
     /**
 	 * 객체를 월드에 등록 — 이후부터 자동으로 update/draw 된다.
 	 */
-    fun add(obj: Entity) {
-        entities.add(obj);
+    fun addEntity(entity: Entity) {
+        entities.add(entity);
     }
 
     /**
 	 * 특정 객체를 수동 제거. 보통은 isAlive()=false 후 removeDead() 로 정리.
 	 */
-    fun remove(obj: Entity) {
-        entities.remove(obj);
+    fun removeEntity(entity: Entity) {
+        entities.remove(entity);
+		entity.dispose();
     }
+	
+	fun addWidget(id: String, widget: Widget) {
+		widgets[id] = widget;
+	}
+	
+	fun removeWidget(id: String): Boolean {
+		val widget: Widget? = widgets[id];
+		if(widget == null) return false;
+		widget.dispose();
+		widgets.remove(id);
+		return true;
+	}
+	
+	fun getWidget(id: String): Widget {
+		if(!(id in widgets)) throw IllegalArgumentException("invalid widget");
+		return widgets[id]!!;
+	}
 
     /**
      * 현재 등록된 객체 목록의 '읽기용 복사본'.
@@ -244,6 +264,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
         drawBackground(batch);
         drawBackgroundOverlay();
         drawAllObjects();
+        drawAllWidgets();
         batch.end();
 		
 		// 6) 자막이 있으면 표시
@@ -303,6 +324,12 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
             obj.y = originalY;
         }
     }
+	
+	private fun drawAllWidgets() {
+		for(widget in widgets.values)
+			if(widget.visible)
+				widget.draw(batch);
+	}
 	
 	/**
 	 * 플레이어 위치에 따라 카메라 위치 변경

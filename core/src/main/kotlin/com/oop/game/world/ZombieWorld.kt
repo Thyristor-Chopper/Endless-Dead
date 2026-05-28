@@ -27,6 +27,7 @@ import com.oop.game.item.Shoes;
 import com.oop.game.item.Shotgun;
 import com.oop.game.spawner.Spawner;
 import com.oop.game.spawner.ZombieSpawner;
+import com.oop.game.widget.ProgressBar;
 
 import kotlin.math.floor;
 import kotlin.random.Random;
@@ -121,12 +122,16 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 			val x = Random.nextInt(this.width.toInt()).toFloat();
 			val y = Random.nextInt(this.height.toInt()).toFloat();
 			val item: Item = generateRandomItem();  // 들어있을 아이템
-			add(when(Random.nextInt(2)) {
+			addEntity(when(Random.nextInt(2)) {
 				0		-> Building(this, x, y, item);
 				else	-> Chest(this, x, y, item);
 			});
 		}
-        add(player);
+        addEntity(player);
+		
+		addWidget("hp_indicator", ProgressBar(80f, game.screenHeight - 24f, 220f, value = player.hp.toFloat() / player.maxHp, color = Color.YELLOW));
+		addWidget("gun_ammo_indicator", ProgressBar(game.screenWidth - 145f, 10f, 130f, color = Color.ROYAL).apply { visible = false });
+		addWidget("gun_cooldown_indicator", ProgressBar(game.screenWidth - 215f, 10f, 60f, value=0.42f, color = Color.SCARLET).apply { visible = false });
 		
 		// 스포너들
 		spawners.add(ZombieSpawner(this, 3f));
@@ -170,11 +175,47 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		// 제목 표시줄에 정보 표시
 		updateTitleBarInfo();
 		
+		// 미터기 정보 갱신
+		updateProgressBars();
+		
         when(GameManager.state) {
             GameState.IN_PLAY	-> updateInPlay(delta);
             GameState.GAME_OVER	-> updateGameOver();
         }
     }
+	
+	private inline fun updateProgressBars() {
+		// HP 미터기 처리
+		val hpIndicator = getWidget("hp_indicator") as ProgressBar;
+		hpIndicator.value = player.hp.toFloat() / player.maxHp.toFloat();
+		
+		// 총 관련 미터기 처리
+		val ammoIndicator = getWidget("gun_ammo_indicator") as ProgressBar;
+		val cooldownIndicator = getWidget("gun_cooldown_indicator") as ProgressBar;
+		val holding: Item? = player.selectedItem;
+		if(holding != null && holding is Gun) {
+			// 총의 ammo를 미터기로 표시
+			ammoIndicator.apply {
+				value = holding.ammo.toFloat() / holding.maxAmmo;
+				visible = true;
+			};
+		
+			// 총의 공격 쿨타임 표시
+			if(holding.fireInterval > 0.2f) {
+				val cooldown = holding.getRemainingCooldownPercentage();
+				if(cooldown > 0f)
+					cooldownIndicator.apply {
+						value = cooldown;
+						visible = true;
+					};
+				else
+					cooldownIndicator.visible = false;
+			}
+		} else {
+			ammoIndicator.visible = false;
+			cooldownIndicator.visible = false;
+		}
+	}
 	
 	/**
 	 * 창 제목에 정보를 표시한다.
@@ -315,18 +356,8 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
             scale = 1.2f
         );
 		
-        // 2) HP를 시각적 미터기로 표시
-		drawTextOnScreen(
-            text = Utils.progressBar(player.hp.toFloat() / player.maxHp.toFloat(), 25),
-            x = 90f,
-            y = game.screenHeight - 10f,
-            color = Color.YELLOW,
-            scale = 1.0f,
-			fixedWidthChars = Utils.PROGRESS_BAR_CHARACTERS
-        );
-		
+		// 현재 플레이어가 들고 있는 아이템
 		player.selectedItem?.let {
-		// 3) 현재 플레이어가 들고 있는 아이템
 			drawTextOnScreen(
 				text = "${it.name} [${player.selectedItemIndex!! + 1}/${player.inventoryItemCount}]",
 				x = 10f,
@@ -334,39 +365,9 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 				color = Color(1.0f, 1.0f, 0.75f, 1.0f),
 				scale = 1.0f
 			);
-			
-		// 4) 들고 있는 아이템이 총인 경우 총의 ammo를 미터기로 표시
-			if(it is Gun) {
-				drawTextOnScreen(
-					text = Utils.progressBar(it.ammo.toFloat() / it.maxAmmo.toFloat(), 14),
-					x = game.screenWidth - 190f,
-					y = 20f,
-					color = Color.SKY,
-					scale = 1.0f,
-					width = 180f,
-					align = Align.right,
-					fixedWidthChars = Utils.PROGRESS_BAR_CHARACTERS
-				);
-			
-		// 5) 총의 공격 쿨타임 표시
-				if(it.fireInterval > 0.2f) {
-					val cooldown = it.getRemainingCooldownPercentage();
-					if(cooldown > 0f)
-						drawTextOnScreen(
-							text = Utils.progressBar(cooldown, 5),
-							x = game.screenWidth - 340f,
-							y = 20f,
-							color = Color.SCARLET,
-							scale = 1.0f,
-							width = 180f,
-							align = Align.right,
-							fixedWidthChars = Utils.PROGRESS_BAR_CHARACTERS
-						);
-				}
-			}
 		};
 		
-		// 6) 점수
+		// 점수
 		drawTextOnScreen(
             text = "Score: ${ScoreManager.score}",
             x = game.screenWidth - 130f,

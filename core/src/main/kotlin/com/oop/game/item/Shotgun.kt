@@ -11,7 +11,7 @@ import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
 
-class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true, 1f, 10, 5) {
+class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true, 1f, 10, 10) {
     private val spreadAngles = listOf(-0.2f, -0.1f, 0f, 0.1f, 0.2f)
 
     override fun fire(target: Position, shooter: Entity): Boolean {
@@ -29,7 +29,7 @@ class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true,
                 centerY + sin(finalAngle) * 100f //구글링했음
             )
 
-            world.add(Bullet(world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, penetrable, bulletHp))
+            world.addEntity(Bullet(world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, penetrable, bulletHp))
         }
 
         startFireCooldown()
