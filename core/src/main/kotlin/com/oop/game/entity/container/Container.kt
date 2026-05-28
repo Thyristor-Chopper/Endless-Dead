@@ -31,9 +31,9 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		val playerItemTexture = this.playerItemTexture;
 		val emptyTexture = this.emptyTexture;
 		if(isEmpty && emptyTexture != null) {
-			batch.draw(emptyTexture, x, y, width, height);
+			batch.draw(emptyTexture, x - width / 2f, y - height / 2f, width, height);
 		} else if(isPlayerItem && playerItemTexture != null) {
-			batch.draw(playerItemTexture, x, y, width, height);
+			batch.draw(playerItemTexture, x - width / 2f, y - height / 2f, width, height);
 		} else {
 			super.draw(batch);
 		}

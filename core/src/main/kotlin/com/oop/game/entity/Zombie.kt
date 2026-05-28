@@ -33,8 +33,8 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 	override fun update(delta: Float) {
         super.update(delta);  // 부모(LivingGameObject)의 무적 타이머 갱신 로직 실행
 
-        val dx = (target.x + target.width / 2f - width / 2f) - x;
-        val dy = (target.y + target.height / 2f - height / 2f) - y;
+        val dx = target.x - x;
+        val dy = target.y - y;
         val distance = sqrt(dx * dx + dy * dy);
 		
 		// 플레이어의 중심으로 정확히 모이면 어색하니까 살짝은 거리를 두게 하자.

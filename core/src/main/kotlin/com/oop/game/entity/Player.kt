@@ -36,8 +36,8 @@ import com.oop.game.world.ZombieWorld;
  */
 class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player.bmp", 50) {
 	companion object {
-		const val PLAYER_WIDTH = 32f;
-		const val PLAYER_HEIGHT = 76f;
+		const val PLAYER_WIDTH = 24f;
+		const val PLAYER_HEIGHT = 57f;
 	}
 	
     private var speed = 200f
