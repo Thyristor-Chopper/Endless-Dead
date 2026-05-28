@@ -146,11 +146,8 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
 			if(entity is InventoryEntity)
 				for(item in entity.getInventory())
 					callback(item);
-			if(entity is Container) {
-				val contained: Item? = entity.containedItem;
-				if(contained != null)
-					callback(contained);
-			}
+			if(entity is Container)
+				entity.containedItem?.let { callback(it) };
 		}
 	}
 
@@ -255,10 +252,9 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
         batch.end();
 		
 		// 6) 자막이 있으면 표시
-		val message: String? = subtitlesMessage;
-		if(subtitlesTimer > 0f && message != null) {
+		if(subtitlesTimer > 0f) subtitlesMessage?.let {
 			drawTextOnScreen(
-				text = message,
+				text = it,
 				x = 0f,
 				y = 20f,
 				color = subtitlesColor,
@@ -267,7 +263,7 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
 				align = Align.center
 			);
 			subtitlesTimer -= delta;
-		}
+		};
     }
 	
 	/**

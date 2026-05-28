@@ -15,7 +15,7 @@ import com.oop.game.world.World;
  * @param initialItem	처음 들어있는 아이템
  */
 abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, emptyTexture: String? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture) {
-	open protected val emptyTexture: Texture?;
+	open protected val emptyTexture: Texture? = emptyTexture?.let { Texture(Gdx.files.internal(it)) };
 	open protected val playerItemTexture: Texture? = null;
 	var containedItem: Item? = initialItem  // 들어있는 아이템
 		private set;
@@ -23,14 +23,6 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		private set;
 	val isEmpty: Boolean
 		get() = (containedItem == null);
-	
-	init {
-		val emptyTexturePath = emptyTexture;
-		if(emptyTexturePath == null)
-			this.emptyTexture = null;
-		else
-			this.emptyTexture = Texture(Gdx.files.internal(emptyTexturePath));
-	}
 	
 	/**
 	 * 상자를 화면에 그린다. 비어 있을 때와 아닐 때 텍스처가 다르기 때문에 override해서 처리한다.
@@ -90,9 +82,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	
 	override fun dispose() {
 		super.dispose();
-		val playerItemTexture = this.playerItemTexture;
-		val emptyTexture = this.emptyTexture;
-		if(playerItemTexture != null) playerItemTexture.dispose();
-		if(emptyTexture != null) emptyTexture.dispose();
+		playerItemTexture?.let { it.dispose() };
+		emptyTexture?.let { it.dispose() };
 	}
 }

@@ -52,20 +52,12 @@ import kotlin.math.sqrt;
  */
 abstract class Entity(override val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) : GameObject, WorldObject, Updatable {
 	override val game = world.game;
-	protected val texture: Texture?;
+	protected val texture: Texture? = texture?.let { Texture(Gdx.files.internal(it)) };
 	val position: Position
 		get() = Position(x, y);
 	open val bodyDamage = 0;  // 다른 개체에 닿았을 때 몸 대미지(아직 활용하는 개체 없음)
 	protected open val ignoreFriendBodyDamage = false;  // 동일 개체에 대해 몸 대미지 무시
 	open val penetrationDamage = 0;  // 총알이 관통할 때 총알에게 주는 대미지
-	
-	init {
-		val texturePath = texture;
-		if(texturePath == null)
-			this.texture = null;
-		else
-			this.texture = Texture(Gdx.files.internal(texturePath));
-	}
 
     /**
      * 매 프레임 호출되어 **자신을 그린다**.
