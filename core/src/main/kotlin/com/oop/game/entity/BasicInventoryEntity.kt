@@ -22,12 +22,15 @@ class BasicInventoryEntity : InventoryEntity {
 	override val isInventoryEmpty: Boolean
 		get() = inventory.isEmpty();
 	
-	override fun addItemToInventory(item: Item, select: Boolean) {
+	override fun addItemToInventory(item: Item, select: Boolean): Boolean {
+		if(hasItem(item)) return false;
 		inventory.add(item);
 		if(select) selectedItemIndex = inventory.size - 1;
+		return true;
 	}
 	
 	override fun removeItemFromInventory(index: Int) {
+		if(index < 0 || index >= inventory.size) throw IllegalArgumentException("index out of bounds");
 		val currentIndex: Int? = selectedItemIndex;
 		inventory.removeAt(index);
 		if(inventory.isEmpty())
@@ -50,7 +53,7 @@ class BasicInventoryEntity : InventoryEntity {
 		return found;
 	}
 	
-	override fun selectNextItem() {
+	override fun selectNextItem(): Boolean {
 		val index: Int? = selectedItemIndex;
 		if(inventory.isEmpty())
 			selectedItemIndex = null;
@@ -60,9 +63,10 @@ class BasicInventoryEntity : InventoryEntity {
 			selectedItemIndex = 0;
 		else
 			selectedItemIndex = index + 1;
+		return selectedItemIndex != null;
 	}
 	
-	override fun selectPreviousItem() {
+	override fun selectPreviousItem(): Boolean {
 		val index: Int? = selectedItemIndex;
 		if(inventory.isEmpty())
 			selectedItemIndex = null;
@@ -72,6 +76,7 @@ class BasicInventoryEntity : InventoryEntity {
 			selectedItemIndex = inventory.size - 1;
 		else
 			selectedItemIndex = index - 1;
+		return selectedItemIndex != null;
 	}
 	
 	override fun selectItem(item: Item): Boolean {

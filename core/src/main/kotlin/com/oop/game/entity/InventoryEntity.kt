@@ -12,13 +12,15 @@ interface InventoryEntity {
 	 * 인벤토리에 아이템 넣기
 	 *
 	 * @param item	추가할 아이템
+	 * @return 	성공 여부 (이미 있으면 실패)
 	 */
-	fun addItemToInventory(item: Item, select: Boolean = false);
+	fun addItemToInventory(item: Item, select: Boolean = false): Boolean;
 	
 	/**
 	 * 인벤토리에서 아이템 빼기
 	 *
-	 * @param index	아이템 위치
+	 * @param	index	아이템 위치
+	 * @return 	성공 여부
 	 */
 	fun removeItemFromInventory(index: Int);
 	
@@ -32,13 +34,17 @@ interface InventoryEntity {
 	
 	/**
 	 * 인벤토리의 다음 아이템 선택
+	 *
+	 * @return 	성공 여부
 	 */
-	fun selectNextItem();
+	fun selectNextItem(): Boolean;
 	
 	/**
 	 * 인벤토리의 이전 아이템 선택
+	 *
+	 * @return 	성공 여부
 	 */
-	fun selectPreviousItem();
+	fun selectPreviousItem(): Boolean;
 	
 	/**
 	 * 지정한 아이템을 갖고 있다면 선택한다.
