@@ -39,7 +39,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		const val PLAYER_HEIGHT = 30f;
 	}
 	
-    private val speed = 200f
+    private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
 	private val healTimer: Timer
