@@ -46,9 +46,7 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 		}
     }
 	
-	companion object {
-		fun weak(world: World, x: Float, y: Float, player: Player, angle: Float) = Zombie(world, x, y, width=21f, height=30f, hp=3, speed=150f, angle=angle, player=player, attackDamage=1);
-		fun normal(world: World, x: Float, y: Float, player: Player, angle: Float) = Zombie(world, x, y, width=32f, height=45f, hp=5, speed=100f, angle=angle, player=player, attackDamage=3);
-		fun strong(world: World, x: Float, y: Float, player: Player, angle: Float) = Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, angle=angle, player=player, attackDamage=5);
-	}
+	class Weak(world: World, x: Float, y: Float, player: Player, angle: Float) : Zombie(world, x, y, width=21f, height=30f, hp=3, speed=150f, angle=angle, player=player, attackDamage=1);
+	class Normal(world: World, x: Float, y: Float, player: Player, angle: Float) : Zombie(world, x, y, width=32f, height=45f, hp=5, speed=100f, angle=angle, player=player, attackDamage=3);
+	class Strong(world: World, x: Float, y: Float, player: Player, angle: Float) : Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, angle=angle, player=player, attackDamage=5);
 }
