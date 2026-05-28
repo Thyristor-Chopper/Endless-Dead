@@ -53,7 +53,7 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 	
 	override fun dispose() {
 		rawBarTexture.dispose();
-		chunkTexture.dispose();
 		rawIndicatorTexture.dispose();
+		chunkTexture.dispose();
 	}
 }
