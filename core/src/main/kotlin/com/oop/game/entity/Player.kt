@@ -10,7 +10,6 @@ import com.oop.game.GameState;
 import com.oop.game.InputHandler;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
-import com.oop.game.TimerManager;
 import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Container;
 import com.oop.game.item.Gun;
@@ -42,8 +41,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
     private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
-	private val timerManager = TimerManager();
-	private val healTimer: Timer
+	private val healTimer: Timer;
 	// 통계
 	var survivedDuration = 0
 		private set;
@@ -118,16 +116,15 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		
 		// -- 타이머들 --
 		// 1. 생존 시간 기록 & 생존 시간 보너스
-		timerManager.registerTimer(Timer(1) {
+		Timer(1f) {
 			survivedDuration++;
 			ScoreManager.addScore(1);
-		});
+		}.register();
 		
 		// 2. 30초마다 자연 회복
-		healTimer = Timer(30) {
+		healTimer = Timer(30f) {
 			heal(3);
-		};
-		timerManager.registerTimer(healTimer);
+		}.register();
 	}
 	
 	private inline fun rotatePlayer(x: Int, y: Int) {
@@ -232,9 +229,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width);
         y = y.coerceIn(0f, world.height);
-		
-		// 타이머 갱신
-		timerManager.tick(delta);
     }
 	
 	/**

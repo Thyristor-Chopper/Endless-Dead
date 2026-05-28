@@ -12,7 +12,6 @@ import com.oop.game.InputHandler;
 import com.oop.game.ZombieGame;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
-import com.oop.game.TimerManager;
 import com.oop.game.Utils;
 import com.oop.game.entity.Entity;
 import com.oop.game.entity.Player;
@@ -112,7 +111,6 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 			else if(value < 0) field = TitleInfoType.size - 1;
 			else field = value;
 		};
-	private val timerManager = TimerManager();
 
     /**
      * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -134,18 +132,18 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		spawners.add(ZombieSpawner(this, 3f));
 		
 		// 10초마다 빈 상자 하나 리필
-		timerManager.registerTimer(Timer(10) {
+		Timer(10f) {
 			for(entity in getEntities().shuffled())
 				if(entity is Container && entity.isEmpty) {
 					entity.putItem(generateRandomItem());
 					break;
 				}
-		});
+		}.register();
 		
 		// 제목 표시줄 정보 전환
-		timerManager.registerTimer(Timer(3, false) {
+		Timer(3f, false) {
 			currentTitleInfo++;
-		});
+		}.register();
     }
 	
 	/**
@@ -171,9 +169,6 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
     override fun update(delta: Float) {
 		// 제목 표시줄에 정보 표시
 		updateTitleBarInfo();
-		
-		// 타이머 갱신
-		timerManager.tick(delta);
 		
         when(GameManager.state) {
             GameState.IN_PLAY	-> updateInPlay(delta);

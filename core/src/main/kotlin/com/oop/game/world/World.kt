@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
 import com.oop.game.GameObject;
-import com.oop.game.TimerManager;
 import com.oop.game.Updatable;
 import com.oop.game.WorldObject;
 import com.oop.game.ZombieGame;

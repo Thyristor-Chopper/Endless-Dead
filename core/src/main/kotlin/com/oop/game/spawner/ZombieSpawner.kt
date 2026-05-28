@@ -1,8 +1,7 @@
 package com.oop.game.spawner;
 
 import com.oop.game.Position;
-import com.oop.game.Timer
-import com.oop.game.TimerManager
+import com.oop.game.Timer;
 import com.oop.game.entity.Player;
 import com.oop.game.entity.Zombie;
 import com.oop.game.world.World;
@@ -17,17 +16,16 @@ import kotlin.random.Random;
  */
 class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : Spawner {
 	override val game = world.game;
-    private val timerManager = TimerManager()
     private var timer = 0f
     var spawnPerZombie = 3
 	
     init {
-        timerManager.registerTimer(Timer(30) {
+        Timer(30f) {
             repeat(spawnPerZombie) {
                 spawnRandomZombie()
             }
             spawnPerZombie++
-        })
+        }.register();
     }
 
 	/**
@@ -38,9 +36,7 @@ class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : 
         if(timer >= spawnInterval) {
             timer -= spawnInterval
             spawnRandomZombie()
-
         }
-        timerManager.tick(delta)
     }
 
 	/**
