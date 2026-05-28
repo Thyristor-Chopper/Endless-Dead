@@ -185,7 +185,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 			TitleInfoType.OPENED	-> "연 상자: ${player.openedContainerCount}개";
 			TitleInfoType.KILLED	-> "잡은 좀비 수: ${player.killedZombieCount}";
 			TitleInfoType.FIRED		-> "발사한 총알 수: ${player.firedBullets}";
-			TitleInfoType.SURVIVED	-> "생존 시간: ${Utils.parseSeconds(player.survivedDuration)}";
+			TitleInfoType.SURVIVED	-> "생존 시간: ${Utils.parseSeconds(player.survivedDuration, "분", "초")}";
 			TitleInfoType.DAMAGE	-> "누적 피해량: ${player.totalDamage}";
 		});
 	}
@@ -394,6 +394,43 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
             x = game.screenWidth / 2f - 70f,
             y = game.screenHeight / 2f - 40f,
             color = Color.WHITE,
+            scale = 1.0f
+        );
+		
+		// 통계
+        drawTextOnScreen(
+            text = "Opened containers: ${player.openedContainerCount}",
+            x = game.screenWidth / 2f - 70f,
+            y = game.screenHeight / 2f - 60f,
+            color = Color.LIGHT_GRAY,
+            scale = 1.0f
+        );
+        drawTextOnScreen(
+            text = "Killed zombies: ${player.killedZombieCount}",
+            x = game.screenWidth / 2f - 70f,
+            y = game.screenHeight / 2f - 75f,
+            color = Color.LIGHT_GRAY,
+            scale = 1.0f
+        );
+        drawTextOnScreen(
+            text = "Fired bullets: ${player.firedBullets}",
+            x = game.screenWidth / 2f - 70f,
+            y = game.screenHeight / 2f - 90f,
+            color = Color.LIGHT_GRAY,
+            scale = 1.0f
+        );
+        drawTextOnScreen(
+            text = "Survived duration: ${Utils.parseSeconds(player.survivedDuration, "m", "s")}",
+            x = game.screenWidth / 2f - 70f,
+            y = game.screenHeight / 2f - 105f,
+            color = Color.LIGHT_GRAY,
+            scale = 1.0f
+        );
+        drawTextOnScreen(
+            text = "Total damage: ${player.totalDamage}",
+            x = game.screenWidth / 2f - 70f,
+            y = game.screenHeight / 2f - 120f,
+            color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
     }

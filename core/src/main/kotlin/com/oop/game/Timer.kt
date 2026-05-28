@@ -20,7 +20,8 @@ class Timer(val interval: Float, val delay: Float = interval, val onlyInPlay: Bo
 		};
 	private val task = object : Task() {
 		override fun run() {
-			operation();
+			if(!onlyInPlay || (onlyInPlay && GameManager.state == GameState.IN_PLAY))
+				operation();
 		}
 	};
 	
