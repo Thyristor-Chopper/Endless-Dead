@@ -19,11 +19,11 @@ class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : 
 	override val game = world.game;
     private val timerManager = TimerManager()
     private var timer = 0f
-
     var spawnPerZombie = 3
+	
     init {
-        timerManager.registerTimer(Timer(30) {//
-            repeat(spawnPerZombie){
+        timerManager.registerTimer(Timer(30) {
+            repeat(spawnPerZombie) {
                 spawnRandomZombie()
             }
             spawnPerZombie++
