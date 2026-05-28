@@ -15,6 +15,7 @@ import com.oop.game.WorldObject;
 import com.oop.game.ZombieGame;
 import com.oop.game.entity.Bullet;
 import com.oop.game.entity.Entity;
+import com.oop.game.entity.InventoryEntity;
 import com.oop.game.entity.LivingEntity;
 import com.oop.game.entity.Player;
 import com.oop.game.entity.container.Container;
@@ -141,7 +142,7 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
 	private fun forEachObjects(callback: (WorldObject) -> Unit) {
 		for(entity in entities.toList()) {
 			callback(entity);
-			if(entity is Player)
+			if(entity is InventoryEntity)
 				for(item in entity.getInventory())
 					callback(item);
 			if(entity is Container)

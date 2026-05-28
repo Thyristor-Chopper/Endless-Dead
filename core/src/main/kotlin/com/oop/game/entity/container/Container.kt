@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.oop.game.entity.Entity;
-import com.oop.game.entity.Player;
+import com.oop.game.entity.InventoryEntity;
 import com.oop.game.item.Item;
 import com.oop.game.world.World;
 
@@ -46,7 +46,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	 * @param	select	아이템을 가져간 후 자동으로 선택할지 여부
 	 * @return 	성공하면 들어있는 아이템, 실패하면 null
 	 */
-	fun takeItem(taker: Player, select: Boolean = false): Item? {
+	fun takeItem(taker: InventoryEntity, select: Boolean = false): Item? {
 		val target = containedItem;  // https://stackoverflow.com/questions/44595529/smart-cast-to-type-is-impossible-because-variable-is-a-mutable-property-tha
 		if(target == null) return null;
 		taker.addItemToInventory(target, select);

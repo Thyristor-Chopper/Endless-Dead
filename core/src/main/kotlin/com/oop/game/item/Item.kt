@@ -3,7 +3,7 @@ package com.oop.game.item;
 import com.oop.game.GameObject;
 import com.oop.game.Updatable;
 import com.oop.game.WorldObject;
-import com.oop.game.entity.Player;
+import com.oop.game.entity.InventoryEntity;
 import com.oop.game.entity.container.Container;
 import com.oop.game.world.World;
 
@@ -16,7 +16,7 @@ import com.oop.game.world.World;
  */
 abstract class Item(override val world: World, val id: String, val name: String) : GameObject, WorldObject, Updatable {
 	override val game = world.game;
-	var holder: Player? = null
+	var holder: InventoryEntity? = null
 		internal set;
 	
 	/**
