@@ -58,11 +58,22 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	// 인벤토리
 	private val inventory = mutableListOf<Item>();
 	var selectedItemIndex: Int? = null
-		private set;
+		private set(value) {
+			if(value == null) {
+				field = null;
+			} else {
+				val inventorySize = inventory.size;
+				if(value < 0) field = 0;
+				else if(value >= inventorySize) field = inventorySize - 1;
+				else field = value;
+			}
+		};
 	val selectedItem: Item?
 		get() = selectedItemIndex?.let { inventory[it] };
 	val inventoryItemCount: Int
 		get() = inventory.size;
+	val isInventoryEmpty: Boolean
+		get() = inventory.isEmpty();
 	
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
@@ -82,9 +93,13 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 			
 			// 마우스 위치로 플레이어 회전
 			override fun mouseMoved(x: Int, y: Int): Boolean {
-				// 샷건 내 360도 구현 참고함
-				rotation = toDegrees(atan2((game.screenHeight - y) - (this@Player.y - world.offsetY), x - (this@Player.x - world.offsetX)).toDouble()).toFloat() - 90f;
+				rotatePlayer(x, y);
 				return true;
+			}
+			
+			override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean {
+				rotatePlayer(x, y);
+				return false;  // 진짜 '드래그'를 처리한 게 아니기 때문에 false 반환
 			}
 			
 			// 나머지 (스텁)
@@ -99,8 +114,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 			override fun keyTyped(char: Char): Boolean = false;
 			
 			override fun touchCancelled(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
-			
-			override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean = false;
 		});
 		
 		// -- 타이머들 --
@@ -115,6 +128,11 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 			heal(3);
 		};
 		timerManager.registerTimer(healTimer);
+	}
+	
+	private inline fun rotatePlayer(x: Int, y: Int) {
+		// 샷건 내 360도 구현 참고함
+		rotation = toDegrees(atan2((game.screenHeight - y) - (this.y - world.offsetY), x - (this.x - world.offsetX)).toDouble()).toFloat() - 90f;
 	}
 	
 	/**
@@ -251,10 +269,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	 */
 	fun addItemToInventory(item: Item, select: Boolean = false) {
 		inventory.add(item);
-		if(selectedItemIndex == null)
-			selectedItemIndex = 0;
-		else if(select)
-			selectedItemIndex = inventory.size - 1;
+		if(select) selectedItemIndex = inventory.size - 1;
 	}
 	
 	/**
@@ -268,10 +283,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		inventory.removeAt(index);
 		if(inventory.isEmpty())
 			selectedItemIndex = null;
-		else if(index == currentIndex) {
-			if(currentIndex == 0) selectedItemIndex = 1;
-			else selectedItemIndex = (selectedItemIndex ?: 1) - 1;
-		}
+		else if(index == currentIndex)
+			selectPreviousItem();
 	}
 	
 	/**
@@ -282,7 +295,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	 */
 	fun removeItemFromInventory(item: Item): Boolean {
 		var found = false;
-		if(inventory.size > 0)
+		if(!inventory.isEmpty())
 			for(i in 0 until inventory.size)
 				if(inventory[i] === item) {
 					found = true;
@@ -292,8 +305,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 						selectPreviousItem();
 					break;
 				}
-		if(inventory.isEmpty())
-			selectedItemIndex = null;
 		return found;
 	}
 	
@@ -306,10 +317,10 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 			selectedItemIndex = null;
 		else if(index == null)
 			selectedItemIndex = 0;
-		else if(index >= inventory.size - 1)
+		else if(index == inventory.size - 1)
 			selectedItemIndex = 0;
 		else
-			selectedItemIndex = (selectedItemIndex ?: 0) + 1;
+			selectedItemIndex = index + 1;
 	}
 	
 	/**
@@ -321,10 +332,10 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 			selectedItemIndex = null;
 		else if(index == null)
 			selectedItemIndex = 0;
-		else if(index <= 0)
+		else if(index == 0)
 			selectedItemIndex = inventory.size - 1;
 		else
-			selectedItemIndex = (selectedItemIndex ?: 1) - 1;
+			selectedItemIndex = index - 1;
 	}
 	
 	/**
