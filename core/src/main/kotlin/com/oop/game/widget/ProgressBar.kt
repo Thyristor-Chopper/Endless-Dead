@@ -13,7 +13,7 @@ class ProgressBar(x: Float, y: Float, width: Float, height: Float = 15f, var val
 	private val rawBarTexture = Texture(Gdx.files.internal("progress_bar.bmp"));
 	private val rawIndicatorTexture = Texture(Gdx.files.internal("progress_chunk.bmp"));
 	private val barTexture = NinePatch(rawBarTexture, 2, 2, 5, 6);
-	private val indicatorTexture = NinePatch(rawIndicatorTexture, 0, 0, 2, 1);
+	private val indicatorTexture = NinePatch(rawIndicatorTexture, 1, 1, 2, 1);
 	
 	override fun draw(batch: SpriteBatch) {
 		if(!visible) return;
