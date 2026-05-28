@@ -188,7 +188,10 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 	private inline fun updateProgressBars() {
 		// HP 미터기 처리
 		val hpIndicator = getWidget("hp_indicator") as ProgressBar;
-		hpIndicator.value = player.hp.toFloat() / player.maxHp.toFloat();
+		hpIndicator.apply {
+			y = game.screenHeight - 24f;
+			value = player.hp.toFloat() / player.maxHp.toFloat();
+		};
 		
 		// 총 관련 미터기 처리
 		val ammoIndicator = getWidget("gun_ammo_indicator") as ProgressBar;
@@ -197,6 +200,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		if(holding != null && holding is Gun) {
 			// 총의 ammo를 미터기로 표시
 			ammoIndicator.apply {
+				x = game.screenWidth - 145f;
 				value = holding.ammo.toFloat() / holding.maxAmmo;
 				visible = true;
 			};
@@ -206,6 +210,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 				val cooldown = holding.getRemainingCooldownPercentage();
 				if(cooldown > 0f)
 					cooldownIndicator.apply {
+						x = game.screenWidth - 215f;
 						value = cooldown;
 						visible = true;
 					};
