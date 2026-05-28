@@ -36,7 +36,7 @@ class Shotgun(world: World) : Gun(world, "G002", "Shotgun", 5, 500f, 5, true, 1f
         ammo -= spreadAngles.size
 
         if(ammo == 0) {
-            if(holder === world.player)
+            if(shooter === world.player)
                 world.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON)
             destroy()
         }

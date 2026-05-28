@@ -29,7 +29,6 @@ class BasicInventoryEntity : InventoryEntity {
 	
 	override fun removeItemFromInventory(index: Int) {
 		val currentIndex: Int? = selectedItemIndex;
-		inventory[index].holder = null;
 		inventory.removeAt(index);
 		if(inventory.isEmpty())
 			selectedItemIndex = null;
@@ -43,7 +42,6 @@ class BasicInventoryEntity : InventoryEntity {
 			for(i in 0 until inventory.size)
 				if(inventory[i] === item) {
 					found = true;
-					inventory[i].holder = null;
 					inventory.removeAt(i);
 					if(i == selectedItemIndex)
 						selectPreviousItem();
@@ -88,7 +86,7 @@ class BasicInventoryEntity : InventoryEntity {
 		selectedItemIndex = index;
 	}
 	
-	override fun hasItem(item: Item): Boolean = item in inventory;
+	override fun hasItem(item: Item): Boolean = inventory.any { it === item };
 	
 	override fun getInventory(): List<Item> = inventory.toList();
 }

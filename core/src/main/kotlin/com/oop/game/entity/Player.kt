@@ -208,6 +208,13 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		if(InputHandler.isKeyJustPressed(InputHandler.SPACE) || InputHandler.isButtonJustPressed(InputHandler.RIGHT_MOUSE))
 			interactContainer();
 		
+		// 아이템 파괴
+		if(InputHandler.isKeyJustPressed(InputHandler.DELETE))
+			selectedItem?.let {
+				if(it.destroy())
+					world.drawSubtitles("${it.name} destroyed");
+			};
+		
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width);
         y = y.coerceIn(0f, world.height);

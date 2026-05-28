@@ -50,7 +50,6 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		val target = containedItem;  // https://stackoverflow.com/questions/44595529/smart-cast-to-type-is-impossible-because-variable-is-a-mutable-property-tha
 		if(target == null) return null;
 		taker.addItemToInventory(target, select);
-		target.holder = taker;
 		containedItem = null;
 		if(isPlayerItem) isPlayerItem = false;
 		return target;
@@ -65,7 +64,6 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		if(!isEmpty) throw IllegalStateException("container is not empty");
 		containedItem = item;
 		if(isPlayerItem) this.isPlayerItem = true;
-		item.holder = null;
 	}
 	
 	/**

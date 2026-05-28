@@ -138,9 +138,24 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 	 *
 	 * @param callback	실행할 서브루틴
 	 */
-	private fun forEachObjects(callback: (WorldObject) -> Unit) {
+	fun forEachObjects(callback: (WorldObject) -> Unit) {
 		for(entity in entities.toList()) {
 			callback(entity);
+			if(entity is InventoryEntity)
+				for(item in entity.getInventory())
+					callback(item);
+			if(entity is Container)
+				entity.containedItem?.let { callback(it) };
+		}
+	}
+	
+	/**
+	 * 월드 내 모든 아이템을 순회한다.
+	 *
+	 * @param callback	실행할 서브루틴
+	 */
+	fun forEachItems(callback: (WorldObject) -> Unit) {
+		for(entity in entities.toList()) {
 			if(entity is InventoryEntity)
 				for(item in entity.getInventory())
 					callback(item);

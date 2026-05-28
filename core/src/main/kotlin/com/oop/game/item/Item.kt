@@ -14,8 +14,22 @@ import com.oop.game.world.World;
  * @param name	총 이름
  */
 abstract class Item(override val world: World, val id: String, val name: String) : WorldObject, Updatable {
-	var holder: InventoryEntity? = null
-		internal set;
+	val holder: InventoryEntity?
+		get() {
+			for(entity in world.getEntities()) {
+				if(entity is InventoryEntity && entity.hasItem(this))
+					return entity;
+			}
+			return null;
+		};
+	val container: Container?
+		get() {
+			for(entity in world.getEntities()) {
+				if(entity is Container && entity.containedItem === this)
+					return entity;
+			}
+			return null;
+		};
 	
 	/**
 	 * 같은 종류의 아이템인지를 비교한다.
@@ -25,12 +39,15 @@ abstract class Item(override val world: World, val id: String, val name: String)
 	}
 	
 	/**
-	 * 인벤토리를 가진 개체가 이 아이템을 들고 있는 경우 파괴한다.
+	 * 아이템을 파괴한다.
 	 *
-	 * @return 성공 여부
+	 * @return 아이템 존재 여부
 	 */
 	inline fun destroy(): Boolean {
-		return holder?.removeItemFromInventory(this) ?: false;
+		val first = holder?.let { it.removeItemFromInventory(this); true } ?: false;
+		val second = container?.let { it.removeItem(); true } ?: false;
+		
+		return first || second;
 		
 		// 나머지는 jvm이나 달빅이 알아서 gc 해주겠지.
 	}
