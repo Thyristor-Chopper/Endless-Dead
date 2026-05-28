@@ -185,7 +185,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		
 		// 아이템 사용
 		selectedItem?.let {
-			if(it != null && it is Usable && (InputHandler.isButtonJustPressed(InputHandler.LEFT_MOUSE) || (it.allowContinuousUse && InputHandler.isButtonPressed(InputHandler.LEFT_MOUSE))))
+			if(it is Usable && (InputHandler.isButtonJustPressed(InputHandler.LEFT_MOUSE) || (it.allowContinuousUse && InputHandler.isButtonPressed(InputHandler.LEFT_MOUSE))))
 				useItem(it);
 		};
 		
