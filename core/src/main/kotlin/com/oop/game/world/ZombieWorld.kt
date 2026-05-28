@@ -101,8 +101,8 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
     //   tile.png 는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color 를
     //   바꿔가며 두 가지 색으로 그리는 트릭(틴트) 으로 체스판을 만든다.
     private val tileTexture = Texture(Gdx.files.internal("tile.bmp"));
-    private val bgColorDark = Color(0.15f, 0.34f, 0.16f, 1f);
-    private val bgColorLight = Color(0.15f, 0.4f, 0.16f, 1f);
+    private val bgColorDark = Color(0.15f, 0.36f, 0.15f, 1f);
+    private val bgColorLight = Color(0.15f, 0.42f, 0.15f, 1f);
     private val tileSize = 64f;
 	// 제목 표시줄에 표시할 정보의 인덱스
 	private var currentTitleInfo = 0
