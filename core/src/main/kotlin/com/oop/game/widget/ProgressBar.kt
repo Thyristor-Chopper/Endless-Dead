@@ -13,7 +13,7 @@ private const val BAR_HORIZONTAL_PADDING = 3;
 private const val CHUNK_WIDTH = 6;
 private const val CHUNK_MARGIN = 2;
 
-class ProgressBar(x: Float, y: Float, width: Float, height: Float = 15f, var value: Float = 0f, val color: Color = Color.WHITE) : Widget(x, y, width, height) {
+class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, val color: Color = Color.WHITE) : Widget(x, y, width, height) {
 	var style = ProgressBarStyle.CHUNKED;
 	private val rawBarTexture = Texture(Gdx.files.internal("progress_bar.bmp"));
 	private val rawIndicatorTexture = Texture(Gdx.files.internal("progress_indicator.bmp"));
@@ -23,6 +23,8 @@ class ProgressBar(x: Float, y: Float, width: Float, height: Float = 15f, var val
 	
 	override fun draw(batch: SpriteBatch) {
 		if(!visible) return;
+		val x = this.x();
+		val y = this.y();
 		barTexture.draw(batch, x, y, width, height);
 		if(value > 0f) {
 			batch.color = color;
@@ -32,13 +34,13 @@ class ProgressBar(x: Float, y: Float, width: Float, height: Float = 15f, var val
 				ProgressBarStyle.CHUNKED	-> {
 					val chunkCount = ceil(indicatorWidth / (CHUNK_WIDTH + CHUNK_MARGIN)).toInt();
 					for(i in 1..chunkCount) {
-						val x = this.x + BAR_HORIZONTAL_PADDING + (CHUNK_WIDTH + CHUNK_MARGIN) * (i - 1);
+						val left = x + BAR_HORIZONTAL_PADDING + (CHUNK_WIDTH + CHUNK_MARGIN) * (i - 1);
 						val width = 
-							if(i == chunkCount && x - this.x + CHUNK_WIDTH - CHUNK_MARGIN - 1 > drawableBarWidth)
-								CHUNK_WIDTH - (x - this.x + CHUNK_WIDTH - CHUNK_MARGIN - 1 - drawableBarWidth)
+							if(i == chunkCount && left - x + CHUNK_WIDTH - CHUNK_MARGIN - 1 > drawableBarWidth)
+								CHUNK_WIDTH - (left - x + CHUNK_WIDTH - CHUNK_MARGIN - 1 - drawableBarWidth)
 							else
 								CHUNK_WIDTH.toFloat();
-						batch.draw(chunkTexture, x, y + BAR_VERTICAL_PADDING, width, height - BAR_VERTICAL_PADDING * 2);
+						batch.draw(chunkTexture, left, y + BAR_VERTICAL_PADDING, width, height - BAR_VERTICAL_PADDING * 2);
 					}
 				}
 				ProgressBarStyle.SMOOTH		-> {

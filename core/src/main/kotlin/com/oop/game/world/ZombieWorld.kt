@@ -130,9 +130,9 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		}
         addEntity(player);
 		
-		addWidget("hp_indicator", ProgressBar(80f, game.screenHeight - 24f, 220f, value = player.hp.toFloat() / player.maxHp, color = Color.YELLOW));
-		addWidget("gun_ammo_indicator", ProgressBar(game.screenWidth - 145f, 10f, 130f, color = Color.ROYAL).apply { visible = false });
-		addWidget("gun_cooldown_indicator", ProgressBar(game.screenWidth - 215f, 10f, 60f, value=0.42f, color = Color.SCARLET).apply { visible = false; style = ProgressBarStyle.SMOOTH });
+		addWidget("hp_indicator", ProgressBar({ 80f }, { game.screenHeight - 24f }, 220f, value = player.hp.toFloat() / player.maxHp, color = Color.YELLOW));
+		addWidget("gun_ammo_indicator", ProgressBar({ game.screenWidth - 145f }, { 10f }, 130f, color = Color.ROYAL).apply { visible = false });
+		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { visible = false; style = ProgressBarStyle.SMOOTH });
 		
 		// 스포너들
 		spawners.add(ZombieSpawner(this, 3f));
@@ -189,7 +189,6 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		// HP 미터기 처리
 		val hpIndicator = getWidget("hp_indicator") as ProgressBar;
 		hpIndicator.apply {
-			y = game.screenHeight - 24f;
 			value = player.hp.toFloat() / player.maxHp.toFloat();
 		};
 		
@@ -200,7 +199,6 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		if(holding != null && holding is Gun) {
 			// 총의 ammo를 미터기로 표시
 			ammoIndicator.apply {
-				x = game.screenWidth - 145f;
 				value = holding.ammo.toFloat() / holding.maxAmmo;
 				visible = true;
 			};
@@ -210,7 +208,6 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 				val cooldown = holding.getRemainingCooldownPercentage();
 				if(cooldown > 0f)
 					cooldownIndicator.apply {
-						x = game.screenWidth - 215f;
 						value = cooldown;
 						visible = true;
 					};
