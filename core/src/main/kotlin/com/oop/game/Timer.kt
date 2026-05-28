@@ -1,5 +1,7 @@
 package com.oop.game;
 
+import com.badlogic.gdx.Screen;
+
 /**
  * 일정 시간마다 특정 작업을 실행하게 해 주는 클래스
  *

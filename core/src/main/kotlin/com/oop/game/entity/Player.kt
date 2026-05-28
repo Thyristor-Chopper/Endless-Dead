@@ -5,11 +5,12 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 
+import com.oop.game.GameManager;
 import com.oop.game.GameState;
 import com.oop.game.InputHandler;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
-import com.oop.game.TimerExecutor;
+import com.oop.game.TimerManager;
 import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Container;
 import com.oop.game.item.Gun;
@@ -33,7 +34,7 @@ import com.oop.game.world.ZombieWorld;
  *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 GameObject.dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player.bmp", 50), InventoryEntity, TimerExecutor {
+class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Player.PLAYER_WIDTH, Player.PLAYER_HEIGHT, "player.bmp", 50) {
 	companion object {
 		const val PLAYER_WIDTH = 30f;
 		const val PLAYER_HEIGHT = 30f;
@@ -42,6 +43,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
     private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
+	private val timerManager = TimerManager();
 	private val healTimer: Timer
 	// 통계
 	var survivedDuration = 0
@@ -54,13 +56,21 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		private set;
 	var totalDamage = 0
 		private set;
+	// 인벤토리
+	private val inventory = mutableListOf<Item>();
+	var selectedItemIndex: Int? = null
+		private set;
+	val selectedItem: Item?
+		get() = selectedItemIndex?.let { inventory[it] };
+	val inventoryItemCount: Int
+		get() = inventory.size;
 	
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
 		Gdx.input.setInputProcessor(object : InputProcessor {
 			// 휠 감지 - 선택된 아이템 전환
 			override fun scrolled(amountX: Float, amountY: Float): Boolean {
-				if(game.state != GameState.IN_PLAY) return false;
+				if(GameManager.state != GameState.IN_PLAY) return false;
 				
 				if(amountY != 0.0f) {
 					if(amountY > 0f) selectNextItem();
@@ -91,7 +101,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		
 		// -- 타이머들 --
 		// 1. 생존 시간 기록 & 생존 시간 보너스
-		registerTimer(Timer(1) {
+		timerManager.registerTimer(Timer(1) {
 			survivedDuration++;
 			ScoreManager.addScore(1);
 		});
@@ -100,7 +110,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 		healTimer = Timer(30) {
 			heal(3);
 		};
-		registerTimer(healTimer);
+		timerManager.registerTimer(healTimer);
 	}
 	
 	/**
@@ -200,6 +210,9 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width - width);
         y = y.coerceIn(0f, world.height - height);
+		
+		// 타이머 갱신
+		timerManager.tick(delta);
     }
 	
 	/**
@@ -224,4 +237,119 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 	fun speedUp(amount: Float) {
 		speed += amount;
 	}
+	
+	// ---- 인벤토리 관련 ----
+	
+	/**
+	 * 인벤토리에 아이템 넣기
+	 *
+	 * @param item	추가할 아이템
+	 */
+	fun addItemToInventory(item: Item, select: Boolean = false) {
+		inventory.add(item);
+		if(selectedItemIndex == null)
+			selectedItemIndex = 0;
+		else if(select)
+			selectedItemIndex = inventory.size - 1;
+	}
+	
+	/**
+	 * 인벤토리에서 아이템 빼기
+	 *
+	 * @param index	아이템 위치
+	 */
+	fun removeItemFromInventory(index: Int) {
+		val currentIndex: Int? = selectedItemIndex;
+		inventory[index].holder = null;
+		inventory.removeAt(index);
+		if(inventory.isEmpty())
+			selectedItemIndex = null;
+		else if(index == currentIndex) {
+			if(currentIndex == 0) selectedItemIndex = 1;
+			else selectedItemIndex = (selectedItemIndex ?: 1) - 1;
+		}
+	}
+	
+	/**
+	 * 인벤토리에서 아이템 빼기
+	 *
+	 * @param 	item	제거할 아이템
+	 * @return 	성공 여부
+	 */
+	fun removeItemFromInventory(item: Item): Boolean {
+		var found = false;
+		if(inventory.size > 0)
+			for(i in 0 until inventory.size)
+				if(inventory[i] === item) {
+					found = true;
+					inventory[i].holder = null;
+					inventory.removeAt(i);
+					if(i == selectedItemIndex)
+						selectPreviousItem();
+					break;
+				}
+		if(inventory.isEmpty())
+			selectedItemIndex = null;
+		return found;
+	}
+	
+	/**
+	 * 인벤토리의 다음 아이템 선택
+	 */
+	fun selectNextItem() {
+		val index: Int? = selectedItemIndex;
+		if(inventory.isEmpty())
+			selectedItemIndex = null;
+		else if(index == null)
+			selectedItemIndex = 0;
+		else if(index >= inventory.size - 1)
+			selectedItemIndex = 0;
+		else
+			selectedItemIndex = (selectedItemIndex ?: 0) + 1;
+	}
+	
+	/**
+	 * 인벤토리의 이전 아이템 선택
+	 */
+	fun selectPreviousItem() {
+		val index: Int? = selectedItemIndex;
+		if(inventory.isEmpty())
+			selectedItemIndex = null;
+		else if(index == null)
+			selectedItemIndex = 0;
+		else if(index <= 0)
+			selectedItemIndex = inventory.size - 1;
+		else
+			selectedItemIndex = (selectedItemIndex ?: 1) - 1;
+	}
+	
+	/**
+	 * 지정한 아이템을 갖고 있다면 선택한다.
+	 *
+	 * @return 성공 여부
+	 */
+	fun selectItem(item: Item): Boolean {
+		val index = inventory.indexOfFirst({ it === item });
+		if(index == -1) return false;
+		selectedItemIndex = index;
+		return true;
+	}
+	
+	/**
+	 * 지정한 인덱스의 아이템을 선택한다.
+	 */
+	fun selectItem(index: Int) {
+		if(index < 0 || index >= inventory.size) throw IllegalArgumentException("index out of bounds");
+		selectedItemIndex = index;
+	}
+	
+	/**
+	 * 지정한 아이템이 있는지 확인
+	 */
+	fun hasItem(item: Item): Boolean = item in inventory;
+	
+	/**
+	 * 인벤토리의 읽기용 사본을 가져온다.
+	 */
+	fun getInventory(): List<Item> = inventory.toList();
 }

@@ -10,13 +10,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
 import com.oop.game.GameObject;
-import com.oop.game.TimerExecutor;
+import com.oop.game.TimerManager;
 import com.oop.game.Updatable;
 import com.oop.game.WorldObject;
 import com.oop.game.ZombieGame;
 import com.oop.game.entity.Bullet;
 import com.oop.game.entity.Entity;
-import com.oop.game.entity.InventoryEntity;
 import com.oop.game.entity.LivingEntity;
 import com.oop.game.entity.Player;
 import com.oop.game.entity.container.Container;
@@ -143,7 +142,7 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
 	private fun forEachObjects(callback: (WorldObject) -> Unit) {
 		for(entity in entities.toList()) {
 			callback(entity);
-			if(entity is InventoryEntity)
+			if(entity is Player)
 				for(item in entity.getInventory())
 					callback(item);
 			if(entity is Container)
@@ -202,21 +201,6 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
         updateAllObjects(delta);
         removeDead();
     }
-	
-	/**
-	 * 월드 내 모든 아이템과 개체에 붙어 있는 타이머를 실행하고 갱신해준다.
-	 */
-	private fun executeAllTimers(delta: Float) {
-		// 개체와 아이템에 등록된 타이머
-		forEachObjects {
-			if(it is TimerExecutor)
-				it.executeTimers(delta);
-		};
-		
-		// 월드의 타이머
-		if(this is TimerExecutor)
-			this.executeTimers(delta);
-	}
 
     // ────────────────────────────────────────────────────────
     //  매 프레임 그리기
@@ -240,9 +224,6 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
 
         // 3) 게임 로직 업데이트
         update(delta);
-		
-		// 4) 타이머 실행
-		executeAllTimers(delta);
 
         // 5) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
         batch.begin();

@@ -3,7 +3,7 @@ package com.oop.game.item;
 import com.oop.game.GameObject;
 import com.oop.game.Updatable;
 import com.oop.game.WorldObject;
-import com.oop.game.entity.InventoryEntity;
+import com.oop.game.entity.Player;
 import com.oop.game.entity.container.Container;
 import com.oop.game.world.World;
 
@@ -16,7 +16,7 @@ import com.oop.game.world.World;
  */
 abstract class Item(override val world: World, val id: String, val name: String) : GameObject, WorldObject, Updatable {
 	override val game = world.game;
-	var holder: InventoryEntity? = null
+	var holder: Player? = null
 		internal set;
 	
 	/**
@@ -31,10 +31,8 @@ abstract class Item(override val world: World, val id: String, val name: String)
 	 *
 	 * @return 성공 여부
 	 */
-	fun destroy(): Boolean {
-		val holder: InventoryEntity? = this.holder;
-		if(holder == null) return false;
-		return holder.removeItemFromInventory(this);
+	inline fun destroy(): Boolean {
+		return holder?.removeItemFromInventory(this) ?: false;
 		
 		// 나머지는 jvm이나 달빅이 알아서 gc 해주겠지.
 	}
