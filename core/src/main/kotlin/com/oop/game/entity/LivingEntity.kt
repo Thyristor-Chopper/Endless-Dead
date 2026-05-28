@@ -1,6 +1,7 @@
 package com.oop.game.entity;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.oop.game.world.World;
@@ -127,10 +128,10 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 			}
 	}
 	
-	override fun draw(batch: SpriteBatch) {
+	override fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
 		val showDamaged = (showDamagedIndicator && damagedIndicatorTimer > 0f);
 		if(showDamaged) batch.color = Color.RED;
-		super.draw(batch);
+		super.draw(batch, alternateTexture);
 		if(showDamaged) batch.color = Color.WHITE;
 	}
 }

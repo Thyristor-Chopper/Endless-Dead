@@ -51,8 +51,6 @@ import kotlin.math.sqrt;
  */
 abstract class Entity(override val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) : WorldObject, Updatable {
 	protected val texture: Texture? = texture?.let { Texture(Gdx.files.internal(it)) };
-	private val textureWidth: Int? = this.texture?.getWidth();
-	private val textureHeight: Int? = this.texture?.getHeight();
 	val position: Position
 		get() = Position(x, y);
 	open val bodyDamage = 0;  // 다른 개체에 닿았을 때 몸 대미지(아직 활용하는 개체 없음)
@@ -71,10 +69,15 @@ abstract class Entity(override val world: World, var x: Float, var y: Float, val
      * 이미지 로딩은 보통 객체의 init 또는 프로퍼티 초기화 시점에 한 번 한다:
      *   private val texture = Texture(Gdx.files.internal("player.png"))
      */
-    open fun draw(batch: SpriteBatch) {
-		texture?.let { batch.draw(it, x - width / 2f, y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, textureWidth!!, textureHeight!!, false, false) };
+    protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
+		val texture: Texture? = alternateTexture ?: this.texture;
+		texture?.let { batch.draw(it, x - width / 2f, y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false) };
 	}
-
+	
+	open fun draw(batch: SpriteBatch) {
+		draw(batch, null);
+	}
+	
     /**
      * 이 객체가 차지하는 사각형 영역 — 충돌 판정에 쓴다.
      *

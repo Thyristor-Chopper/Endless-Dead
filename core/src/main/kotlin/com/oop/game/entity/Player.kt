@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.oop.game.GameManager;
 import com.oop.game.GameState;
@@ -38,6 +40,7 @@ import kotlin.math.atan2;
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
 class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 57f, "player.bmp", 50), InventoryEntity by BasicInventoryEntity() {
+	private val textureWithGun = Texture(Gdx.files.internal("player_holding_gun.bmp"));
     private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
@@ -241,5 +244,15 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	
 	fun speedUp(amount: Float) {
 		speed += amount;
+	}
+	
+	override fun draw(batch: SpriteBatch) {
+		val texture = if(selectedItem is Gun) textureWithGun else this.texture;
+		super.draw(batch, texture);
+	}
+	
+	override fun dispose() {
+		super.dispose();
+		textureWithGun.dispose();
 	}
 }
