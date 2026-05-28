@@ -220,4 +220,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			killedZombieCount++;
 		}
 	}
+	
+	fun speedUp(amount: Float) {
+		speed += amount;
+	}
 }
