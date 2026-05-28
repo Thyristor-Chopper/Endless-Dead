@@ -71,9 +71,7 @@ abstract class Entity(override val world: World, var x: Float, var y: Float, val
      *   private val texture = Texture(Gdx.files.internal("player.png"))
      */
     open fun draw(batch: SpriteBatch) {
-		val texture = this.texture;
-		if(texture == null) return;
-		batch.draw(texture, x, y, width, height);
+		texture?.let { batch.draw(it, x, y, width, height) };
 	}
 
     /**
@@ -111,9 +109,7 @@ abstract class Entity(override val world: World, var x: Float, var y: Float, val
      * 텍스처를 쓰는 객체라면 override 해서 texture.dispose() 를 호출.
      */
     open fun dispose() {
-		val texture = this.texture;
-		if(texture == null) return;
-		texture.dispose();
+		texture?.dispose();
 	}
 	
 	/**
