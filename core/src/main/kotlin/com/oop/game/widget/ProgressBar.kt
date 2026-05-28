@@ -18,9 +18,11 @@ class ProgressBar(x: Float, y: Float, width: Float, height: Float = 15f, var val
 	override fun draw(batch: SpriteBatch) {
 		if(!visible) return;
 		barTexture.draw(batch, x, y, width, height);
-		batch.color = color;
-		indicatorTexture.draw(batch, x + BAR_HORIZONTAL_PADDING, y + BAR_VERTICAL_PADDING, (width - BAR_HORIZONTAL_PADDING * 2) * value, height - BAR_VERTICAL_PADDING * 2);
-		batch.color = Color.WHITE;
+		if(value > 0f) {
+			batch.color = color;
+			indicatorTexture.draw(batch, x + BAR_HORIZONTAL_PADDING, y + BAR_VERTICAL_PADDING, (width - BAR_HORIZONTAL_PADDING * 2) * value, height - BAR_VERTICAL_PADDING * 2);
+			batch.color = Color.WHITE;
+		}
 	}
 	
 	override fun dispose() {
