@@ -76,6 +76,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 				return true;
 			}
 			
+			// 눌린 상태로 마우스를 움직여도 회전되게 하기 위해 필요
 			override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean {
 				rotatePlayer(x, y);
 				return false;  // 진짜 '드래그'를 처리한 게 아니기 때문에 false 반환
