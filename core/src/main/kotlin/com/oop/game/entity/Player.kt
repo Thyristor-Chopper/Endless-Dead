@@ -157,15 +157,14 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
 			if(!(entity is Container)) continue;
 			if(collidesWith(entity))
 				if(entity.isEmpty) {
-					val currentHolding: Item? = selectedItem;
-					if(currentHolding != null) {
-						world.drawSubtitles("Put ${currentHolding.name} into the container");
-						entity.putItem(currentHolding, true);
-						removeItemFromInventory(currentHolding);
-						break;  // 하나씩만
-					} else {
-						world.drawSubtitles("Can't take any item; container is empty");
-					}
+					var putItem = false;
+					selectedItem?.let {
+						world.drawSubtitles("Put ${it.name} into the container");
+						entity.putItem(it, true);
+						removeItemFromInventory(it);
+						putItem = true;  // 하나씩만
+					} ?: world.drawSubtitles("Can't take any item; container is empty");
+					if(putItem) break;
 				} else {
 					val isPlayerItem = entity.isPlayerItem;
 					val item: Item? = entity.takeItem(this, true);
@@ -185,9 +184,10 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, Playe
         super.update(delta);
 		
 		// 아이템 사용
-		val holding: Item? = selectedItem;
-		if(holding != null && holding is Usable && (InputHandler.isButtonJustPressed(InputHandler.LEFT_MOUSE) || (holding.allowContinuousUse && InputHandler.isButtonPressed(InputHandler.LEFT_MOUSE))))
-			useItem(holding);
+		selectedItem?.let {
+			if(it is Usable && (InputHandler.isButtonJustPressed(InputHandler.LEFT_MOUSE) || (it.allowContinuousUse && InputHandler.isButtonPressed(InputHandler.LEFT_MOUSE))))
+				useItem(it);
+		};
 		
 		// 이동
 		val moved = updatePosition(delta);

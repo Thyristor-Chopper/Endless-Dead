@@ -20,12 +20,7 @@ interface InventoryEntity {
 	val selectedItemIndex: Int?
 		get() = selectedItemIndexes[this];
 	val selectedItem: Item?
-		get() {
-			val inventory = inventoryOf(this);
-			val index: Int? = selectedItemIndex;
-			if(index == null) return null;
-			return inventory[index];
-		};
+		get() = selectedItemIndex?.let { inventoryOf(this)[it] };
 	val inventoryItemCount: Int
 		get() = inventoryOf(this).size;
 	

@@ -22,7 +22,7 @@ abstract class Item(override val world: World, val id: String, val name: String)
 	/**
 	 * 같은 종류의 아이템인지를 비교한다.
 	 */
-	inline fun equals(other: Item): Boolean {
+	open fun equals(other: Item): Boolean {
 		return id == other.id;
 	}
 	
@@ -38,4 +38,9 @@ abstract class Item(override val world: World, val id: String, val name: String)
 		
 		// 나머지는 jvm이나 달빅이 알아서 gc 해주겠지.
 	}
+	
+	/**
+	 * 아이템의 문자열 표현
+	 */
+	override fun toString(): String = name;
 }

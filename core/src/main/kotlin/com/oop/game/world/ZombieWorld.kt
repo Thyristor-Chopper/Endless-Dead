@@ -338,34 +338,36 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 			);
 		
 		// 4) 들고 있는 아이템이 총인 경우 총의 ammo를 미터기로 표시
-		if(holding != null && holding is Gun) {
-			drawTextOnScreen(
-				text = Utils.progressBar(holding.ammo.toFloat() / holding.maxAmmo.toFloat(), 14),
-				x = game.screenWidth - 190f,
-				y = 20f,
-				color = Color.SKY,
-				scale = 1.0f,
-				width = 180f,
-				align = Align.right,
-				fixedWidthChars = Utils.PROGRESS_BAR_CHARACTERS
-			);
-		
+		player.selectedItem?.let {
+			if(it is Gun) {
+				drawTextOnScreen(
+					text = Utils.progressBar(it.ammo.toFloat() / it.maxAmmo.toFloat(), 14),
+					x = game.screenWidth - 190f,
+					y = 20f,
+					color = Color.SKY,
+					scale = 1.0f,
+					width = 180f,
+					align = Align.right,
+					fixedWidthChars = Utils.PROGRESS_BAR_CHARACTERS
+				);
+			
 		// 5) 총의 공격 쿨타임 표시
-			if(holding.fireInterval > 0.2f) {
-				val cooldown = holding.getRemainingCooldownPercentage();
-				if(cooldown > 0f)
-					drawTextOnScreen(
-						text = Utils.progressBar(cooldown, 5),
-						x = game.screenWidth - 340f,
-						y = 20f,
-						color = Color.SCARLET,
-						scale = 1.0f,
-						width = 180f,
-						align = Align.right,
-						fixedWidthChars = Utils.PROGRESS_BAR_CHARACTERS
-					);
+				if(it.fireInterval > 0.2f) {
+					val cooldown = it.getRemainingCooldownPercentage();
+					if(cooldown > 0f)
+						drawTextOnScreen(
+							text = Utils.progressBar(cooldown, 5),
+							x = game.screenWidth - 340f,
+							y = 20f,
+							color = Color.SCARLET,
+							scale = 1.0f,
+							width = 180f,
+							align = Align.right,
+							fixedWidthChars = Utils.PROGRESS_BAR_CHARACTERS
+						);
+				}
 			}
-		}
+		};
 		
 		// 6) 점수
 		drawTextOnScreen(
