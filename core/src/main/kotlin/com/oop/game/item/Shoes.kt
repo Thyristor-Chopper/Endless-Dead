@@ -14,7 +14,7 @@ class Shoes(world: World) : Item(world, "shoes", "Shoes"), Usable {
 	 * 신발을 사용하여 속도를 1만큼 올린다
 	 */
 	override fun use(): Boolean {
-		world.player.speed_up(50f);
+		world.player.speedUp(50f);
 		world.drawSubtitles("SPEED UP");
 		destroy();
 		return true;
