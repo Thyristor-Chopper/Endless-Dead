@@ -22,21 +22,11 @@ class BasicInventoryEntity : InventoryEntity {
 	override val isInventoryEmpty: Boolean
 		get() = inventory.isEmpty();
 	
-	/**
-	 * 인벤토리에 아이템 넣기
-	 *
-	 * @param item	추가할 아이템
-	 */
 	override fun addItemToInventory(item: Item, select: Boolean) {
 		inventory.add(item);
 		if(select) selectedItemIndex = inventory.size - 1;
 	}
 	
-	/**
-	 * 인벤토리에서 아이템 빼기
-	 *
-	 * @param index	아이템 위치
-	 */
 	override fun removeItemFromInventory(index: Int) {
 		val currentIndex: Int? = selectedItemIndex;
 		inventory[index].holder = null;
@@ -47,12 +37,6 @@ class BasicInventoryEntity : InventoryEntity {
 			selectPreviousItem();
 	}
 	
-	/**
-	 * 인벤토리에서 아이템 빼기
-	 *
-	 * @param 	item	제거할 아이템
-	 * @return 	성공 여부
-	 */
 	override fun removeItemFromInventory(item: Item): Boolean {
 		var found = false;
 		if(!inventory.isEmpty())
@@ -68,9 +52,6 @@ class BasicInventoryEntity : InventoryEntity {
 		return found;
 	}
 	
-	/**
-	 * 인벤토리의 다음 아이템 선택
-	 */
 	override fun selectNextItem() {
 		val index: Int? = selectedItemIndex;
 		if(inventory.isEmpty())
@@ -83,9 +64,6 @@ class BasicInventoryEntity : InventoryEntity {
 			selectedItemIndex = index + 1;
 	}
 	
-	/**
-	 * 인벤토리의 이전 아이템 선택
-	 */
 	override fun selectPreviousItem() {
 		val index: Int? = selectedItemIndex;
 		if(inventory.isEmpty())
@@ -98,11 +76,6 @@ class BasicInventoryEntity : InventoryEntity {
 			selectedItemIndex = index - 1;
 	}
 	
-	/**
-	 * 지정한 아이템을 갖고 있다면 선택한다.
-	 *
-	 * @return 성공 여부
-	 */
 	override fun selectItem(item: Item): Boolean {
 		val index = inventory.indexOfFirst({ it === item });
 		if(index == -1) return false;
@@ -110,21 +83,12 @@ class BasicInventoryEntity : InventoryEntity {
 		return true;
 	}
 	
-	/**
-	 * 지정한 인덱스의 아이템을 선택한다.
-	 */
 	override fun selectItem(index: Int) {
 		if(index < 0 || index >= inventory.size) throw IllegalArgumentException("index out of bounds");
 		selectedItemIndex = index;
 	}
 	
-	/**
-	 * 지정한 아이템이 있는지 확인
-	 */
 	override fun hasItem(item: Item): Boolean = item in inventory;
 	
-	/**
-	 * 인벤토리의 읽기용 사본을 가져온다.
-	 */
 	override fun getInventory(): List<Item> = inventory.toList();
 }
