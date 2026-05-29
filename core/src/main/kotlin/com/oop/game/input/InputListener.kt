@@ -1,4 +1,4 @@
-package com.oop.game;
+package com.oop.game.input;
 
 interface InputListener {
 	fun onScroll(amountX: Float, amountY: Float): Boolean = false;

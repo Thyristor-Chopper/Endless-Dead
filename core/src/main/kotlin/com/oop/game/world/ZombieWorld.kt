@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Align;
 import com.oop.game.Constants;
 import com.oop.game.GameManager;
 import com.oop.game.GameState;
-import com.oop.game.Input;
+import com.oop.game.input.Input;
 import com.oop.game.ZombieGame;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
@@ -302,7 +302,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
             Gdx.app.exit();
 
         // R 키나 스페이스바를 누르면 다시 시작
-        if(Input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.R) || Input.isKeyJustPressed(Input.SPACE)) {
+        if(Input.isKeyJustPressed(Input.R) || Input.isKeyJustPressed(Input.SPACE)) {
 			Gdx.graphics.setForegroundFPS(Constants.FPS);
             GameManager.state = GameState.IN_PLAY;  // 상태를 다시 플레이로 되돌리고
             game.setScreen(ZombieWorld(game));  // 월드를 아예 새로 파서 화면을 덮어씌움

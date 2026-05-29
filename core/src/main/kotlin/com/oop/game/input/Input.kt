@@ -1,7 +1,11 @@
-package com.oop.game;
+package com.oop.game.input;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input as GdxInput;
+import com.badlogic.gdx.InputProcessor;
+
+import com.oop.game.world.World;
 
 /**
  * 키보드 입력을 편리하게 읽는 도우미.
@@ -27,6 +31,49 @@ import com.badlogic.gdx.Input as GdxInput;
  *  (파이썬이라면 모듈 수준 함수/변수와 비슷한 역할)
  */
 object Input {
+	private var game: Game? = null;
+	// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
+	private val inputProcessor = object : InputProcessor {
+		override fun scrolled(amountX: Float, amountY: Float): Boolean = notifyInputListeners({ it.onScroll(amountX, amountY) });
+		
+		override fun mouseMoved(x: Int, y: Int): Boolean = notifyInputListeners({ it.onMouseMove(x, y) });
+		
+		override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = notifyInputListeners({ it.onTouchDown(x, y, pointer, button) });
+		
+		override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = notifyInputListeners({ it.onTouchUp(x, y, pointer, button) });
+		
+		override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean = notifyInputListeners({ it.onTouchDrag(x, y, pointer) });
+		
+		override fun touchCancelled(x: Int, y: Int, pointer: Int, button: Int): Boolean = notifyInputListeners({ it.onTouchCancel(x, y, pointer, button) });
+		
+		override fun keyDown(code: Int): Boolean = notifyInputListeners({ it.onKeyDown(code) });
+		
+		override fun keyUp(code: Int): Boolean = notifyInputListeners({ it.onKeyUp(code) });
+		
+		override fun keyTyped(char: Char): Boolean = notifyInputListeners({ it.onKeyType(char) });
+	};
+	
+	internal fun setGameInputProcessor(game: Game) {
+		this.game = game;
+		Gdx.input.setInputProcessor(inputProcessor);
+	}
+	
+	private fun notifyInputListeners(callback: (InputListener) -> Boolean): Boolean {
+		val game: Game? = this.game;
+		if(game == null) return false;
+		
+		var processed = false;
+		val screen = game.getScreen();
+		if(screen is InputListener)
+			processed = processed || callback(screen);
+		if(screen is World)
+			screen.forEachObjects {
+				if(it is InputListener)
+					processed = processed || callback(it);
+			};
+		return processed;
+	}
+
     /**
      * 키가 현재 '눌려 있는 중' 인지 — 꾹 누르고 있으면 매 프레임 true.
      *   이동(← → ↑ ↓) 처럼 '누르는 동안 계속' 일어나야 할 동작에 사용.

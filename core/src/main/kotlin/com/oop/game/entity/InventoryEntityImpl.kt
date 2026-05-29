@@ -2,7 +2,7 @@ package com.oop.game.entity;
 
 import com.oop.game.item.Item;
 
-class BasicInventoryEntity : InventoryEntity {
+class InventoryEntityImpl : InventoryEntity {
 	private val inventory = mutableListOf<Item>();
 	override val selectedItem: Item?
 		get() = selectedItemIndex?.let { inventory[it] };
