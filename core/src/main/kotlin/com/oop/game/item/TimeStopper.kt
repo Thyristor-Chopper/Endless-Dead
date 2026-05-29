@@ -9,7 +9,7 @@ import com.oop.game.world.World;
  */
 
 class TimeStopper(world: World) : Item(world, "timestopper", "Timestopper"), Usable {
-    override val allowContinuousUse = false; //
+    override val allowContinuousUse = false;
 
     /**
      * 타이머를 사용해서 시간을 3초 멈춘다
