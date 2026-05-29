@@ -126,7 +126,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 	}
 	
 	fun getWidget(id: String): Widget {
-		if(!(id in widgets)) throw IllegalArgumentException("invalid widget");
+		if(!(id in widgets)) throw IllegalArgumentException("invalid widget ID");
 		return widgets[id]!!;
 	}
 
