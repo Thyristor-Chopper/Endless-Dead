@@ -33,6 +33,8 @@ import com.oop.game.world.World;
 object Input {
 	private var scrolledUp = false;
 	private var scrolledDown = false;
+	private var keyDown = false;
+	private var keyJustDown = false;
 
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
@@ -58,9 +60,18 @@ object Input {
 			
 			override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
 			
-			override fun keyDown(code: Int): Boolean = false;
+			override fun keyDown(code: Int): Boolean {
+				keyJustDown = true;
+				keyDown = true;
+				Gdx.app.postRunnable { keyJustDown = false };
+				return true;
+			}
 			
-			override fun keyUp(code: Int): Boolean = false;
+			override fun keyUp(code: Int): Boolean {
+				keyDown = false;
+				keyJustDown = false;
+				return true;
+			}
 			
 			override fun touchCancelled(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
 			
@@ -72,35 +83,31 @@ object Input {
      * 키가 현재 '눌려 있는 중' 인지 — 꾹 누르고 있으면 매 프레임 true.
      *   이동(← → ↑ ↓) 처럼 '누르는 동안 계속' 일어나야 할 동작에 사용.
      */
-    inline fun isKeyPressed(key: Int): Boolean {
-        return Gdx.input.isKeyPressed(key);
-    }
+    inline fun isKeyPressed(key: Int): Boolean = Gdx.input.isKeyPressed(key);
 
     /**
      * 키가 '이번 프레임에 막 눌렸는지' — 꾹 눌러도 첫 프레임에만 true.
      *   총알 발사, 메뉴 선택처럼 '한 번만' 실행되어야 할 동작에 사용.
      */
-    inline fun isKeyJustPressed(key: Int): Boolean {
-        return Gdx.input.isKeyJustPressed(key);
-    }
+    inline fun isKeyJustPressed(key: Int): Boolean = Gdx.input.isKeyJustPressed(key);
+	
+	fun isAnyKeyPressed(): Boolean = keyDown;
+	
+	fun isAnyKeyJustPressed(): Boolean = keyJustDown;
 	
 	/**
      * 지정한 마우스 단추가 눌려 있는지 확인
 	 *
 	 * @param button	단추의 종류
      */
-    inline fun isButtonPressed(button: Int): Boolean {
-        return Gdx.input.isButtonPressed(button);
-    }
+    inline fun isButtonPressed(button: Int): Boolean = Gdx.input.isButtonPressed(button);
 
 	/**
      * 지정한 마우스 단추를 막 눌렀는지 확인
 	 *
 	 * @param button	단추의 종류
      */
-    inline fun isButtonJustPressed(button: Int): Boolean {
-        return Gdx.input.isButtonJustPressed(button);
-    }
+    inline fun isButtonJustPressed(button: Int): Boolean = Gdx.input.isButtonJustPressed(button);
 	
     fun isScrolledDown(): Boolean = scrolledDown;
 	

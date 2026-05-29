@@ -214,48 +214,13 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 		updateProgressBars();
 
         when(GameManager.state) {
-			GameState.TITLE     -> updateTitle(delta)
             GameState.IN_PLAY	-> updateInPlay(delta);
             GameState.PAUSED    -> updatePaused();
             GameState.GAME_OVER	-> updateGameOver();
+			else -> {}
         }
     }
-	private val titleTexture = Texture(Gdx.files.internal("endless dead TITLE.png"))
-	private var titleBlinkTimer = 0f
-	private fun updateTitle(delta: Float) {
-		titleBlinkTimer += delta
-		fun anyKeyPressed(): Boolean {
-			return Gdx.input.isButtonPressed(Input.LEFT_MOUSE)
-		}
-		if(anyKeyPressed()) {
-			GameManager.state = GameState.IN_PLAY //타이틀 화면 설정
-		}
-	}
-	private fun drawTitleMessage() {
-		val titleWidth = game.screenWidth * 0.75f
-		val titleHeight = titleWidth / 3f
-		val titleX = (game.screenWidth - titleWidth) / 2f
-		val titleY = game.screenHeight / 2f + 40f
 
-		batch.begin()
-		batch.draw(titleTexture, titleX, titleY, titleWidth, titleHeight)
-		batch.end()
-
-		val showText = (titleBlinkTimer % 1f) < 0.5f
-
-		if(showText) {
-			drawTextOnScreen(
-				text = "Press any key to start",
-				x = 0f,
-				y = game.screenHeight / 2f - 30f,
-				color = Color.WHITE,
-				scale = 1f,
-				width = game.screenWidth.toFloat(),
-				align = Align.center
-			)
-		}
-	}
-	
 	private fun togglePause() {
 		// P키를 누르면 IN_PLAY <-> PAUSED 상태 토글!
         if(Input.isKeyJustPressed(Input.P) || Input.isKeyJustPressed(Input.ESCAPE)) {
@@ -423,12 +388,12 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 
         // ── 상태별로 그리는 것이 다름 ──
         when(GameManager.state) {
-			GameState.TITLE     -> drawTitleMessage()
             GameState.IN_PLAY 	-> {
                 // 플레이 중에는 추가로 그릴 것 없음
             }
             GameState.PAUSED    -> drawPausedMessage(); // 💡 [추가] 일시정지 화면 그리기
             GameState.GAME_OVER	-> drawGameOverMessage();
+			else -> {}
         }
     }
 	
@@ -464,7 +429,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
     private fun drawHud() {
         // 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
         //    카메라가 움직여도 항상 이 위치에 있다.
-        drawTextOnScreen(
+        drawText(
             text = "HP: ${player.hp}",
             x = 10f,
             y = game.screenHeight - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
@@ -474,7 +439,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 		
 		// 현재 플레이어가 들고 있는 아이템
 		player.selectedItem?.let {
-			drawTextOnScreen(
+			drawText(
 				text = "${it.name} [${player.selectedItemIndex!! + 1}/${player.inventoryItemCount}]",
 				x = 10f,
 				y = 20f,
@@ -484,7 +449,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 		};
 		
 		// 점수
-		drawTextOnScreen(
+		drawText(
             text = "Score: ${ScoreManager.score}",
             x = game.screenWidth - 130f,
             y = game.screenHeight - 10f,
@@ -499,7 +464,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	 * 게임 오버 시 화면 중앙에 띄우는 안내 메시지.
 	 */
     private inline fun drawGameOverMessage() {
-        drawTextOnScreen(
+        drawText(
             text = "YOU DIED!",
             x = 0f,
             y = game.screenHeight / 2f + 40f,
@@ -508,7 +473,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 			width = game.screenWidth.toFloat(),
 			align = Align.center
         );
-        drawTextOnScreen(
+        drawText(
             text = "Press <Esc> to exit or press <R> or <Space> for a new game",
             x = 0f,
             y = game.screenHeight / 2f + 10f,
@@ -519,42 +484,42 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
         );
 		
 		// 통계
-        drawTextOnScreen(
+        drawText(
             text = "Opened containers: ${player.openedContainerCount}",
             x = game.screenWidth / 2f - 70f,
             y = game.screenHeight / 2f - 20f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
-        drawTextOnScreen(
+        drawText(
             text = "Killed zombies: ${player.killedZombieCount}",
             x = game.screenWidth / 2f - 70f,
             y = game.screenHeight / 2f - 35f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
-        drawTextOnScreen(
+        drawText(
             text = "Fired: ${player.firedBullets}",
             x = game.screenWidth / 2f - 70f,
             y = game.screenHeight / 2f - 50f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
-        drawTextOnScreen(
+        drawText(
             text = "Survived duration: ${Utils.parseSeconds(player.survivedDuration, "m", "s")}",
             x = game.screenWidth / 2f - 70f,
             y = game.screenHeight / 2f - 65f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
-        drawTextOnScreen(
+        drawText(
             text = "Total damage: ${player.totalDamage}",
             x = game.screenWidth / 2f - 70f,
             y = game.screenHeight / 2f - 80f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
-        drawTextOnScreen(
+        drawText(
             text = "Score: ${ScoreManager.score}",
             x = game.screenWidth / 2f - 70f,
             y = game.screenHeight / 2f - 95f,
@@ -564,7 +529,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
     }
 	
     private inline fun drawPausedMessage() {
-        drawTextOnScreen(
+        drawText(
             text = "PAUSED",
             x = 0f,
             y = game.screenHeight / 2f + 20f,
@@ -573,7 +538,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 			width = game.screenWidth.toFloat(),
 			align = Align.center
         );
-        drawTextOnScreen(
+        drawText(
             text = "Press <P> or <Esc> to rdwesume",
             x = 0f,
             y = game.screenHeight / 2f - 20f,
@@ -590,7 +555,6 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
     override fun dispose() {
         super.dispose();
         tileTexture.dispose();
-		titleTexture.dispose()
 		solidColor.dispose();
 		for(timer in timers)
 			timer.unregister();

@@ -1,10 +1,8 @@
 package com.oop.game.world;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
@@ -19,6 +17,7 @@ import com.oop.game.entity.LivingEntity;
 import com.oop.game.entity.Player;
 import com.oop.game.entity.container.Container;
 import com.oop.game.item.Item;
+import com.oop.game.screen.Screen;
 import com.oop.game.widget.Widget;
 
 /**
@@ -62,14 +61,8 @@ import com.oop.game.widget.Widget;
  * @param width        월드 전체 너비 (기본값: 화면과 동일 = 스크롤 없음)
  * @param height       월드 전체 높이
  */
-abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : ScreenAdapter(), Updatable {
+abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : Screen(game), Updatable {
 	abstract val player: Player;
-    // OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
-    val camera = OrthographicCamera();
-    // SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
-    //   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
-    val batch = SpriteBatch();
-    val font = BitmapFont();
     // 카메라 오프셋 — 월드의 어느 지점이 화면 좌하단에 오는지.
     //   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
     var offsetX: Float = width / 2f - game.screenWidth / 2f;
@@ -83,16 +76,6 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
-
-    init {
-        setCameraCenter();
-    }
-	
-	private inline fun setCameraCenter() {
-        // 카메라를 '왼쪽 아래 = (0,0), 오른쪽 위 = (screenWidth, screenHeight)' 로 설정.
-        //   false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
-		camera.setToOrtho(false, game.screenWidth.toFloat(), game.screenHeight.toFloat());
-	}
 
     // ────────────────────────────────────────────────────────
     //  객체 관리
@@ -147,9 +130,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 	 * 크기 조절 시 호출된다.
 	 */
 	override fun resize(width: Int, height: Int) {
-		game.screenWidth = width;
-		game.screenHeight = height;
-		setCameraCenter();
+		super.resize(width, height);
 		updateCameraOffset();
 	}
 	
@@ -193,7 +174,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
      * TODO (9주차 이후): 고차함수 forEach 로
      *   gameObjects.forEach { it.update(delta) } 처럼 줄일 수 있다.
      */
-    protected fun updateAllObjects(delta: Float) {
+    private fun updateAllObjects(delta: Float) {
 		forEachObjects {
 			if(it is Updatable) {
 				if(!(it is Entity) || (it is Entity && (!(this is Freezable) || !this.isFrozen || it.canUpdateWhileFrozen)))
@@ -214,7 +195,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
      * TODO (9주차 이후): 컬렉션 함수 removeAll 로
      *   gameObjects.removeAll { !it.isAlive() } 한 줄로 대체 가능.
      */
-    protected fun removeDead() {
+    private fun removeDead() {
 		val toRemove = mutableListOf<Entity>();
         for(entity in entities)
             if(entity is LivingEntity && !entity.isAlive)
@@ -252,18 +233,9 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
      * HUD/텍스트를 그리려면 render(delta) 도 override 해서 super 호출 뒤에 그린다.
      */
     override fun render(delta: Float) {
-        // 1) 이전 프레임의 잔상 지우기 (검은색으로 채움)
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        super.render(delta);
 
-        // 2) 카메라 상태 갱신 후, batch 에게 '이 카메라의 좌표계로 그려라' 알려줌
-        camera.update();
-        batch.projectionMatrix = camera.combined;
-
-        // 3) 게임 로직 업데이트
-        update(delta);
-
-        // 5) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
+        // 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
         batch.begin();
         drawBackground(batch);
         drawBackgroundOverlay();
@@ -271,7 +243,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
         drawAllWidgets();
 		// 자막이 있으면 표시
 		if(subtitlesTimer > 0f) subtitlesMessage?.let {
-			drawTextOnScreen(
+			drawText(
 				text = it,
 				x = 0f,
 				y = 20f,
@@ -348,39 +320,6 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
     // ────────────────────────────────────────────────────────
 
     /**
-     * 화면(카메라) 좌표에 텍스트 그리기.
-     *
-     * 카메라가 어디로 움직이든 화면상 같은 위치에 고정된다.
-     *   → 점수, HP, 남은 시간 같은 UI 에 적합.
-     *
-     * 주의: 화면 y 축은 위쪽이 크다. 화면 '위쪽'에 글자를 쓰려면 y = screenHeight-10 처럼.
-     */
-    fun drawTextOnScreen(
-        text: String,
-        x: Float,
-        y: Float,
-        color: Color = Color.WHITE,
-        scale: Float = 1f,
-		width: Float? = null,  // 오른쪽이나 가운데 정렬 시 필요
-		align: Int? = null,  // 글자 정렬(없으면 왼쪽 정렬)
-		fixedWidthChars: String = "",  // null이 아닌 이유는 실제로 빈 문자열이면 고정폭이 없다는 뜻
-		skipBatch: Boolean = false
-    ) {
-        if(!skipBatch) batch.projectionMatrix = camera.combined;
-		font.setFixedWidthGlyphs(fixedWidthChars);
-        font.color = color;
-        font.data.setScale(scale);
-        if(!skipBatch) batch.begin();
-		val boxWidth: Float? = width;
-		val textAlign: Int? = align;
-		if(boxWidth != null && textAlign != null)
-			font.draw(batch, text, x, y, boxWidth, textAlign, false);
-		else
-			font.draw(batch, text, x, y);
-        if(!skipBatch) batch.end();
-    }
-
-    /**
      * 월드 좌표에 텍스트 그리기.
      *
      * 월드의 특정 지점에 고정되므로, 카메라를 움직이면 텍스트도 따라 움직인다.
@@ -402,7 +341,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
     ) {
         val screenX = x - offsetX;
         val screenY = y - offsetY;
-        drawTextOnScreen(text, screenX, screenY, color, scale, width, align, fixedWidthChars, skipBatch);
+        drawText(text, screenX, screenY, color, scale, width, align, fixedWidthChars, skipBatch);
     }
 	
 	/**
@@ -427,8 +366,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
      * GPU 메모리에 올라간 것들은 수동으로 dispose 해줘야 한다.
      */
     override fun dispose() {
-        batch.dispose();
-        font.dispose();
+        super.dispose();
         for(entity in entities)
             entity.dispose();
 		entities.clear();

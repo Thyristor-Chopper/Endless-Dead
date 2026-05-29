@@ -3,7 +3,7 @@ package com.oop.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 
-import com.oop.game.world.ZombieWorld;
+import com.oop.game.screen.Title;
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -34,7 +34,7 @@ import com.oop.game.world.ZombieWorld;
  */
 class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
 	// 게임 제목
-	val title = "좀비 파밍";
+	val title = "Endless Dead";
     // 화면(창) 크기 — DesktopLauncher 가 창 크기 설정에도 이 값을 읽어간다.
     //   public(기본)으로 둔 이유: 외부(DesktopLauncher)에서 접근해야 하므로.
 	// 창 크기 조절 허용을 위해 var
@@ -62,8 +62,7 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
      *  GameWorld 가 LibGDX 의 Screen 인터페이스를 상속하므로 setScreen 인자로 넘길 수 있다.
      */
     override fun create() {
-        val zombieWorld = ZombieWorld(this);
-        setScreen(zombieWorld);  // 부모 Game 이 제공하는 메서드
+        setScreen(Title(this));  // 부모 Game 이 제공하는 메서드
     }
 	
 	override fun render() {
