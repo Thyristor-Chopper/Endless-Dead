@@ -173,6 +173,12 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
      *  상태 변화·입력은 update 가 책임진다.)
      */
     override fun update(delta: Float) {
+
+       // P키를 누르면 IN_PLAY <-> PAUSED 상태 토글!
+        if(InputHandler.isKeyJustPressed(com.badlogic.gdx.Input.Keys.P)) {
+            if(GameManager.state == GameState.IN_PLAY) GameManager.state = GameState.PAUSED;
+            else if(GameManager.state == GameState.PAUSED) GameManager.state = GameState.IN_PLAY;
+        }
 		// 제목 표시줄에 정보 표시
 		updateTitleBarInfo();
 		
@@ -181,8 +187,12 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		
         when(GameManager.state) {
             GameState.IN_PLAY	-> updateInPlay(delta);
+            GameState.PAUSED    -> updatePaused();
             GameState.GAME_OVER	-> updateGameOver();
         }
+    }private inline fun updatePaused() {
+        // 객체 업데이트(super.update)나 타이머(spawner.tick)를 호출하지 않음.
+        //  세상이 그대로 멈춰있는 상태가 됨
     }
 	
 	private inline fun updateProgressBars() {
@@ -264,6 +274,13 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
         //   isKeyJustPressed 로 한 이유: 누르고 있는 동안 매 프레임 exit 호출되지 않게.
         if(InputHandler.isKeyJustPressed(InputHandler.ESCAPE))
             Gdx.app.exit();
+
+        //  R 키나 스페이스바를 누르면 다시 시작
+        if(InputHandler.isKeyJustPressed(com.badlogic.gdx.Input.Keys.R) || InputHandler.isKeyJustPressed(com.badlogic.gdx.Input.Keys.SPACE)) {
+
+            GameManager.state = GameState.IN_PLAY; // 상태를 다시 플레이로 되돌리고
+            game.screen = ZombieWorld(game);       // 월드를 아예 새로 파서 화면을 덮어씌움
+        }
     }
 
     /**
@@ -323,6 +340,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
             GameState.IN_PLAY 	-> {
                 // 플레이 중에는 추가로 그릴 것 없음
             }
+            GameState.PAUSED    -> drawPauseOverlay(); // 💡 [추가] 일시정지 화면 그리기
             GameState.GAME_OVER	-> drawGameOverOverlay();
         }
     }
@@ -436,7 +454,22 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
             scale = 1.0f
         );
     }
-
+    private fun drawPauseOverlay() {
+        drawTextOnScreen(
+            text = "PAUSED",
+            x = game.screenWidth / 2f - 70f,
+            y = game.screenHeight / 2f + 20f,
+            color = Color.YELLOW,
+            scale = 2.0f
+        );
+        drawTextOnScreen(
+            text = "Press 'P' to Resume",
+            x = game.screenWidth / 2f - 90f,
+            y = game.screenHeight / 2f - 20f,
+            color = Color.WHITE,
+            scale = 1.0f
+        );
+    }
     /**
 	 * 화면이 닫힐 때 — 부모도 dispose 한 뒤 우리만의 자원도 해제.
 	 */
