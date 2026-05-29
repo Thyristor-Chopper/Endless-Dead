@@ -346,7 +346,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
      *   tile.png 가 흰색이라 어떤 색이든 그대로 적용된다.
      *   끝에 다시 흰색으로 되돌려두지 않으면 그 다음 그리는 것까지 영향을 받으니 주의.
      */
-    override fun drawBackground(batch: SpriteBatch) {
+    override fun drawBackground() {
         // 현재 카메라 시작점이 속한 타일 인덱스 (여유분으로 -1)
         val startCol = floor(offsetX / tileSize).toInt() - 1;
         val startRow = floor(offsetY / tileSize).toInt() - 1;
@@ -380,11 +380,9 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
     override fun render(delta: Float) {
         super.render(delta);
 
-        // ── 항상 보이는 UI ──
-        drawHud();
-		
 		// 일시 정지 시 어둡게 변경
-		drawFrozenOverlay();
+		if(GameManager.state != GameState.IN_PLAY)
+			drawFrozenOverlay();
 
         // ── 상태별로 그리는 것이 다름 ──
         when(GameManager.state) {
@@ -397,9 +395,14 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
         }
     }
 	
-	private inline fun drawFrozenOverlay() {
-		if(GameManager.state == GameState.IN_PLAY) return;
+	override fun drawElements(delta: Float) {
+		super.drawElements(delta);
 		
+        // ── 항상 보이는 UI ──
+        drawHud();
+	}
+	
+	private inline fun drawFrozenOverlay() {
 		batch.begin();
 		batch.color = frozenOverlay;
 		batch.draw(solidColor, 0f, 0f, game.screenWidth.toFloat(), game.screenHeight.toFloat());
@@ -426,7 +429,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
     /**
 	 * 항상 화면에 표시되는 정보 — HP 표시와 월드 중앙 표지.
 	 */
-    private fun drawHud() {
+    private inline fun drawHud() {
         // 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
         //    카메라가 움직여도 항상 이 위치에 있다.
         drawText(
@@ -434,7 +437,8 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
             x = 10f,
             y = game.screenHeight - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
             color = Color.YELLOW,
-            scale = 1.2f
+            scale = 1.2f,
+			skipBatch = true
         );
 		
 		// 현재 플레이어가 들고 있는 아이템
@@ -444,7 +448,8 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 				x = 10f,
 				y = 20f,
 				color = Color(1.0f, 1.0f, 0.75f, 1.0f),
-				scale = 1.0f
+				scale = 1.0f,
+				skipBatch = true
 			);
 		};
 		
@@ -456,7 +461,8 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
             color = Color.LIME,
             scale = 1.2f,
 			width = 120f,
-			align = Align.right
+			align = Align.right,
+			skipBatch = true
         );
     }
 
@@ -464,6 +470,8 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	 * 게임 오버 시 화면 중앙에 띄우는 안내 메시지.
 	 */
     private inline fun drawGameOverMessage() {
+		batch.begin();
+		
         drawText(
             text = "YOU DIED!",
             x = 0f,
@@ -471,7 +479,8 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
             color = Color.RED,
             scale = 2.0f,
 			width = game.screenWidth.toFloat(),
-			align = Align.center
+			align = Align.center,
+			skipBatch = true
         );
         drawText(
             text = "Press <Esc> to exit or press <R> or <Space> for a new game",
@@ -480,7 +489,8 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
             color = Color.WHITE,
             scale = 1.0f,
 			width = game.screenWidth.toFloat(),
-			align = Align.center
+			align = Align.center,
+			skipBatch = true
         );
 		
 		// 통계
@@ -489,46 +499,56 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
             x = game.screenWidth / 2f - 70f,
             y = game.screenHeight / 2f - 20f,
             color = Color.LIGHT_GRAY,
-            scale = 1.0f
+            scale = 1.0f,
+			skipBatch = true
         );
         drawText(
             text = "Killed zombies: ${player.killedZombieCount}",
             x = game.screenWidth / 2f - 70f,
             y = game.screenHeight / 2f - 35f,
             color = Color.LIGHT_GRAY,
-            scale = 1.0f
+            scale = 1.0f,
+			skipBatch = true
         );
         drawText(
             text = "Fired: ${player.firedBullets}",
             x = game.screenWidth / 2f - 70f,
             y = game.screenHeight / 2f - 50f,
             color = Color.LIGHT_GRAY,
-            scale = 1.0f
+            scale = 1.0f,
+			skipBatch = true
         );
         drawText(
             text = "Survived duration: ${Utils.parseSeconds(player.survivedDuration, "m", "s")}",
             x = game.screenWidth / 2f - 70f,
             y = game.screenHeight / 2f - 65f,
             color = Color.LIGHT_GRAY,
-            scale = 1.0f
+            scale = 1.0f,
+			skipBatch = true
         );
         drawText(
             text = "Total damage: ${player.totalDamage}",
             x = game.screenWidth / 2f - 70f,
             y = game.screenHeight / 2f - 80f,
             color = Color.LIGHT_GRAY,
-            scale = 1.0f
+            scale = 1.0f,
+			skipBatch = true
         );
         drawText(
             text = "Score: ${ScoreManager.score}",
             x = game.screenWidth / 2f - 70f,
             y = game.screenHeight / 2f - 95f,
             color = Color.LIGHT_GRAY,
-            scale = 1.0f
+            scale = 1.0f,
+			skipBatch = true
         );
+		
+		batch.end();
     }
 	
     private inline fun drawPausedMessage() {
+		batch.begin();
+		
         drawText(
             text = "PAUSED",
             x = 0f,
@@ -536,7 +556,8 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
             color = Color.YELLOW,
             scale = 2.0f,
 			width = game.screenWidth.toFloat(),
-			align = Align.center
+			align = Align.center,
+			skipBatch = true
         );
         drawText(
             text = "Press <P> or <Esc> to rdwesume",
@@ -545,8 +566,11 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
             color = Color.WHITE,
             scale = 1.0f,
 			width = game.screenWidth.toFloat(),
-			align = Align.center
+			align = Align.center,
+			skipBatch = true
         );
+		
+		batch.end();
     }
 	
     /**

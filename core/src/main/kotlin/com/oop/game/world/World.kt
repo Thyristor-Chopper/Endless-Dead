@@ -18,7 +18,6 @@ import com.oop.game.entity.Player;
 import com.oop.game.entity.container.Container;
 import com.oop.game.item.Item;
 import com.oop.game.screen.Screen;
-import com.oop.game.widget.Widget;
 
 /**
  * 게임 한 장면 = '월드 하나' 의 추상 기본 클래스.
@@ -72,7 +71,6 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. add(), remove() 라는 공식 창구만 허용.
     //   (5주차에서 배운 캡슐화의 실제 사례)
     private val entities = mutableListOf<Entity>();
-    private val widgets = mutableMapOf<String, Widget>();
 	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
@@ -95,23 +93,6 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
         entities.remove(entity);
 		entity.dispose();
     }
-	
-	fun addWidget(id: String, widget: Widget) {
-		widgets[id] = widget;
-	}
-	
-	fun removeWidget(id: String): Boolean {
-		val widget: Widget? = widgets[id];
-		if(widget == null) return false;
-		widgets.remove(id);
-		widget.dispose();
-		return true;
-	}
-	
-	fun getWidget(id: String): Widget {
-		if(!(id in widgets)) throw IllegalArgumentException("invalid widget ID");
-		return widgets[id]!!;
-	}
 
     /**
      * 현재 등록된 객체 목록의 '읽기용 복사본'.
@@ -121,10 +102,6 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
      *   복사본을 줘서 '훔쳐보기만 하고 건드리진 못하게' 한다.
      */
     fun getEntities(): List<Entity> = entities.toList();
-
-    // ────────────────────────────────────────────────────────
-    //  매 프레임 로직
-    // ────────────────────────────────────────────────────────
 	
 	/**
 	 * 크기 조절 시 호출된다.
@@ -206,16 +183,6 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 		}
     }
 
-    /**
-     * 매 프레임 게임 로직 — 서브클래스가 override 해서 자기 게임 로직을 넣는 곳.
-     *
-     * 기본 구현은 가장 단순한 '갱신 → 정리' 시나리오를 보여준다:
-     *   ① updateAllObjects(delta) — 각 객체가 자기 위치 갱신
-     *   ② removeDead()            — isAlive=false 인 객체 제거
-     *
-     * 객체 간 상호작용(충돌·점수·생사 결정) 이 있는 게임이면 override 해서
-     * 위 두 호출 사이에 그 로직을 끼워 넣는다 (ExampleWorld 참고).
-     */
     override fun update(delta: Float) {
 		updateAllObjects(delta);
 		removeDead();
@@ -225,22 +192,9 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
     //  매 프레임 그리기
     // ────────────────────────────────────────────────────────
 
-    /**
-     * LibGDX 가 매 프레임 자동으로 호출.
-     *   기본 흐름: 화면 지우기 → 로직 업데이트 → 배경 → 객체.
-     *
-     * 서브클래스는 보통 update(delta) 만 override 한다.
-     * HUD/텍스트를 그리려면 render(delta) 도 override 해서 super 호출 뒤에 그린다.
-     */
-    override fun render(delta: Float) {
-        super.render(delta);
-
-        // 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
-        batch.begin();
-        drawBackground(batch);
+	override fun drawElements(delta: Float) {
         drawBackgroundOverlay();
-        drawAllObjects();
-        drawAllWidgets();
+        drawEntities();
 		// 자막이 있으면 표시
 		if(subtitlesTimer > 0f) subtitlesMessage?.let {
 			drawText(
@@ -255,30 +209,12 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 			);
 			subtitlesTimer -= delta;
 		};
-        batch.end();
-    }
+	}
 	
 	/**
 	 * 월드 중심 등 오버레이를 그리는 자리
 	 */
 	protected open fun drawBackgroundOverlay() {}
-
-    /**
-     * 배경을 그리는 자리 — 모든 서브클래스가 반드시 구현해야 한다.
-     *
-     * 'abstract' 인 이유:
-     *   기본 동작('아무것도 안 함') 이 의미 있지 않다. 게임마다 배경은 다르고,
-     *   '배경이 없다' 는 결정도 명시적으로 내려야 한다고 본다. 그래서 강제 구현.
-     *   (검은 배경을 원하면 그냥 비어있는 함수로 override 하면 됨)
-     *
-     *   참고: update() 는 abstract 가 아닌 open 이다 — 거기엔 쓸 만한 default 가
-     *   존재하기 때문. 'default 가 의미 있는가?' 가 abstract / open 을 가르는 기준.
-     *   (7주차 강의 포인트)
-     *
-     * @param batch 이미 begin() 된 SpriteBatch — 여기에 batch.draw(texture, ...) 로 그린다.
-     *              begin/end 를 또 호출하면 안 된다.
-     */
-    protected abstract fun drawBackground(batch: SpriteBatch);
 
     /**
      * 등록된 모든 객체를 그린다 — 카메라 오프셋을 반영해서.
@@ -289,23 +225,17 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
      * 이렇게 해야 서브클래스의 draw() 는 '자기 위치에 그냥 그려라' 만 구현하면 되고,
      *   카메라가 움직이든 말든 신경 쓸 필요가 없다.
      */
-    private fun drawAllObjects() {
-        for(obj in entities) {
-            val originalX = obj.x;
-            val originalY = obj.y;
-            obj.x -= offsetX;
-            obj.y -= offsetY;
-            obj.draw(batch);
-            obj.x = originalX;
-            obj.y = originalY;
+    private inline fun drawEntities() {
+        for(entity in entities) {
+            val originalX = entity.x;
+            val originalY = entity.y;
+            entity.x -= offsetX;
+            entity.y -= offsetY;
+            entity.draw(batch);
+            entity.x = originalX;
+            entity.y = originalY;
         }
     }
-	
-	private fun drawAllWidgets() {
-		for(widget in widgets.values)
-			if(widget.visible)
-				widget.draw(batch);
-	}
 	
 	/**
 	 * 플레이어 위치에 따라 카메라 위치 변경
@@ -357,21 +287,10 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 		subtitlesColor = color;
 	}
 
-    // ────────────────────────────────────────────────────────
-    //  자원 정리
-    // ────────────────────────────────────────────────────────
-
-    /**
-     * LibGDX 가 화면을 바꾸거나 앱을 종료할 때 자원을 해제한다.
-     * GPU 메모리에 올라간 것들은 수동으로 dispose 해줘야 한다.
-     */
     override fun dispose() {
         super.dispose();
         for(entity in entities)
             entity.dispose();
 		entities.clear();
-        for(widget in widgets.values)
-            widget.dispose();
-		widgets.clear();
     }
 }

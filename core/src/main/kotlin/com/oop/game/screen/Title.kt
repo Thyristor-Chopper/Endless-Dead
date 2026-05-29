@@ -25,16 +25,12 @@ class Title(game: ZombieGame) : Screen(game) {
 		}
 	}
 	
-	override fun render(delta: Float) {
-		super.render(delta);
-		batch.begin();
-		drawBackground();
-		drawTitle();
-		batch.end();
+	override fun drawBackground() {
+		batch.draw(stillCut, 0f, 0f, game.screenWidth.toFloat(), game.screenHeight.toFloat());
 	}
 	
-	private inline fun drawBackground() {
-		batch.draw(stillCut, 0f, 0f, game.screenWidth.toFloat(), game.screenHeight.toFloat());
+	override fun drawElements(delta: Float) {
+		drawTitle();
 	}
 	
 	private inline fun drawTitle() {
