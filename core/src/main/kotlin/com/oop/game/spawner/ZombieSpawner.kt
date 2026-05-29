@@ -36,12 +36,11 @@ class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : 
         timer += delta
         if(timer >= spawnInterval) {
             timer -= spawnInterval
-            spawnRandomZombie()
-        }
-        var count = 0
-        while(count < zombiesPerSpawn) {
-            spawnRandomZombie()
-            count++
+            var count = 0
+            while (count < zombiesPerSpawn) {
+                spawnRandomZombie()
+                count++
+            }
         }
     }
 
