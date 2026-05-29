@@ -26,6 +26,7 @@ import kotlin.math.sqrt;
  * @param maxY
  */
 open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, attackDamage: Int, private val angle: Float, private val player: Player, protected var speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp) {
+	override val canUpdateWhileFrozen = false;
     var attackDamage = attackDamage
 		protected set;
 	override val penetrationDamage = 1;
@@ -38,10 +39,6 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 	
 	override fun update(delta: Float) {
         super.update(delta);  // 부모(LivingGameObject)의 무적 타이머 갱신 로직 실행
-
-		// 월드가 정지되어 있으면 좀비가 정지
-        if(world.isTimeStopped)
-            return
 
         val dx = target.x - x;
         val dy = target.y - y;

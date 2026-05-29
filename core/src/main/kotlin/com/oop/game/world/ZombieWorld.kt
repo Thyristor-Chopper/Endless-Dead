@@ -27,7 +27,7 @@ import com.oop.game.item.Gun;
 import com.oop.game.item.MachineGun;
 import com.oop.game.item.Shoes;
 import com.oop.game.item.Shotgun;
-import com.oop.game.item.Timestopper
+import com.oop.game.item.TimeStopper;
 import com.oop.game.spawner.Spawner;
 import com.oop.game.spawner.ZombieSpawner;
 import com.oop.game.widget.ProgressBar;
@@ -73,7 +73,7 @@ import kotlin.random.Random;
  * @param worldWidth   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
  * @param worldHeight  월드 전체 높이
  */
-class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat(), height: Float = Constants.WORLD_HEIGHT.toFloat()) : World(game, width, height) {
+class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat(), height: Float = Constants.WORLD_HEIGHT.toFloat()) : World(game, width, height), Freezable {
 	/**
 	 * 제목 표시줄에 표시할 정보 종류를 담는 enumeration
 	 */
@@ -119,6 +119,9 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	private val timers = mutableListOf<Timer>();
     private val frozenOverlay = Color(0f, 0f, 0f, 0.5f);
 	private val solidColor: Texture;
+	override var isFrozen: Boolean = false  // world의 시간이 정지 되었는지 확인하는 변수
+		private set;
+	private var unfreezeTimer: Timer? = null;
 
     /**
      * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -175,9 +178,23 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 			0		-> MachineGun(this)
 			1		-> Shotgun(this)
 			2		-> Bandage(this)
-			3		-> Timestopper(this)
+			3		-> TimeStopper(this)
 			else	-> Shoes(this)
 		};
+	}
+	
+	override fun freeze(duration: Float) {
+		isFrozen = true;
+		unfreezeTimer = Timer(duration) {
+			unfreeze();
+			unfreezeTimer?.unregister();
+			unfreezeTimer = null;
+		}.register();
+	}
+	
+	override fun unfreeze() {
+		isFrozen = false;
+		drawSubtitles("Time moves again");
 	}
 
     /**
@@ -194,7 +211,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 		
 		// 미터기 정보 갱신
 		updateProgressBars();
-		
+
         when(GameManager.state) {
             GameState.IN_PLAY	-> updateInPlay(delta);
             GameState.PAUSED    -> updatePaused();
@@ -533,5 +550,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 			timer.unregister();
 		for(spawner in spawners)
 			spawner.cleanUp();
+		val unfreezeTimer: Timer? = unfreezeTimer;
+		if(unfreezeTimer != null) unfreezeTimer.unregister();
     }
 }

@@ -50,6 +50,7 @@ import kotlin.math.sqrt;
  * @param texture	아이템 텍스처(없을 수도 있음)
  */
 abstract class Entity(override val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) : WorldObject, Updatable {
+	override val canUpdateWhileFrozen = true;
 	protected val texture: Texture? = texture?.let { Texture(Gdx.files.internal(it)) };
 	val position: Position
 		get() = Position(x, y);

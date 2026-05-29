@@ -62,7 +62,7 @@ import com.oop.game.widget.Widget;
  * @param width        월드 전체 너비 (기본값: 화면과 동일 = 스크롤 없음)
  * @param height       월드 전체 높이
  */
-abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : ScreenAdapter(), Updatable {
+abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : ScreenAdapter() {
 	abstract val player: Player;
     // OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     val camera = OrthographicCamera();
@@ -83,9 +83,6 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
-
-	var isTimeStopped: Boolean = false  // world의 시간이 정지 되었는지 확인하는 변수
-	var timeStopTimer = 0f  // 시간을 멈추는 시간이 얼마나 남았는지 알려주는 변수
 
     init {
         setCameraCenter();
@@ -199,7 +196,8 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
     protected fun updateAllObjects(delta: Float) {
 		forEachObjects {
 			if(it is Updatable)
-				it.update(delta);
+				if(!(this is Freezable) || !this.isFrozen || it.canUpdateWhileFrozen)
+					it.update(delta);
 		};
     }
 
@@ -234,18 +232,11 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
      * 객체 간 상호작용(충돌·점수·생사 결정) 이 있는 게임이면 override 해서
      * 위 두 호출 사이에 그 로직을 끼워 넣는다 (ExampleWorld 참고).
      */
-    override fun update(delta: Float) {
+    open fun update(delta: Float) {
 		updateAllObjects(delta);
 		removeDead();
-
-		if(isTimeStopped) {  // 시간을 멈췄을 때 언제 다시 풀리는지 걔산하는 곳
-			timeStopTimer -= delta
-			if (timeStopTimer <= 0f) {
-				isTimeStopped = false
-				drawSubtitles(message = "Time moves again.")
-			}
-		}
 	}
+	
     // ────────────────────────────────────────────────────────
     //  매 프레임 그리기
     // ────────────────────────────────────────────────────────

@@ -14,6 +14,7 @@ import com.oop.game.world.World;
  * @param name	총 이름
  */
 abstract class Item(override val world: World, val id: String, val name: String) : WorldObject, Updatable {
+	override val canUpdateWhileFrozen = true;
 	val holder: InventoryEntity?
 		get() {
 			for(entity in world.getEntities()) {
