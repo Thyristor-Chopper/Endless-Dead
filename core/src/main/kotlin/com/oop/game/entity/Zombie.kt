@@ -32,17 +32,14 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 
     // 💡 자식들이 언제든 거리를 실시간으로 잴 수 있게 열어둔 공용 프로퍼티
     protected val distanceToTarget: Float
-        get() {
-            val dx = target.x - x
-            val dy = target.y - y
-            return sqrt(dx * dx + dy * dy)
-        }
+        get() = target.position.distanceTo(position);
+	
 	override fun update(delta: Float) {
         super.update(delta);  // 부모(LivingGameObject)의 무적 타이머 갱신 로직 실행
 
         val dx = target.x - x;
         val dy = target.y - y;
-        val distance = distanceToTarget
+        val distance = distanceToTarget;
 		
 		// 플레이어의 중심으로 정확히 모이면 어색하니까 살짝은 거리를 두게 하자.
         if(distance > target.width * (3f / 4f)) {
