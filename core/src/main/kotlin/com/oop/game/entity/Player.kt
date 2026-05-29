@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.oop.game.GameManager;
 import com.oop.game.GameState;
-import com.oop.game.InputHandler;
+import com.oop.game.Input;
 import com.oop.game.InputListener;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
@@ -108,19 +108,19 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	 */
 	private inline fun updatePosition(delta: Float): Boolean {
 		var moved = false;
-		if(InputHandler.isKeyPressed(InputHandler.LEFT) || InputHandler.isKeyPressed(InputHandler.A)) {
+		if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A)) {
 			x -= speed * delta;
 			moved = true;
 		}
-		if(InputHandler.isKeyPressed(InputHandler.RIGHT) || InputHandler.isKeyPressed(InputHandler.D)) {
+		if(Input.isKeyPressed(Input.RIGHT) || Input.isKeyPressed(Input.D)) {
 			x += speed * delta;
 			moved = true;
         }
-		if(InputHandler.isKeyPressed(InputHandler.UP) || InputHandler.isKeyPressed(InputHandler.W)) {
+		if(Input.isKeyPressed(Input.UP) || Input.isKeyPressed(Input.W)) {
 			y += speed * delta;
 			moved = true;
         }
-		if(InputHandler.isKeyPressed(InputHandler.DOWN) || InputHandler.isKeyPressed(InputHandler.S)) {
+		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S)) {
 			y -= speed * delta;
 			moved = true;
 		}
@@ -182,7 +182,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		
 		// 아이템 사용
 		selectedItem?.let {
-			if(it is Usable && (InputHandler.isButtonJustPressed(InputHandler.LEFT_MOUSE) || (it.allowContinuousUse && InputHandler.isButtonPressed(InputHandler.LEFT_MOUSE))))
+			if(it is Usable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.allowContinuousUse && Input.isButtonPressed(Input.LEFT_MOUSE))))
 				useItem(it);
 		};
 		
@@ -191,11 +191,11 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		if(moved) world.updateCameraOffset();
 		
 		// 아이템 가져가기 & 넣기
-		if(InputHandler.isKeyJustPressed(InputHandler.SPACE) || InputHandler.isButtonJustPressed(InputHandler.RIGHT_MOUSE))
+		if(Input.isKeyJustPressed(Input.SPACE) || Input.isButtonJustPressed(Input.RIGHT_MOUSE))
 			interactContainer();
 		
 		// 아이템 파괴
-		if(InputHandler.isKeyJustPressed(InputHandler.DELETE))
+		if(Input.isKeyJustPressed(Input.DELETE))
 			selectedItem?.let {
 				if(it.destroy())
 					world.drawSubtitles("${it.name} destroyed");

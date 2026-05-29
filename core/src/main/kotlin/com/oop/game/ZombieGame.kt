@@ -50,25 +50,6 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
     val worldWidth = 1920;
     val worldHeight = 1920;
 	private var titleBarInfo = "";
-	private val inputProcessor = object : InputProcessor {
-		override fun scrolled(amountX: Float, amountY: Float): Boolean = notifyInputListeners({ it.onScroll(amountX, amountY) });
-		
-		override fun mouseMoved(x: Int, y: Int): Boolean = notifyInputListeners({ it.onMouseMove(x, y) });
-		
-		override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = notifyInputListeners({ it.onTouchDown(x, y, pointer, button) });
-		
-		override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = notifyInputListeners({ it.onTouchUp(x, y, pointer, button) });
-		
-		override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean = notifyInputListeners({ it.onTouchDrag(x, y, pointer) });
-		
-		override fun touchCancelled(x: Int, y: Int, pointer: Int, button: Int): Boolean = notifyInputListeners({ it.onTouchCancel(x, y, pointer, button) });
-		
-		override fun keyDown(code: Int): Boolean = notifyInputListeners({ it.onKeyDown(code) });
-		
-		override fun keyUp(code: Int): Boolean = notifyInputListeners({ it.onKeyUp(code) });
-		
-		override fun keyTyped(char: Char): Boolean = notifyInputListeners({ it.onKeyType(char) });
-	};
 
     /**
      * LibGDX 가 게임 시작 시 한 번 호출하는 라이프사이클 메서드.
@@ -84,9 +65,7 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
      *  GameWorld 가 LibGDX 의 Screen 인터페이스를 상속하므로 setScreen 인자로 넘길 수 있다.
      */
     override fun create() {
-		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
 		Gdx.input.setInputProcessor(inputProcessor);
-	
         val zombieWorld = ZombieWorld(this);
         setScreen(zombieWorld);  // 부모 Game 이 제공하는 메서드
     }
@@ -109,6 +88,28 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
 		titleBarInfo = info;
 	}
 	
+	// ---- input 처리 ----
+	// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
+	private val inputProcessor = object : InputProcessor {
+		override fun scrolled(amountX: Float, amountY: Float): Boolean = notifyInputListeners({ it.onScroll(amountX, amountY) });
+		
+		override fun mouseMoved(x: Int, y: Int): Boolean = notifyInputListeners({ it.onMouseMove(x, y) });
+		
+		override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = notifyInputListeners({ it.onTouchDown(x, y, pointer, button) });
+		
+		override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = notifyInputListeners({ it.onTouchUp(x, y, pointer, button) });
+		
+		override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean = notifyInputListeners({ it.onTouchDrag(x, y, pointer) });
+		
+		override fun touchCancelled(x: Int, y: Int, pointer: Int, button: Int): Boolean = notifyInputListeners({ it.onTouchCancel(x, y, pointer, button) });
+		
+		override fun keyDown(code: Int): Boolean = notifyInputListeners({ it.onKeyDown(code) });
+		
+		override fun keyUp(code: Int): Boolean = notifyInputListeners({ it.onKeyUp(code) });
+		
+		override fun keyTyped(char: Char): Boolean = notifyInputListeners({ it.onKeyType(char) });
+	};
+	
 	private fun notifyInputListeners(callback: (InputListener) -> Boolean): Boolean {
 		var processed = false;
 		val screen = getScreen();
@@ -121,4 +122,5 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
 			};
 		return processed;
 	}
+	// ---------- //
 }

@@ -10,7 +10,7 @@ import com.badlogic.gdx.utils.Align;
 import com.oop.game.Constants;
 import com.oop.game.GameManager;
 import com.oop.game.GameState;
-import com.oop.game.InputHandler;
+import com.oop.game.Input;
 import com.oop.game.ZombieGame;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
@@ -202,7 +202,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	
 	private fun togglePaused() {
 		// P키를 누르면 IN_PLAY <-> PAUSED 상태 토글!
-        if(InputHandler.isKeyJustPressed(InputHandler.P) || InputHandler.isKeyJustPressed(InputHandler.ESCAPE)) {
+        if(Input.isKeyJustPressed(Input.P) || Input.isKeyJustPressed(Input.ESCAPE)) {
             if(GameManager.state == GameState.IN_PLAY) {
 				Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
 				GameManager.state = GameState.PAUSED;
@@ -298,11 +298,11 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
     private inline fun updateGameOver() {
         // ESC 키가 '막 눌린 순간' 앱 종료.
         //   isKeyJustPressed 로 한 이유: 누르고 있는 동안 매 프레임 exit 호출되지 않게.
-        if(InputHandler.isKeyJustPressed(InputHandler.ESCAPE))
+        if(Input.isKeyJustPressed(Input.ESCAPE))
             Gdx.app.exit();
 
         // R 키나 스페이스바를 누르면 다시 시작
-        if(InputHandler.isKeyJustPressed(com.badlogic.gdx.Input.Keys.R) || InputHandler.isKeyJustPressed(com.badlogic.gdx.Input.Keys.SPACE)) {
+        if(Input.isKeyJustPressed(com.badlogic.gdx.Input.Keys.R) || Input.isKeyJustPressed(Input.SPACE)) {
 			Gdx.graphics.setForegroundFPS(Constants.FPS);
             GameManager.state = GameState.IN_PLAY;  // 상태를 다시 플레이로 되돌리고
             game.setScreen(ZombieWorld(game));  // 월드를 아예 새로 파서 화면을 덮어씌움
