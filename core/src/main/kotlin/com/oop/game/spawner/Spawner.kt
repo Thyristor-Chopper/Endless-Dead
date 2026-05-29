@@ -12,4 +12,6 @@ interface Spawner : WorldObject {
 	 * 매 프레임 실행하는 서브루틴
 	 */
 	fun tick(delta: Float);
+	
+	fun cleanUp() {}
 }

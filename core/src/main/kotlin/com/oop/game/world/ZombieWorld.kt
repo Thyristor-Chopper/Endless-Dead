@@ -529,5 +529,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 		solidColor.dispose();
 		for(timer in timers)
 			timer.unregister();
+		for(spawner in spawners)
+			spawner.cleanUp();
     }
 }
