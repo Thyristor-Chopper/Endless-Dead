@@ -46,6 +46,7 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
     //   외부(DesktopLauncher)에서 접근해야 하므로 public.
     val worldWidth = 1920;
     val worldHeight = 1920;
+	private var titleBarInfo = "";
 
     /**
      * LibGDX 가 게임 시작 시 한 번 호출하는 라이프사이클 메서드.
@@ -65,7 +66,21 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
         setScreen(zombieWorld);  // 부모 Game 이 제공하는 메서드
     }
 	
-	inline fun setTitleBarInfo(info: String) {
-		Gdx.graphics.setTitle("${title} - $info");
+	override fun render() {
+		super.render();
+		update();
+	}
+	
+	private inline fun update() {
+		val gameStateIndicator = when(GameManager.state) {
+			GameState.PAUSED	-> " [일시 중지]"
+			GameState.GAME_OVER	-> " [게임 오버]"
+			else				-> ""
+		};
+		Gdx.graphics.setTitle("${title} - ${titleBarInfo}${gameStateIndicator}");
+	}
+	
+	fun setTitleBarInfo(info: String) {
+		titleBarInfo = info;
 	}
 }

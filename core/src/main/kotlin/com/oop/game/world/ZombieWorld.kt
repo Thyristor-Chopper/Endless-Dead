@@ -261,10 +261,6 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 			TitleInfoType.FIRED		-> "발사한 총알 수: ${player.firedBullets}"
 			TitleInfoType.SURVIVED	-> "생존 시간: ${Utils.parseSeconds(player.survivedDuration, "분", "초")}"
 			TitleInfoType.DAMAGE	-> "누적 피해량: ${player.totalDamage}"
-		} + when(GameManager.state) {
-			GameState.PAUSED	-> " [일시 중지]"
-			GameState.GAME_OVER	-> " [게임 오버]"
-			else				-> ""
 		});
 	}
 
