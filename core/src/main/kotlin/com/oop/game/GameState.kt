@@ -10,6 +10,7 @@ package com.oop.game;
  *   (7주차에서 배우는 enum class 의 전형적 활용)
  */
 enum class GameState {
+	TITLE,
 	IN_PLAY,
 	PAUSED,
 	GAME_OVER;
