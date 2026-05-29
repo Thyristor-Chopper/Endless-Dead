@@ -73,9 +73,12 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
 	
 	private inline fun update() {
 		val gameStateIndicator = when(GameManager.state) {
-			GameState.PAUSED	-> " [일시 중지]"
-			GameState.GAME_OVER	-> " [게임 오버]"
+			GameState.PAUSED	-> "[일시 중지]"
+			GameState.GAME_OVER	-> "[게임 오버]"
 			else				-> ""
+		}.run {
+			if(this.isBlank()) ""
+			else " $this"
 		};
 		val titleBarInfo = if(this.titleBarInfo.isBlank()) "" else " - $titleBarInfo";
 		Gdx.graphics.setTitle("${title}${titleBarInfo}${gameStateIndicator}");

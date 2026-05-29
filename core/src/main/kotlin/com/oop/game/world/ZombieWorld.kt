@@ -128,12 +128,12 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
      *   이렇게 등록해야 update / draw 루프에 포함된다.
      */
     init {
-		val solidColorPixmap = Pixmap(1, 1, Pixmap.Format.RGBA8888).apply {
+		Pixmap(1, 1, Pixmap.Format.RGBA8888).run {
 			setColor(Color.WHITE);
 			fill();
+			solidColor = Texture(this);
+			dispose();
 		};
-		solidColor = Texture(solidColorPixmap);
-		solidColorPixmap.dispose();
 		
 		ScoreManager.resetScore();
 		
