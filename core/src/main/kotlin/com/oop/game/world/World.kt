@@ -195,9 +195,12 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
      */
     protected fun updateAllObjects(delta: Float) {
 		forEachObjects {
-			if(it is Updatable)
+			if(it is Updatable) {
 				if(!(it is Entity) || (it is Entity && (!(this is Freezable) || !this.isFrozen || it.canUpdateWhileFrozen)))
 					it.update(delta);
+				if(it is Entity)
+					it.forceUpdate(delta);
+			}
 		};
     }
 
