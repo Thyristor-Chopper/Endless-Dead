@@ -220,15 +220,39 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
             GameState.GAME_OVER	-> updateGameOver();
         }
     }
-
+	private val titleTexture = Texture(Gdx.files.internal("endless dead TITLE.png"))
+	private var titleBlinkTimer = 0f
 	private fun updateTitle(delta: Float) {
-		var gameState = GameState.TITLE
+		titleBlinkTimer += delta
 		fun anyKeyPressed(): Boolean {
 			return Gdx.input.isButtonPressed(Input.LEFT_MOUSE)
 		}
-
 		if(anyKeyPressed()) {
-			gameState = GameState.IN_PLAY //타이틀 화면 설정
+			GameManager.state = GameState.IN_PLAY //타이틀 화면 설정
+		}
+	}
+	private fun drawTitleMessage() {
+		val titleWidth = game.screenWidth * 0.75f
+		val titleHeight = titleWidth / 3f
+		val titleX = (game.screenWidth - titleWidth) / 2f
+		val titleY = game.screenHeight / 2f + 40f
+
+		batch.begin()
+		batch.draw(titleTexture, titleX, titleY, titleWidth, titleHeight)
+		batch.end()
+
+		val showText = (titleBlinkTimer % 1f) < 0.5f
+
+		if(showText) {
+			drawTextOnScreen(
+				text = "Press any key to start",
+				x = 0f,
+				y = game.screenHeight / 2f - 30f,
+				color = Color.WHITE,
+				scale = 1f,
+				width = game.screenWidth.toFloat(),
+				align = Align.center
+			)
 		}
 	}
 	
