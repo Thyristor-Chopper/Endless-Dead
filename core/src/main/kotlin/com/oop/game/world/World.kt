@@ -76,7 +76,7 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 	private var subtitlesColor = Color.WHITE;
 
     // ────────────────────────────────────────────────────────
-    //  객체 관리
+    //  개체 관리
     // ────────────────────────────────────────────────────────
 
     /**
@@ -102,14 +102,6 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
      *   복사본을 줘서 '훔쳐보기만 하고 건드리진 못하게' 한다.
      */
     fun getEntities(): List<Entity> = entities.toList();
-	
-	/**
-	 * 크기 조절 시 호출된다.
-	 */
-	override fun resize(width: Int, height: Int) {
-		super.resize(width, height);
-		updateCameraOffset();
-	}
 	
 	/**
 	 * 월드 내 모든 아이템과 개체를 순회한다.
@@ -151,7 +143,7 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
      * TODO (9주차 이후): 고차함수 forEach 로
      *   gameObjects.forEach { it.update(delta) } 처럼 줄일 수 있다.
      */
-    private fun updateAllObjects(delta: Float) {
+    private inline fun updateAllObjects(delta: Float) {
 		forEachObjects {
 			if(it is Updatable) {
 				if(!(it is Entity) || (it is Entity && (!(this is Freezable) || !this.isFrozen || it.canUpdateWhileFrozen)))
@@ -172,7 +164,7 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
      * TODO (9주차 이후): 컬렉션 함수 removeAll 로
      *   gameObjects.removeAll { !it.isAlive() } 한 줄로 대체 가능.
      */
-    private fun removeDead() {
+    private inline fun removeDead() {
 		val toRemove = mutableListOf<Entity>();
         for(entity in entities)
             if(entity is LivingEntity && !entity.isAlive)
@@ -183,6 +175,22 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 		}
     }
 
+    // ────────────────────────────────────────────────────────
+    //  콜백 함수
+    // ────────────────────────────────────────────────────────
+	
+	/**
+	 * 크기 조절 시 호출된다.
+	 */
+	override fun resize(width: Int, height: Int) {
+		super.resize(width, height);
+		updateCameraOffset();
+	}
+
+    // ────────────────────────────────────────────────────────
+    //  매 프레임 로직
+    // ────────────────────────────────────────────────────────
+
     override fun update(delta: Float) {
 		updateAllObjects(delta);
 		removeDead();
@@ -191,7 +199,15 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
     // ────────────────────────────────────────────────────────
     //  매 프레임 그리기
     // ────────────────────────────────────────────────────────
+	
+	/**
+	 * 월드 중심 등 오버레이를 그리는 자리
+	 */
+	protected open fun drawBackgroundOverlay() {}
 
+	/**
+	 * 배경 오버레이와 개체, 자막을 그린다.
+	 */
 	override fun drawElements(delta: Float) {
         drawBackgroundOverlay();
         drawEntities();
@@ -210,11 +226,6 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 			subtitlesTimer -= delta;
 		};
 	}
-	
-	/**
-	 * 월드 중심 등 오버레이를 그리는 자리
-	 */
-	protected open fun drawBackgroundOverlay() {}
 
     /**
      * 등록된 모든 객체를 그린다 — 카메라 오프셋을 반영해서.
@@ -240,7 +251,7 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 	/**
 	 * 플레이어 위치에 따라 카메라 위치 변경
 	 */
-	inline fun updateCameraOffset() {
+	fun updateCameraOffset() {
 		offsetX = player.x - game.screenWidth / 2f;
 		offsetY = player.y - game.screenHeight / 2f;
 	}
@@ -286,6 +297,10 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 		subtitlesMessage = message;
 		subtitlesColor = color;
 	}
+
+	// ────────────────────────────────────────────────────────
+    //  자원 정리
+    // ────────────────────────────────────────────────────────
 
     override fun dispose() {
         super.dispose();

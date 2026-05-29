@@ -34,7 +34,7 @@ abstract class Screen(val game: ZombieGame) : ScreenAdapter(), Updatable {
 	}
 
     // ────────────────────────────────────────────────────────
-    //  객체 관리
+    //  위젯 객체 관리
     // ────────────────────────────────────────────────────────
 	
 	/**
@@ -64,6 +64,10 @@ abstract class Screen(val game: ZombieGame) : ScreenAdapter(), Updatable {
 		if(!(id in widgets)) throw IllegalArgumentException("invalid widget ID");
 		return widgets[id]!!;
 	}
+
+    // ────────────────────────────────────────────────────────
+    //  콜백 함수
+    // ────────────────────────────────────────────────────────
 	
 	/**
 	 * 크기 조절 시 호출된다.
@@ -72,12 +76,6 @@ abstract class Screen(val game: ZombieGame) : ScreenAdapter(), Updatable {
 		game.screenWidth = width;
 		game.screenHeight = height;
 		setCameraCenter();
-	}
-	
-	private inline fun drawWidgets() {
-		for(widget in widgets.values)
-			if(widget.visible)
-				widget.draw(batch);
 	}
 
     // ────────────────────────────────────────────────────────
@@ -148,6 +146,15 @@ abstract class Screen(val game: ZombieGame) : ScreenAdapter(), Updatable {
 	 * 그 외 하위 클래스에서 배경과 위젯(컨트롤) 사이에 그려야 할 것들
 	 */
 	protected open fun drawElements(delta: Float) {}
+	
+	/**
+	 * 화면 내 위젯(컨트롤)들을 그린다.
+	 */
+	private inline fun drawWidgets() {
+		for(widget in widgets.values)
+			if(widget.visible)
+				widget.draw(batch);
+	}
 
     // ────────────────────────────────────────────────────────
     //  텍스트 헬퍼

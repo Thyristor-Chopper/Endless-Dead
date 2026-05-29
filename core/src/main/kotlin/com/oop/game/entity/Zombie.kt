@@ -58,14 +58,6 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 	class Normal(world: World, x: Float, y: Float, player: Player, angle: Float) : Zombie(world, x, y, width=32f, height=45f, hp=5, speed=100f, angle=angle, player=player, attackDamage=3);
 	
 	class Strong(world: World, x: Float, y: Float, player: Player, angle: Float) : Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, angle=angle, player=player, attackDamage=5) {
-        // 평상시,돌진하려고 잠깐 멈춰있음,돌진,돌진 쿨
-        private enum class DashState {
-            WALKING,
-			PREPARING,
-			DASHING,
-			COOLDOWN;
-        }
-		
         // 평상시 스피드, 대미지
         val originalSpeed = speed
         val originalDamage = attackDamage
@@ -136,6 +128,14 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 
             // 💡 속도 세팅이 완벽히 끝난 후, 마지막에 부모를 호출해서 이동시킴
             super.update(delta)
+        }
+		
+		// 평상시, 돌진하려고 잠깐 멈춰있음, 돌진, 돌진 쿨
+        private enum class DashState {
+            WALKING,
+			PREPARING,
+			DASHING,
+			COOLDOWN;
         }
     }
 }
