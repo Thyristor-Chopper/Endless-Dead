@@ -1,8 +1,6 @@
 package com.oop.game.entity;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -10,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.oop.game.GameManager;
 import com.oop.game.GameState;
 import com.oop.game.InputHandler;
+import com.oop.game.InputListener;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
 import com.oop.game.entity.Zombie;
@@ -39,7 +38,7 @@ import kotlin.math.atan2;
  *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 GameObject.dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 57f, "player.bmp", 50), InventoryEntity by BasicInventoryEntity() {
+class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 57f, "player.bmp", 50), InventoryEntity by BasicInventoryEntity(), InputListener {
 	private val textureWithGun = Texture(Gdx.files.internal("player_holding_gun.bmp"));
     private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
@@ -59,46 +58,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		private set;
 	
 	init {
-		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
-		Gdx.input.setInputProcessor(object : InputProcessor {
-			// 휠 감지 - 선택된 아이템 전환
-			override fun scrolled(amountX: Float, amountY: Float): Boolean {
-				if(GameManager.state != GameState.IN_PLAY) return false;
-				
-				if(amountY != 0.0f) {
-					if(amountY > 0f) selectNextItem();
-					else if(amountY < 0f) selectPreviousItem();
-					return true;
-				}
-				
-				return false;
-			}
-			
-			// 마우스 위치로 플레이어 회전
-			override fun mouseMoved(x: Int, y: Int): Boolean {
-				return rotatePlayer(x, y);
-			}
-			
-			// 눌린 상태로 마우스를 움직여도 회전되게 하기 위해 필요
-			override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean {
-				rotatePlayer(x, y);
-				return false;  // 진짜 '드래그'를 처리한 게 아니기 때문에 false 반환
-			}
-			
-			// 나머지 (스텁)
-			override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
-			
-			override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
-			
-			override fun keyDown(code: Int): Boolean = false;
-			
-			override fun keyUp(code: Int): Boolean = false;
-			
-			override fun keyTyped(char: Char): Boolean = false;
-			
-			override fun touchCancelled(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
-		});
-		
 		// -- 타이머들 --
 		// 1. 생존 시간 기록 & 생존 시간 보너스
 		timers.add(Timer(1f) {
@@ -111,6 +70,27 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 			heal(3);
 		}.register();
 		timers.add(healTimer);
+	}
+	
+	override fun onScroll(amountX: Float, amountY: Float): Boolean {
+		if(GameManager.state != GameState.IN_PLAY) return false;
+		
+		if(amountY != 0.0f) {
+			if(amountY > 0f) selectNextItem();
+			else if(amountY < 0f) selectPreviousItem();
+			return true;
+		}
+		
+		return false;
+	}
+	
+	override fun onMouseMove(x: Int, y: Int): Boolean {
+		return rotatePlayer(x, y);
+	}
+	
+	override fun onTouchDrag(x: Int, y: Int, pointer: Int): Boolean {
+		rotatePlayer(x, y);
+		return false;  // 진짜 '드래그'를 처리한 게 아니기 때문에 false 반환
 	}
 	
 	private fun rotatePlayer(x: Int, y: Int): Boolean {
