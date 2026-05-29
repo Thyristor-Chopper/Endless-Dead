@@ -39,13 +39,13 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 	override fun update(delta: Float) {
         super.update(delta);  // 부모(LivingGameObject)의 무적 타이머 갱신 로직 실행
 
+		// 월드가 정지되어 있으면 좀비가 정지
+        if(world.isTimeStopped)
+            return
+
         val dx = target.x - x;
         val dy = target.y - y;
         val distance = distanceToTarget;
-
-        if (world.isTimeStopped) {
-            return
-        } //월드가 정지되어 있으면 좀비가 정지
 		
 		// 플레이어의 중심으로 정확히 모이면 어색하니까 살짝은 거리를 두게 하자.
         if(distance > target.width * (3f / 4f)) {
