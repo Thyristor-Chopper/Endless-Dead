@@ -51,7 +51,7 @@ import kotlin.math.sqrt;
  */
 abstract class Entity(override val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) : WorldObject, Updatable {
 	/**
-	 * TimeStopper 아이템에 영향을 받는지의 여부
+	 * TimeStopper 아이템의 영향을 받는지의 여부
 	 */
 	open val canUpdateWhileFrozen = true;
 	protected val texture: Texture? = texture?.let { Texture(Gdx.files.internal(it)) };
