@@ -27,6 +27,7 @@ import com.oop.game.item.Gun;
 import com.oop.game.item.MachineGun;
 import com.oop.game.item.Shoes;
 import com.oop.game.item.Shotgun;
+import com.oop.game.item.Timestopper
 import com.oop.game.spawner.Spawner;
 import com.oop.game.spawner.ZombieSpawner;
 import com.oop.game.widget.ProgressBar;
@@ -170,10 +171,11 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다
 	 */
 	private inline fun generateRandomItem(): Item {
-		return when(Random.nextInt(4)) {
+		return when(Random.nextInt(5)) {
 			0		-> MachineGun(this)
 			1		-> Shotgun(this)
 			2		-> Bandage(this)
+			3		-> Timestopper(this)
 			else	-> Shoes(this)
 		};
 	}
