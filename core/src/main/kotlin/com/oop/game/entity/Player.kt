@@ -179,13 +179,13 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 			};
 		
 		// 휠로 아이템 선택
-		if(Input.justScrolledDown)
+		if(Input.isScrolledDown())
 			selectNextItem();
-		if(Input.justScrolledUp)
+		if(Input.isScrolledUp())
 			selectPreviousItem();
 		
 		// 플레이어 회전
-		if(Input.justMouseMoved)
+		if(Input.isMouseMoved())
 			rotatePlayer(Gdx.input.getX(), Gdx.input.getY());
 		
         // 월드 경계 안쪽으로 가두기.

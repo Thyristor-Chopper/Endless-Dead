@@ -31,32 +31,29 @@ import com.oop.game.world.World;
  *  (파이썬이라면 모듈 수준 함수/변수와 비슷한 역할)
  */
 object Input {
-	var justScrolledUp = false
-		private set;
-	var justScrolledDown = false
-		private set;
-	var justMouseMoved = false
-		private set;
+	private var scrolledUp = false;
+	private var scrolledDown = false;
+	private var mouseMoved = false;
 
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
 		Gdx.input.setInputProcessor(object : InputProcessor {
 			override fun scrolled(amountX: Float, amountY: Float): Boolean {
 				if(amountY > 0f) {
-					justScrolledDown = true;
-					Gdx.app.postRunnable { justScrolledDown = false };
+					scrolledDown = true;
+					Gdx.app.postRunnable { scrolledDown = false };
 					return true;
 				} else if(amountY < 0f) {
-					justScrolledUp = true;
-					Gdx.app.postRunnable { justScrolledUp = false };
+					scrolledUp = true;
+					Gdx.app.postRunnable { scrolledUp = false };
 					return true;
 				}
 				return false;
 			}
 			
 			override fun mouseMoved(x: Int, y: Int): Boolean {
-				justMouseMoved = true;
-				Gdx.app.postRunnable { justMouseMoved = false };
+				this@Input.mouseMoved = true;
+				Gdx.app.postRunnable { this@Input.mouseMoved = false };
 				return true;
 			}
 			
@@ -113,6 +110,12 @@ object Input {
     inline fun isButtonJustPressed(button: Int): Boolean {
         return Gdx.input.isButtonJustPressed(button);
     }
+	
+    fun isMouseMoved(): Boolean = mouseMoved;
+	
+    fun isScrolledDown(): Boolean = scrolledDown;
+	
+    fun isScrolledUp(): Boolean = scrolledUp;
 
     // 자주 쓰는 키 상수를 짧은 이름으로 재노출.
     //   원본은 Input.Keys.LEFT 처럼 길어서 자주 쓸수록 번거롭다.
