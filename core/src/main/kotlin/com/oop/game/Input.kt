@@ -33,7 +33,6 @@ import com.oop.game.world.World;
 object Input {
 	private var scrolledUp = false;
 	private var scrolledDown = false;
-	private var mouseMoved = false;
 
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
@@ -51,17 +50,9 @@ object Input {
 				return false;
 			}
 			
-			override fun mouseMoved(x: Int, y: Int): Boolean {
-				this@Input.mouseMoved = true;
-				Gdx.app.postRunnable { this@Input.mouseMoved = false };
-				return true;
-			}
+			override fun mouseMoved(x: Int, y: Int): Boolean = false;
 			
-			// 마우스가 눌린 상태로 움직일 때를 감지하기 위해 필요
-			override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean {
-				mouseMoved(x, y);
-				return false;  // 실제 '드래그'를 처리한 게 아니므로 false
-			}
+			override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean = false;
 			
 			override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
 			
@@ -110,8 +101,6 @@ object Input {
     inline fun isButtonJustPressed(button: Int): Boolean {
         return Gdx.input.isButtonJustPressed(button);
     }
-	
-    fun isMouseMoved(): Boolean = mouseMoved;
 	
     fun isScrolledDown(): Boolean = scrolledDown;
 	

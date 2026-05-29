@@ -164,6 +164,9 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 				useItem(it);
 		};
 		
+		// 플레이어 회전
+		rotatePlayer(Gdx.input.getX(), Gdx.input.getY());
+		
 		// 이동
 		val moved = updatePosition(delta);
 		if(moved) world.updateCameraOffset();
@@ -184,10 +187,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 			selectNextItem();
 		if(Input.isScrolledUp())
 			selectPreviousItem();
-		
-		// 플레이어 회전
-		if(Input.isMouseMoved())
-			rotatePlayer(Gdx.input.getX(), Gdx.input.getY());
 		
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width);
