@@ -42,6 +42,10 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
         val dx = target.x - x;
         val dy = target.y - y;
         val distance = distanceToTarget;
+
+        if (world.isTimeStopped) {
+            return
+        } //월드가 정지되어 있으면 좀비가 정지
 		
 		// 플레이어의 중심으로 정확히 모이면 어색하니까 살짝은 거리를 두게 하자.
         if(distance > target.width * (3f / 4f)) {
