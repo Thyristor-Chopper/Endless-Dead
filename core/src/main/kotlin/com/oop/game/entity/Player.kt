@@ -7,12 +7,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.oop.game.GameManager;
 import com.oop.game.GameState;
+import com.oop.game.input.Input;
+import com.oop.game.input.InputListener;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
 import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Container;
-import com.oop.game.input.Input;
-import com.oop.game.input.InputListener;
 import com.oop.game.item.Gun;
 import com.oop.game.item.Item;
 import com.oop.game.item.Usable;
@@ -80,6 +80,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 			else if(amountY < 0f) selectPreviousItem();
 			return true;
 		}
+		
 		return false;
 	}
 	
@@ -92,35 +93,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		return false;  // 진짜 '드래그'를 처리한 게 아니기 때문에 false 반환
 	}
 	
-	override fun onKeyDown(code: Int) {
-		if(GameManager.state != GameState.IN_PLAY) return false;
-		
-		when(code) {
-			Input.SPACE		-> return interactContainer();
-			Input.DELETE	-> {
-				selectedItem?.let {
-					if(it.destroy()) {
-						world.drawSubtitles("${it.name} destroyed");
-						return true;
-					}
-				};
-				return false;
-			}
-		}
-		return false;
-	}
-	
-	override fun onTouchDown(x: Int, y: Int, pointer: Int, button: Int) {
-		if(GameManager.state != GameState.IN_PLAY) return false;
-		
-		if(button == Input.RIGHT_MOUSE)
-			return interactContainer();
-		return false;
-	}
-	
 	private fun rotatePlayer(x: Int, y: Int): Boolean {
 		if(GameManager.state != GameState.IN_PLAY) return false;
-		
 		// 샷건 내 360도 구현 참고함
 		rotation = toDegrees(atan2((world.game.screenHeight - y) - (this.y - world.offsetY), x - (this.x - world.offsetX)).toDouble()).toFloat() - 90f;
 		return true;
@@ -173,20 +147,21 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	
 	/**
 	 * 닿아 있는 상자와 상호작용한다.
-	 *
-	 * @return 상호작용을 성공적으로 했는지의 여부
+	 * update()에서만 한 번 쓰이기 때문에 inline
 	 */
-	private fun interactContainer(): Boolean {
+	private inline fun interactContainer() {
 		for(entity in world.getEntities()) {
 			if(!(entity is Container)) continue;
 			if(collidesWith(entity))
 				if(entity.isEmpty) {
+					var putItem = false;
 					selectedItem?.let {
 						world.drawSubtitles("Put ${it.name} into the container");
 						entity.putItem(it, true);
 						removeItemFromInventory(it);
-						return true;  // 하나씩만
+						putItem = true;  // 하나씩만
 					} ?: world.drawSubtitles("Can't take any item; container is empty");
+					if(putItem) break;
 				} else {
 					val isPlayerItem = entity.isPlayerItem;
 					val item: Item? = entity.takeItem(this, true);
@@ -196,11 +171,10 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 						world.drawSubtitles("Took ${item.name} from the container");
 						if(!isPlayerItem)
 							openedContainerCount++;
-						return true;  // 하나씩만
+						break;  // 하나씩만
 					}
 				}
 		}
-		return false;
 	}
 	
     override fun update(delta: Float) {
@@ -215,6 +189,17 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		// 이동
 		val moved = updatePosition(delta);
 		if(moved) world.updateCameraOffset();
+		
+		// 아이템 가져가기 & 넣기
+		if(Input.isKeyJustPressed(Input.SPACE) || Input.isButtonJustPressed(Input.RIGHT_MOUSE))
+			interactContainer();
+		
+		// 아이템 파괴
+		if(Input.isKeyJustPressed(Input.DELETE))
+			selectedItem?.let {
+				if(it.destroy())
+					world.drawSubtitles("${it.name} destroyed");
+			};
 		
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width);
