@@ -65,21 +65,19 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 			COOLDOWN;
         }
 		
-        // 평상시 스피드,데미지
+        // 평상시 스피드, 대미지
         val originalSpeed = speed
         val originalDamage = attackDamage
         private var dashState = DashState.WALKING
         private var stateTimer = 0f
-
         //  돌진할 '방향(벡터)'을 기억해 둘 변수
         private var dashDirX = 0f
         private var dashDirY = 0f
 
         override fun update(delta: Float) {
-            val dist = distanceToTarget
-
             when(dashState) {
                 DashState.WALKING -> {
+                    val dist = distanceToTarget
                     if(dist < 250f) {
                         dashState = DashState.PREPARING
                         stateTimer = 0.5f
@@ -102,14 +100,14 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
                     }
                 }
                 DashState.DASHING -> {
-                    // speed 0으로 해서 super업데이트 로직떄 따로 안움직이게함
+                    // speed 0으로 해서 super업데이트 로직 때 따로 안 움직이게 함
                     speed = 0f
                     attackDamage = 20
 
                     x += dashDirX * 800f * delta
                     y += dashDirY * 800f * delta
 
-                    // 돌진 중에 플레이어랑 부딪히면, 데미지 주고 즉시 쿨타임으로 넘어감
+                    // 돌진 중에 플레이어랑 부딪히면, 대미지 주고 즉시 쿨타임으로 넘어감
                     if(collidesWith(target)) {
                         target.takeDamage(attackDamage, attacker = this)
                         dashState = DashState.COOLDOWN
