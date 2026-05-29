@@ -256,11 +256,15 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	 */
 	private inline fun updateTitleBarInfo() {
 		game.setTitleBarInfo(when(TitleInfoType.byIndex(currentTitleInfo)) {
-			TitleInfoType.OPENED	-> "연 상자: ${player.openedContainerCount}개";
-			TitleInfoType.KILLED	-> "잡은 좀비 수: ${player.killedZombieCount}";
-			TitleInfoType.FIRED		-> "발사한 총알 수: ${player.firedBullets}";
-			TitleInfoType.SURVIVED	-> "생존 시간: ${Utils.parseSeconds(player.survivedDuration, "분", "초")}";
-			TitleInfoType.DAMAGE	-> "누적 피해량: ${player.totalDamage}";
+			TitleInfoType.OPENED	-> "연 상자: ${player.openedContainerCount}개"
+			TitleInfoType.KILLED	-> "잡은 좀비 수: ${player.killedZombieCount}"
+			TitleInfoType.FIRED		-> "발사한 총알 수: ${player.firedBullets}"
+			TitleInfoType.SURVIVED	-> "생존 시간: ${Utils.parseSeconds(player.survivedDuration, "분", "초")}"
+			TitleInfoType.DAMAGE	-> "누적 피해량: ${player.totalDamage}"
+		} + when(GameManager.state) {
+			GameState.PAUSED	-> " [일시 중지]"
+			GameState.GAME_OVER	-> " [게임 오버]"
+			else				-> ""
 		});
 	}
 
