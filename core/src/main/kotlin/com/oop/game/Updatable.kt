@@ -1,7 +1,7 @@
 package com.oop.game;
 
 /**
- * 매 프레임마다 상태 갱신이 가능한 오브젝트
+ * 매 프레임마다 상태 갱신이 가능한 오브젝트(월드 제외)
  */
 interface Updatable {
 	/**
