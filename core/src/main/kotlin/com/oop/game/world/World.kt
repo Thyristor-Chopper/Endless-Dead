@@ -62,7 +62,7 @@ import com.oop.game.widget.Widget;
  * @param width        월드 전체 너비 (기본값: 화면과 동일 = 스크롤 없음)
  * @param height       월드 전체 높이
  */
-abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : ScreenAdapter() {
+abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : ScreenAdapter(), Updatable {
 	abstract val player: Player;
     // OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     val camera = OrthographicCamera();
@@ -196,7 +196,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
     protected fun updateAllObjects(delta: Float) {
 		forEachObjects {
 			if(it is Updatable)
-				if(!(this is Freezable) || !this.isFrozen || it.canUpdateWhileFrozen)
+				if(!(it is Entity) || (it is Entity && (!(this is Freezable) || !this.isFrozen || it.canUpdateWhileFrozen)))
 					it.update(delta);
 		};
     }
@@ -232,7 +232,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
      * 객체 간 상호작용(충돌·점수·생사 결정) 이 있는 게임이면 override 해서
      * 위 두 호출 사이에 그 로직을 끼워 넣는다 (ExampleWorld 참고).
      */
-    open fun update(delta: Float) {
+    override fun update(delta: Float) {
 		updateAllObjects(delta);
 		removeDead();
 	}
