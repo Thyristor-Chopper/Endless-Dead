@@ -464,7 +464,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
         drawTextOnScreen(
             text = "YOU DIED!",
             x = 0f,
-            y = game.screenHeight / 2f,
+            y = game.screenHeight / 2f + 40f,
             color = Color.RED,
             scale = 2.0f,
 			width = game.screenWidth.toFloat(),
@@ -473,7 +473,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
         drawTextOnScreen(
             text = "Press <Esc> to exit or press <R> or <Space> for a new game",
             x = 0f,
-            y = game.screenHeight / 2f - 40f,
+            y = game.screenHeight / 2f + 10f,
             color = Color.WHITE,
             scale = 1.0f,
 			width = game.screenWidth.toFloat(),
@@ -484,35 +484,42 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
         drawTextOnScreen(
             text = "Opened containers: ${player.openedContainerCount}",
             x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 60f,
+            y = game.screenHeight / 2f - 20f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
         drawTextOnScreen(
             text = "Killed zombies: ${player.killedZombieCount}",
             x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 75f,
+            y = game.screenHeight / 2f - 35f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
         drawTextOnScreen(
-            text = "Fired bullets: ${player.firedBullets}",
+            text = "Fired: ${player.firedBullets}",
             x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 90f,
+            y = game.screenHeight / 2f - 50f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
         drawTextOnScreen(
             text = "Survived duration: ${Utils.parseSeconds(player.survivedDuration, "m", "s")}",
             x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 105f,
+            y = game.screenHeight / 2f - 65f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
         drawTextOnScreen(
             text = "Total damage: ${player.totalDamage}",
             x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 120f,
+            y = game.screenHeight / 2f - 80f,
+            color = Color.LIGHT_GRAY,
+            scale = 1.0f
+        );
+        drawTextOnScreen(
+            text = "Score: ${ScoreManager.score}",
+            x = game.screenWidth / 2f - 70f,
+            y = game.screenHeight / 2f - 95f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
