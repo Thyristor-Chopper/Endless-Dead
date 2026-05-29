@@ -45,6 +45,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
 	private val healTimer: Timer;
+	private val timers = mutableListOf<Timer>();
 	// 통계
 	var survivedDuration = 0
 		private set;
@@ -100,15 +101,16 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		
 		// -- 타이머들 --
 		// 1. 생존 시간 기록 & 생존 시간 보너스
-		Timer(1f) {
+		timers.add(Timer(1f) {
 			survivedDuration++;
 			ScoreManager.addScore(1);
-		}.register();
+		}.register());
 		
 		// 2. 30초마다 자연 회복
 		healTimer = Timer(30f) {
 			heal(3);
 		}.register();
+		timers.add(healTimer);
 	}
 	
 	private fun rotatePlayer(x: Int, y: Int): Boolean {
@@ -255,5 +257,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	override fun dispose() {
 		super.dispose();
 		textureWithGun.dispose();
+		for(timer in timers)
+			timer.unregister();
 	}
 }

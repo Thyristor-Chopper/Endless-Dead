@@ -131,6 +131,8 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 		solidColor = Texture(solidColorPixmap);
 		solidColorPixmap.dispose();
 		
+		ScoreManager.resetScore();
+		
 		for(i in 0 until Random.nextInt(50) + 50) {  // 50~100개의 건물과 상자를 무작위로 배치
 			val x = Random.nextInt(this.width.toInt()).toFloat();
 			val y = Random.nextInt(this.height.toInt()).toFloat();
