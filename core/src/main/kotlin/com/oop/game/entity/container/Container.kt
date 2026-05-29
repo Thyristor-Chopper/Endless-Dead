@@ -5,19 +5,19 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.oop.game.entity.Entity;
-import com.oop.game.entity.Player;
+import com.oop.game.entity.InventoryEntity;
 import com.oop.game.item.Item;
 import com.oop.game.world.World;
 
 /**
- * ¾ÆÀÌÅÛ »óÀÚ ¿ªÇÒÀ» ÇÏ´Â Ãß»ó Å¬·¡½º
+ * ì•„ì´í…œ ìƒì ì—­í• ì„ í•˜ëŠ” ì¶”ìƒ í´ë˜ìŠ¤
  *
- * @param initialItem	Ã³À½ µé¾îÀÖ´Â ¾ÆÀÌÅÛ
+ * @param initialItem	ì²˜ìŒ ë“¤ì–´ìˆëŠ” ì•„ì´í…œ
  */
 abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, emptyTexture: String? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture) {
 	open protected val emptyTexture: Texture? = emptyTexture?.let { Texture(Gdx.files.internal(it)) };
 	open protected val playerItemTexture: Texture? = null;
-	var containedItem: Item? = initialItem  // µé¾îÀÖ´Â ¾ÆÀÌÅÛ
+	var containedItem: Item? = initialItem  // ë“¤ì–´ìˆëŠ” ì•„ì´í…œ
 		private set;
 	var isPlayerItem = false
 		private set;
@@ -25,53 +25,47 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		get() = (containedItem == null);
 	
 	/**
-	 * »óÀÚ¸¦ È­¸é¿¡ ±×¸°´Ù. ºñ¾î ÀÖÀ» ¶§¿Í ¾Æ´Ò ¶§ ÅØ½ºÃ³°¡ ´Ù¸£±â ¶§¹®¿¡ overrideÇØ¼­ Ã³¸®ÇÑ´Ù.
+	 * ìƒìë¥¼ í™”ë©´ì— ê·¸ë¦°ë‹¤. ë¹„ì–´ ìˆì„ ë•Œì™€ ì•„ë‹ ë•Œ í…ìŠ¤ì²˜ê°€ ë‹¤ë¥´ê¸° ë•Œë¬¸ì— overrideí•´ì„œ ì²˜ë¦¬í•œë‹¤.
 	 */
 	override fun draw(batch: SpriteBatch) {
-		val playerItemTexture = this.playerItemTexture;
-		val emptyTexture = this.emptyTexture;
-		if(isEmpty && emptyTexture != null) {
-			batch.draw(emptyTexture, x, y, width, height);
-		} else if(isPlayerItem && playerItemTexture != null) {
-			batch.draw(playerItemTexture, x, y, width, height);
-		} else {
-			super.draw(batch);
-		}
+		val texture: Texture? = 
+			if(isEmpty) emptyTexture
+			else if(isPlayerItem) playerItemTexture
+			else this.texture;
+		super.draw(batch, texture);
 	}
 	
 	/**
-	 * ¾ÆÀÌÅÛ °¡Á®°¡±â
+	 * ì•„ì´í…œ ê°€ì ¸ê°€ê¸°
 	 *
-	 * @param 	taker	¾ÆÀÌÅÛÀ» °¡Á®°¡´Â ÀÎº¥Åä¸®¸¦ °¡Áø °³Ã¼
-	 * @param	select	¾ÆÀÌÅÛÀ» °¡Á®°£ ÈÄ ÀÚµ¿À¸·Î ¼±ÅÃÇÒÁö ¿©ºÎ
-	 * @return 	¼º°øÇÏ¸é µé¾îÀÖ´Â ¾ÆÀÌÅÛ, ½ÇÆĞÇÏ¸é null
+	 * @param 	taker	ì•„ì´í…œì„ ê°€ì ¸ê°€ëŠ” ì¸ë²¤í† ë¦¬ë¥¼ ê°€ì§„ ê°œì²´
+	 * @param	select	ì•„ì´í…œì„ ê°€ì ¸ê°„ í›„ ìë™ìœ¼ë¡œ ì„ íƒí• ì§€ ì—¬ë¶€
+	 * @return 	ì„±ê³µí•˜ë©´ ë“¤ì–´ìˆëŠ” ì•„ì´í…œ, ì‹¤íŒ¨í•˜ë©´ null
 	 */
-	fun takeItem(taker: Player, select: Boolean = false): Item? {
+	fun takeItem(taker: InventoryEntity, select: Boolean = false): Item? {
 		val target = containedItem;  // https://stackoverflow.com/questions/44595529/smart-cast-to-type-is-impossible-because-variable-is-a-mutable-property-tha
 		if(target == null) return null;
 		taker.addItemToInventory(target, select);
-		target.holder = taker;
 		containedItem = null;
 		if(isPlayerItem) isPlayerItem = false;
 		return target;
 	}
 	
 	/**
-	 * ¾ÆÀÌÅÛ ³Ö±â
+	 * ì•„ì´í…œ ë„£ê¸°
 	 *
-	 * @param item	³ÖÀ» ¾ÆÀÌÅÛ
+	 * @param item	ë„£ì„ ì•„ì´í…œ
 	 */
 	fun putItem(item: Item, isPlayerItem: Boolean = false) {
 		if(!isEmpty) throw IllegalStateException("container is not empty");
 		containedItem = item;
 		if(isPlayerItem) this.isPlayerItem = true;
-		item.holder = null;
 	}
 	
 	/**
-	 * ¾È¿¡ µé¾î ÀÖ´Â ¾ÆÀÌÅÛÀ» Á¦°ÅÇÑ´Ù.
+	 * ì•ˆì— ë“¤ì–´ ìˆëŠ” ì•„ì´í…œì„ ì œê±°í•œë‹¤.
 	 *
-	 * @return ¼º°ø ¿©ºÎ
+	 * @return ì„±ê³µ ì—¬ë¶€
 	 */
 	fun removeItem(): Boolean {
 		if(containedItem == null) return false;

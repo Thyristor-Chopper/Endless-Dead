@@ -9,17 +9,17 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
-import com.oop.game.GameObject;
-import com.oop.game.TimerManager;
 import com.oop.game.Updatable;
 import com.oop.game.WorldObject;
 import com.oop.game.ZombieGame;
 import com.oop.game.entity.Bullet;
 import com.oop.game.entity.Entity;
+import com.oop.game.entity.InventoryEntity;
 import com.oop.game.entity.LivingEntity;
 import com.oop.game.entity.Player;
 import com.oop.game.entity.container.Container;
 import com.oop.game.item.Item;
+import com.oop.game.widget.Widget;
 
 /**
  * 게임 한 장면 = '월드 하나' 의 추상 기본 클래스.
@@ -62,7 +62,7 @@ import com.oop.game.item.Item;
  * @param width        월드 전체 너비 (기본값: 화면과 동일 = 스크롤 없음)
  * @param height       월드 전체 높이
  */
-abstract class World(override val game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : ScreenAdapter(), GameObject, Updatable {
+abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : ScreenAdapter(), Updatable {
 	abstract val player: Player;
     // OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     val camera = OrthographicCamera();
@@ -79,6 +79,7 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. add(), remove() 라는 공식 창구만 허용.
     //   (5주차에서 배운 캡슐화의 실제 사례)
     private val entities = mutableListOf<Entity>();
+    private val widgets = mutableMapOf<String, Widget>();
 	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
@@ -100,16 +101,34 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
     /**
 	 * 객체를 월드에 등록 — 이후부터 자동으로 update/draw 된다.
 	 */
-    fun add(obj: Entity) {
-        entities.add(obj);
+    fun addEntity(entity: Entity) {
+        entities.add(entity);
     }
 
     /**
 	 * 특정 객체를 수동 제거. 보통은 isAlive()=false 후 removeDead() 로 정리.
 	 */
-    fun remove(obj: Entity) {
-        entities.remove(obj);
+    fun removeEntity(entity: Entity) {
+        entities.remove(entity);
+		entity.dispose();
     }
+	
+	fun addWidget(id: String, widget: Widget) {
+		widgets[id] = widget;
+	}
+	
+	fun removeWidget(id: String): Boolean {
+		val widget: Widget? = widgets[id];
+		if(widget == null) return false;
+		widget.dispose();
+		widgets.remove(id);
+		return true;
+	}
+	
+	fun getWidget(id: String): Widget {
+		if(!(id in widgets)) throw IllegalArgumentException("invalid widget ID");
+		return widgets[id]!!;
+	}
 
     /**
      * 현재 등록된 객체 목록의 '읽기용 복사본'.
@@ -139,10 +158,25 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
 	 *
 	 * @param callback	실행할 서브루틴
 	 */
-	private fun forEachObjects(callback: (WorldObject) -> Unit) {
+	fun forEachObjects(callback: (WorldObject) -> Unit) {
 		for(entity in entities.toList()) {
 			callback(entity);
-			if(entity is Player)
+			if(entity is InventoryEntity)
+				for(item in entity.getInventory())
+					callback(item);
+			if(entity is Container)
+				entity.containedItem?.let { callback(it) };
+		}
+	}
+	
+	/**
+	 * 월드 내 모든 아이템을 순회한다.
+	 *
+	 * @param callback	실행할 서브루틴
+	 */
+	fun forEachItems(callback: (WorldObject) -> Unit) {
+		for(entity in entities.toList()) {
+			if(entity is InventoryEntity)
 				for(item in entity.getInventory())
 					callback(item);
 			if(entity is Container)
@@ -230,9 +264,8 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
         drawBackground(batch);
         drawBackgroundOverlay();
         drawAllObjects();
-        batch.end();
-		
-		// 6) 자막이 있으면 표시
+        drawAllWidgets();
+		// 자막이 있으면 표시
 		if(subtitlesTimer > 0f) subtitlesMessage?.let {
 			drawTextOnScreen(
 				text = it,
@@ -241,10 +274,12 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
 				color = subtitlesColor,
 				scale = 1.0f,
 				width = game.screenWidth.toFloat(),
-				align = Align.center
+				align = Align.center,
+				skipBatch = true
 			);
 			subtitlesTimer -= delta;
 		};
+        batch.end();
     }
 	
 	/**
@@ -290,12 +325,18 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
         }
     }
 	
+	private fun drawAllWidgets() {
+		for(widget in widgets.values)
+			if(widget.visible)
+				widget.draw(batch);
+	}
+	
 	/**
 	 * 플레이어 위치에 따라 카메라 위치 변경
 	 */
 	inline fun updateCameraOffset() {
-		offsetX = player.x - game.screenWidth / 2f + player.width / 2f;
-		offsetY = player.y - game.screenHeight / 2f + player.height / 2f;
+		offsetX = player.x - game.screenWidth / 2f;
+		offsetY = player.y - game.screenHeight / 2f;
 	}
 
     // ────────────────────────────────────────────────────────
@@ -384,7 +425,11 @@ abstract class World(override val game: ZombieGame, val width: Float = game.scre
     override fun dispose() {
         batch.dispose();
         font.dispose();
-        for(obj in entities)
-            obj.dispose();
+        for(entity in entities)
+            entity.dispose();
+		entities.clear();
+        for(widget in widgets.values)
+            widget.dispose();
+		widgets.clear();
     }
 }

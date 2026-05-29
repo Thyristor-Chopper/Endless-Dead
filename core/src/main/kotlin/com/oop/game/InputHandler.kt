@@ -40,7 +40,7 @@ object InputHandler {
      *   총알 발사, 메뉴 선택처럼 '한 번만' 실행되어야 할 동작에 사용.
      */
     inline fun isKeyJustPressed(key: Int): Boolean {
-        return Gdx.input.isKeyJustPressed(key)
+        return Gdx.input.isKeyJustPressed(key);
     }
 	
 	/**
@@ -49,7 +49,7 @@ object InputHandler {
 	 * @param button	단추의 종류
      */
     inline fun isButtonPressed(button: Int): Boolean {
-        return Gdx.input.isButtonPressed(button)
+        return Gdx.input.isButtonPressed(button);
     }
 
 	/**
@@ -58,22 +58,24 @@ object InputHandler {
 	 * @param button	단추의 종류
      */
     inline fun isButtonJustPressed(button: Int): Boolean {
-        return Gdx.input.isButtonJustPressed(button)
+        return Gdx.input.isButtonJustPressed(button);
     }
-	
+
     // 자주 쓰는 키 상수를 짧은 이름으로 재노출.
     //   원본은 Input.Keys.LEFT 처럼 길어서 자주 쓸수록 번거롭다.
     //   필요하면 Input.Keys.XXX 에서 다른 키를 직접 import 해서 써도 된다.
-    const val LEFT = Input.Keys.LEFT
-    const val RIGHT = Input.Keys.RIGHT
-    const val UP = Input.Keys.UP
-    const val DOWN = Input.Keys.DOWN
-    const val SPACE = Input.Keys.SPACE
-    const val ESCAPE = Input.Keys.ESCAPE
-    const val W = Input.Keys.W
-    const val A = Input.Keys.A
-    const val S = Input.Keys.S
-    const val D = Input.Keys.D
+    const val LEFT = Input.Keys.LEFT;
+    const val RIGHT = Input.Keys.RIGHT;
+    const val UP = Input.Keys.UP;
+    const val DOWN = Input.Keys.DOWN;
+    const val SPACE = Input.Keys.SPACE;
+    const val ESCAPE = Input.Keys.ESCAPE;
+    const val W = Input.Keys.W;
+    const val A = Input.Keys.A;
+    const val S = Input.Keys.S;
+    const val D = Input.Keys.D;
+    const val P = Input.Keys.P;
+    const val DELETE = Input.Keys.FORWARD_DEL;
     const val LEFT_MOUSE = Input.Buttons.LEFT;
     const val RIGHT_MOUSE = Input.Buttons.RIGHT;
 }

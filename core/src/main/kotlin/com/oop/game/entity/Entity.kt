@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-import com.oop.game.GameObject;
 import com.oop.game.Position;
 import com.oop.game.Updatable;
 import com.oop.game.WorldObject;
@@ -50,14 +49,14 @@ import kotlin.math.sqrt;
  * @param height	세로 크기 (픽셀)
  * @param texture	아이템 텍스처(없을 수도 있음)
  */
-abstract class Entity(override val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) : GameObject, WorldObject, Updatable {
-	override val game = world.game;
+abstract class Entity(override val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) : WorldObject, Updatable {
 	protected val texture: Texture? = texture?.let { Texture(Gdx.files.internal(it)) };
 	val position: Position
 		get() = Position(x, y);
 	open val bodyDamage = 0;  // 다른 개체에 닿았을 때 몸 대미지(아직 활용하는 개체 없음)
 	protected open val ignoreFriendBodyDamage = false;  // 동일 개체에 대해 몸 대미지 무시
 	open val penetrationDamage = 0;  // 총알이 관통할 때 총알에게 주는 대미지
+	protected open var rotation = 0f;
 
     /**
      * 매 프레임 호출되어 **자신을 그린다**.
@@ -70,10 +69,15 @@ abstract class Entity(override val world: World, var x: Float, var y: Float, val
      * 이미지 로딩은 보통 객체의 init 또는 프로퍼티 초기화 시점에 한 번 한다:
      *   private val texture = Texture(Gdx.files.internal("player.png"))
      */
-    open fun draw(batch: SpriteBatch) {
-		texture?.let { batch.draw(it, x, y, width, height) };
+    protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
+		val texture: Texture? = alternateTexture ?: this.texture;
+		texture?.let { batch.draw(it, x - width / 2f, y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false) };
 	}
-
+	
+	open fun draw(batch: SpriteBatch) {
+		draw(batch, null);
+	}
+	
     /**
      * 이 객체가 차지하는 사각형 영역 — 충돌 판정에 쓴다.
      *

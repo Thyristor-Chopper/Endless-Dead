@@ -70,7 +70,7 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 		if(!canFire) return false;
 		
 		val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, penetrable, bulletHp);
-		world.add(bullet);
+		world.addEntity(bullet);
 		startFireCooldown();
 		ammo--;
 		
