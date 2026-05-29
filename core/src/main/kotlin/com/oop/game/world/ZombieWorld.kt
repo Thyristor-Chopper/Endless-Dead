@@ -536,7 +536,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 			align = Align.center
         );
         drawTextOnScreen(
-            text = "Press <P> or <Esc> to Resume",
+            text = "Press <P> or <Esc> to resume",
             x = 0f,
             y = game.screenHeight / 2f - 20f,
             color = Color.WHITE,
