@@ -38,7 +38,7 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
         get() = target.position.distanceTo(position);
 	
 	override fun update(delta: Float) {
-        super.update(delta);  // 부모(LivingGameObject)의 무적 타이머 갱신 로직 실행
+        super.update(delta);
 
         val dx = target.x - x;
         val dy = target.y - y;

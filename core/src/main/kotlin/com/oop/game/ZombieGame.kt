@@ -77,10 +77,11 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
 			GameState.GAME_OVER	-> " [게임 오버]"
 			else				-> ""
 		};
-		Gdx.graphics.setTitle("${title} - ${titleBarInfo}${gameStateIndicator}");
+		val titleBarInfo = if(this.titleBarInfo.isBlank()) "" else " - $titleBarInfo";
+		Gdx.graphics.setTitle("${title}${titleBarInfo}${gameStateIndicator}");
 	}
 	
-	fun setTitleBarInfo(info: String) {
-		titleBarInfo = info;
+	fun setTitleBarInfo(info: String?) {
+		titleBarInfo = info ?: "";
 	}
 }

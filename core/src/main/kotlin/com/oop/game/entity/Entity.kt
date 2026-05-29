@@ -139,4 +139,9 @@ abstract class Entity(override val world: World, var x: Float, var y: Float, val
         val dy = (other.y + other.height / 2f - height / 2f) - y;
         return sqrt(dx * dx + dy * dy);
 	}
+	
+	/**
+	 * 시간이 멈췄어도 canUpdateWhileFrozen에 관계없이 실행할 로직
+	 */
+	open fun forceUpdate(delta: Float) {}
 }
