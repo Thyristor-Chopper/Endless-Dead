@@ -80,7 +80,7 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
 		Gdx.graphics.setTitle("${title} - ${titleBarInfo}${gameStateIndicator}");
 	}
 	
-	fun setTitleBarInfo(info: String) {
-		titleBarInfo = info;
+	fun setTitleBarInfo(info: String?) {
+		titleBarInfo = info ?: "";
 	}
 }
