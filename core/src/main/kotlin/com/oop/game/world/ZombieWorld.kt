@@ -21,6 +21,7 @@ import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Building;
 import com.oop.game.entity.container.Chest;
 import com.oop.game.entity.container.Container;
+import com.oop.game.input.Input.LEFT_MOUSE
 import com.oop.game.item.Item;
 import com.oop.game.item.Bandage;
 import com.oop.game.item.Gun;
@@ -214,11 +215,23 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 		updateProgressBars();
 
         when(GameManager.state) {
+			GameState.TITLE     -> updateTitle(delta)
             GameState.IN_PLAY	-> updateInPlay(delta);
             GameState.PAUSED    -> updatePaused();
             GameState.GAME_OVER	-> updateGameOver();
         }
     }
+
+	private fun updateTitle(delta: Float) {
+		var gameState = GameState.TITLE
+		fun anyKeyPressed(): Boolean {
+			return Gdx.input.isButtonPressed(LEFT_MOUSE)
+		}
+
+		if(anyKeyPressed()) {
+			gameState = GameState.IN_PLAY //타이틀 화면 설정
+		}
+	}
 	
 	private fun togglePause() {
 		// P키를 누르면 IN_PLAY <-> PAUSED 상태 토글!
@@ -387,6 +400,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 
         // ── 상태별로 그리는 것이 다름 ──
         when(GameManager.state) {
+			GameState.TITLE     -> updateTitle(delta)
             GameState.IN_PLAY 	-> {
                 // 플레이 중에는 추가로 그릴 것 없음
             }
