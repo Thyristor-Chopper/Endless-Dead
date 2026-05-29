@@ -9,5 +9,8 @@ interface Updatable {
 	 */
 	val canUpdateWhileFrozen: Boolean;
 	
+	/**
+	 * 매 프레임 상태를 갱신한다.
+	 */
 	fun update(delta: Float) {}
 }
