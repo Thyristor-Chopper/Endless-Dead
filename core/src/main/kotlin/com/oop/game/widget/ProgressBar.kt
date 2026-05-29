@@ -7,6 +7,8 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import com.oop.game.widget.style.ProgressBarStyle;
+
 import kotlin.math.ceil;
 
 private const val BAR_VERTICAL_PADDING = 3;

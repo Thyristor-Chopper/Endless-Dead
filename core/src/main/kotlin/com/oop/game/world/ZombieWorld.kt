@@ -28,7 +28,7 @@ import com.oop.game.item.Shotgun;
 import com.oop.game.spawner.Spawner;
 import com.oop.game.spawner.ZombieSpawner;
 import com.oop.game.widget.ProgressBar;
-import com.oop.game.widget.ProgressBarStyle;
+import com.oop.game.widget.style.ProgressBarStyle;
 
 import kotlin.math.floor;
 import kotlin.random.Random;
