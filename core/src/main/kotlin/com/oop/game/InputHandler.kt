@@ -61,8 +61,6 @@ object InputHandler {
         return Gdx.input.isButtonJustPressed(button);
     }
 
-
-
     // 자주 쓰는 키 상수를 짧은 이름으로 재노출.
     //   원본은 Input.Keys.LEFT 처럼 길어서 자주 쓸수록 번거롭다.
     //   필요하면 Input.Keys.XXX 에서 다른 키를 직접 import 해서 써도 된다.
@@ -79,5 +77,4 @@ object InputHandler {
     const val DELETE = Input.Keys.FORWARD_DEL;
     const val LEFT_MOUSE = Input.Buttons.LEFT;
     const val RIGHT_MOUSE = Input.Buttons.RIGHT;
-
 }
