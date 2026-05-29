@@ -2,13 +2,13 @@ package com.oop.game.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.oop.game.GameManager;
 import com.oop.game.GameState;
 import com.oop.game.Input;
 import com.oop.game.ScoreManager;
-import com.oop.game.Textures;
 import com.oop.game.Timer;
 import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Container;
@@ -37,9 +37,9 @@ import kotlin.math.atan2;
  *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 GameObject.dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 57f, Textures.player, 50), InventoryEntity by InventoryEntityImpl() {
+class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 57f, "player.bmp", 50), InventoryEntity by InventoryEntityImpl() {
 	override val canUpdateWhileFrozen = true;
-	private val textureWithGun = Textures.playerWithGun;
+	private val textureWithGun = Texture(Gdx.files.internal("player_holding_gun.bmp"));
     private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
@@ -221,6 +221,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	}
 	
 	override fun dispose() {
+		super.dispose();
+		textureWithGun.dispose();
 		for(timer in timers)
 			timer.unregister();
 	}

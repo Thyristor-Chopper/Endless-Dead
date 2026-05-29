@@ -11,7 +11,7 @@ import com.oop.game.world.World;
  *
  * @param initialHp	초기(최대) 체력
  */
-abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture, initialHp: Int) : Entity(world, x, y, width, height, texture) {
+abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, initialHp: Int) : Entity(world, x, y, width, height, texture) {
 	override val canUpdateWhileFrozen = false;
 	open val maxHp: Int = initialHp;
 	var hp = initialHp

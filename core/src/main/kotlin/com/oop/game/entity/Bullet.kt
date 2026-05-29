@@ -1,7 +1,6 @@
 package com.oop.game.entity;
 
 import com.oop.game.Position;
-import com.oop.game.Textures;
 import com.oop.game.entity.Entity;
 import com.oop.game.item.Fireable;
 import com.oop.game.world.World;
@@ -20,7 +19,7 @@ import kotlin.math.sqrt;
  * @param penetrable	총알 관통 가능 여부
  * @param hp			총알 체력(관통 시 감소)
  */
-class Bullet(world: World, val gun: Fireable, val shooter: Entity, val target: Position, private val speed: Float, val damage: Int, val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.x, shooter.y, 16f, 16f, Textures.bullet, hp) {
+class Bullet(world: World, val gun: Fireable, val shooter: Entity, val target: Position, private val speed: Float, val damage: Int, val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.x, shooter.y, 16f, 16f, "bullet.bmp", hp) {
 	override val canUpdateWhileFrozen = true;
 	override val defaultInvincibleDuration = 0f;
 	override val showDamagedIndicator = false;
