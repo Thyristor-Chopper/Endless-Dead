@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import com.oop.game.Textures;
 import com.oop.game.entity.Entity;
 import com.oop.game.entity.InventoryEntity;
 import com.oop.game.item.Item;
@@ -15,7 +14,8 @@ import com.oop.game.world.World;
  *
  * @param initialItem	처음 들어있는 아이템
  */
-abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture, open protected val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture) {
+abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, emptyTexture: String? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture) {
+	open protected val emptyTexture: Texture? = emptyTexture?.let { Texture(Gdx.files.internal(it)) };
 	open protected val playerItemTexture: Texture? = null;
 	var containedItem: Item? = initialItem  // 들어있는 아이템
 		private set;
@@ -72,5 +72,11 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		containedItem = null;
 		if(isPlayerItem) isPlayerItem = false;
 		return true;
+	}
+	
+	override fun dispose() {
+		super.dispose();
+		playerItemTexture?.let { it.dispose() };
+		emptyTexture?.let { it.dispose() };
 	}
 }

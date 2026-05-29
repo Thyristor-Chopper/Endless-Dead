@@ -1,8 +1,5 @@
 package com.oop.game.entity;
 
-import com.badlogic.gdx.graphics.Texture;
-
-import com.oop.game.Textures;
 import com.oop.game.world.World;
 
 import kotlin.math.sqrt;
@@ -28,7 +25,7 @@ import kotlin.math.sqrt;
  * @param minY
  * @param maxY
  */
-open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, attackDamage: Int, private val angle: Float, private val player: Player, protected var speed: Float = 100f, texture: Texture = Textures.zombie) : LivingEntity(world, x, y, width, height, texture, hp) {
+open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, attackDamage: Int, private val angle: Float, private val player: Player, protected var speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp) {
 	override val canUpdateWhileFrozen = false;
     var attackDamage = attackDamage
 		protected set;
