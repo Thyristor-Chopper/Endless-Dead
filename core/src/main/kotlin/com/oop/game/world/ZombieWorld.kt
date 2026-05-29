@@ -423,7 +423,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 
         // ── 상태별로 그리는 것이 다름 ──
         when(GameManager.state) {
-			GameState.TITLE     -> updateTitle(delta)
+			GameState.TITLE     -> drawTitleMessage()
             GameState.IN_PLAY 	-> {
                 // 플레이 중에는 추가로 그릴 것 없음
             }
@@ -590,6 +590,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
     override fun dispose() {
         super.dispose();
         tileTexture.dispose();
+		titleTexture.dispose()
 		solidColor.dispose();
 		for(timer in timers)
 			timer.unregister();
