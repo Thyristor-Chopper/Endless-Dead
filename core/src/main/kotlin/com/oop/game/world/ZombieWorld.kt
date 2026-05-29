@@ -21,7 +21,6 @@ import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Building;
 import com.oop.game.entity.container.Chest;
 import com.oop.game.entity.container.Container;
-import com.oop.game.input.Input.LEFT_MOUSE
 import com.oop.game.item.Item;
 import com.oop.game.item.Bandage;
 import com.oop.game.item.Gun;
@@ -225,7 +224,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	private fun updateTitle(delta: Float) {
 		var gameState = GameState.TITLE
 		fun anyKeyPressed(): Boolean {
-			return Gdx.input.isButtonPressed(LEFT_MOUSE)
+			return Gdx.input.isButtonPressed(Input.LEFT_MOUSE)
 		}
 
 		if(anyKeyPressed()) {
