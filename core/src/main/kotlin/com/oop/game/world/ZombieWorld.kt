@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.Align;
 import com.oop.game.Constants;
 import com.oop.game.GameManager;
 import com.oop.game.GameState;
-import com.oop.game.input.Input;
 import com.oop.game.ZombieGame;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
@@ -21,6 +20,7 @@ import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Building;
 import com.oop.game.entity.container.Chest;
 import com.oop.game.entity.container.Container;
+import com.oop.game.input.Input;
 import com.oop.game.item.Item;
 import com.oop.game.item.Bandage;
 import com.oop.game.item.Gun;
@@ -200,7 +200,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
         }
     }
 	
-	private fun togglePaused() {
+	private fun togglePause() {
 		// P키를 누르면 IN_PLAY <-> PAUSED 상태 토글!
         if(Input.isKeyJustPressed(Input.P) || Input.isKeyJustPressed(Input.ESCAPE)) {
             if(GameManager.state == GameState.IN_PLAY) {
@@ -216,7 +216,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	private inline fun updatePaused() {
         // 객체 업데이트(super.update)나 타이머(spawner.tick)를 호출하지 않음.
         //  세상이 그대로 멈춰있는 상태가 됨
-		togglePaused();
+		togglePause();
     }
 	
 	private inline fun updateProgressBars() {
@@ -288,7 +288,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 			Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 게임 오버 시 비디오 카드 리소스를 낭비하지 않게 한다
 		}
 		
-		togglePaused();
+		togglePause();
     }
 
     /**
