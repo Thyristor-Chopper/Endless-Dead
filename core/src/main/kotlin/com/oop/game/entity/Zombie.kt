@@ -25,8 +25,10 @@ import kotlin.math.sqrt;
  * @param minY
  * @param maxY
  */
-open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, var attackDamage: Int, private val angle: Float, private val player: Player, protected var speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp) {
-    override val penetrationDamage = 1;
+open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, attackDamage: Int, private val angle: Float, private val player: Player, protected var speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp) {
+    var attackDamage = attackDamage
+		protected set;
+	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
 	open val target: LivingEntity = world.player;
 
@@ -51,17 +53,23 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
     }
 	
 	class Weak(world: World, x: Float, y: Float, player: Player, angle: Float) : Zombie(world, x, y, width=21f, height=30f, hp=3, speed=150f, angle=angle, player=player, attackDamage=1);
+	
 	class Normal(world: World, x: Float, y: Float, player: Player, angle: Float) : Zombie(world, x, y, width=32f, height=45f, hp=5, speed=100f, angle=angle, player=player, attackDamage=3);
-	class Strong(world: World, x: Float, y: Float, player: Player, angle: Float) : Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, angle=angle, player=player, attackDamage=5){
-        //평상시 스피드,데미지
-        val originalSpeed=speed
-        val originalDamage=attackDamage
-        //평상시,돌진하려고 잠깐 멈춰있음,돌진,돌진 쿨
-        enum class DashState{
-            WALKING,PREPARING,DASHING,COOLDOWN
+	
+	class Strong(world: World, x: Float, y: Float, player: Player, angle: Float) : Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, angle=angle, player=player, attackDamage=5) {
+        // 평상시,돌진하려고 잠깐 멈춰있음,돌진,돌진 쿨
+        private enum class DashState {
+            WALKING,
+			PREPARING,
+			DASHING,
+			COOLDOWN;
         }
-        private var dashState=DashState.WALKING
-        private var stateTimer=0f
+		
+        // 평상시 스피드,데미지
+        val originalSpeed = speed
+        val originalDamage = attackDamage
+        private var dashState = DashState.WALKING
+        private var stateTimer = 0f
 
         //  돌진할 '방향(벡터)'을 기억해 둘 변수
         private var dashDirX = 0f
@@ -70,50 +78,48 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
         override fun update(delta: Float) {
             val dist = distanceToTarget
 
-            when (dashState) {
+            when(dashState) {
                 DashState.WALKING -> {
-
-                    if (dist < 250f) {
+                    if(dist < 250f) {
                         dashState = DashState.PREPARING
                         stateTimer = 0.5f
 
-                        //  대기 상태에 들어가는 첫 프레임, 이때 플레이어를 조준해서 방향을 기억해둔다
-                        val dx=target.x - x
-                        val dy=target.y - y
-                        if (dist > 0) {
-                            dashDirX = dx/dist
-                            dashDirY = dy/dist
+                        // 대기 상태에 들어가는 첫 프레임, 이때 플레이어를 조준해서 방향을 기억해둔다
+                        val dx = target.x - x
+                        val dy = target.y - y
+                        if(dist > 0) {
+                            dashDirX = dx / dist
+                            dashDirY = dy / dist
                         }
                     }
                 }
                 DashState.PREPARING -> {
                     speed = 0f
                     stateTimer -= delta
-                    if (stateTimer <= 0f) {
+                    if(stateTimer <= 0f) {
                         dashState = DashState.DASHING
                         stateTimer = 0.4f
                     }
                 }
                 DashState.DASHING -> {
-                    //speed 0으로 해서 super업데이트 로직떄 따로 안움직이게함
+                    // speed 0으로 해서 super업데이트 로직떄 따로 안움직이게함
                     speed = 0f
-                    attackDamage=20
+                    attackDamage = 20
 
                     x += dashDirX * 800f * delta
                     y += dashDirY * 800f * delta
 
                     // 돌진 중에 플레이어랑 부딪히면, 데미지 주고 즉시 쿨타임으로 넘어감
-                    if (collidesWith(target)) {
+                    if(collidesWith(target)) {
                         target.takeDamage(attackDamage, attacker = this)
                         dashState = DashState.COOLDOWN
                         speed = originalSpeed
-                        attackDamage=originalDamage
+                        attackDamage = originalDamage
                         stateTimer = 5.0f
-                    }else {
-
+                    } else {
                         stateTimer -= delta
 
-                        if (stateTimer <= 0f) {
+                        if(stateTimer <= 0f) {
                             dashState = DashState.COOLDOWN
                             speed = originalSpeed
                             attackDamage=originalDamage
@@ -122,9 +128,8 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
                     }
                 }
                 DashState.COOLDOWN -> {
-
                     stateTimer -= delta
-                    if (stateTimer <= 0f) {
+                    if(stateTimer <= 0f) {
                         dashState = DashState.WALKING
                     }
                 }
@@ -133,7 +138,5 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
             // 💡 속도 세팅이 완벽히 끝난 후, 마지막에 부모를 호출해서 이동시킴
             super.update(delta)
         }
-
-
     }
 }
