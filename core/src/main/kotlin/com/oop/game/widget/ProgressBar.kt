@@ -2,11 +2,9 @@ package com.oop.game.widget;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import com.oop.game.Textures;
 import com.oop.game.widget.style.ProgressBarStyle;
 
 import kotlin.math.ceil;
@@ -18,17 +16,11 @@ private const val CHUNK_HEIGHT = 12;
 private const val CHUNK_MARGIN = 2;
 
 class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, val color: Color = Color.WHITE, val style: ProgressBarStyle = ProgressBarStyle.CHUNKED) : Widget(x, y, width, height) {
-	private val rawBarTexture = Texture(Gdx.files.internal("progress_bar.bmp"));
-	private val rawChunkTexture = Texture(Gdx.files.internal("progress_chunk.bmp"));
-	private val barTexture = NinePatch(rawBarTexture, 2, 2, 5, 6);
-	private val indicatorTexture: NinePatch by lazy { NinePatch(rawChunkTexture, 1, 1, 1, 1) };
-	private val chunkTexture: NinePatch by lazy { NinePatch(TextureRegion(rawChunkTexture, 1, 0, 1, CHUNK_HEIGHT), 0, 0, 1, 1) };
-	
 	override fun draw(batch: SpriteBatch) {
 		if(!visible) return;
 		val barX = x();
 		val barY = y();
-		barTexture.draw(batch, barX, barY, width, height);
+		Textures.progressBar.draw(batch, barX, barY, width, height);
 		if(value > 0f) {
 			batch.color = color;
 			val maxIndicatorWidth = width - BAR_HORIZONTAL_PADDING * 2;
@@ -47,19 +39,14 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 								CHUNK_WIDTH - (accumulatedWidth - maxIndicatorWidth)
 							else
 								CHUNK_WIDTH.toFloat();
-						chunkTexture.draw(batch, chunkX, indicatorY, chunkWidth, indicatorHeight);
+						Textures.progressBarChunk.draw(batch, chunkX, indicatorY, chunkWidth, indicatorHeight);
 					}
 				}
 				ProgressBarStyle.SMOOTH		-> {
-					indicatorTexture.draw(batch, indicatorX, indicatorY, indicatorWidth, indicatorHeight);
+					Textures.progressBarIndicator.draw(batch, indicatorX, indicatorY, indicatorWidth, indicatorHeight);
 				}
 			}
 			batch.color = Color.WHITE;
 		}
-	}
-	
-	override fun dispose() {
-		rawBarTexture.dispose();
-		rawChunkTexture.dispose();
 	}
 }

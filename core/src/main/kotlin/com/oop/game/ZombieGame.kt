@@ -3,6 +3,7 @@ package com.oop.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 
+import com.oop.game.Textures;
 import com.oop.game.world.ZombieWorld;
 
 /**
@@ -86,5 +87,20 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
 	
 	fun setTitleBarInfo(info: String?) {
 		titleBarInfo = info ?: "";
+	}
+	
+	override fun dispose() {
+		Textures.player.dispose();
+		Textures.playerWithGun.dispose();
+		Textures.bullet.dispose();
+		Textures.zombie.dispose();
+		Textures.chest.dispose();
+		Textures.emptyChest.dispose();
+		Textures.chestPlayerItem.dispose();
+		Textures.building.dispose();
+		Textures.emptyBuilding.dispose();
+		Textures.buildingPlayerItem.dispose();
+		Textures.progressBarTexture.dispose();
+		Textures.progressChunkTexture.dispose();
 	}
 }

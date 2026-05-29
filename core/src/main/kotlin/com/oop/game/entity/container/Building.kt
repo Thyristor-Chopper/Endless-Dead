@@ -1,8 +1,8 @@
 package com.oop.game.entity.container;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 
+import com.oop.game.Textures;
 import com.oop.game.item.Item;
 import com.oop.game.world.World;
 
@@ -14,6 +14,6 @@ import com.oop.game.world.World;
  * @param y		개체 세로 위치
  * @param initialItem	처음 들어있는 아이템
  */
-class Building(world: World, x: Float, y: Float, initialItem: Item? = null): Container(world, x, y, 23f, 24f, "building.bmp", "building_empty.bmp", initialItem) {
-	override val playerItemTexture = Texture(Gdx.files.internal("building_player_added.bmp"));
+class Building(world: World, x: Float, y: Float, initialItem: Item? = null): Container(world, x, y, 23f, 24f, Textures.building, Textures.emptyBuilding, initialItem) {
+	override val playerItemTexture = Textures.buildingPlayerItem;
 }

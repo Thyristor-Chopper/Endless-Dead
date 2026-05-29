@@ -49,12 +49,11 @@ import kotlin.math.sqrt;
  * @param height	세로 크기 (픽셀)
  * @param texture	아이템 텍스처(없을 수도 있음)
  */
-abstract class Entity(override val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) : WorldObject, Updatable {
+abstract class Entity(override val world: World, var x: Float, var y: Float, val width: Float, val height: Float, protected val texture: Texture? = null) : WorldObject, Updatable {
 	/**
 	 * TimeStopper 아이템의 영향을 받는지의 여부
 	 */
 	open val canUpdateWhileFrozen = true;
-	protected val texture: Texture? = texture?.let { Texture(Gdx.files.internal(it)) };
 	val position: Position
 		get() = Position(x, y);
 	open val bodyDamage = 0;  // 다른 개체에 닿았을 때 몸 대미지(아직 활용하는 개체 없음)
@@ -116,9 +115,7 @@ abstract class Entity(override val world: World, var x: Float, var y: Float, val
      * 기본 구현은 빈 함수 — Texture 같은 자원을 안 쓰는 객체는 그대로 두면 된다.
      * 텍스처를 쓰는 객체라면 override 해서 texture.dispose() 를 호출.
      */
-    open fun dispose() {
-		texture?.dispose();
-	}
+    open fun dispose() {}
 	
 	/**
 	 * 개체가 다른 누군가를 공격했을 때 콜백 함수
