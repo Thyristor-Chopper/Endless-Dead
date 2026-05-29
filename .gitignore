@@ -1,5 +1,8 @@
+.idea/
 .gradle/
+core/.idea/
 core/build/
+core/src/.idea/
 desktop/.lwjgl/
 desktop/build/
 desktop/*.log

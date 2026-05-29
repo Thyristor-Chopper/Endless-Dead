@@ -196,7 +196,8 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
     protected fun updateAllObjects(delta: Float) {
 		forEachObjects {
 			if(it is Updatable)
-				it.update(delta);
+				if(!(it is Entity) || (it is Entity && (!(this is Freezable) || !this.isFrozen || it.canUpdateWhileFrozen)))
+					it.update(delta);
 		};
     }
 
@@ -232,10 +233,10 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
      * 위 두 호출 사이에 그 로직을 끼워 넣는다 (ExampleWorld 참고).
      */
     override fun update(delta: Float) {
-        updateAllObjects(delta);
-        removeDead();
-    }
-
+		updateAllObjects(delta);
+		removeDead();
+	}
+	
     // ────────────────────────────────────────────────────────
     //  매 프레임 그리기
     // ────────────────────────────────────────────────────────

@@ -10,11 +10,11 @@ import com.badlogic.gdx.utils.Align;
 import com.oop.game.Constants;
 import com.oop.game.GameManager;
 import com.oop.game.GameState;
-import com.oop.game.input.Input;
-import com.oop.game.ZombieGame;
+import com.oop.game.Input;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
 import com.oop.game.Utils;
+import com.oop.game.ZombieGame;
 import com.oop.game.entity.Entity;
 import com.oop.game.entity.Player;
 import com.oop.game.entity.Zombie;
@@ -28,6 +28,7 @@ import com.oop.game.item.Gun;
 import com.oop.game.item.MachineGun;
 import com.oop.game.item.Shoes;
 import com.oop.game.item.Shotgun;
+import com.oop.game.item.TimeStopper;
 import com.oop.game.spawner.Spawner;
 import com.oop.game.spawner.ZombieSpawner;
 import com.oop.game.widget.ProgressBar;
@@ -73,7 +74,7 @@ import kotlin.random.Random;
  * @param worldWidth   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
  * @param worldHeight  월드 전체 높이
  */
-class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat(), height: Float = Constants.WORLD_HEIGHT.toFloat()) : World(game, width, height) {
+class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat(), height: Float = Constants.WORLD_HEIGHT.toFloat()) : World(game, width, height), Freezable {
 	/**
 	 * 제목 표시줄에 표시할 정보 종류를 담는 enumeration
 	 */
@@ -119,6 +120,9 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	private val timers = mutableListOf<Timer>();
     private val frozenOverlay = Color(0f, 0f, 0f, 0.5f);
 	private val solidColor: Texture;
+	override var isFrozen: Boolean = false  // world의 시간이 정지 되었는지 확인하는 변수
+		private set;
+	private var unfreezeTimer: Timer? = null;
 
     /**
      * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -171,12 +175,27 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다
 	 */
 	private inline fun generateRandomItem(): Item {
-		return when(Random.nextInt(4)) {
+		return when(Random.nextInt(5)) {
 			0		-> MachineGun(this)
 			1		-> Shotgun(this)
 			2		-> Bandage(this)
+			3		-> TimeStopper(this)
 			else	-> Shoes(this)
 		};
+	}
+	
+	override fun freeze(duration: Float) {
+		isFrozen = true;
+		unfreezeTimer = Timer(duration) {
+			unfreeze();
+			unfreezeTimer?.unregister();
+			unfreezeTimer = null;
+		}.register();
+	}
+	
+	override fun unfreeze() {
+		isFrozen = false;
+		drawSubtitles("Time moves again");
 	}
 
     /**
@@ -193,7 +212,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 		
 		// 미터기 정보 갱신
 		updateProgressBars();
-		
+
         when(GameManager.state) {
 			GameState.TITLE     -> updateTitle(delta)
             GameState.IN_PLAY	-> updateInPlay(delta);
@@ -213,7 +232,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 		}
 	}
 	
-	private fun togglePaused() {
+	private fun togglePause() {
 		// P키를 누르면 IN_PLAY <-> PAUSED 상태 토글!
         if(Input.isKeyJustPressed(Input.P) || Input.isKeyJustPressed(Input.ESCAPE)) {
             if(GameManager.state == GameState.IN_PLAY) {
@@ -229,7 +248,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	private inline fun updatePaused() {
         // 객체 업데이트(super.update)나 타이머(spawner.tick)를 호출하지 않음.
         //  세상이 그대로 멈춰있는 상태가 됨
-		togglePaused();
+		togglePause();
     }
 	
 	private inline fun updateProgressBars() {
@@ -301,7 +320,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 			Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 게임 오버 시 비디오 카드 리소스를 낭비하지 않게 한다
 		}
 		
-		togglePaused();
+		togglePause();
     }
 
     /**
@@ -459,7 +478,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
         drawTextOnScreen(
             text = "YOU DIED!",
             x = 0f,
-            y = game.screenHeight / 2f,
+            y = game.screenHeight / 2f + 40f,
             color = Color.RED,
             scale = 2.0f,
 			width = game.screenWidth.toFloat(),
@@ -468,7 +487,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
         drawTextOnScreen(
             text = "Press <Esc> to exit or press <R> or <Space> for a new game",
             x = 0f,
-            y = game.screenHeight / 2f - 40f,
+            y = game.screenHeight / 2f + 10f,
             color = Color.WHITE,
             scale = 1.0f,
 			width = game.screenWidth.toFloat(),
@@ -479,35 +498,42 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
         drawTextOnScreen(
             text = "Opened containers: ${player.openedContainerCount}",
             x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 60f,
+            y = game.screenHeight / 2f - 20f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
         drawTextOnScreen(
             text = "Killed zombies: ${player.killedZombieCount}",
             x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 75f,
+            y = game.screenHeight / 2f - 35f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
         drawTextOnScreen(
-            text = "Fired bullets: ${player.firedBullets}",
+            text = "Fired: ${player.firedBullets}",
             x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 90f,
+            y = game.screenHeight / 2f - 50f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
         drawTextOnScreen(
             text = "Survived duration: ${Utils.parseSeconds(player.survivedDuration, "m", "s")}",
             x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 105f,
+            y = game.screenHeight / 2f - 65f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
         drawTextOnScreen(
             text = "Total damage: ${player.totalDamage}",
             x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 120f,
+            y = game.screenHeight / 2f - 80f,
+            color = Color.LIGHT_GRAY,
+            scale = 1.0f
+        );
+        drawTextOnScreen(
+            text = "Score: ${ScoreManager.score}",
+            x = game.screenWidth / 2f - 70f,
+            y = game.screenHeight / 2f - 95f,
             color = Color.LIGHT_GRAY,
             scale = 1.0f
         );
@@ -545,5 +571,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 			timer.unregister();
 		for(spawner in spawners)
 			spawner.cleanUp();
+		val unfreezeTimer: Timer? = unfreezeTimer;
+		if(unfreezeTimer != null) unfreezeTimer.unregister();
     }
 }

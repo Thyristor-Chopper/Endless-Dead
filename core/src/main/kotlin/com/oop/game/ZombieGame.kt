@@ -3,7 +3,6 @@ package com.oop.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 
-import com.oop.game.input.Input;
 import com.oop.game.world.ZombieWorld;
 
 /**
@@ -63,7 +62,6 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
      *  GameWorld 가 LibGDX 의 Screen 인터페이스를 상속하므로 setScreen 인자로 넘길 수 있다.
      */
     override fun create() {
-		Input.setGameInputProcessor(this);
         val zombieWorld = ZombieWorld(this);
         setScreen(zombieWorld);  // 부모 Game 이 제공하는 메서드
     }

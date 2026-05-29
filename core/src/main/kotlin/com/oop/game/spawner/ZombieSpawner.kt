@@ -4,6 +4,7 @@ import com.oop.game.Position;
 import com.oop.game.Timer;
 import com.oop.game.entity.Player;
 import com.oop.game.entity.Zombie;
+import com.oop.game.world.Freezable;
 import com.oop.game.world.World;
 
 import kotlin.random.Random;
@@ -42,7 +43,9 @@ class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : 
 	/**
 	 * 무작위로 좀비 종류를 골라서 월드에 추가하고 반환한다
 	 */
-    private inline fun spawnRandomZombie(): Zombie {
+    private inline fun spawnRandomZombie() {
+		if(world is Freezable && world.isFrozen) return;
+	
         var randomX: Float;
         var randomY: Float;
 		do {
@@ -59,7 +62,6 @@ class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : 
         }
 
         world.addEntity(newZombie)
-        return newZombie
     }
 	
 	override fun cleanUp() {

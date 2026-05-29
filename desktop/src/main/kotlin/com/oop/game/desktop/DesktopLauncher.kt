@@ -7,10 +7,6 @@ import com.badlogic.gdx.Files.FileType;
 import com.oop.game.Constants;
 import com.oop.game.ZombieGame;
 
-private inline fun resetKeyState() {
-	
-}
-
 /**
  * ════════════════════════════════════════════════════════════
  *  데스크톱에서 게임을 실행시키는 진입점 (main 함수).
@@ -43,7 +39,7 @@ fun main() {
     //   Lwjgl3ApplicationConfiguration().apply { setTitle(...); setWindowedMode(...); ... }
     //   처럼 더 간결하게 쓸 수 있다.
     val config = Lwjgl3ApplicationConfiguration();
-    config.setTitle("${game.title} - 불러오는 중...");				// 창 제목
+    config.setTitle("${game.title} [불러오는 중...]");				// 창 제목
     config.setWindowedMode(game.screenWidth, game.screenHeight);	// 창 크기 (OopGame 이 들고 있는 값 사용)
     config.setResizable(true);
 	config.setWindowSizeLimits(320, 240, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
