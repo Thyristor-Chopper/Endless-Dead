@@ -1,19 +1,18 @@
 package com.oop.game.entity;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import com.oop.game.GameManager;
 import com.oop.game.GameState;
-import com.oop.game.InputHandler;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
 import com.oop.game.entity.Zombie;
 import com.oop.game.entity.container.Container;
+import com.oop.game.input.Input;
+import com.oop.game.input.InputListener;
 import com.oop.game.item.Gun;
 import com.oop.game.item.Item;
 import com.oop.game.item.Usable;
@@ -39,12 +38,13 @@ import kotlin.math.atan2;
  *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 GameObject.dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 57f, "player.bmp", 50), InventoryEntity by BasicInventoryEntity() {
+class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 57f, "player.bmp", 50), InventoryEntity by InventoryEntityImpl(), InputListener {
 	private val textureWithGun = Texture(Gdx.files.internal("player_holding_gun.bmp"));
     private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
 	private val healTimer: Timer;
+	private val timers = mutableListOf<Timer>();
 	// 통계
 	var survivedDuration = 0
 		private set;
@@ -58,57 +58,39 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		private set;
 	
 	init {
-		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
-		Gdx.input.setInputProcessor(object : InputProcessor {
-			// 휠 감지 - 선택된 아이템 전환
-			override fun scrolled(amountX: Float, amountY: Float): Boolean {
-				if(GameManager.state != GameState.IN_PLAY) return false;
-				
-				if(amountY != 0.0f) {
-					if(amountY > 0f) selectNextItem();
-					else if(amountY < 0f) selectPreviousItem();
-					return true;
-				}
-				
-				return false;
-			}
-			
-			// 마우스 위치로 플레이어 회전
-			override fun mouseMoved(x: Int, y: Int): Boolean {
-				return rotatePlayer(x, y);
-			}
-			
-			// 눌린 상태로 마우스를 움직여도 회전되게 하기 위해 필요
-			override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean {
-				rotatePlayer(x, y);
-				return false;  // 진짜 '드래그'를 처리한 게 아니기 때문에 false 반환
-			}
-			
-			// 나머지 (스텁)
-			override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
-			
-			override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
-			
-			override fun keyDown(code: Int): Boolean = false;
-			
-			override fun keyUp(code: Int): Boolean = false;
-			
-			override fun keyTyped(char: Char): Boolean = false;
-			
-			override fun touchCancelled(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
-		});
-		
 		// -- 타이머들 --
 		// 1. 생존 시간 기록 & 생존 시간 보너스
-		Timer(1f) {
+		timers.add(Timer(1f) {
 			survivedDuration++;
 			ScoreManager.addScore(1);
-		}.register();
+		}.register());
 		
 		// 2. 30초마다 자연 회복
 		healTimer = Timer(30f) {
 			heal(3);
 		}.register();
+		timers.add(healTimer);
+	}
+	
+	override fun onScroll(amountX: Float, amountY: Float): Boolean {
+		if(GameManager.state != GameState.IN_PLAY) return false;
+		
+		if(amountY != 0.0f) {
+			if(amountY > 0f) selectNextItem();
+			else if(amountY < 0f) selectPreviousItem();
+			return true;
+		}
+		
+		return false;
+	}
+	
+	override fun onMouseMove(x: Int, y: Int): Boolean {
+		return rotatePlayer(x, y);
+	}
+	
+	override fun onTouchDrag(x: Int, y: Int, pointer: Int): Boolean {
+		rotatePlayer(x, y);
+		return false;  // 진짜 '드래그'를 처리한 게 아니기 때문에 false 반환
 	}
 	
 	private fun rotatePlayer(x: Int, y: Int): Boolean {
@@ -126,19 +108,19 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	 */
 	private inline fun updatePosition(delta: Float): Boolean {
 		var moved = false;
-		if(InputHandler.isKeyPressed(InputHandler.LEFT) || InputHandler.isKeyPressed(InputHandler.A)) {
+		if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A)) {
 			x -= speed * delta;
 			moved = true;
 		}
-		if(InputHandler.isKeyPressed(InputHandler.RIGHT) || InputHandler.isKeyPressed(InputHandler.D)) {
+		if(Input.isKeyPressed(Input.RIGHT) || Input.isKeyPressed(Input.D)) {
 			x += speed * delta;
 			moved = true;
         }
-		if(InputHandler.isKeyPressed(InputHandler.UP) || InputHandler.isKeyPressed(InputHandler.W)) {
+		if(Input.isKeyPressed(Input.UP) || Input.isKeyPressed(Input.W)) {
 			y += speed * delta;
 			moved = true;
         }
-		if(InputHandler.isKeyPressed(InputHandler.DOWN) || InputHandler.isKeyPressed(InputHandler.S)) {
+		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S)) {
 			y -= speed * delta;
 			moved = true;
 		}
@@ -200,7 +182,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		
 		// 아이템 사용
 		selectedItem?.let {
-			if(it is Usable && (InputHandler.isButtonJustPressed(InputHandler.LEFT_MOUSE) || (it.allowContinuousUse && InputHandler.isButtonPressed(InputHandler.LEFT_MOUSE))))
+			if(it is Usable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.allowContinuousUse && Input.isButtonPressed(Input.LEFT_MOUSE))))
 				useItem(it);
 		};
 		
@@ -209,11 +191,11 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		if(moved) world.updateCameraOffset();
 		
 		// 아이템 가져가기 & 넣기
-		if(InputHandler.isKeyJustPressed(InputHandler.SPACE) || InputHandler.isButtonJustPressed(InputHandler.RIGHT_MOUSE))
+		if(Input.isKeyJustPressed(Input.SPACE) || Input.isButtonJustPressed(Input.RIGHT_MOUSE))
 			interactContainer();
 		
 		// 아이템 파괴
-		if(InputHandler.isKeyJustPressed(InputHandler.DELETE))
+		if(Input.isKeyJustPressed(Input.DELETE))
 			selectedItem?.let {
 				if(it.destroy())
 					world.drawSubtitles("${it.name} destroyed");
@@ -255,5 +237,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	override fun dispose() {
 		super.dispose();
 		textureWithGun.dispose();
+		for(timer in timers)
+			timer.unregister();
 	}
 }

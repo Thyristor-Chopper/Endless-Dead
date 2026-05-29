@@ -2,3 +2,4 @@
 core/build/
 desktop/.lwjgl/
 desktop/build/
+desktop/*.log

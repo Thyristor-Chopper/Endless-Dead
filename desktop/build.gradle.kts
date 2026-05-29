@@ -6,7 +6,7 @@ plugins {
 dependencies {
     implementation(project(":core"))
     implementation("com.badlogicgames.gdx:gdx-backend-lwjgl3:1.10.0")
-    implementation("com.badlogicgames.gdx:gdx-platform:1.10.0:natives-desktop")
+    implementation("com.badlogicgames.gdx:gdx-platform:1.12.1:natives-desktop")
 }
 
 application {

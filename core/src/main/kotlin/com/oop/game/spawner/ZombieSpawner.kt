@@ -17,14 +17,15 @@ import kotlin.random.Random;
 class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : Spawner {
 	private var timer = 0f
     var spawnPerZombie = 3
+	private val timers = mutableListOf<Timer>();
 	
     init {
-        Timer(30f) {
+        timers.add(Timer(30f) {
             repeat(spawnPerZombie) {
                 spawnRandomZombie()
             }
             spawnPerZombie++
-        }.register();
+        }.register());
     }
 
 	/**
@@ -60,4 +61,9 @@ class ZombieSpawner(override val world: World, val spawnInterval: Float = 3f) : 
         world.addEntity(newZombie)
         return newZombie
     }
+	
+	override fun cleanUp() {
+		for(timer in timers)
+			timer.unregister();
+	}
 }
