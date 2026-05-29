@@ -7,10 +7,6 @@ import com.badlogic.gdx.Files.FileType;
 import com.oop.game.Constants;
 import com.oop.game.ZombieGame;
 
-private inline fun resetKeyState() {
-	
-}
-
 /**
  * ════════════════════════════════════════════════════════════
  *  데스크톱에서 게임을 실행시키는 진입점 (main 함수).
