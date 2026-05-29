@@ -74,6 +74,7 @@ object InputHandler {
     const val A = Input.Keys.A;
     const val S = Input.Keys.S;
     const val D = Input.Keys.D;
+    const val P = Input.Keys.P;
     const val DELETE = Input.Keys.FORWARD_DEL;
     const val LEFT_MOUSE = Input.Buttons.LEFT;
     const val RIGHT_MOUSE = Input.Buttons.RIGHT;

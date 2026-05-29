@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
+import com.oop.game.Constants;
 import com.oop.game.GameManager;
 import com.oop.game.GameState;
 import com.oop.game.InputHandler;
@@ -70,7 +71,7 @@ import kotlin.random.Random;
  * @param worldWidth   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
  * @param worldHeight  월드 전체 높이
  */
-class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), height: Float = game.screenHeight.toFloat()) : World(game, width, height) {
+class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat(), height: Float = Constants.WORLD_HEIGHT.toFloat()) : World(game, width, height) {
 	/**
 	 * 제목 표시줄에 표시할 정보 종류를 담는 enumeration
 	 */
@@ -113,6 +114,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 			else if(value < 0) field = TitleInfoType.size - 1;
 			else field = value;
 		};
+	private val timers = mutableListOf<Timer>();
 
     /**
      * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -138,18 +140,18 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		spawners.add(ZombieSpawner(this, 3f));
 		
 		// 10초마다 빈 상자 하나 리필
-		Timer(10f) {
+		timers.add(Timer(10f) {
 			for(entity in getEntities().shuffled())
 				if(entity is Container && entity.isEmpty) {
 					entity.putItem(generateRandomItem());
 					break;
 				}
-		}.register();
+		}.register());
 		
 		// 제목 표시줄 정보 전환
-		Timer(3f, false) {
+		timers.add(Timer(3f, false) {
 			currentTitleInfo++;
-		}.register();
+		}.register());
     }
 	
 	/**
@@ -173,12 +175,6 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
      *  상태 변화·입력은 update 가 책임진다.)
      */
     override fun update(delta: Float) {
-
-       // P키를 누르면 IN_PLAY <-> PAUSED 상태 토글!
-        if(InputHandler.isKeyJustPressed(com.badlogic.gdx.Input.Keys.P)) {
-            if(GameManager.state == GameState.IN_PLAY) GameManager.state = GameState.PAUSED;
-            else if(GameManager.state == GameState.PAUSED) GameManager.state = GameState.IN_PLAY;
-        }
 		// 제목 표시줄에 정보 표시
 		updateTitleBarInfo();
 		
@@ -190,9 +186,25 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
             GameState.PAUSED    -> updatePaused();
             GameState.GAME_OVER	-> updateGameOver();
         }
-    }private inline fun updatePaused() {
+    }
+	
+	private fun togglePaused() {
+		// P키를 누르면 IN_PLAY <-> PAUSED 상태 토글!
+        if(InputHandler.isKeyJustPressed(InputHandler.P) || InputHandler.isKeyJustPressed(InputHandler.ESCAPE)) {
+            if(GameManager.state == GameState.IN_PLAY) {
+				Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
+				GameManager.state = GameState.PAUSED;
+			} else if(GameManager.state == GameState.PAUSED) {
+				Gdx.graphics.setForegroundFPS(Constants.FPS);
+				GameManager.state = GameState.IN_PLAY;
+			}
+        }
+	}
+	
+	private inline fun updatePaused() {
         // 객체 업데이트(super.update)나 타이머(spawner.tick)를 호출하지 않음.
         //  세상이 그대로 멈춰있는 상태가 됨
+		togglePaused();
     }
 	
 	private inline fun updateProgressBars() {
@@ -263,6 +275,8 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
             GameManager.state = GameState.GAME_OVER;
 			Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 게임 오버 시 비디오 카드 리소스를 낭비하지 않게 한다
 		}
+		
+		togglePaused();
     }
 
     /**
@@ -275,11 +289,14 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
         if(InputHandler.isKeyJustPressed(InputHandler.ESCAPE))
             Gdx.app.exit();
 
-        //  R 키나 스페이스바를 누르면 다시 시작
+        // R 키나 스페이스바를 누르면 다시 시작
         if(InputHandler.isKeyJustPressed(com.badlogic.gdx.Input.Keys.R) || InputHandler.isKeyJustPressed(com.badlogic.gdx.Input.Keys.SPACE)) {
-
+			Gdx.graphics.setForegroundFPS(Constants.FPS);
             GameManager.state = GameState.IN_PLAY; // 상태를 다시 플레이로 되돌리고
-            game.screen = ZombieWorld(game);       // 월드를 아예 새로 파서 화면을 덮어씌움
+            game.setScreen(ZombieWorld(game));       // 월드를 아예 새로 파서 화면을 덮어씌움
+			Gdx.app.postRunnable {
+				this@ZombieWorld.dispose();  // 추가: 메모리 누수 방지
+			};
         }
     }
 
@@ -340,7 +357,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
             GameState.IN_PLAY 	-> {
                 // 플레이 중에는 추가로 그릴 것 없음
             }
-            GameState.PAUSED    -> drawPauseOverlay(); // 💡 [추가] 일시정지 화면 그리기
+            GameState.PAUSED    -> drawPausedOverlay(); // 💡 [추가] 일시정지 화면 그리기
             GameState.GAME_OVER	-> drawGameOverOverlay();
         }
     }
@@ -401,7 +418,7 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
     /**
 	 * 게임 오버 시 화면 중앙에 띄우는 안내 메시지.
 	 */
-    private fun drawGameOverOverlay() {
+    private inline fun drawGameOverOverlay() {
         drawTextOnScreen(
             text = "YOU DIED!",
             x = game.screenWidth / 2f - 80f,
@@ -410,8 +427,8 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
             scale = 2.0f
         );
         drawTextOnScreen(
-            text = "Press ESC to exit",
-            x = game.screenWidth / 2f - 70f,
+            text = "Press <Esc> to exit or press <R> or <Space> for a new game",
+            x = game.screenWidth / 2f - 170f,
             y = game.screenHeight / 2f - 40f,
             color = Color.WHITE,
             scale = 1.0f
@@ -454,7 +471,8 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
             scale = 1.0f
         );
     }
-    private fun drawPauseOverlay() {
+	
+    private inline fun drawPausedOverlay() {
         drawTextOnScreen(
             text = "PAUSED",
             x = game.screenWidth / 2f - 70f,
@@ -463,18 +481,21 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
             scale = 2.0f
         );
         drawTextOnScreen(
-            text = "Press 'P' to Resume",
+            text = "Press <P> or <Esc> to Resume",
             x = game.screenWidth / 2f - 90f,
             y = game.screenHeight / 2f - 20f,
             color = Color.WHITE,
             scale = 1.0f
         );
     }
+	
     /**
 	 * 화면이 닫힐 때 — 부모도 dispose 한 뒤 우리만의 자원도 해제.
 	 */
     override fun dispose() {
         super.dispose();
         tileTexture.dispose();
+		for(timer in timers)
+			timer.unregister();
     }
 }

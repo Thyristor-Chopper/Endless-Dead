@@ -425,7 +425,11 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
     override fun dispose() {
         batch.dispose();
         font.dispose();
-        for(obj in entities)
-            obj.dispose();
+        for(entity in entities)
+            entity.dispose();
+		entities.clear();
+        for(widget in widgets.values)
+            widget.dispose();
+		widgets.clear();
     }
 }

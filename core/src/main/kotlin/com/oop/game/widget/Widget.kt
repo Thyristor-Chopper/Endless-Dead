@@ -8,7 +8,7 @@ abstract class Widget(var x: () -> Float, var y: () -> Float, val width: Float, 
 
 	abstract fun draw(batch: SpriteBatch);
 	
-	abstract fun dispose();
+	open fun dispose() {}
 	
 	fun hide() {
 		visible = false;
