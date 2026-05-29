@@ -84,8 +84,8 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
 
-	var isTimeStopped: Boolean = false //world의 시간이 정지 되었는지 확인하는 변수
-	var timeStopTimer = 0f //시간을 멈추는 시간이 얼마나 남았는지 알려주는 변수
+	var isTimeStopped: Boolean = false  // world의 시간이 정지 되었는지 확인하는 변수
+	var timeStopTimer = 0f  // 시간을 멈추는 시간이 얼마나 남았는지 알려주는 변수
 
     init {
         setCameraCenter();
@@ -238,7 +238,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 		updateAllObjects(delta);
 		removeDead();
 
-		if (isTimeStopped) { // 시간을 멈췄을때 언제 다시 풀리는지 걔산하는 곳
+		if(isTimeStopped) {  // 시간을 멈췄을 때 언제 다시 풀리는지 걔산하는 곳
 			timeStopTimer -= delta
 			if (timeStopTimer <= 0f) {
 				isTimeStopped = false
