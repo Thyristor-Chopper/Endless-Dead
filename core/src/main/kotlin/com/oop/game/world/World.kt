@@ -120,8 +120,8 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 	fun removeWidget(id: String): Boolean {
 		val widget: Widget? = widgets[id];
 		if(widget == null) return false;
-		widget.dispose();
 		widgets.remove(id);
+		widget.dispose();
 		return true;
 	}
 	
@@ -216,12 +216,12 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
      */
     protected fun removeDead() {
 		val toRemove = mutableListOf<Entity>();
-        for(obj in entities)
-            if(obj is LivingEntity && !obj.isAlive)
-                toRemove.add(obj);
-        for(obj in toRemove) {
-            entities.remove(obj);
-			obj.dispose();
+        for(entity in entities)
+            if(entity is LivingEntity && !entity.isAlive)
+                toRemove.add(entity);
+        for(entity in toRemove) {
+            entities.remove(entity);
+			entity.dispose();
 		}
     }
 
