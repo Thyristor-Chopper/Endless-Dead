@@ -2,6 +2,7 @@ package com.oop.game.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
@@ -115,12 +116,21 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 			else field = value;
 		};
 	private val timers = mutableListOf<Timer>();
+    private val frozenOverlay = Color(0f, 0f, 0f, 0.5f);
+	private val solidColor: Texture;
 
     /**
      * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
      *   이렇게 등록해야 update / draw 루프에 포함된다.
      */
     init {
+		val solidColorPixmap = Pixmap(1, 1, Pixmap.Format.RGBA8888).apply {
+			setColor(Color.WHITE);
+			fill();
+		};
+		solidColor = Texture(solidColorPixmap);
+		solidColorPixmap.dispose();
+		
 		for(i in 0 until Random.nextInt(50) + 50) {  // 50~100개의 건물과 상자를 무작위로 배치
 			val x = Random.nextInt(this.width.toInt()).toFloat();
 			val y = Random.nextInt(this.height.toInt()).toFloat();
@@ -292,11 +302,9 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
         // R 키나 스페이스바를 누르면 다시 시작
         if(InputHandler.isKeyJustPressed(com.badlogic.gdx.Input.Keys.R) || InputHandler.isKeyJustPressed(com.badlogic.gdx.Input.Keys.SPACE)) {
 			Gdx.graphics.setForegroundFPS(Constants.FPS);
-            GameManager.state = GameState.IN_PLAY; // 상태를 다시 플레이로 되돌리고
-            game.setScreen(ZombieWorld(game));       // 월드를 아예 새로 파서 화면을 덮어씌움
-			Gdx.app.postRunnable {
-				this@ZombieWorld.dispose();  // 추가: 메모리 누수 방지
-			};
+            GameManager.state = GameState.IN_PLAY;  // 상태를 다시 플레이로 되돌리고
+            game.setScreen(ZombieWorld(game));  // 월드를 아예 새로 파서 화면을 덮어씌움
+			Gdx.app.postRunnable { this@ZombieWorld.dispose() };  // 추가: 메모리 누수 방지
         }
     }
 
@@ -351,16 +359,29 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 
         // ── 항상 보이는 UI ──
         drawHud();
+		
+		// 일시 정지 시 어둡게 변경
+		drawFrozenOverlay();
 
         // ── 상태별로 그리는 것이 다름 ──
         when(GameManager.state) {
             GameState.IN_PLAY 	-> {
                 // 플레이 중에는 추가로 그릴 것 없음
             }
-            GameState.PAUSED    -> drawPausedOverlay(); // 💡 [추가] 일시정지 화면 그리기
-            GameState.GAME_OVER	-> drawGameOverOverlay();
+            GameState.PAUSED    -> drawPausedMessage(); // 💡 [추가] 일시정지 화면 그리기
+            GameState.GAME_OVER	-> drawGameOverMessage();
         }
     }
+	
+	private inline fun drawFrozenOverlay() {
+		if(GameManager.state == GameState.IN_PLAY) return;
+		
+		batch.begin();
+		batch.color = frozenOverlay;
+		batch.draw(solidColor, 0f, 0f, game.screenWidth.toFloat(), game.screenHeight.toFloat());
+		batch.color = Color.WHITE;
+		batch.end();
+	}
 	
 	/**
 	 * 월드 중심처럼 배경에 오버레이되는 것을 그린다
@@ -418,20 +439,24 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
     /**
 	 * 게임 오버 시 화면 중앙에 띄우는 안내 메시지.
 	 */
-    private inline fun drawGameOverOverlay() {
+    private inline fun drawGameOverMessage() {
         drawTextOnScreen(
             text = "YOU DIED!",
-            x = game.screenWidth / 2f - 80f,
+            x = 0f,
             y = game.screenHeight / 2f,
             color = Color.RED,
-            scale = 2.0f
+            scale = 2.0f,
+			width = game.screenWidth.toFloat(),
+			align = Align.center
         );
         drawTextOnScreen(
             text = "Press <Esc> to exit or press <R> or <Space> for a new game",
-            x = game.screenWidth / 2f - 170f,
+            x = 0f,
             y = game.screenHeight / 2f - 40f,
             color = Color.WHITE,
-            scale = 1.0f
+            scale = 1.0f,
+			width = game.screenWidth.toFloat(),
+			align = Align.center
         );
 		
 		// 통계
@@ -472,20 +497,24 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
         );
     }
 	
-    private inline fun drawPausedOverlay() {
+    private inline fun drawPausedMessage() {
         drawTextOnScreen(
             text = "PAUSED",
-            x = game.screenWidth / 2f - 70f,
+            x = 0f,
             y = game.screenHeight / 2f + 20f,
             color = Color.YELLOW,
-            scale = 2.0f
+            scale = 2.0f,
+			width = game.screenWidth.toFloat(),
+			align = Align.center
         );
         drawTextOnScreen(
             text = "Press <P> or <Esc> to Resume",
-            x = game.screenWidth / 2f - 90f,
+            x = 0f,
             y = game.screenHeight / 2f - 20f,
             color = Color.WHITE,
-            scale = 1.0f
+            scale = 1.0f,
+			width = game.screenWidth.toFloat(),
+			align = Align.center
         );
     }
 	
@@ -495,6 +524,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
     override fun dispose() {
         super.dispose();
         tileTexture.dispose();
+		solidColor.dispose();
 		for(timer in timers)
 			timer.unregister();
     }

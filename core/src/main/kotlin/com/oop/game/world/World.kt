@@ -265,9 +265,7 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
         drawBackgroundOverlay();
         drawAllObjects();
         drawAllWidgets();
-        batch.end();
-		
-		// 6) 자막이 있으면 표시
+		// 자막이 있으면 표시
 		if(subtitlesTimer > 0f) subtitlesMessage?.let {
 			drawTextOnScreen(
 				text = it,
@@ -276,10 +274,12 @@ abstract class World(val game: ZombieGame, val width: Float = game.screenWidth.t
 				color = subtitlesColor,
 				scale = 1.0f,
 				width = game.screenWidth.toFloat(),
-				align = Align.center
+				align = Align.center,
+				skipBatch = true
 			);
 			subtitlesTimer -= delta;
 		};
+        batch.end();
     }
 	
 	/**
