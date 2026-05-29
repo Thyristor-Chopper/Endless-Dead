@@ -1,4 +1,4 @@
-package com.oop.game.input;
+package com.oop.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -31,47 +31,53 @@ import com.oop.game.world.World;
  *  (파이썬이라면 모듈 수준 함수/변수와 비슷한 역할)
  */
 object Input {
-	private var game: Game? = null;
-	// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
-	private val inputProcessor = object : InputProcessor {
-		override fun scrolled(amountX: Float, amountY: Float): Boolean = notifyInputListeners({ it.onScroll(amountX, amountY) });
-		
-		override fun mouseMoved(x: Int, y: Int): Boolean = notifyInputListeners({ it.onMouseMove(x, y) });
-		
-		override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = notifyInputListeners({ it.onTouchDown(x, y, pointer, button) });
-		
-		override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = notifyInputListeners({ it.onTouchUp(x, y, pointer, button) });
-		
-		override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean = notifyInputListeners({ it.onTouchDrag(x, y, pointer) });
-		
-		override fun touchCancelled(x: Int, y: Int, pointer: Int, button: Int): Boolean = notifyInputListeners({ it.onTouchCancel(x, y, pointer, button) });
-		
-		override fun keyDown(code: Int): Boolean = notifyInputListeners({ it.onKeyDown(code) });
-		
-		override fun keyUp(code: Int): Boolean = notifyInputListeners({ it.onKeyUp(code) });
-		
-		override fun keyTyped(char: Char): Boolean = notifyInputListeners({ it.onKeyType(char) });
-	};
-	
-	internal fun setGameInputProcessor(game: Game) {
-		this.game = game;
-		Gdx.input.setInputProcessor(inputProcessor);
-	}
-	
-	private fun notifyInputListeners(callback: (InputListener) -> Boolean): Boolean {
-		val game: Game? = this.game;
-		if(game == null) return false;
-		
-		var processed = false;
-		val screen = game.getScreen();
-		if(screen is InputListener)
-			processed = processed || callback(screen);
-		if(screen is World)
-			screen.forEachObjects {
-				if(it is InputListener)
-					processed = processed || callback(it);
-			};
-		return processed;
+	var justScrolledUp = false
+		private set;
+	var justScrolledDown = false
+		private set;
+	var justMouseMoved = false
+		private set;
+
+	init {
+		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함
+		Gdx.input.setInputProcessor(object : InputProcessor {
+			override fun scrolled(amountX: Float, amountY: Float): Boolean {
+				if(amountY > 0f) {
+					justScrolledDown = true;
+					Gdx.app.postRunnable { justScrolledDown = false };
+					return true;
+				} else if(amountY < 0f) {
+					justScrolledUp = true;
+					Gdx.app.postRunnable { justScrolledUp = false };
+					return true;
+				}
+				return false;
+			}
+			
+			override fun mouseMoved(x: Int, y: Int): Boolean {
+				justMouseMoved = true;
+				Gdx.app.postRunnable { justMouseMoved = false };
+				return true;
+			}
+			
+			// 마우스가 눌린 상태로 움직일 때를 감지하기 위해 필요
+			override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean {
+				mouseMoved(x, y);
+				return false;  // 실제 '드래그'를 처리한 게 아니므로 false
+			}
+			
+			override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
+			
+			override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
+			
+			override fun keyDown(code: Int): Boolean = false;
+			
+			override fun keyUp(code: Int): Boolean = false;
+			
+			override fun touchCancelled(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
+			
+			override fun keyTyped(char: Char): Boolean = false;
+		});
 	}
 
     /**
