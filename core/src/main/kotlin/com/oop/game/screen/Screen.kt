@@ -61,8 +61,7 @@ abstract class Screen(val game: ZombieGame) : ScreenAdapter(), Updatable {
 	 * @param id 가져올 위젯의 식별자
 	 */
 	fun getWidget(id: String): Widget {
-		if(!(id in widgets)) throw IllegalArgumentException("invalid widget ID");
-		return widgets[id]!!;
+		return widgets[id] ?: throw IllegalArgumentException("invalid widget ID");
 	}
 
     // ────────────────────────────────────────────────────────
