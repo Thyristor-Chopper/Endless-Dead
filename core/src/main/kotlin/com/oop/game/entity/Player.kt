@@ -75,8 +75,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 			
 			// 마우스 위치로 플레이어 회전
 			override fun mouseMoved(x: Int, y: Int): Boolean {
-				rotatePlayer(x, y);
-				return true;
+				return rotatePlayer(x, y);
 			}
 			
 			// 눌린 상태로 마우스를 움직여도 회전되게 하기 위해 필요
@@ -112,9 +111,11 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		}.register();
 	}
 	
-	private inline fun rotatePlayer(x: Int, y: Int) {
+	private fun rotatePlayer(x: Int, y: Int): Boolean {
+		if(GameManager.state != GameState.IN_PLAY) return false;
 		// 샷건 내 360도 구현 참고함
 		rotation = toDegrees(atan2((world.game.screenHeight - y) - (this.y - world.offsetY), x - (this.x - world.offsetX)).toDouble()).toFloat() - 90f;
+		return true;
 	}
 	
 	/**
