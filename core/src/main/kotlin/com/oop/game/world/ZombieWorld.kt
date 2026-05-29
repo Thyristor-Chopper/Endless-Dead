@@ -130,9 +130,9 @@ class ZombieWorld(game: ZombieGame, width: Float = game.screenWidth.toFloat(), h
 		}
         addEntity(player);
 		
-		addWidget("hp_indicator", ProgressBar({ 80f }, { game.screenHeight - 24f }, 220f, value = player.hp.toFloat() / player.maxHp, color = Color.YELLOW));
+		addWidget("hp_indicator", ProgressBar({ 80f }, { game.screenHeight - 24f }, 220f, color = Color.YELLOW));
 		addWidget("gun_ammo_indicator", ProgressBar({ game.screenWidth - 145f }, { 10f }, 130f, color = Color.ROYAL).apply { hide() });
-		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide(); style = ProgressBarStyle.SMOOTH });
+		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET, style = ProgressBarStyle.SMOOTH).apply { hide() });
 		
 		// 스포너들
 		spawners.add(ZombieSpawner(this, 3f));
