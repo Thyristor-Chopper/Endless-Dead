@@ -69,7 +69,8 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
 	 */
 	open val penetrationDamage = 0;
 	// 텍스처 회전 각도
-	protected open var rotation = 0f;
+	open var rotation = 0f
+		protected set;
 
     // 개체에 등록된 기본 텍스처 대신에 쓸 텍스처를 alternateTexture로 넘길 수 있다.
     protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
@@ -146,6 +147,15 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
 	fun rotateTo(position: Position) {
 		// 샷건 내 360도 구현 참고함
 		rotation = toDegrees(atan2((world.game.screenHeight - position.y) - (this.y - world.offsetY), position.x - (this.x - world.offsetX)).toDouble()).toFloat() - 90f;
+	}
+
+	/**
+	 * 개체를 회전한다.
+	 * 
+	 * @param degrees 회전 각도
+	 */
+	fun rotate(degrees: Float) {
+		rotation = degrees;
 	}
 
 	/**

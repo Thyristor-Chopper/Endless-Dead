@@ -7,13 +7,16 @@ import io.potatogun.endlessdead.Position;
 import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Entity;
+import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.world.World;
+
+import java.lang.Math.toRadians;
+
+import kotlin.math.cos;
+import kotlin.math.sin;
 
 /**
  * 총 아이템 추상 클래스
- *
- * Usable은 아닌 이유: 총은 '사용'한다기 보단 '쏜다'의 개념에 가깝고 개체에 따라 사용 방법이 모두 상이하고 fire에 들어가는 매개변수도 다르기 때문.
- * 총은 fire로 대체한다.
  *
  * @param world			아이템이 있는 세계
  * @param id			총 식별자
@@ -26,8 +29,8 @@ import io.potatogun.endlessdead.world.World;
  * @param maxAmmo		최대 총알 개수
  * @param initialAmmo	초기 총알 개수
  */
-abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHp: Int, val penetrable: Boolean, val fireInterval: Float, initialAmmo: Int, val maxAmmo: Int = initialAmmo) : Item(world, id, name), Fireable {
-	override val allowContinuousFire = false;
+abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHp: Int, val penetrable: Boolean, val fireInterval: Float, initialAmmo: Int, val maxAmmo: Int = initialAmmo) : Item(world, id, name), Fireable, Usable {
+	override val allowContinuousUse = false;
 	private var fireCooldown = 0f
 		set(value) {
 			if(value < 0f) field = 0f;
@@ -85,6 +88,23 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 		}
 
 		return 1;
+	}
+	
+	/**
+	 * 기본값으로 개체가 보는 방향으로 총을 쏜다.
+	 *
+	 * @return 성공 여부
+	 */
+	override fun use(): Boolean {
+		val holder: InventoryEntity? = this.holder;
+		if(holder == null) return false;
+		if(!(holder is Entity)) return false;  // 말이 안 되는 상황
+
+		// 개체 회전 각도에 맞는 임의의 위치를 생성한다.
+		val radians = toRadians(holder.rotation + 90.0);
+		val targetX = cos(radians) * world.width + holder.x;
+		val targetY = sin(radians) * world.width + holder.y;
+		return fire(Position(targetX.toFloat(), targetY.toFloat()), holder) > 0;
 	}
 
 	/**

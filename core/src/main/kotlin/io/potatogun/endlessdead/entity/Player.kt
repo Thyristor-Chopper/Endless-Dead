@@ -52,7 +52,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		private set;
 	var killedZombieCount = 0
 		private set;
-	var firedBullets = 0
+	var fireCount = 0
 		private set;
 	var totalDamage = 0
 		private set;
@@ -85,13 +85,10 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		if(Input.isKeyJustPressed(Input.SPACE) || Input.isButtonJustPressed(Input.RIGHT_MOUSE))
 			interactContainer();
 
-		// 아이템 사용 / 총 쏘기
+		// 아이템 사용
 		selectedItem?.let {
-			if(it is Fireable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.allowContinuousFire && Input.isButtonPressed(Input.LEFT_MOUSE))))
-				firedBullets += it.fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.game.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), this);
-
 			if(it is Usable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.allowContinuousUse && Input.isButtonPressed(Input.LEFT_MOUSE))))
-				it.use();
+				useItem(it);
 		};
 
 		// 이동
@@ -209,7 +206,11 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	 */
 	fun useItem(item: Item): Boolean {
 		if(!hasItem(item) || !(item is Usable)) return false;
-		return item.use();
+		val succeeded = item.use();
+		if(succeeded)
+			if(item is Fireable)
+				fireCount++;
+		return succeeded;
 	}
 
 	/**
