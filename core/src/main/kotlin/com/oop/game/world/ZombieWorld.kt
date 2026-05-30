@@ -151,7 +151,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 		}.register());
 		
 		// 제목 표시줄 정보 전환
-		timers.add(Timer(3f, false) {
+		timers.add(Timer(3f) {
 			currentTitleInfo++;
 		}.register());
     }
@@ -195,18 +195,44 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
      *  상태 변화·입력은 update 가 책임진다.)
      */
     override fun update(delta: Float) {
-		// 제목 표시줄에 정보 표시
-		updateTitleBarInfo();
-		
-		// 미터기 정보 갱신
-		updateProgressBars();
-
         when(GameManager.state) {
             GameState.IN_PLAY	-> updateInPlay(delta);
             GameState.PAUSED    -> updatePaused();
             GameState.GAME_OVER	-> updateGameOver();
 			else -> {}
         }
+    }
+
+    /**
+	 * IN_PLAY 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
+	 * update에서만 한 번 쓰이기 때문에 inline이다.
+	 */
+    private inline fun updateInPlay(delta: Float) {
+		// 제목 표시줄에 통계 표시
+		updateTitleBarInfo();
+		
+		// 미터기 정보 갱신
+		updateProgressBars();
+		
+        // ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
+		super.update(delta);  // updateAllObjects과 removeDead
+		for(spawner in spawners)
+			spawner.tick(delta);
+		
+        // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
+        //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
+        //   offset 은 0 ~ (world - screen) 범위여야 한다.
+        offsetX = offsetX.coerceIn(0f, width - game.screenWidth);
+        offsetY = offsetY.coerceIn(0f, height - game.screenHeight);
+
+		// 피가 0 이하가 되면 진짜 게임 오버!
+        if(!player.isAlive) {
+            GameManager.state = GameState.GAME_OVER;
+			Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 게임 오버 시 비디오 카드 리소스를 낭비하지 않게 한다
+			game.setTitleBarStats(null);
+		}
+		
+		detectPauseKey();
     }
 	
 	/**
@@ -259,31 +285,6 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 			cooldownIndicator.hide();
 		}
 	}
-
-    /**
-	 * IN_PLAY 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
-	 * update에서만 한 번 쓰이기 때문에 inline이다.
-	 */
-    private inline fun updateInPlay(delta: Float) {
-        // ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
-		super.update(delta);  // updateAllObjects과 removeDead
-		for(spawner in spawners)
-			spawner.tick(delta);
-		
-        // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
-        //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
-        //   offset 은 0 ~ (world - screen) 범위여야 한다.
-        offsetX = offsetX.coerceIn(0f, width - game.screenWidth);
-        offsetY = offsetY.coerceIn(0f, height - game.screenHeight);
-
-		// 피가 0 이하가 되면 진짜 게임 오버!
-        if(!player.isAlive) {
-            GameManager.state = GameState.GAME_OVER;
-			Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 게임 오버 시 비디오 카드 리소스를 낭비하지 않게 한다
-		}
-		
-		detectPauseKey();
-    }
 	
 	/**
 	 * 일시 정지 상태에서 매 프레임 로직
