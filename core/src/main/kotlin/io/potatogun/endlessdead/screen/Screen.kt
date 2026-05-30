@@ -1,4 +1,4 @@
-package com.oop.game.screen;
+package io.potatogun.endlessdead.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
-import com.oop.game.ZombieGame;
-import com.oop.game.widget.Widget;
+import io.potatogun.endlessdead.EndlessDead;
+import io.potatogun.endlessdead.widget.Widget;
 
 /**
  * 게임 내 화면을 구현한다.
@@ -33,7 +33,7 @@ import com.oop.game.widget.Widget;
  *
  * @param game 화면이 속한 게임
  */
-abstract class Screen(val game: ZombieGame) : ScreenAdapter() {
+abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 	// OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     private val camera = OrthographicCamera();
 	// SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.

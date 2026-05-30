@@ -1,4 +1,4 @@
-package com.oop.game.world;
+package io.potatogun.endlessdead.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -7,15 +7,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
-import com.oop.game.ZombieGame;
-import com.oop.game.entity.Bullet;
-import com.oop.game.entity.Entity;
-import com.oop.game.entity.InventoryEntity;
-import com.oop.game.entity.LivingEntity;
-import com.oop.game.entity.Player;
-import com.oop.game.entity.container.Container;
-import com.oop.game.item.Item;
-import com.oop.game.screen.Screen;
+import io.potatogun.endlessdead.EndlessDead;
+import io.potatogun.endlessdead.entity.Bullet;
+import io.potatogun.endlessdead.entity.Entity;
+import io.potatogun.endlessdead.entity.InventoryEntity;
+import io.potatogun.endlessdead.entity.LivingEntity;
+import io.potatogun.endlessdead.entity.Player;
+import io.potatogun.endlessdead.entity.container.Container;
+import io.potatogun.endlessdead.item.Item;
+import io.potatogun.endlessdead.screen.Screen;
 
 /**
  * 게임 내 월드 = '월드 하나' 의 추상 기본 클래스.
@@ -36,7 +36,7 @@ import com.oop.game.screen.Screen;
  * @param width		월드 전체 너비
  * @param height	월드 전체 높이
  */
-abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : Screen(game) {
+abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : Screen(game) {
 	/**
 	 * 이 월드의 플레이어
 	 */

@@ -1,11 +1,11 @@
-package com.oop.game.item
+package io.potatogun.endlessdead.item
 
 import com.badlogic.gdx.graphics.Color
 
-import com.oop.game.Position
-import com.oop.game.entity.Bullet
-import com.oop.game.entity.Entity
-import com.oop.game.world.World
+import io.potatogun.endlessdead.Position
+import io.potatogun.endlessdead.entity.Bullet
+import io.potatogun.endlessdead.entity.Entity
+import io.potatogun.endlessdead.world.World
 
 import kotlin.math.atan2
 import kotlin.math.cos

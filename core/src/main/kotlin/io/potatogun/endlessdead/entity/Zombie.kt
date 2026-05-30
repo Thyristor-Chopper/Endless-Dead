@@ -1,6 +1,6 @@
-package com.oop.game.entity;
+package io.potatogun.endlessdead.entity;
 
-import com.oop.game.world.World;
+import io.potatogun.endlessdead.world.World;
 
 import kotlin.math.sqrt;
 

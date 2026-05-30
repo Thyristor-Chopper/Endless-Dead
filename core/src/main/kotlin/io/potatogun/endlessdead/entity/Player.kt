@@ -1,19 +1,19 @@
-package com.oop.game.entity;
+package io.potatogun.endlessdead.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import com.oop.game.Input;
-import com.oop.game.ScoreManager;
-import com.oop.game.Timer;
-import com.oop.game.entity.Zombie;
-import com.oop.game.entity.container.Container;
-import com.oop.game.item.Gun;
-import com.oop.game.item.Item;
-import com.oop.game.item.Usable;
-import com.oop.game.world.World;
-import com.oop.game.world.ZombieWorld;
+import io.potatogun.endlessdead.Input;
+import io.potatogun.endlessdead.ScoreManager;
+import io.potatogun.endlessdead.Timer;
+import io.potatogun.endlessdead.entity.Zombie;
+import io.potatogun.endlessdead.entity.container.Container;
+import io.potatogun.endlessdead.item.Gun;
+import io.potatogun.endlessdead.item.Item;
+import io.potatogun.endlessdead.item.Usable;
+import io.potatogun.endlessdead.world.World;
+import io.potatogun.endlessdead.world.ZombieWorld;
 
 import java.lang.Math.toDegrees;
 

@@ -1,4 +1,4 @@
-package com.oop.game.world;
+package io.potatogun.endlessdead.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -7,30 +7,30 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
-import com.oop.game.Constants;
-import com.oop.game.GameManager;
-import com.oop.game.Input;
-import com.oop.game.ScoreManager;
-import com.oop.game.Timer;
-import com.oop.game.Utils;
-import com.oop.game.ZombieGame;
-import com.oop.game.entity.Entity;
-import com.oop.game.entity.Player;
-import com.oop.game.entity.Zombie;
-import com.oop.game.entity.container.Building;
-import com.oop.game.entity.container.Chest;
-import com.oop.game.entity.container.Container;
-import com.oop.game.item.Item;
-import com.oop.game.item.Bandage;
-import com.oop.game.item.Gun;
-import com.oop.game.item.MachineGun;
-import com.oop.game.item.Shoes;
-import com.oop.game.item.Shotgun;
-import com.oop.game.item.TimeStopper;
-import com.oop.game.spawner.Spawner;
-import com.oop.game.spawner.ZombieSpawner;
-import com.oop.game.widget.ProgressBar;
-import com.oop.game.widget.style.ProgressBarStyle;
+import io.potatogun.endlessdead.Constants;
+import io.potatogun.endlessdead.EndlessDead;
+import io.potatogun.endlessdead.GameManager;
+import io.potatogun.endlessdead.Input;
+import io.potatogun.endlessdead.ScoreManager;
+import io.potatogun.endlessdead.Timer;
+import io.potatogun.endlessdead.Utils;
+import io.potatogun.endlessdead.entity.Entity;
+import io.potatogun.endlessdead.entity.Player;
+import io.potatogun.endlessdead.entity.Zombie;
+import io.potatogun.endlessdead.entity.container.Building;
+import io.potatogun.endlessdead.entity.container.Chest;
+import io.potatogun.endlessdead.entity.container.Container;
+import io.potatogun.endlessdead.item.Item;
+import io.potatogun.endlessdead.item.Bandage;
+import io.potatogun.endlessdead.item.Gun;
+import io.potatogun.endlessdead.item.MachineGun;
+import io.potatogun.endlessdead.item.Shoes;
+import io.potatogun.endlessdead.item.Shotgun;
+import io.potatogun.endlessdead.item.TimeStopper;
+import io.potatogun.endlessdead.spawner.Spawner;
+import io.potatogun.endlessdead.spawner.ZombieSpawner;
+import io.potatogun.endlessdead.widget.ProgressBar;
+import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
 
 import kotlin.math.floor;
 import kotlin.random.Random;
@@ -70,7 +70,7 @@ import kotlin.random.Random;
  * @param width   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
  * @param height  월드 전체 높이
  */
-class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat(), height: Float = Constants.WORLD_HEIGHT.toFloat()) : World(game, width, height), Freezable {
+class ZombieWorld(game: EndlessDead, width: Float = Constants.WORLD_WIDTH.toFloat(), height: Float = Constants.WORLD_HEIGHT.toFloat()) : World(game, width, height), Freezable {
     // 플레이어 — 월드 중앙 하단에서 시작.
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
     override val player = Player(this, x = width / 2, y = height / 2);

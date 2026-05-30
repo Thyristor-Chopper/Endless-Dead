@@ -1,4 +1,4 @@
-package com.oop.game.widget;
+package io.potatogun.endlessdead.widget;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 

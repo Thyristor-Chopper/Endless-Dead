@@ -1,4 +1,4 @@
-package com.oop.game;
+package io.potatogun.endlessdead;
 
 object Constants {
 	const val FPS = 60;

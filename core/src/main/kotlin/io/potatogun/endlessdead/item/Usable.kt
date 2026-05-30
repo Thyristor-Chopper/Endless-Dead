@@ -1,4 +1,4 @@
-package com.oop.game.item;
+package io.potatogun.endlessdead.item;
 
 /**
  * '사용할 수 있다'의 개념이 있는 아이템

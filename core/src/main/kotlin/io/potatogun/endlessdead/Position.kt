@@ -1,4 +1,4 @@
-package com.oop.game;
+package io.potatogun.endlessdead;
 
 import kotlin.math.sqrt;
 

@@ -1,4 +1,4 @@
-package com.oop.game.widget;
+package io.potatogun.endlessdead.widget;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import com.oop.game.widget.style.ProgressBarStyle;
+import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
 
 import kotlin.math.ceil;
 

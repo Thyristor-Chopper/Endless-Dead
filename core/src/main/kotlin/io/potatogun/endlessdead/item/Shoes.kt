@@ -1,6 +1,6 @@
-package com.oop.game.item;
+package io.potatogun.endlessdead.item;
 
-import com.oop.game.world.World;
+import io.potatogun.endlessdead.world.World;
 
 /**
  * 신발 - 속도 아이템

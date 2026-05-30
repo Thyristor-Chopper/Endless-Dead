@@ -1,9 +1,9 @@
-package com.oop.game.entity;
+package io.potatogun.endlessdead.entity;
 
-import com.oop.game.Position;
-import com.oop.game.entity.Entity;
-import com.oop.game.item.Fireable;
-import com.oop.game.world.World;
+import io.potatogun.endlessdead.Position;
+import io.potatogun.endlessdead.entity.Entity;
+import io.potatogun.endlessdead.item.Fireable;
+import io.potatogun.endlessdead.world.World;
 
 import kotlin.math.sqrt;
 

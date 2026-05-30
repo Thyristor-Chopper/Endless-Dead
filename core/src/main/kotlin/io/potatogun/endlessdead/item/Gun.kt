@@ -1,13 +1,13 @@
-package com.oop.game.item;
+package io.potatogun.endlessdead.item;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
-import com.oop.game.Position;
-import com.oop.game.Timer;
-import com.oop.game.entity.Bullet;
-import com.oop.game.entity.Entity;
-import com.oop.game.world.World;
+import io.potatogun.endlessdead.Position;
+import io.potatogun.endlessdead.Timer;
+import io.potatogun.endlessdead.entity.Bullet;
+import io.potatogun.endlessdead.entity.Entity;
+import io.potatogun.endlessdead.world.World;
 
 /**
  * 총 아이템 추상 클래스

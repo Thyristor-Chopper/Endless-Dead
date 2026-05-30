@@ -1,7 +1,7 @@
-package com.oop.game.item;
+package io.potatogun.endlessdead.item;
 
-import com.oop.game.Position;
-import com.oop.game.entity.Entity;
+import io.potatogun.endlessdead.Position;
+import io.potatogun.endlessdead.entity.Entity;
 
 /**
  * '쏘기'가 가능한 아이템

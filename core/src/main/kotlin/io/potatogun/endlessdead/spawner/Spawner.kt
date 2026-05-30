@@ -1,6 +1,6 @@
-package com.oop.game.spawner;
+package io.potatogun.endlessdead.spawner;
 
-import com.oop.game.world.World;
+import io.potatogun.endlessdead.world.World;
 
 /**
  * 개체 소환기

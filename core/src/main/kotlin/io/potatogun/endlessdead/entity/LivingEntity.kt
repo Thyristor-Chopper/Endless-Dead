@@ -1,10 +1,10 @@
-package com.oop.game.entity;
+package io.potatogun.endlessdead.entity;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import com.oop.game.world.World;
+import io.potatogun.endlessdead.world.World;
 
 /**
  * 살아있다는 개념이 있는 개체

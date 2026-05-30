@@ -1,13 +1,13 @@
-package com.oop.game.entity.container;
+package io.potatogun.endlessdead.entity.container;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import com.oop.game.entity.Entity;
-import com.oop.game.entity.InventoryEntity;
-import com.oop.game.item.Item;
-import com.oop.game.world.World;
+import io.potatogun.endlessdead.entity.Entity;
+import io.potatogun.endlessdead.entity.InventoryEntity;
+import io.potatogun.endlessdead.item.Item;
+import io.potatogun.endlessdead.world.World;
 
 /**
  * 아이템 상자 역할을 하는 추상 클래스

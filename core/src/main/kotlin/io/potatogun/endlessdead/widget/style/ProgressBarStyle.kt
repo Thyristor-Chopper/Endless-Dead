@@ -1,4 +1,4 @@
-package com.oop.game.widget.style;
+package io.potatogun.endlessdead.widget.style;
 
 enum class ProgressBarStyle {
 	CHUNKED,

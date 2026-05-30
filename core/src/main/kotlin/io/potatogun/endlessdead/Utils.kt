@@ -1,4 +1,4 @@
-package com.oop.game;
+package io.potatogun.endlessdead;
 
 import com.badlogic.gdx.graphics.Color;
 

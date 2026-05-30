@@ -1,11 +1,11 @@
-package com.oop.game.desktop;
+package io.potatogun.endlessdead.desktop;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.Files.FileType;
 
-import com.oop.game.Constants;
-import com.oop.game.ZombieGame;
+import io.potatogun.endlessdead.Constants;
+import io.potatogun.endlessdead.EndlessDead;
 
 /**
  * ════════════════════════════════════════════════════════════
@@ -27,7 +27,7 @@ fun main() {
     //   OopGame 은 LibGDX 의 Game 을 상속한 클래스 (OopGame.kt 참고).
     //   이 시점에는 단순히 설계도만 들고 있을 뿐, 실제 화면은 아직 안 만들어진다.
     //   화면 생성은 LibGDX 가 나중에 game.create() 를 호출할 때 일어난다.
-    val game = ZombieGame(800, 600);
+    val game = EndlessDead(800, 600);
 
     // ─────────────────────────────────────────
     // 2) 창(Window) 설정

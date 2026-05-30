@@ -10,7 +10,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("com.oop.game.desktop.DesktopLauncherKt")
+    mainClass.set("io.potatogun.endlessdead.desktop.DesktopLauncherKt")
 
     // macOS에서 LWJGL3 실행 시 필요
     if(System.getProperty("os.name").lowercase().contains("mac")) {

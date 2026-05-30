@@ -1,6 +1,6 @@
-package com.oop.game.entity;
+package io.potatogun.endlessdead.entity;
 
-import com.oop.game.item.Item;
+import io.potatogun.endlessdead.item.Item;
 
 /**
  * 인벤토리를 가진 개체에 대한 인터페이스

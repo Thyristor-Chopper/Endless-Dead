@@ -1,6 +1,6 @@
-package com.oop.game.item;
+package io.potatogun.endlessdead.item;
 
-import com.oop.game.world.World;
+import io.potatogun.endlessdead.world.World;
 
 /**
  * 붕대 - 회복 아이템

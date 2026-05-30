@@ -1,7 +1,7 @@
-package com.oop.game.item
+package io.potatogun.endlessdead.item
 
-import com.oop.game.world.Freezable;
-import com.oop.game.world.World;
+import io.potatogun.endlessdead.world.Freezable;
+import io.potatogun.endlessdead.world.World;
 
 /**
  * 시계 - 시간정지 아이템

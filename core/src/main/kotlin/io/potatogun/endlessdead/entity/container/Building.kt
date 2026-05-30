@@ -1,10 +1,10 @@
-package com.oop.game.entity.container;
+package io.potatogun.endlessdead.entity.container;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
-import com.oop.game.item.Item;
-import com.oop.game.world.World;
+import io.potatogun.endlessdead.item.Item;
+import io.potatogun.endlessdead.world.World;
 
 /**
  * 건물

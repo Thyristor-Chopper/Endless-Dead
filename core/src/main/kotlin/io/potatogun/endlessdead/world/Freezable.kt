@@ -1,4 +1,4 @@
-package com.oop.game.world;
+package io.potatogun.endlessdead.world;
 
 /**
  * 시간 멈춤이 가능한 월드

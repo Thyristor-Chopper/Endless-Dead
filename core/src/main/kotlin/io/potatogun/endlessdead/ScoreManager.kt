@@ -1,4 +1,4 @@
-package com.oop.game;
+package io.potatogun.endlessdead;
 
 /**
  * 게임의 점수를 관리하는 싱글톤

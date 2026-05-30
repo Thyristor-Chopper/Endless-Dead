@@ -1,9 +1,9 @@
-package com.oop.game;
+package io.potatogun.endlessdead;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 
-import com.oop.game.screen.Title;
+import io.potatogun.endlessdead.screen.Title;
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -32,7 +32,7 @@ import com.oop.game.screen.Title;
  *   ▸ worldWidth  / worldHeight    : 스크롤 가능한 월드 크기
  *   ▸ create() 안에서 setScreen 에 넘기는 Screen 을 자기 Screen 으로 교체
  */
-class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
+class EndlessDead(screenWidth: Int, screenHeight: Int) : Game() {
 	// 게임 제목
 	val title = "Endless Dead";
     // 화면(창) 크기 — DesktopLauncher 가 창 크기 설정에도 이 값을 읽어간다.

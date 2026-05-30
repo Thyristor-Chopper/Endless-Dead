@@ -1,11 +1,11 @@
-package com.oop.game.spawner;
+package io.potatogun.endlessdead.spawner;
 
-import com.oop.game.Position;
-import com.oop.game.Timer;
-import com.oop.game.entity.Player;
-import com.oop.game.entity.Zombie;
-import com.oop.game.world.Freezable;
-import com.oop.game.world.World;
+import io.potatogun.endlessdead.Position;
+import io.potatogun.endlessdead.Timer;
+import io.potatogun.endlessdead.entity.Player;
+import io.potatogun.endlessdead.entity.Zombie;
+import io.potatogun.endlessdead.world.Freezable;
+import io.potatogun.endlessdead.world.World;
 
 import kotlin.random.Random;
 
