@@ -23,7 +23,7 @@ class Title(game: ZombieGame) : Screen(game) {
 		titleBlinkTimer += delta;
 		if(Input.isAnyKeyJustPressed() || Input.isButtonJustPressed(Input.LEFT_MOUSE)) {
 			game.setTitleBarInfo("불러오는 중...");
-			GameManager.state = GameState.IN_PLAY;  // 타이틀 화면 설정
+			GameManager.setPlaying()  // 타이틀 화면 설정
 			// 불러오는 중이 막히지 않고 바로 뜨게 하기 위해 다음 프레임 때 로드
 			Gdx.app.postRunnable {
 				game.currentRound = 1;

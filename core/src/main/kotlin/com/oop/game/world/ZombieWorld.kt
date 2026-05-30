@@ -196,7 +196,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
      */
     override fun update(delta: Float) {
         when(GameManager.state) {
-            GameState.IN_PLAY	-> updateInPlay(delta);
+            GameState.PLAYING	-> updateInPlay(delta);
             GameState.PAUSED    -> updatePaused();
             GameState.GAME_OVER	-> updateGameOver();
 			else -> {}
@@ -227,8 +227,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
         if(!player.isAlive) {
-            GameManager.state = GameState.GAME_OVER;
-			Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 게임 오버 시 비디오 카드 리소스를 낭비하지 않게 한다
+            GameManager.setGameOver();
 			game.setTitleBarStats(null);
 		}
 		
@@ -311,8 +310,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 			game.setTitleBarInfo("다시 시작하는 중...");
             // 불러오는 중이 막히지 않고 바로 뜨게 하기 위해 다음 프레임 때 로드
 			Gdx.app.postRunnable {
-				Gdx.graphics.setForegroundFPS(Constants.FPS);
-				GameManager.state = GameState.IN_PLAY;  // 상태를 다시 플레이로 되돌리고
+				GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
 				game.currentRound++;
 				game.setScreen(ZombieWorld(game));  // 월드를 아예 새로 파서 화면을 덮어씌움
 				game.setTitleBarInfo(null);
@@ -327,13 +325,10 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	private fun detectPauseKey() {
 		// P키를 누르면 IN_PLAY <-> PAUSED 상태 토글!
         if(Input.isKeyJustPressed(Input.P) || Input.isKeyJustPressed(Input.ESCAPE)) {
-            if(GameManager.state == GameState.IN_PLAY) {
-				Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
-				GameManager.state = GameState.PAUSED;
-			} else if(GameManager.state == GameState.PAUSED) {
-				Gdx.graphics.setForegroundFPS(Constants.FPS);
-				GameManager.state = GameState.IN_PLAY;
-			}
+            if(GameManager.state == GameState.PLAYING)
+				GameManager.pause();
+			else if(GameManager.state == GameState.PAUSED)
+				GameManager.resume();
         }
 	}
 
@@ -403,12 +398,12 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
         super.render(delta);
 
 		// 일시 정지 시 어둡게 변경
-		if(GameManager.state != GameState.IN_PLAY)
+		if(GameManager.state != GameState.PLAYING)
 			drawFrozenOverlay();
 
         // ── 상태별로 그리는 것이 다름 ──
         when(GameManager.state) {
-            GameState.IN_PLAY 	-> {
+            GameState.PLAYING 	-> {
                 // 플레이 중에는 추가로 그릴 것 없음
             }
             GameState.PAUSED    -> drawPausedMessage(); // 💡 [추가] 일시정지 화면 그리기

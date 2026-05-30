@@ -44,7 +44,7 @@ fun main() {
     config.setResizable(true);
 	config.setWindowSizeLimits(320, 240, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
     config.useVsync(false);										// 수직동기화 (화면 찢어짐 방지)
-    config.setForegroundFPS(Constants.FPS);							// 최대 60 FPS
+    config.setForegroundFPS(10);									// 타이틀 화면에서는 낮은 fps로
 	config.setWindowIcon(FileType.Internal, "icon_16.png", "icon_32.png", "icon_128.png");
 
     // ─────────────────────────────────────────

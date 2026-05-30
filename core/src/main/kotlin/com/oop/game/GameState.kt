@@ -11,7 +11,7 @@ package com.oop.game;
  */
 enum class GameState {
 	TITLE,
-	IN_PLAY,
+	PLAYING,
 	PAUSED,
 	GAME_OVER;
 }
