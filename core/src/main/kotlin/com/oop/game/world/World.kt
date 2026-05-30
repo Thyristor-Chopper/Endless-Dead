@@ -159,6 +159,8 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
     override fun update(delta: Float) {
 		updateEntities(delta);
 		removeDead();
+		if(subtitlesTimer > 0f)
+			subtitlesTimer -= delta;
 	}
 	
     // ────────────────────────────────────────────────────────
@@ -168,7 +170,7 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 	/**
 	 * 배경 오버레이와 개체, 자막을 그린다.
 	 */
-	override fun drawElements(delta: Float) {
+	override fun drawElements() {
         drawEntities();
 		// 자막이 있으면 표시
 		if(subtitlesTimer > 0f) subtitlesMessage?.let {
@@ -182,7 +184,6 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 				align = Align.center,
 				skipBatch = true
 			);
-			subtitlesTimer -= delta;
 		};
 	}
 

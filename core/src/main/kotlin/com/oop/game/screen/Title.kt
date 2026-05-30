@@ -37,7 +37,7 @@ class Title(game: ZombieGame) : Screen(game) {
 		batch.draw(stillCut, 0f, 0f, game.screenWidth.toFloat(), game.screenHeight.toFloat());
 	}
 	
-	override fun drawElements(delta: Float) {
+	override fun drawElements() {
 		drawTitle();
 	}
 	

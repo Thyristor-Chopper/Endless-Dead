@@ -537,8 +537,8 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	/**
 	 * 필요한 요소들을 그린다.
 	 */
-	override fun drawElements(delta: Float) {
-		super.drawElements(delta);
+	override fun drawElements() {
+		super.drawElements();
 		
         // ── 항상 보이는 UI ──
         drawHud();

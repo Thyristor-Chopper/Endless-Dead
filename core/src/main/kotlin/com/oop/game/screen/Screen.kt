@@ -133,7 +133,7 @@ abstract class Screen(val game: ZombieGame) : ScreenAdapter() {
 		batch.begin();
 		drawBackground();
 		drawBackgroundOverlay();
-		drawElements(delta);
+		drawElements();
 		drawWidgets();
 		batch.end();
 	}
@@ -163,7 +163,7 @@ abstract class Screen(val game: ZombieGame) : ScreenAdapter() {
 	/**
 	 * 그 외 하위 클래스에서 배경과 위젯(컨트롤) 사이에 그려야 할 것들
 	 */
-	protected open fun drawElements(delta: Float) {}
+	protected open fun drawElements() {}
 	
 	/**
 	 * 화면 내 위젯(컨트롤)들을 그린다.
