@@ -24,7 +24,7 @@ import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Bandage;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.MachineGun;
-import io.potatogun.endlessdead.item.Shoes;
+import io.potatogun.endlessdead.item.SpeedPotion;
 import io.potatogun.endlessdead.item.Shotgun;
 import io.potatogun.endlessdead.item.TimeStopper;
 import io.potatogun.endlessdead.spawner.Spawner;
@@ -164,7 +164,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 			1		-> Shotgun(this)
 			2		-> Bandage(this)
 			3		-> TimeStopper(this)
-			else	-> Shoes(this)
+			else	-> SpeedPotion(this)
 		};
 	}
 	
@@ -173,11 +173,10 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 	override fun freeze(duration: Float) {
 		isFrozen = true;
 		unfreezeTimer?.let { it.unregister() };
-		unfreezeTimer = Timer(duration) {
+		unfreezeTimer = Utils.setTimeout(duration) {
 			unfreeze();
-			unfreezeTimer?.unregister();
 			unfreezeTimer = null;
-		}.register();
+		};
 	}
 	
 	override fun unfreeze() {

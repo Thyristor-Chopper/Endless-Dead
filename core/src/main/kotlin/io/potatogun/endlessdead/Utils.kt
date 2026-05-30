@@ -2,6 +2,8 @@ package io.potatogun.endlessdead;
 
 import com.badlogic.gdx.graphics.Color;
 
+import io.potatogun.endlessdead.Timer;
+
 /**
  * 유용한 함수 모음
  */
@@ -29,5 +31,20 @@ object Utils {
 		if(r > 255 || g > 255 || b > 255 || r < 0 || g < 0 || b < 0 || a > 1f || a < 0f)
 			throw IllegalArgumentException("invalid color value");
 		return Color(r / 255f, g / 255f, b / 255f, a);
+	}
+	
+	/**
+	 * 지정한 시간 후 특정 서브루틴을 한 번만 실행한다.
+	 * 
+	 * @param delay		지연 시간(초)
+	 * @param operation	실행할 서브루틴
+	 */
+	fun setTimeout(delay: Float, operation: () -> Unit): Timer {
+		var timer: Timer? = null;  // 선언 이후 대입해야 해서 어쩔 수 없이 var
+		timer = Timer(delay) {
+			operation();
+			timer?.unregister();
+		}.register();
+		return timer!!;
 	}
 }

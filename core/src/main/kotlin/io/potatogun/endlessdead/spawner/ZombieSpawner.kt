@@ -19,15 +19,15 @@ class ZombieSpawner(world: World, private val spawnInterval: Float = 3f) : Spawn
     private var spawnTimer = 0f;
     private var zombiesPerSpawn = 1;
     private val maxZombiesPerSpawn = 8;
-    private val timers = mutableListOf<Timer>();
+    private val spawnIncreaseTimer: Timer;
 
     init {
-        timers.add(Timer(30f) {
+        spawnIncreaseTimer = Timer(30f) {
             if(zombiesPerSpawn < maxZombiesPerSpawn) {
                 zombiesPerSpawn++
                 world.drawSubtitles("More zombies coming...")
             }
-        }.register());
+        }.register();
     }
 
 	/**
@@ -68,7 +68,6 @@ class ZombieSpawner(world: World, private val spawnInterval: Float = 3f) : Spawn
 	 * 타이머 해제
 	 */
 	override fun cleanUp() {
-		for(timer in timers)
-			timer.unregister();
+		spawnIncreaseTimer.unregister();
 	}
 }

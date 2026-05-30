@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Timer;
+import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.item.Gun;
@@ -207,8 +208,11 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		}
 	}
 	
-	fun speedUp(amount: Float) {
+	fun speedUp(amount: Float, duration: Float) {
 		speed += amount;
+		Utils.setTimeout(duration) {
+			speed -= amount;
+		};
 	}
 	
 	override fun draw(batch: SpriteBatch) {
