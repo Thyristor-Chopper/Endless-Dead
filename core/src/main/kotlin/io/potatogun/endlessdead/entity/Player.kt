@@ -81,10 +81,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		// 반디 위치에 따라 플레이어 회전
 		rotateTo(Position(Gdx.input.getX().toFloat(), Gdx.input.getY().toFloat()));
 
-		// 이동
-		val moved = updatePosition(delta);
-		if(moved) world.updateCameraOffset();
-
 		// 아이템 가져가기 & 넣기
 		if(Input.isKeyJustPressed(Input.SPACE) || Input.isButtonJustPressed(Input.RIGHT_MOUSE))
 			interactContainer();
@@ -97,6 +93,10 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 			if(it is Usable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.allowContinuousUse && Input.isButtonPressed(Input.LEFT_MOUSE))))
 				it.use();
 		};
+
+		// 이동
+		val moved = updatePosition(delta);
+		if(moved) world.updateCameraOffset();
 
 		// 아이템 파괴
 		if(Input.isKeyJustPressed(Input.DELETE))
