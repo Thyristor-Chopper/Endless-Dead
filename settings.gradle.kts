@@ -1,3 +1,3 @@
-rootProject.name = "oop-game"
+rootProject.name = "endless-dead"
 
 include("core", "desktop")

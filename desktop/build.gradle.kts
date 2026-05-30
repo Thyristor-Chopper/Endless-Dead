@@ -13,7 +13,7 @@ application {
     mainClass.set("com.oop.game.desktop.DesktopLauncherKt")
 
     // macOS에서 LWJGL3 실행 시 필요
-    if (System.getProperty("os.name").lowercase().contains("mac")) {
+    if(System.getProperty("os.name").lowercase().contains("mac")) {
         applicationDefaultJvmArgs = listOf("-XstartOnFirstThread")
     }
 }
