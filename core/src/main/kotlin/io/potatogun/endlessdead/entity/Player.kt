@@ -78,8 +78,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
     override fun update(delta: Float) {
 		super.update(delta);
 
-		// 플레이어 회전
-		rotatePlayer(Gdx.input.getX(), Gdx.input.getY());
+		// 반디 위치에 따라 플레이어 회전
+		rotateTo(Position(Gdx.input.getX().toFloat(), Gdx.input.getY().toFloat()));
 
 		// 이동
 		val moved = updatePosition(delta);
@@ -115,16 +115,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
         x = x.coerceIn(0f, world.width);
         y = y.coerceIn(0f, world.height);
     }
-
-	/**
-	 * 마우스 위치에 따라 플레이어를 회전한다.
-	 *
-	 * update()에서만 한 번 쓰이기 때문에 inline이다.
-	 */
-	private inline fun rotatePlayer(x: Int, y: Int) {
-		// 샷건 내 360도 구현 참고함
-		rotation = toDegrees(atan2((world.game.screenHeight - y) - (this.y - world.offsetY), x - (this.x - world.offsetX)).toDouble()).toFloat() - 90f;
-	}
 
 	/**
 	 * 자판 방향 글쇠 눌림 상태에 따라 위치 변경

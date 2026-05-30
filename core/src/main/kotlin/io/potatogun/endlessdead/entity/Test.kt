@@ -6,8 +6,6 @@ import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.TestGun;
 import io.potatogun.endlessdead.world.World;
 
-import kotlin.math.sqrt;
-
 /**
  * 단순 테스트용
  */
@@ -27,10 +25,10 @@ class Test(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 80f, 80
 	override fun update(delta: Float) {
 		super.update(delta);
 
-		if(!target.isAlive) {
-			this.target = world.player;
-			return;
-		}
+		if(target !== world.player && !target.isAlive)
+			target = world.player;
+
+		rotateTo(target.position);
 
         val dx = target.x - x;
         val dy = target.y - y;

@@ -10,6 +10,9 @@ import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.world.World;
 
+import java.lang.Math.toDegrees;
+
+import kotlin.math.atan2;
 import kotlin.math.sqrt;
 
 /**
@@ -133,6 +136,16 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
 		val dx = (other.x + other.width / 2f - width / 2f) - x;
         val dy = (other.y + other.height / 2f - height / 2f) - y;
         return sqrt(dx * dx + dy * dy);
+	}
+
+	/**
+	 * 특정 위치를 향해 회전한다.
+	 * 
+	 * @param position 타겟 방향
+	 */
+	fun rotateTo(position: Position) {
+		// 샷건 내 360도 구현 참고함
+		rotation = toDegrees(atan2((world.game.screenHeight - position.y) - (this.y - world.offsetY), position.x - (this.x - world.offsetX)).toDouble()).toFloat() - 90f;
 	}
 
 	/**
