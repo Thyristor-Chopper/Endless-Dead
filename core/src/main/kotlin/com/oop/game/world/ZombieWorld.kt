@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.Align;
 
 import com.oop.game.Constants;
 import com.oop.game.GameManager;
-import com.oop.game.GameState;
 import com.oop.game.Input;
 import com.oop.game.ScoreManager;
 import com.oop.game.Timer;
@@ -195,11 +194,10 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
      *  상태 변화·입력은 update 가 책임진다.)
      */
     override fun update(delta: Float) {
-        when(GameManager.state) {
-            GameState.PLAYING	-> updateInPlay(delta);
-            GameState.PAUSED    -> updatePaused();
-            GameState.GAME_OVER	-> updateGameOver();
-			else -> {}
+        when {
+            GameManager.isPlaying	-> updateInPlay(delta);
+            GameManager.isPaused	-> updatePaused();
+            GameManager.isGameOver	-> updateGameOver();
         }
     }
 
@@ -325,9 +323,9 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	private fun detectPauseKey() {
 		// P키를 누르면 IN_PLAY <-> PAUSED 상태 토글!
         if(Input.isKeyJustPressed(Input.P) || Input.isKeyJustPressed(Input.ESCAPE)) {
-            if(GameManager.state == GameState.PLAYING)
+            if(GameManager.isPlaying)
 				GameManager.pause();
-			else if(GameManager.state == GameState.PAUSED)
+			else if(GameManager.isPaused)
 				GameManager.resume();
         }
 	}
@@ -398,16 +396,16 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
         super.render(delta);
 
 		// 일시 정지 시 어둡게 변경
-		if(GameManager.state != GameState.PLAYING)
+		if(!GameManager.isPlaying)
 			drawFrozenOverlay();
 
         // ── 상태별로 그리는 것이 다름 ──
-        when(GameManager.state) {
-            GameState.PLAYING 	-> {
+        when {
+            GameManager.isPlaying 	-> {
                 // 플레이 중에는 추가로 그릴 것 없음
             }
-            GameState.PAUSED    -> drawPausedMessage(); // 💡 [추가] 일시정지 화면 그리기
-            GameState.GAME_OVER	-> drawGameOverMessage();
+            GameManager.isPaused	-> drawPausedMessage(); // 💡 [추가] 일시정지 화면 그리기
+            GameManager.isGameOver	-> drawGameOverMessage();
 			else -> {}
         }
     }

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Align;
 
 import com.oop.game.GameManager;
-import com.oop.game.GameState;
 import com.oop.game.Input;
 import com.oop.game.ZombieGame;
 import com.oop.game.world.ZombieWorld;

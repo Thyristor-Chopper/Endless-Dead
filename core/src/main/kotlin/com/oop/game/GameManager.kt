@@ -3,8 +3,13 @@ package com.oop.game;
 import com.badlogic.gdx.Gdx;
 
 object GameManager {
-	var state = GameState.TITLE
-		private set;
+	private var state = GameState.TITLE;
+	val isPlaying: Boolean
+		get() = (state == GameState.PLAYING);
+	val isGameOver: Boolean
+		get() = (state == GameState.GAME_OVER);
+	val isPaused: Boolean
+		get() = (state == GameState.PAUSED);
 	
 	fun setPlaying() {
 		Gdx.graphics.setForegroundFPS(Constants.FPS);
@@ -23,5 +28,15 @@ object GameManager {
 	
 	inline fun resume() {
 		setPlaying();
+	}
+	
+	/**
+	 * 게임의 현재 상태를 나타내는 열거형.
+	 */
+	private enum class GameState {
+		TITLE,
+		PLAYING,
+		PAUSED,
+		GAME_OVER;
 	}
 }

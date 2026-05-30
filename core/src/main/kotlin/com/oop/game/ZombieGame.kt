@@ -70,10 +70,10 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
 	}
 	
 	private inline fun update() {
-		val gameStateIndicator = when(GameManager.state) {
-			GameState.PAUSED	-> "[일시 중지]"
-			GameState.GAME_OVER	-> "[게임 오버]"
-			else				-> ""
+		val gameStateIndicator = when {
+			GameManager.isPaused	-> "[일시 중지]"
+			GameManager.isGameOver	-> "[게임 오버]"
+			else					-> ""
 		}.run {
 			if(this.isBlank()) ""
 			else " $this"
