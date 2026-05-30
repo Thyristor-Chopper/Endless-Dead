@@ -131,7 +131,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 * 매 프레임 무적 시간 감소
 	 */
 	override fun forceUpdate(delta: Float) {
-		super.update(delta);
+		super.forceUpdate(delta);
 		
 		if(invincibilityTimer > 0f)
 			invincibilityTimer -= delta;
