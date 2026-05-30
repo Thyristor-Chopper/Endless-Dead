@@ -3,7 +3,7 @@ package io.potatogun.endlessdead.entity;
 import io.potatogun.endlessdead.item.Item;
 
 /**
- * 인벤토리를 가진 개체의 기본적인 구현
+ * 인벤토리를 가진 개체의 기본적인 구현체.
  * 단독으로 사용하지 않고 위임으로만 사용된다.
  */
 class InventoryEntityImpl : InventoryEntity {

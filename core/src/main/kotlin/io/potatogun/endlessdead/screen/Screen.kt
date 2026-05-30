@@ -45,11 +45,18 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 
     init {
         setCameraCenter();
+
+		// batch에게 '이 카메라의 좌표계로 그려라'를 알려줌
+		//   https://javadoc.io/doc/com.badlogicgames.gdx/gdx/1.12.1/com/badlogic/gdx/graphics/Camera.html#combined
+		//   자바독을 읽어보면 combined는 final 필드이기 때문에 바뀔 일이 없으므로 여기서 한 번만 호출해도 된다고 본다.
+		batch.projectionMatrix = camera.combined;
     }
-	
+
+	/**
+	 * 카메라를 '왼쪽 아래 = (0,0), 오른쪽 위 = (screenWidth, screenHeight)'로 설정.
+	 */
 	private inline fun setCameraCenter() {
-        // 카메라를 '왼쪽 아래 = (0,0), 오른쪽 위 = (screenWidth, screenHeight)' 로 설정.
-        //   false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
+        // false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
 		camera.setToOrtho(false, game.screenWidth.toFloat(), game.screenHeight.toFloat());
 	}
 
@@ -122,9 +129,8 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        // 2) 카메라 상태 갱신 후, batch 에게 '이 카메라의 좌표계로 그려라' 알려줌
+        // 2) 카메라 상태 갱신
         camera.update();
-        batch.projectionMatrix = camera.combined;
 
         // 3) 게임 로직 업데이트
         update(delta);
@@ -132,7 +138,6 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 		// 4) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
 		batch.begin();
 		drawBackground();
-		drawBackgroundOverlay();
 		drawElements();
 		drawWidgets();
 		batch.end();
@@ -154,11 +159,6 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
      *              begin/end 를 또 호출하면 안 된다.
      */
     protected abstract fun drawBackground();
-	
-	/**
-	 * 월드 중심 등 오버레이를 그리는 자리
-	 */
-	protected open fun drawBackgroundOverlay() {}
 	
 	/**
 	 * 그 외 하위 클래스에서 배경과 위젯(컨트롤) 사이에 그려야 할 것들
@@ -197,8 +197,7 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 	 * @param skipBatch			batch.begin()/end() 사이에서 사용할 경우 true
      */
 	fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, fixedWidthChars: String = "", skipBatch: Boolean = false) {
-        if(!skipBatch) batch.projectionMatrix = camera.combined;
-		font.setFixedWidthGlyphs(fixedWidthChars);
+        font.setFixedWidthGlyphs(fixedWidthChars);
         font.color = color;
         font.data.setScale(scale);
         if(!skipBatch) batch.begin();

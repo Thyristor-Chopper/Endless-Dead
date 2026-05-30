@@ -21,17 +21,17 @@ import kotlin.math.atan2;
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *  플레이어 예제 — player.png 이미지, 화살표 키로 조종.
+ *  플레이어 — player.bmp 이미지, 화살표 키로 조종.
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  *
- *  GameObject 를 상속하는 '가장 단순한' 예제다.
+ *  Entity를 상속하는 '가장 단순한' 예제다.
  *  자기 프로젝트의 Player 를 만들 때 이 파일을 통째로 복사해서
  *  texture 의 파일명을 자기 이미지로 바꾸거나,
  *  update() 에 발사 로직·특수 능력 등을 추가하면 된다.
  *
  *  핵심 포인트:
  *   ▸ Texture 는 객체가 살아있는 동안 한 번만 만들고 재사용 (생성 비용이 큼).
- *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 GameObject.dispose()를 override.
+ *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 Entity#dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
 class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 57f, "player.bmp", 50), InventoryEntity by InventoryEntityImpl() {

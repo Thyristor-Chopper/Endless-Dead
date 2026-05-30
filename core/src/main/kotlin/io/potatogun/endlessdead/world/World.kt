@@ -28,9 +28,9 @@ import io.potatogun.endlessdead.screen.Screen;
  *    - 그 안에 어떤 객체들이 있는가
  *    - 객체들이 매 프레임 어떻게 움직이고 상호작용하는가
  *    - 그것을 어떻게 그릴 것인가
- *  GameWorld는 이 '월드' 를 표현하는 한 클래스에 모든 것을 담는다.
+ *  World는 이 '월드'를 표현하는 한 클래스에 모든 것을 담는다.
  *
- *  이 클래스를 상속해 자기 게임의 월드를 만든다 (ExampleWorld 참고).
+ *  이 클래스를 상속해 자기 게임의 월드를 만든다 (ZombieWorld 참고).
  *
  * @param game		월드가 속한 게임
  * @param width		월드 전체 너비
@@ -49,7 +49,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFl
     var offsetY: Float = height / 2f - game.screenHeight / 2f;
     // 등록된 객체들만 update/draw 된다.
     // private 으로 감춘 이유: 외부가 직접 add/remove 하면
-    //   '순회 중 삭제' 같은 버그가 나기 쉽다. add(), remove() 라는 공식 창구만 허용.
+    //   '순회 중 삭제' 같은 버그가 나기 쉽다. addEntity(), removeEntity()라는 공식 창구만 허용.
     //   (5주차에서 배운 캡슐화의 실제 사례)
     private val entities = mutableListOf<Entity>();
 	// 자막 타이머 관련 필드들
@@ -93,12 +93,6 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFl
 
     /**
      * 등록된 모든 객체에게 'update(delta) 한 프레임 진행' 을 시킨다.
-     *
-     * 객체 간 상호작용("누가 누구와 부딪혔는가") 은 여기서 결정하지 않는다.
-     * 그건 update() 안에서 이 함수를 호출한 뒤 직접 처리할 일이다.
-     *
-     * TODO (9주차 이후): 고차함수 forEach 로
-     *   gameObjects.forEach { it.update(delta) } 처럼 줄일 수 있다.
 	 *
 	 * update 내에서만 한 번 쓰이기 때문에 inline이다.
      */
@@ -111,7 +105,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFl
     }
 
     /**
-     * isAlive() 가 false 인 객체들을 한꺼번에 제거한다.
+     * isAlive가 false인 객체들을 한꺼번에 제거한다.
      *
      * 보통 update() 끝에서 호출 — 상호작용 결과 죽음을 표시한 객체를 정리.
      *
@@ -151,10 +145,10 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFl
      *
      * 기본 구현은 가장 단순한 '갱신 → 정리' 시나리오를 보여준다:
      *   ① updateAllObjects(delta) — 각 객체가 자기 위치 갱신
-     *   ② removeDead()            — isAlive=false 인 객체 제거
+     *   ② removeDead()            — isAlive=false인 객체 제거
      *
-     * 객체 간 상호작용(충돌·점수·생사 결정)이 있는 게임이면 override 해서
-     * 위 두 호출 사이에 그 로직을 끼워 넣는다 (ExampleWorld 참고).
+     * 객체 간 상호작용(충돌·점수·생사 결정)이 있는 게임이면 override해서
+     * 위 두 호출 사이에 그 로직을 끼워 넣는다 (ZombieWorld 참고).
      */
     override fun update(delta: Float) {
 		updateEntities(delta);
@@ -228,8 +222,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFl
      * 월드의 특정 지점에 고정되므로, 카메라를 움직이면 텍스트도 따라 움직인다.
      *   → 지도 표지판, NPC 머리 위 말풍선, 특정 지역 이름 등에 적합.
      *
-     * 구현 원리: 월드 좌표에서 카메라 offset 만큼 빼서 화면 좌표로 바꾼 뒤
-     *           drawTextOnScreen 호출.
+     * 구현 원리: 월드 좌표에서 카메라 offset 만큼 빼서 화면 좌표로 바꾼 뒤 drawText 호출.
 	 *
 	 * @param text				출력할 메시지
 	 * @param x					X 위치

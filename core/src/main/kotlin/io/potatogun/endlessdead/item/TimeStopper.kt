@@ -4,7 +4,7 @@ import io.potatogun.endlessdead.world.Freezable;
 import io.potatogun.endlessdead.world.World;
 
 /**
- * 시계 - 시간정지 아이템
+ * 시간 정지기
  *
  * @param world	아이템이 있는 세계
  */

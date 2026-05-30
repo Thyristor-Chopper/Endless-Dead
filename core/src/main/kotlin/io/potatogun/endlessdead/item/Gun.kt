@@ -15,8 +15,9 @@ import io.potatogun.endlessdead.world.World;
  * @param world			아이템이 있는 세계
  * @param id			총 식별자
  * @param name			총 이름
- * @param damage		총알 피해량
+ * @param bulletDamage	총알 피해량
  * @param bulletSpeed	총알 속도
+ * @param bulletHp		총알 체력
  * @param penetrable	총알 관통 가능 여부
  * @param fireInterval	공격 속도
  * @param maxAmmo		최대 총알 개수
@@ -40,7 +41,7 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	private var cooldownTimer: Timer? = null;
 	
 	/**
-	 * 총의 쿨타임을 건다.
+	 * 총에 쿨타임을 건다.
 	 */
 	protected fun startFireCooldown() {
 		fireCooldown = fireInterval;
@@ -93,7 +94,10 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	override fun use(): Boolean {
 		return fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.game.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), world.player);
 	}
-	
+
+	/**
+	 * 쿨타임 해제 타이머 정리
+	 */
 	override fun cleanUp() {
 		cooldownTimer?.unregister();
 	}

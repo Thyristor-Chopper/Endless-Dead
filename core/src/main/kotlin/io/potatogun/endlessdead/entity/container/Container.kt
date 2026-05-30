@@ -12,6 +12,12 @@ import io.potatogun.endlessdead.world.World;
 /**
  * 아이템 상자 역할을 하는 추상 클래스
  *
+ * @param world			개체가 속한 세계
+ * @param x				개체 가로 위치
+ * @param y				개체 세로 위치
+ * @param width			개체 너비
+ * @param height		개체 높이
+ * @param texture		개체 텍스처
  * @param emptyTexture	상자가 비어 있을 때 사용할 텍스처
  * @param initialItem	처음 들어있는 아이템
  */

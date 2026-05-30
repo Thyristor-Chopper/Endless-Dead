@@ -3,7 +3,7 @@ package io.potatogun.endlessdead;
 import kotlin.math.sqrt;
 
 /**
- * 위치(평면좌표)를 저장하는 immutable 레코드
+ * 위치(평면좌표)를 저장하는 immutable 레코드이다.
  *
  * @param x	X좌표
  * @param y	Y좌표

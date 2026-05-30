@@ -16,10 +16,10 @@ import kotlin.random.Random;
  * @param spawnInterval	소환 간격
  */
 class ZombieSpawner(world: World, private val spawnInterval: Float = 3f) : Spawner(world) {
-    private var timer = 0f
-    private var zombiesPerSpawn = 1
-    private val maxZombiesPerSpawn = 8
-    private val timers = mutableListOf<Timer>()
+    private var spawnTimer = 0f;
+    private var zombiesPerSpawn = 1;
+    private val maxZombiesPerSpawn = 8;
+    private val timers = mutableListOf<Timer>();
 
     init {
         timers.add(Timer(30f) {
@@ -29,18 +29,16 @@ class ZombieSpawner(world: World, private val spawnInterval: Float = 3f) : Spawn
             }
         }.register());
     }
+
 	/**
 	 * 매 프레임 실행해서 소환할 시간이 되면 좀비를 스폰한다
 	 */
-    override fun tick(delta: Float) {
-        timer += delta
-        if(timer >= spawnInterval) {
-            timer -= spawnInterval
-            var count = 0
-            while (count < zombiesPerSpawn) {
-                spawnRandomZombie()
-                count++
-            }
+    override fun update(delta: Float) {
+        spawnTimer += delta;
+        if(spawnTimer >= spawnInterval) {
+            spawnTimer -= spawnInterval;
+            for(i in 1..zombiesPerSpawn)
+                spawnRandomZombie();
         }
     }
 
@@ -48,8 +46,6 @@ class ZombieSpawner(world: World, private val spawnInterval: Float = 3f) : Spawn
 	 * 무작위로 좀비 종류를 골라서 월드에 추가하고 반환한다
 	 */
     private inline fun spawnRandomZombie() {
-		if(world is Freezable && world.isFrozen) return;
-	
         var randomX: Float;
         var randomY: Float;
 		do {
@@ -60,14 +56,17 @@ class ZombieSpawner(world: World, private val spawnInterval: Float = 3f) : Spawn
         // 주사위를 굴려서 확률로 좀비 종류 뽑기
         val rand = Random.nextInt(10);
         val newZombie = when {
-            rand < 6	-> Zombie.Weak(world, randomX, randomY, world.player, angle = 10f)		// 60% 확률
-            rand < 9	-> Zombie.Normal(world, randomX, randomY, world.player, angle = 10f)	// 30% 확률
-            else		-> Zombie.Strong(world, randomX, randomY, world.player, angle = 10f)	// 10% 확률
-        }
+            rand < 6	-> Zombie.Weak(world, randomX, randomY, angle = 10f)		// 60% 확률
+            rand < 9	-> Zombie.Normal(world, randomX, randomY, angle = 10f)		// 30% 확률
+            else		-> Zombie.Strong(world, randomX, randomY, angle = 10f)		// 10% 확률
+        };
 
-        world.addEntity(newZombie)
+        world.addEntity(newZombie);
     }
-	
+
+	/**
+	 * 타이머 해제
+	 */
 	override fun cleanUp() {
 		for(timer in timers)
 			timer.unregister();

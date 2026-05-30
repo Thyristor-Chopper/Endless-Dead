@@ -13,18 +13,18 @@ import io.potatogun.endlessdead.EndlessDead;
  * ════════════════════════════════════════════════════════════
  *
  *  여기서 하는 일은 세 가지뿐:
- *   1. 게임 객체(OopGame)를 만든다
+ *   1. 게임 객체(EndlessDead)를 만든다
  *   2. 창(Window) 설정을 만든다
  *   3. LibGDX 에게 "이 게임을 이 설정으로 실행시켜줘" 라고 넘긴다
  *
- *  실제 게임 내용은 OopGame 클래스와 각 Screen 클래스에서 정의된다.
- *  이 파일은 순수 'OS 에 창 띄우기' 역할만 한다.
+ *  실제 게임 내용은 EndlessDead 클래스와 각 Screen/World 클래스에서 정의된다.
+ *  이 파일은 순수 'OS에 창 띄우기' 역할만 한다.
  */
 fun main() {
     // ─────────────────────────────────────────
     // 1) 게임 객체 만들기
     // ─────────────────────────────────────────
-    //   OopGame 은 LibGDX 의 Game 을 상속한 클래스 (OopGame.kt 참고).
+    //   EndlessDead은 LibGDX 의 Game 을 상속한 클래스 (EndlessDead.kt 참고).
     //   이 시점에는 단순히 설계도만 들고 있을 뿐, 실제 화면은 아직 안 만들어진다.
     //   화면 생성은 LibGDX 가 나중에 game.create() 를 호출할 때 일어난다.
     val game = EndlessDead(800, 600);
@@ -42,8 +42,8 @@ fun main() {
     config.setTitle("${game.title} - 시작하는 중...");				// 창 제목
     config.setWindowedMode(game.screenWidth, game.screenHeight);	// 창 크기 (OopGame 이 들고 있는 값 사용)
     config.setResizable(true);
-	config.setWindowSizeLimits(320, 240, Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT);
-    config.useVsync(false);										// 수직동기화 (화면 찢어짐 방지)
+	config.setWindowSizeLimits(320, 240, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT);
+    config.useVsync(false);										// 수직동기화를 꺼야 랙이 줄어듦
     config.setForegroundFPS(10);									// 타이틀 화면에서는 낮은 fps로
 	config.setWindowIcon(FileType.Internal, "icon_16.png", "icon_32.png", "icon_128.png");
 
@@ -54,9 +54,9 @@ fun main() {
     //   내부에서 차례로:
     //     ① OS 창을 띄우고
     //     ② OpenGL 컨텍스트와 Gdx.* 전역을 세팅한 뒤
-    //     ③ game.create() 를 호출 → OopGame.create() 안의 setScreen(...) 이 실행되어
-    //        ExampleWorld 가 만들어진다
-    //     ④ 매 프레임 screen.render(delta) 를 호출하며 루프를 돈다
-    //   창이 닫힐 때까지 이 호출은 return 하지 않는다.
+    //     ③ game.create()를 호출 → EndlessDead#create() 안의 setScreen(...)이 실행되어
+    //        타이틀 화면이 만들어진다
+    //     ④ 매 프레임 Screen#render(delta)를 호출하며 루프를 돈다
+    //   창이 닫힐 때까지 이 호출은 반환하지 않는다.
     Lwjgl3Application(game, config);
 }

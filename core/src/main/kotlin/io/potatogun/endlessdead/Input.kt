@@ -13,7 +13,7 @@ import io.potatogun.endlessdead.world.World;
  * ────────────────────────────────────────────────────────────
  *  왜 이런 게 필요한가?
  * ────────────────────────────────────────────────────────────
- *  LibGDX 에서 키 입력을 확인하려면 매번
+ *  LibGDX에서 키 입력을 확인하려면 매번
  *      Gdx.input.isKeyPressed(Input.Keys.LEFT)
  *  처럼 길게 적어야 한다. 게임 로직 안에서 이 긴 표현이 반복되면
  *  코드가 지저분해지고 핵심 흐름이 잘 보이지 않는다.
@@ -24,10 +24,10 @@ import io.potatogun.endlessdead.world.World;
  * ────────────────────────────────────────────────────────────
  *  object 키워드
  * ────────────────────────────────────────────────────────────
- *  'object' 는 **싱글톤 객체** 를 만드는 키워드다.
+ *  'object'는 '싱글톤 객체'를 만드는 키워드다.
  *    - 인스턴스가 단 하나뿐이고
- *    - 어디서든 InputHandler.XXX 로 바로 접근 가능
- *  입력처럼 "상태는 시스템 하나에만 존재" 하는 자원에 잘 어울린다.
+ *    - 어디서든 Input.XXX 로 바로 접근 가능
+ *  입력처럼 '상태는 시스템 하나에만 존재'하는 자원에 잘 어울린다.
  *  (파이썬이라면 모듈 수준 함수/변수와 비슷한 역할)
  */
 object Input {
@@ -96,14 +96,14 @@ object Input {
 	fun isAnyKeyJustPressed(): Boolean = keyJustDown;
 	
 	/**
-     * 지정한 마우스 단추가 눌려 있는지 확인
+     * 지정한 마우스 단추가 눌려 있는지의 여부
 	 *
 	 * @param button	단추의 종류
      */
     inline fun isButtonPressed(button: Int): Boolean = Gdx.input.isButtonPressed(button);
 
 	/**
-     * 지정한 마우스 단추를 막 눌렀는지 확인
+     * 지정한 마우스 단추를 막 눌렀는지의 여부
 	 *
 	 * @param button	단추의 종류
      */

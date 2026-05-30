@@ -24,20 +24,15 @@ import kotlin.math.sqrt;
  *    - 자신을 그릴 줄(draw) 안다
  *  이 '공통 속성/행동'을 한 곳에 모아둔 것이 GameObject 이다.
  *
- *  GameWorld 는 이 GameObject 타입으로만 객체들을 관리한다.
- *  즉, 우리가 Player 든 Bullet 이든 **GameObject를 상속**하기만 하면
- *  GameWorld 가 자동으로 update/draw/제거까지 해준다 (다형성).
+ *  World는 이 Entity 타입으로만 객체들을 관리한다.
+ *  즉, 우리가 Player든 Bullet이든 'Entity를 상속'하기만 하면
+ *  World가 자동으로 update/draw/제거까지 해준다 (다형성).
  *
  * ────────────────────────────────────────────────────────────
  *  사용법 — 새로운 게임 객체 만들기
  * ────────────────────────────────────────────────────────────
- *    class Bullet(x: Float, y: Float) : GameObject(x, y, 8f, 16f) {
- *        private val texture = Texture(Gdx.files.internal("bullet.png"))
+ *    class Bullet(world: World, x: Float, y: Float) : Entity(world, x, y, 8f, 16f, "bullet.png") {
  *        override fun update(delta: Float) { y += 400f * delta }
- *        override fun draw(batch: SpriteBatch) {
- *            batch.draw(texture, x, y, width, height)
- *        }
- *        override fun dispose() { texture.dispose() }
  *    }
  *
  * @param world		개체가 속한 세계
@@ -45,7 +40,7 @@ import kotlin.math.sqrt;
  * @param y 		왼쪽 아래 꼭짓점의 월드 좌표 y
  * @param width		가로 크기 (픽셀)
  * @param height	세로 크기 (픽셀)
- * @param texture	아이템 텍스처(없을 수도 있음)
+ * @param texture	개체 텍스처(없을 수도 있음)
  */
 abstract class Entity(val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) {
 	// 개체의 텍스처
@@ -79,10 +74,7 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
 	}
 	
 	/**
-     * 매 프레임 호출되어 **자신을 그린다**.
-     *
-     * 이미지 로딩은 보통 객체의 init 또는 프로퍼티 초기화 시점에 한 번 한다:
-     *   private val texture = Texture(Gdx.files.internal("player.png"))
+     * 매 프레임 호출되어 자신을 그린다.
 	 *
 	 * 하위 클래스는 이 함수를 override하여 상황에 따라 텍스처를 달리하여 super.draw(SpriteBatch, Texture)를 호출할 수 있다.
 	 * 
