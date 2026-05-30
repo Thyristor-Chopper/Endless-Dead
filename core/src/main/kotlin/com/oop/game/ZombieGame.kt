@@ -43,6 +43,9 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
     var screenHeight = screenHeight
 		internal set;
 	private var titleBarInfo = "";
+	private var titleBarStats = "";
+	var currentRound = 0
+		internal set;
 
     /**
      * LibGDX 가 게임 시작 시 한 번 호출하는 라이프사이클 메서드.
@@ -75,11 +78,20 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
 			if(this.isBlank()) ""
 			else " $this"
 		};
+		val roundInfo = if(currentRound > 0) " - 라운드 $currentRound" else "";
 		val titleBarInfo = if(this.titleBarInfo.isBlank()) "" else " - $titleBarInfo";
-		Gdx.graphics.setTitle("${title}${titleBarInfo}${gameStateIndicator}");
+		val titleBarStats = if(this.titleBarStats.isBlank()) "" else " / $titleBarStats";
+		if(titleBarInfo.isEmpty())
+			Gdx.graphics.setTitle("${title}${roundInfo}${titleBarStats}${gameStateIndicator}");
+		else
+			Gdx.graphics.setTitle("${title}${titleBarInfo}");
 	}
 	
 	fun setTitleBarInfo(info: String?) {
 		titleBarInfo = info ?: "";
+	}
+	
+	fun setTitleBarStats(info: String?) {
+		titleBarStats = info ?: "";
 	}
 }

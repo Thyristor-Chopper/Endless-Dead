@@ -214,7 +214,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
 	private inline fun updateTitleBarInfo() {
-		game.setTitleBarInfo(when(TitleInfoType.byIndex(currentTitleInfo)) {
+		game.setTitleBarStats(when(TitleInfoType.byIndex(currentTitleInfo)) {
 			TitleInfoType.OPENED	-> "연 상자: ${player.openedContainerCount}개"
 			TitleInfoType.KILLED	-> "잡은 좀비 수: ${player.killedZombieCount}"
 			TitleInfoType.FIRED		-> "발사한 총알 수: ${player.firedBullets}"
@@ -307,10 +307,16 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 
         // R 키나 스페이스바를 누르면 다시 시작
         if(Input.isKeyJustPressed(Input.R) || Input.isKeyJustPressed(Input.SPACE)) {
-			Gdx.graphics.setForegroundFPS(Constants.FPS);
-            GameManager.state = GameState.IN_PLAY;  // 상태를 다시 플레이로 되돌리고
-            game.setScreen(ZombieWorld(game));  // 월드를 아예 새로 파서 화면을 덮어씌움
-			Gdx.app.postRunnable { this@ZombieWorld.dispose() };  // 추가: 메모리 누수 방지
+			game.setTitleBarInfo("다시 시작하는 중...");
+            // 불러오는 중이 막히지 않고 바로 뜨게 하기 위해 다음 프레임 때 로드
+			Gdx.app.postRunnable {
+				Gdx.graphics.setForegroundFPS(Constants.FPS);
+				GameManager.state = GameState.IN_PLAY;  // 상태를 다시 플레이로 되돌리고
+				game.currentRound++;
+				game.setScreen(ZombieWorld(game));  // 월드를 아예 새로 파서 화면을 덮어씌움
+				game.setTitleBarInfo(null);
+				Gdx.app.postRunnable { this@ZombieWorld.dispose() };  // 추가: 메모리 누수 방지
+			};
         }
     }
 	
