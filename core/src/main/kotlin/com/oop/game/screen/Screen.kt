@@ -9,11 +9,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
-import com.oop.game.Updatable;
 import com.oop.game.ZombieGame;
 import com.oop.game.widget.Widget;
 
-abstract class Screen(val game: ZombieGame) : ScreenAdapter(), Updatable {
+abstract class Screen(val game: ZombieGame) : ScreenAdapter() {
 	// OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     protected val camera = OrthographicCamera();
 	// SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
@@ -77,7 +76,7 @@ abstract class Screen(val game: ZombieGame) : ScreenAdapter(), Updatable {
 		setCameraCenter();
 	}
 
-    // ────────────────────────────────────────────────────────
+	// ────────────────────────────────────────────────────────
     //  매 프레임 로직
     // ────────────────────────────────────────────────────────
 	
@@ -91,7 +90,7 @@ abstract class Screen(val game: ZombieGame) : ScreenAdapter(), Updatable {
      * 객체 간 상호작용(충돌·점수·생사 결정) 이 있는 게임이면 override 해서
      * 위 두 호출 사이에 그 로직을 끼워 넣는다 (ExampleWorld 참고).
      */
-	override fun update(delta: Float) {}
+	open fun update(delta: Float) {}
 	
 	// ────────────────────────────────────────────────────────
     //  매 프레임 그리기
@@ -151,7 +150,7 @@ abstract class Screen(val game: ZombieGame) : ScreenAdapter(), Updatable {
 	 */
 	private inline fun drawWidgets() {
 		for(widget in widgets.values)
-			if(widget.visible)
+			if(widget.isVisible)
 				widget.draw(batch);
 	}
 
@@ -166,27 +165,26 @@ abstract class Screen(val game: ZombieGame) : ScreenAdapter(), Updatable {
      *   → 점수, HP, 남은 시간 같은 UI 에 적합.
      *
      * 주의: 화면 y 축은 위쪽이 크다. 화면 '위쪽'에 글자를 쓰려면 y = screenHeight-10 처럼.
+	 *
+	 * @param text				출력할 메시지
+	 * @param x					X 위치
+	 * @param y					Y 위치
+	 * @param color				글자 색
+	 * @param scale				글자 크기(배)
+	 * @param width				텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
+	 * @param align				글자 정렬(없으면 왼쪽 정렬)
+	 * @param fixedWidthChars	고정폭으로 사용할 문자 (기본이 null이 아닌 이유는 실제로 빈 문자열이면 고정폭이 없다는 뜻)
+	 * @param skipBatch			batch.begin()/end() 사이에서 사용할 경우 true
      */
-	fun drawText(
-        text: String,
-        x: Float,
-        y: Float,
-        color: Color = Color.WHITE,
-        scale: Float = 1f,
-		width: Float? = null,  // 오른쪽이나 가운데 정렬 시 필요
-		align: Int? = null,  // 글자 정렬(없으면 왼쪽 정렬)
-		fixedWidthChars: String = "",  // null이 아닌 이유는 실제로 빈 문자열이면 고정폭이 없다는 뜻
-		skipBatch: Boolean = false
-    ) {
+	fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, fixedWidthChars: String = "", skipBatch: Boolean = false) {
         if(!skipBatch) batch.projectionMatrix = camera.combined;
 		font.setFixedWidthGlyphs(fixedWidthChars);
         font.color = color;
         font.data.setScale(scale);
         if(!skipBatch) batch.begin();
 		val boxWidth: Float? = width;
-		val textAlign: Int? = align;
-		if(boxWidth != null && textAlign != null)
-			font.draw(batch, text, x, y, boxWidth, textAlign, false);
+		if(boxWidth != null)
+			font.draw(batch, text, x, y, boxWidth, align, false);
 		else
 			font.draw(batch, text, x, y);
         if(!skipBatch) batch.end();

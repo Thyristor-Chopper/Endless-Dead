@@ -1,12 +1,13 @@
-package com.oop.game.item
+package com.oop.game.item;
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 
-import com.oop.game.Position
-import com.oop.game.entity.Bullet
-import com.oop.game.entity.Entity
-import com.oop.game.world.World
+import com.oop.game.Position;
+import com.oop.game.Timer;
+import com.oop.game.entity.Bullet;
+import com.oop.game.entity.Entity;
+import com.oop.game.world.World;
 
 /**
  * 총 아이템 추상 클래스
@@ -36,20 +37,20 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 			else if(value > maxAmmo) field = maxAmmo;
 			else field = value;
 		} //샷건이라는 하위클래스에서도 사용해야할 것 같아 private를 protected로 변경
-	
-	/**
-	 * 남은 쿨타임을 갱신한다.
-	 */
-	override fun update(delta: Float) {
-		if(fireCooldown > 0f)
-			fireCooldown -= delta;
-	}
+	private var cooldownTimer: Timer? = null;
 	
 	/**
 	 * 총의 쿨타임을 건다.
 	 */
 	protected fun startFireCooldown() {
 		fireCooldown = fireInterval;
+		
+		// 남은 쿨타임을 갱신한다.
+		cooldownTimer = Timer(0.01f) {
+			fireCooldown -= 0.01f;
+			if(fireCooldown == 0f)
+				cooldownTimer?.unregister();
+		}.register();
 	}
 	
 	/**
@@ -91,5 +92,9 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	 */
 	override fun use(): Boolean {
 		return fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.game.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), world.player);
+	}
+	
+	override fun cleanUp() {
+		cooldownTimer?.unregister();
 	}
 }

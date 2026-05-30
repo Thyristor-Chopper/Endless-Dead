@@ -3,7 +3,7 @@ package com.oop.game.widget;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 abstract class Widget(var x: () -> Float, var y: () -> Float, val width: Float, val height: Float) {
-	var visible = true
+	var isVisible = true
 		private set;
 
 	abstract fun draw(batch: SpriteBatch);
@@ -11,10 +11,10 @@ abstract class Widget(var x: () -> Float, var y: () -> Float, val width: Float, 
 	open fun dispose() {}
 	
 	fun hide() {
-		visible = false;
+		isVisible = false;
 	}
 	
 	fun show() {
-		visible = true;
+		isVisible = true;
 	}
 }

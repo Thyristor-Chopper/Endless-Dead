@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 import com.oop.game.Position;
-import com.oop.game.Updatable;
-import com.oop.game.WorldObject;
 import com.oop.game.entity.Entity;
 import com.oop.game.world.World;
 
@@ -49,11 +47,11 @@ import kotlin.math.sqrt;
  * @param height	세로 크기 (픽셀)
  * @param texture	아이템 텍스처(없을 수도 있음)
  */
-abstract class Entity(override val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) : WorldObject, Updatable {
+abstract class Entity(val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) {
 	/**
 	 * TimeStopper 아이템의 영향을 받는지의 여부
 	 */
-	open val canUpdateWhileFrozen = true;
+	open val canUpdateWhileFrozen = false;
 	protected val texture: Texture? = texture?.let { Texture(Gdx.files.internal(it)) };
 	val position: Position
 		get() = Position(x, y);
@@ -139,6 +137,17 @@ abstract class Entity(override val world: World, var x: Float, var y: Float, val
         val dy = (other.y + other.height / 2f - height / 2f) - y;
         return sqrt(dx * dx + dy * dy);
 	}
+	
+	/**
+     * 매 프레임 호출되어 **상태를 갱신**한다.
+     *
+     * 상자나 물체처럼 로직이 없는 개체일 수도 있으니 기본은 빈 함수
+     *
+     * @param delta 직전 프레임과의 시간 간격(초). 60fps 면 약 0.0167.
+     *              '픽셀/초' 단위의 속도에 delta 를 곱하면 '이번 프레임 이동량' 이 된다.
+     *              (프레임 속도가 달라져도 같은 속도로 움직이게 하려는 공식)
+     */
+    open fun update(delta: Float) {}
 	
 	/**
 	 * 시간이 멈췄어도 canUpdateWhileFrozen에 관계없이 실행할 로직

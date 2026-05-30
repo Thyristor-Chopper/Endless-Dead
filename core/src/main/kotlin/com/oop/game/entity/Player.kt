@@ -155,7 +155,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	}
 	
     override fun update(delta: Float) {
-        super.update(delta);
+		super.update(delta);
 		
 		// 아이템 사용
 		selectedItem?.let {

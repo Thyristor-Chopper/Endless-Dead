@@ -1,7 +1,5 @@
 package com.oop.game.item;
 
-import com.oop.game.Updatable;
-import com.oop.game.WorldObject;
 import com.oop.game.entity.InventoryEntity;
 import com.oop.game.entity.container.Container;
 import com.oop.game.world.World;
@@ -13,7 +11,7 @@ import com.oop.game.world.World;
  * @param id	총 식별자
  * @param name	총 이름
  */
-abstract class Item(override val world: World, val id: String, val name: String) : WorldObject, Updatable {
+abstract class Item(val world: World, val id: String, val name: String) {
 	val holder: InventoryEntity?
 		get() {
 			for(entity in world.getEntities()) {
@@ -47,6 +45,8 @@ abstract class Item(override val world: World, val id: String, val name: String)
 		val first = holder?.let { it.removeItemFromInventory(this); true } ?: false;
 		val second = container?.let { it.removeItem(); true } ?: false;
 		
+		cleanUp();
+		
 		return first || second;
 		
 		// 나머지는 jvm이나 달빅이 알아서 gc 해주겠지.
@@ -56,4 +56,9 @@ abstract class Item(override val world: World, val id: String, val name: String)
 	 * 아이템의 문자열 표현
 	 */
 	override fun toString(): String = name;
+	
+	/**
+	 * 자원 정리
+	 */
+	open fun cleanUp() {}
 }

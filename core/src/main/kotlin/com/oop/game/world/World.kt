@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
-import com.oop.game.Updatable;
-import com.oop.game.WorldObject;
 import com.oop.game.ZombieGame;
 import com.oop.game.entity.Bullet;
 import com.oop.game.entity.Entity;
@@ -60,7 +58,7 @@ import com.oop.game.screen.Screen;
  * @param width        월드 전체 너비 (기본값: 화면과 동일 = 스크롤 없음)
  * @param height       월드 전체 높이
  */
-abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : Screen(game), Updatable {
+abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : Screen(game) {
 	abstract val player: Player;
     // 카메라 오프셋 — 월드의 어느 지점이 화면 좌하단에 오는지.
     //   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
@@ -102,37 +100,6 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
      *   복사본을 줘서 '훔쳐보기만 하고 건드리진 못하게' 한다.
      */
     fun getEntities(): List<Entity> = entities.toList();
-	
-	/**
-	 * 월드 내 모든 아이템과 개체를 순회한다.
-	 *
-	 * @param callback	실행할 서브루틴
-	 */
-	fun forEachObjects(callback: (WorldObject) -> Unit) {
-		for(entity in entities.toList()) {
-			callback(entity);
-			if(entity is InventoryEntity)
-				for(item in entity.getInventory())
-					callback(item);
-			if(entity is Container)
-				entity.containedItem?.let { callback(it) };
-		}
-	}
-	
-	/**
-	 * 월드 내 모든 아이템을 순회한다.
-	 *
-	 * @param callback	실행할 서브루틴
-	 */
-	fun forEachItems(callback: (WorldObject) -> Unit) {
-		for(entity in entities.toList()) {
-			if(entity is InventoryEntity)
-				for(item in entity.getInventory())
-					callback(item);
-			if(entity is Container)
-				entity.containedItem?.let { callback(it) };
-		}
-	}
 
     /**
      * 등록된 모든 객체에게 'update(delta) 한 프레임 진행' 을 시킨다.
@@ -143,15 +110,12 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
      * TODO (9주차 이후): 고차함수 forEach 로
      *   gameObjects.forEach { it.update(delta) } 처럼 줄일 수 있다.
      */
-    private inline fun updateAllObjects(delta: Float) {
-		forEachObjects {
-			if(it is Updatable) {
-				if(!(it is Entity) || (it is Entity && (!(this is Freezable) || !this.isFrozen || it.canUpdateWhileFrozen)))
-					it.update(delta);
-				if(it is Entity)
-					it.forceUpdate(delta);
-			}
-		};
+    private inline fun updateEntities(delta: Float) {
+		for(entity in entities.toList()) {
+			if(!(this is Freezable) || !this.isFrozen || entity.canUpdateWhileFrozen)
+				entity.update(delta);
+			entity.forceUpdate(delta);
+		}
     }
 
     /**
@@ -192,7 +156,7 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
     // ────────────────────────────────────────────────────────
 
     override fun update(delta: Float) {
-		updateAllObjects(delta);
+		updateEntities(delta);
 		removeDead();
 	}
 	
@@ -268,17 +232,18 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
      *
      * 구현 원리: 월드 좌표에서 카메라 offset 만큼 빼서 화면 좌표로 바꾼 뒤
      *           drawTextOnScreen 호출.
+	 *
+	 * @param text				출력할 메시지
+	 * @param x					X 위치
+	 * @param y					Y 위치
+	 * @param color				글자 색
+	 * @param scale				글자 크기(배)
+	 * @param width				텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
+	 * @param align				글자 정렬(없으면 왼쪽 정렬)
+	 * @param fixedWidthChars	고정폭으로 사용할 문자 (기본이 null이 아닌 이유는 실제로 빈 문자열이면 고정폭이 없다는 뜻)
+	 * @param skipBatch			batch.begin()/end() 사이에서 사용할 경우 true
      */
-    fun drawTextInWorld(
-        text: String,
-        x: Float,
-        y: Float,
-        color: Color = Color.WHITE,
-        scale: Float = 1f,
-		width: Float? = null,  // 오른쪽이나 가운데 정렬 시 필요
-		align: Int? = null,  // 글자 정렬
-		fixedWidthChars: String = "",  // null이 아닌 이유는 실제로 빈 문자열이면 고정폭이 없다는 뜻
-		skipBatch: Boolean = false
+    fun drawTextInWorld(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, fixedWidthChars: String = "", skipBatch: Boolean = false
     ) {
         val screenX = x - offsetX;
         val screenY = y - offsetY;

@@ -25,7 +25,6 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 	private val chunkTexture: NinePatch by lazy { NinePatch(TextureRegion(rawChunkTexture, 1, 0, 1, CHUNK_HEIGHT), 0, 0, 1, 1) };
 	
 	override fun draw(batch: SpriteBatch) {
-		if(!visible) return;
 		val barX = x();
 		val barY = y();
 		barTexture.draw(batch, barX, barY, width, height);
