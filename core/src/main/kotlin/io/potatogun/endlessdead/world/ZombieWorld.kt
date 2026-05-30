@@ -214,9 +214,6 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		// 제목 표시줄에 통계 표시
 		updateTitleBarInfo();
 
-		// 미터기 정보 갱신
-		updateProgressBars();
-
         // ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
 		super.update(delta);  // updateAllObjects과 removeDead
 		// 스포너 갱신
@@ -229,6 +226,9 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
         //   offset 은 0 ~ (world - screen) 범위여야 한다.
         offsetX = offsetX.coerceIn(0f, width - game.screenWidth);
         offsetY = offsetY.coerceIn(0f, height - game.screenHeight);
+
+		// 미터기 정보 갱신
+		updateProgressBars();
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
         if(!player.isAlive) {
