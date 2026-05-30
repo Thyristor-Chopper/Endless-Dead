@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 import io.potatogun.endlessdead.Position;
+import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.world.World;
 
@@ -44,7 +45,7 @@ import kotlin.math.sqrt;
  */
 abstract class Entity(val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) {
 	// 개체의 텍스처
-	protected val texture: Texture? = texture?.let { Texture(Gdx.files.internal(it)) };
+	protected val texture: Texture? = texture?.let { Utils.loadTexture(it) };
 	/**
 	 * 좌표를 Position 객체로 감싸서 돌려준다.
 	 */

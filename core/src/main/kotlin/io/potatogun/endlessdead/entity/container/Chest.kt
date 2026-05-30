@@ -3,6 +3,7 @@ package io.potatogun.endlessdead.entity.container;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
+import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.world.World;
 
@@ -15,5 +16,5 @@ import io.potatogun.endlessdead.world.World;
  * @param initialItem	처음 들어있는 아이템
  */
 class Chest(world: World, x: Float, y: Float, initialItem: Item? = null): Container(world, x, y, 24f, 25f, "chest.bmp", "chest_empty.bmp", initialItem) {
-	override val playerItemTexture = Texture(Gdx.files.internal("chest_player_added.bmp"));
+	override val playerItemTexture = Utils.loadTexture("chest_player_added.bmp");
 }

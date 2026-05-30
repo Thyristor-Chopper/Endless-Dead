@@ -1,6 +1,8 @@
 package io.potatogun.endlessdead;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 
 import io.potatogun.endlessdead.Timer;
 
@@ -47,4 +49,6 @@ object Utils {
 		}.register();
 		return timer!!;
 	}
+	
+	inline fun loadTexture(path: String): Texture = Texture(Gdx.files.internal("assets/textures/$path"));
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
 
 import kotlin.math.ceil;
@@ -29,8 +30,8 @@ private const val CHUNK_MARGIN = 2;
  * @param style		미터기의 스타일
  */
 class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, val color: Color = Color.WHITE, val style: ProgressBarStyle = ProgressBarStyle.CHUNKED) : Widget(x, y, width, height) {
-	private val rawBarTexture = Texture(Gdx.files.internal("progress_bar.bmp"));
-	private val rawChunkTexture = Texture(Gdx.files.internal("progress_chunk.bmp"));
+	private val rawBarTexture = Utils.loadTexture("progress_bar.bmp");
+	private val rawChunkTexture = Utils.loadTexture("progress_chunk.bmp");
 	private val barTexture = NinePatch(rawBarTexture, 2, 2, 5, 6);
 	private val indicatorTexture: NinePatch by lazy { NinePatch(rawChunkTexture, 1, 1, 1, 1) };
 	private val chunkTexture: NinePatch by lazy { NinePatch(TextureRegion(rawChunkTexture, 1, 0, 1, CHUNK_HEIGHT), 0, 0, 1, 1) };

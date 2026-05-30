@@ -9,14 +9,15 @@ import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Input;
+import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
 /**
  * 타이틀 화면
  */
 class Title(game: EndlessDead) : Screen(game) {
-	private val title = Texture(Gdx.files.internal("title.bmp"));
-	private val stillCut = Texture(Gdx.files.internal("still_cut.bmp"));
+	private val title = Utils.loadTexture("title.bmp");
+	private val stillCut = Utils.loadTexture("still_cut.bmp");
 	private var titleBlinkTimer = 0f;
 	
 	override fun update(delta: Float) {

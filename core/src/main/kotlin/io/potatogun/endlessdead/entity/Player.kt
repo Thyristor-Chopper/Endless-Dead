@@ -37,7 +37,7 @@ import kotlin.math.atan2;
  */
 class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 57f, "player.bmp", 50), InventoryEntity by InventoryEntityImpl() {
 	override val canUpdateWhileFrozen = true;
-	private val textureWithGun = Texture(Gdx.files.internal("player_holding_gun.bmp"));
+	private val textureWithGun = Utils.loadTexture("player_holding_gun.bmp");
     private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머

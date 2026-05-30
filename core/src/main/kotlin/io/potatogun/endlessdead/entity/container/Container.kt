@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.item.Item;
@@ -23,7 +24,7 @@ import io.potatogun.endlessdead.world.World;
  */
 abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, emptyTexture: String? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture) {
 	// 비어 있을 때의 텍스처
-	open protected val emptyTexture: Texture? = emptyTexture?.let { Texture(Gdx.files.internal(it)) };
+	open protected val emptyTexture: Texture? = emptyTexture?.let { Utils.loadTexture(it) };
 	// 플레이어가 직접 아이템을 넣었을 때의 텍스처
 	open protected val playerItemTexture: Texture? = null;
 	/**
