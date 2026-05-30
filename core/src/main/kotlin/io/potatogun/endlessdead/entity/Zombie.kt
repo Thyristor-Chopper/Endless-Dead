@@ -25,16 +25,15 @@ import kotlin.math.sqrt;
  * @param height		세로 크기 (픽셀)
  * @param hp			최대 체력
  * @param attackDamage	공격력
- * @param angle			각도
  * @param speed			이동 속도
  * @param texture		개체 텍스처
  */
-open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, attackDamage: Int, private val angle: Float, protected var speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp) {
+open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, attackDamage: Int, protected var speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp), HostileEntity {
     var attackDamage = attackDamage
 		protected set;
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
-	open val target: LivingEntity = world.player;
+	override val target: LivingEntity = world.player;
     // 💡 자식들이 언제든 거리를 실시간으로 잴 수 있게 열어둔 공용 프로퍼티
     protected val distanceToTarget: Float
         get() = target.position.distanceTo(position);
@@ -55,19 +54,19 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 		}
     }
 	
-	class Weak(world: World, x: Float, y: Float, angle: Float) : Zombie(world, x, y, width=21f, height=30f, hp=3, speed=150f, angle=angle, attackDamage=1);
+	class Weak(world: World, x: Float, y: Float) : Zombie(world, x, y, width=21f, height=30f, hp=3, speed=150f, attackDamage=1);
 	
-	class Normal(world: World, x: Float, y: Float, angle: Float) : Zombie(world, x, y, width=32f, height=45f, hp=5, speed=100f, angle=angle, attackDamage=3);
+	class Normal(world: World, x: Float, y: Float) : Zombie(world, x, y, width=32f, height=45f, hp=5, speed=100f, attackDamage=3);
 	
-	class Strong(world: World, x: Float, y: Float, angle: Float) : Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, angle=angle, attackDamage=5) {
+	class Strong(world: World, x: Float, y: Float) : Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, attackDamage=5) {
         // 평상시 스피드, 대미지
-        val originalSpeed = speed
-        val originalDamage = attackDamage
-        private var dashState = DashState.WALKING
-        private var stateTimer = 0f
+        val originalSpeed = speed;
+        val originalDamage = attackDamage;
+        private var dashState = DashState.WALKING;
+        private var stateTimer = 0f;
         //  돌진할 '방향(벡터)'을 기억해 둘 변수
-        private var dashDirX = 0f
-        private var dashDirY = 0f
+        private var dashDirX = 0f;
+        private var dashDirY = 0f;
 
         override fun update(delta: Float) {
             when(dashState) {

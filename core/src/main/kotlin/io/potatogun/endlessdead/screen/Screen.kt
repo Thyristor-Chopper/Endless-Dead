@@ -45,11 +45,6 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 
     init {
         setCameraCenter();
-
-		// batch에게 '이 카메라의 좌표계로 그려라'를 알려줌
-		//   https://javadoc.io/doc/com.badlogicgames.gdx/gdx/1.12.1/com/badlogic/gdx/graphics/Camera.html#combined
-		//   자바독을 읽어보면 combined는 final 필드이기 때문에 바뀔 일이 없으므로 여기서 한 번만 호출해도 된다고 본다.
-		batch.projectionMatrix = camera.combined;
     }
 
 	/**
@@ -131,6 +126,7 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 
         // 2) 카메라 상태 갱신
         camera.update();
+		batch.projectionMatrix = camera.combined;
 
         // 3) 게임 로직 업데이트
         update(delta);

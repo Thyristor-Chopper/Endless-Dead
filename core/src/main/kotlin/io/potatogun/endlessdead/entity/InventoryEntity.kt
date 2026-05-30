@@ -70,4 +70,9 @@ interface InventoryEntity {
 	 * 인벤토리의 읽기용 사본을 가져온다.
 	 */
 	fun getInventory(): List<Item>;
+	
+	/**
+	 * 아이템이 파괴될 때 호출되는 콜백 함수
+	 */
+	fun onItemDestoryed(item: Item) {}
 }

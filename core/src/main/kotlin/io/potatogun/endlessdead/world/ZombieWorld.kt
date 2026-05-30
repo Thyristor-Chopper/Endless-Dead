@@ -139,6 +139,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this, 3f));
+		// spawners.add(io.potatogun.endlessdead.spawner.TestSpawner(this));  // 테스트
 		
 		// 10초마다 빈 상자 하나 리필
 		timers.add(Timer(10f) {

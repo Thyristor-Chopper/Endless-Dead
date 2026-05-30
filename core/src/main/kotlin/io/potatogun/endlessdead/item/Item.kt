@@ -49,7 +49,7 @@ abstract class Item(val world: World, val id: String, val name: String) {
 	 * @return 아이템 존재 여부
 	 */
 	fun destroy(): Boolean {
-		val first = holder?.let { it.removeItemFromInventory(this); true } ?: false;
+		val first = holder?.let { it.removeItemFromInventory(this); it.onItemDestoryed(this); true } ?: false;
 		val second = container?.let { it.removeItem(); true } ?: false;
 		
 		cleanUp();

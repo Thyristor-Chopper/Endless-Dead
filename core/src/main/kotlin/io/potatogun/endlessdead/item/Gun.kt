@@ -7,9 +7,10 @@ import io.potatogun.endlessdead.Position;
 import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Entity;
+import io.potatogun.endlessdead.entity.HostileEntity;
 import io.potatogun.endlessdead.entity.InventoryEntity;
+import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.world.World;
 
 /**
@@ -98,8 +99,9 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 		val holder: InventoryEntity? = this.holder;
 		if(holder is Player) {
 			return fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.game.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), world.player) > 0;
-		} else if(holder is Zombie) {
-			return fire(holder.target.position, holder) > 0;
+		} else if(holder is HostileEntity) {
+			val target: LivingEntity? = holder.target;
+			return target?.let { fire(it.position, holder as Entity) > 0 } ?: false;
 		} else {
 			return false;
 		}
