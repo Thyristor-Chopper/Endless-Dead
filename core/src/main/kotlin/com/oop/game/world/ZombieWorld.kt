@@ -594,10 +594,12 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 		solidColor.dispose();
 		for(timer in timers)
 			timer.unregister();
+		timers.clear();
 		for(spawner in spawners)
 			spawner.cleanUp();
-		val unfreezeTimer: Timer? = unfreezeTimer;
-		if(unfreezeTimer != null) unfreezeTimer.unregister();
+		spawners.clear();
+		unfreezeTimer?.unregister();
+		unfreezeTimer = null;
     }
 	
 	/**

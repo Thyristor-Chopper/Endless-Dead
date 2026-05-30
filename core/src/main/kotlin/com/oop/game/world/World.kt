@@ -268,9 +268,9 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
         for(entity in entities) {
 			if(entity is InventoryEntity)
 				for(item in entity.getInventory())
-					item.cleanUp();
+					item.destroy();
 			if(entity is Container)
-				entity.containedItem?.cleanUp();
+				entity.containedItem?.destroy();
             entity.dispose();
 		}
 		entities.clear();
