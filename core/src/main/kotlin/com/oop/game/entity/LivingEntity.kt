@@ -12,13 +12,22 @@ import com.oop.game.world.World;
  * @param initialHp	초기(최대) 체력
  */
 abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, initialHp: Int) : Entity(world, x, y, width, height, texture) {
+	/**
+	 * 개체의 최대 체력
+	 */
 	open val maxHp: Int = initialHp;
+	/**
+	 * 개체의 현재 체력
+	 */
 	var hp = initialHp
 		private set(value) {
 			if(value > maxHp) field = maxHp;
 			else if(value < 0) field = 0;
 			else field = value;
 		};
+	/**
+	 * 개체가 살아있는지의 여부
+	 */
 	val isAlive: Boolean
 		get() = hp > 0;
 	// 피격 시 잠깐 동안 대미지를 안 받게 해주는 무적 타이머.
@@ -27,10 +36,14 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 			if(value < 0f) field = 0f;
 			else field = value;
 		};
-	// 무적 타이머가 가동 중인지의 여부
+	/** 
+	 * 무적 타이머가 가동 중인지의 여부
+	 */
 	val isInvincible: Boolean
 		get() = (invincibilityTimer > 0f);
-	// 가장 최근 대미지를 입힌 개체
+	/**
+	 * 가장 최근에 대미지를 입힌 개체
+	 */
 	var latestAttacker: Entity? = null
 		private set;
 	// 대미지를 입으면 0.5초 동안 붉게 표시할 때 사용되는 타이머
@@ -39,8 +52,13 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 			if(value < 0f) field = 0f;
 			else field = value;
 		};
+	// 대미지를 입었을 때 붉게 표시할지의 여부
 	protected open val showDamagedIndicator = true;
+	// 대미지를 입었을 때 붉게 표시되는 기간
 	protected open val damagedIndicatorDuration = 0.5f;
+	/**
+	 * 기본 무적 타이머
+	 */
 	open val defaultInvincibleDuration = 0.0f;
 	
 	/**
@@ -128,6 +146,9 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 			}
 	}
 	
+	/**
+	 * 대미지를 입은 경우 붉게 바꾼다.
+	 */
 	override fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
 		val showDamaged = (showDamagedIndicator && damagedIndicatorTimer > 0f);
 		if(showDamaged) batch.color = Color.RED;

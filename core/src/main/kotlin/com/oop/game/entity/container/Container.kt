@@ -12,15 +12,27 @@ import com.oop.game.world.World;
 /**
  * 아이템 상자 역할을 하는 추상 클래스
  *
+ * @param emptyTexture	상자가 비어 있을 때 사용할 텍스처
  * @param initialItem	처음 들어있는 아이템
  */
 abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: String, emptyTexture: String? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture) {
+	// 비어 있을 때의 텍스처
 	open protected val emptyTexture: Texture? = emptyTexture?.let { Texture(Gdx.files.internal(it)) };
+	// 플레이어가 직접 아이템을 넣었을 때의 텍스처
 	open protected val playerItemTexture: Texture? = null;
-	var containedItem: Item? = initialItem  // 들어있는 아이템
+	/**
+	 * 들어있는 아이템
+	 */
+	var containedItem: Item? = initialItem
 		private set;
+	/**
+	 * 플레이어가 직접 아이템을 넣었는지의 여부
+	 */
 	var isPlayerItem = false
 		private set;
+	/**
+	 * 상자가 비어 있는지의 여부
+	 */
 	val isEmpty: Boolean
 		get() = (containedItem == null);
 	
@@ -46,7 +58,6 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		val target = containedItem;  // https://stackoverflow.com/questions/44595529/smart-cast-to-type-is-impossible-because-variable-is-a-mutable-property-tha
 		if(target == null) return null;
 		taker.addItemToInventory(target, select);
-		containedItem = null;
 		if(isPlayerItem) isPlayerItem = false;
 		return target;
 	}
@@ -59,6 +70,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	fun putItem(item: Item, isPlayerItem: Boolean = false) {
 		if(!isEmpty) throw IllegalStateException("container is not empty");
 		containedItem = item;
+		item.holder?.removeItemFromInventory(item);
 		if(isPlayerItem) this.isPlayerItem = true;
 	}
 	
@@ -74,6 +86,9 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		return true;
 	}
 	
+	/**
+	 * 추가적인 두 텍스처도 비운다.
+	 */
 	override fun dispose() {
 		super.dispose();
 		playerItemTexture?.let { it.dispose() };

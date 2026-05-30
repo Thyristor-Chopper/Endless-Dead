@@ -8,7 +8,6 @@ import com.oop.game.world.World;
  *
  * @param world	아이템이 있는 세계
  */
-
 class TimeStopper(world: World) : Item(world, "time_stopper", "Time Stopper"), Usable {
     override val allowContinuousUse = false;
 

@@ -135,7 +135,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 					selectedItem?.let {
 						world.drawSubtitles("Put ${it.name} into the container");
 						entity.putItem(it, true);
-						removeItemFromInventory(it);
 						putItem = true;  // 하나씩만
 					} ?: world.drawSubtitles("Can't take any item; container is empty");
 					if(putItem) break;

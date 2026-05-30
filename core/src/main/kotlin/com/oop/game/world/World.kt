@@ -18,50 +18,33 @@ import com.oop.game.item.Item;
 import com.oop.game.screen.Screen;
 
 /**
- * 게임 한 장면 = '월드 하나' 의 추상 기본 클래스.
+ * 게임 내 월드 = '월드 하나' 의 추상 기본 클래스.
+ * Screen을 확장하여 '월드'의 개념에 맞게 플레이어나 적 등의 개체 등을 추가한다.
  *
  * ────────────────────────────────────────────────────────────
  *  왜 이런 게 필요한가?
  * ────────────────────────────────────────────────────────────
- *  게임을 만들 때 학생이 다루는 핵심 개념은 '하나의 월드'다:
+ *  게임을 만들 때 다루는 핵심 개념은 '하나의 월드'다:
  *    - 그 안에 어떤 객체들이 있는가
  *    - 객체들이 매 프레임 어떻게 움직이고 상호작용하는가
  *    - 그것을 어떻게 그릴 것인가
- *  GameWorld 는 이 '월드' 를 표현하는 한 클래스에 모든 것을 담는다.
+ *  GameWorld는 이 '월드' 를 표현하는 한 클래스에 모든 것을 담는다.
  *
- *  학생은 이 클래스를 상속해 자기 게임의 월드를 만든다 (ExampleWorld 참고).
+ *  이 클래스를 상속해 자기 게임의 월드를 만든다 (ExampleWorld 참고).
  *
- * ────────────────────────────────────────────────────────────
- *  두 가지 크기의 차이
- * ────────────────────────────────────────────────────────────
- *  screenWidth/Height  — 카메라가 한 번에 보여주는 영역 (창 크기와 같다)
- *  width/height        — 게임 월드 전체 크기 (화면보다 클 수 있다)
- *  이 둘이 같으면 화면 고정, 월드가 더 크면 카메라(offset) 로 스크롤 가능.
- *
- * ────────────────────────────────────────────────────────────
- *  매 프레임의 표준 흐름 (render 안에서)
- * ────────────────────────────────────────────────────────────
- *    ① 화면 clear
- *    ② update(delta) — 각 객체 갱신, 상호작용, 정리 (서브클래스 override 가능)
- *    ③ batch.begin
- *    ④ drawBackground(batch) — 서브클래스가 그리는 배경 (필수 구현)
- *    ⑤ 모든 게임 객체를 carmera offset 적용해 draw
- *    ⑥ batch.end
- *
- *  학생이 보통 override 하는 것:
- *   ▸ drawBackground(batch) — 자기 배경 그리기 (필수, abstract)
- *   ▸ update(delta)         — 자기 게임 로직 (대부분 override 함)
- *   ▸ render(delta)         — 객체 위에 텍스트/HUD 추가 그리기 (선택)
- *
- * @param screenWidth  화면(카메라)이 보여주는 영역 너비 (픽셀)
- * @param screenHeight 화면(카메라)이 보여주는 영역 높이
- * @param width        월드 전체 너비 (기본값: 화면과 동일 = 스크롤 없음)
- * @param height       월드 전체 높이
+ * @param game		월드가 속한 게임
+ * @param width		월드 전체 너비
+ * @param height	월드 전체 높이
  */
 abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : Screen(game) {
+	/**
+	 * 이 월드의 플레이어
+	 */
 	abstract val player: Player;
-    // 카메라 오프셋 — 월드의 어느 지점이 화면 좌하단에 오는지.
-    //   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
+    /**
+	 * 카메라 오프셋 — 월드의 어느 지점이 화면 좌하단에 오는지.
+     *   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
+	 */
     var offsetX: Float = width / 2f - game.screenWidth / 2f;
     var offsetY: Float = height / 2f - game.screenHeight / 2f;
     // 등록된 객체들만 update/draw 된다.
@@ -69,6 +52,7 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. add(), remove() 라는 공식 창구만 허용.
     //   (5주차에서 배운 캡슐화의 실제 사례)
     private val entities = mutableListOf<Entity>();
+	// 자막 타이머 관련 필드들
 	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
@@ -79,6 +63,8 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 
     /**
 	 * 객체를 월드에 등록 — 이후부터 자동으로 update/draw 된다.
+	 *
+	 * @param entity 추가할 개체
 	 */
     fun addEntity(entity: Entity) {
         entities.add(entity);
@@ -86,6 +72,8 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 
     /**
 	 * 특정 객체를 수동 제거. 보통은 isAlive()=false 후 removeDead() 로 정리.
+	 *
+	 * @param entity 제거할 개체
 	 */
     fun removeEntity(entity: Entity) {
         entities.remove(entity);
@@ -98,6 +86,8 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
      * toList() 로 복사해서 주는 이유:
      *   외부가 받은 리스트에 add/remove 하면 내부 상태가 망가진다.
      *   복사본을 줘서 '훔쳐보기만 하고 건드리진 못하게' 한다.
+	 *
+	 * @return 읽기 전용 개체 목록
      */
     fun getEntities(): List<Entity> = entities.toList();
 
@@ -109,6 +99,8 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
      *
      * TODO (9주차 이후): 고차함수 forEach 로
      *   gameObjects.forEach { it.update(delta) } 처럼 줄일 수 있다.
+	 *
+	 * update 내에서만 한 번 쓰이기 때문에 inline이다.
      */
     private inline fun updateEntities(delta: Float) {
 		for(entity in entities.toList()) {
@@ -124,9 +116,8 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
      * 보통 update() 끝에서 호출 — 상호작용 결과 죽음을 표시한 객체를 정리.
      *
      * 순회 도중 삭제 시 인덱스 꼬임을 막으려고 '먼저 모아 두고 → 한꺼번에 삭제' 패턴.
-     *
-     * TODO (9주차 이후): 컬렉션 함수 removeAll 로
-     *   gameObjects.removeAll { !it.isAlive() } 한 줄로 대체 가능.
+	 *
+	 * update 내에서만 한 번 쓰이기 때문에 inline이다.
      */
     private inline fun removeDead() {
 		val toRemove = mutableListOf<Entity>();
@@ -155,6 +146,16 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
     //  매 프레임 로직
     // ────────────────────────────────────────────────────────
 
+	/**
+     * 매 프레임 게임 로직 — 서브클래스가 override 해서 자기 게임 로직을 넣는 곳.
+     *
+     * 기본 구현은 가장 단순한 '갱신 → 정리' 시나리오를 보여준다:
+     *   ① updateAllObjects(delta) — 각 객체가 자기 위치 갱신
+     *   ② removeDead()            — isAlive=false 인 객체 제거
+     *
+     * 객체 간 상호작용(충돌·점수·생사 결정)이 있는 게임이면 override 해서
+     * 위 두 호출 사이에 그 로직을 끼워 넣는다 (ExampleWorld 참고).
+     */
     override fun update(delta: Float) {
 		updateEntities(delta);
 		removeDead();
@@ -163,17 +164,11 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
     // ────────────────────────────────────────────────────────
     //  매 프레임 그리기
     // ────────────────────────────────────────────────────────
-	
-	/**
-	 * 월드 중심 등 오버레이를 그리는 자리
-	 */
-	protected open fun drawBackgroundOverlay() {}
 
 	/**
 	 * 배경 오버레이와 개체, 자막을 그린다.
 	 */
 	override fun drawElements(delta: Float) {
-        drawBackgroundOverlay();
         drawEntities();
 		// 자막이 있으면 표시
 		if(subtitlesTimer > 0f) subtitlesMessage?.let {
@@ -199,6 +194,8 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
      *
      * 이렇게 해야 서브클래스의 draw() 는 '자기 위치에 그냥 그려라' 만 구현하면 되고,
      *   카메라가 움직이든 말든 신경 쓸 필요가 없다.
+	 *
+	 * drawElements에서만 한 번 쓰이기 때문에 인라인 함수이다.
      */
     private inline fun drawEntities() {
         for(entity in entities) {
@@ -243,8 +240,7 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 	 * @param fixedWidthChars	고정폭으로 사용할 문자 (기본이 null이 아닌 이유는 실제로 빈 문자열이면 고정폭이 없다는 뜻)
 	 * @param skipBatch			batch.begin()/end() 사이에서 사용할 경우 true
      */
-    fun drawTextInWorld(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, fixedWidthChars: String = "", skipBatch: Boolean = false
-    ) {
+    fun drawTextInWorld(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, fixedWidthChars: String = "", skipBatch: Boolean = false) {
         val screenX = x - offsetX;
         val screenY = y - offsetY;
         drawText(text, screenX, screenY, color, scale, width, align, fixedWidthChars, skipBatch);
@@ -269,8 +265,14 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 
     override fun dispose() {
         super.dispose();
-        for(entity in entities)
+        for(entity in entities) {
+			if(entity is InventoryEntity)
+				for(item in entity.getInventory())
+					item.cleanUp();
+			if(entity is Container)
+				entity.containedItem?.cleanUp();
             entity.dispose();
+		}
 		entities.clear();
     }
 }

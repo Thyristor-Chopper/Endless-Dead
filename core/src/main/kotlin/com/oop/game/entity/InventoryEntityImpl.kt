@@ -2,6 +2,10 @@ package com.oop.game.entity;
 
 import com.oop.game.item.Item;
 
+/**
+ * 인벤토리를 가진 개체의 기본적인 구현
+ * 단독으로 사용하지 않고 위임으로만 사용된다.
+ */
 class InventoryEntityImpl : InventoryEntity {
 	private val inventory = mutableListOf<Item>();
 	override val selectedItem: Item?
@@ -24,6 +28,8 @@ class InventoryEntityImpl : InventoryEntity {
 	
 	override fun addItemToInventory(item: Item, select: Boolean): Boolean {
 		if(hasItem(item)) return false;
+		item.holder?.removeItemFromInventory(item);
+		item.container?.removeItem();
 		inventory.add(item);
 		if(select) selectedItemIndex = inventory.size - 1;
 		return true;

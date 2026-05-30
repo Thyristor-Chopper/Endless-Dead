@@ -11,6 +11,9 @@ import com.oop.game.Input;
 import com.oop.game.ZombieGame;
 import com.oop.game.world.ZombieWorld;
 
+/**
+ * 타이틀 화면이다.
+ */
 class Title(game: ZombieGame) : Screen(game) {
 	private val title = Texture(Gdx.files.internal("title.bmp"));
 	private val stillCut = Texture(Gdx.files.internal("still_cut.bmp"));

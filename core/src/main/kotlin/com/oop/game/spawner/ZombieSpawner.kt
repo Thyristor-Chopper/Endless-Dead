@@ -15,7 +15,7 @@ import kotlin.random.Random;
  * @param world			소속 세계
  * @param spawnInterval	소환 간격
  */
-class ZombieSpawner(val world: World, val spawnInterval: Float = 3f) : Spawner {
+class ZombieSpawner(world: World, private val spawnInterval: Float = 3f) : Spawner(world) {
     private var timer = 0f
     private var zombiesPerSpawn = 1
     private val maxZombiesPerSpawn = 8
@@ -27,7 +27,7 @@ class ZombieSpawner(val world: World, val spawnInterval: Float = 3f) : Spawner {
                 zombiesPerSpawn++
                 world.drawSubtitles("좀비가 더 많이 몰려옵니다")
             }
-        }.register())
+        }.register());
     }
 	/**
 	 * 매 프레임 실행해서 소환할 시간이 되면 좀비를 스폰한다

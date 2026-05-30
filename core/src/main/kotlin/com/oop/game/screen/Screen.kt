@@ -12,9 +12,30 @@ import com.badlogic.gdx.utils.Align;
 import com.oop.game.ZombieGame;
 import com.oop.game.widget.Widget;
 
+/**
+ * 게임 내 화면을 구현한다.
+ * 안에는 배경과 위젯(컨트롤)을 추가할 수 있다
+ *
+ * ────────────────────────────────────────────────────────────
+ *  매 프레임의 표준 흐름 (render 안에서)
+ * ────────────────────────────────────────────────────────────
+ *    ① 화면 clear
+ *    ② update(delta) — 각 객체 갱신, 상호작용, 정리 (서브클래스 override 가능)
+ *    ③ batch.begin
+ *    ④ drawBackground(batch) — 서브클래스가 그리는 배경 (필수 구현)
+ *    ⑤ 모든 게임 객체를 carmera offset 적용해 draw
+ *    ⑥ batch.end
+ *
+ *  보통 override 하는 것:
+ *   ▸ drawBackground(batch) — 자기 배경 그리기 (필수, abstract)
+ *   ▸ update(delta)         — 자기 게임 로직 (대부분 override 함)
+ *   ▸ render(delta)         — 객체 위에 텍스트/HUD 추가 그리기 (선택)
+ *
+ * @param game 화면이 속한 게임
+ */
 abstract class Screen(val game: ZombieGame) : ScreenAdapter() {
 	// OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
-    protected val camera = OrthographicCamera();
+    private val camera = OrthographicCamera();
 	// SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
     //   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
     protected val batch = SpriteBatch();
@@ -81,16 +102,9 @@ abstract class Screen(val game: ZombieGame) : ScreenAdapter() {
     // ────────────────────────────────────────────────────────
 	
 	/**
-     * 매 프레임 게임 로직 — 서브클래스가 override 해서 자기 게임 로직을 넣는 곳.
-     *
-     * 기본 구현은 가장 단순한 '갱신 → 정리' 시나리오를 보여준다:
-     *   ① updateAllObjects(delta) — 각 객체가 자기 위치 갱신
-     *   ② removeDead()            — isAlive=false 인 객체 제거
-     *
-     * 객체 간 상호작용(충돌·점수·생사 결정) 이 있는 게임이면 override 해서
-     * 위 두 호출 사이에 그 로직을 끼워 넣는다 (ExampleWorld 참고).
+     * 매 프레임 화면 로직 — 서브클래스가 override해서 화면 로직을 넣는 곳.
      */
-	open fun update(delta: Float) {}
+	protected open fun update(delta: Float) {}
 	
 	// ────────────────────────────────────────────────────────
     //  매 프레임 그리기
@@ -118,6 +132,7 @@ abstract class Screen(val game: ZombieGame) : ScreenAdapter() {
 		// 4) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
 		batch.begin();
 		drawBackground();
+		drawBackgroundOverlay();
 		drawElements(delta);
 		drawWidgets();
 		batch.end();
@@ -139,6 +154,11 @@ abstract class Screen(val game: ZombieGame) : ScreenAdapter() {
      *              begin/end 를 또 호출하면 안 된다.
      */
     protected abstract fun drawBackground();
+	
+	/**
+	 * 월드 중심 등 오버레이를 그리는 자리
+	 */
+	protected open fun drawBackgroundOverlay() {}
 	
 	/**
 	 * 그 외 하위 클래스에서 배경과 위젯(컨트롤) 사이에 그려야 할 것들

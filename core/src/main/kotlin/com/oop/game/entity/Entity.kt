@@ -48,38 +48,50 @@ import kotlin.math.sqrt;
  * @param texture	아이템 텍스처(없을 수도 있음)
  */
 abstract class Entity(val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) {
+	// 개체의 텍스처
+	protected val texture: Texture? = texture?.let { Texture(Gdx.files.internal(it)) };
+	/**
+	 * 좌표를 Position 객체로 감싸서 돌려준다.
+	 */
+	val position: Position
+		get() = Position(x, y);
 	/**
 	 * TimeStopper 아이템의 영향을 받는지의 여부
 	 */
 	open val canUpdateWhileFrozen = false;
-	protected val texture: Texture? = texture?.let { Texture(Gdx.files.internal(it)) };
-	val position: Position
-		get() = Position(x, y);
-	open val bodyDamage = 0;  // 다른 개체에 닿았을 때 몸 대미지(아직 활용하는 개체 없음)
-	protected open val ignoreFriendBodyDamage = false;  // 동일 개체에 대해 몸 대미지 무시
-	open val penetrationDamage = 0;  // 총알이 관통할 때 총알에게 주는 대미지
+	/**
+	 * 다른 개체에 닿았을 때 몸 대미지(아직 활용하는 개체 없음)
+	 */
+	open val bodyDamage = 0;
+	// 동일 개체에 대해 몸 대미지 무시 여부
+	protected open val ignoreFriendBodyDamage = false;
+	/**
+	 * 총알이 관통할 때 총알에게 주는 대미지
+	 */
+	open val penetrationDamage = 0;
+	// 텍스처 회전 각도
 	protected open var rotation = 0f;
 
-    /**
-     * 매 프레임 호출되어 **자신을 그린다**.
-     *
-     * @param batch SpriteBatch — 이미지(Texture)를 화면에 찍어주는 도구.
-     *              GameWorld 가 이미 projectionMatrix 를 세팅하고
-     *              begin()/end() 안에서 호출해주므로, 서브클래스는
-     *              batch.draw(texture, x, y, w, h) 한 줄만 적으면 된다.
-     *
-     * 이미지 로딩은 보통 객체의 init 또는 프로퍼티 초기화 시점에 한 번 한다:
-     *   private val texture = Texture(Gdx.files.internal("player.png"))
-     */
+    // 개체에 등록된 기본 텍스처 대신에 쓸 텍스처를 alternateTexture로 넘길 수 있다.
     protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
 		val texture: Texture? = alternateTexture ?: this.texture;
 		texture?.let { batch.draw(it, x - width / 2f, y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false) };
 	}
 	
-	open fun draw(batch: SpriteBatch) {
+	/**
+     * 매 프레임 호출되어 **자신을 그린다**.
+     *
+     * 이미지 로딩은 보통 객체의 init 또는 프로퍼티 초기화 시점에 한 번 한다:
+     *   private val texture = Texture(Gdx.files.internal("player.png"))
+	 *
+	 * 하위 클래스는 이 함수를 override하여 상황에 따라 텍스처를 달리하여 super.draw(SpriteBatch, Texture)를 호출할 수 있다.
+	 * 
+     * @param batch 이미지(Texture)를 화면에 찍어주는 도구. GameWorld가 이미 projectionMatrix 를 세팅하고 begin()/end() 안에서 호출해주므로, 서브클래스는 batch.draw(texture, x, y, w, h) 한 줄만 적으면 된다.
+	 */
+	internal open fun draw(batch: SpriteBatch) {
 		draw(batch, null);
 	}
-	
+
     /**
      * 이 객체가 차지하는 사각형 영역 — 충돌 판정에 쓴다.
      *
@@ -104,6 +116,48 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
         return getBounds().overlaps(other.getBounds());
     }
 
+	/**
+	 * 개체가 다른 누군가를 공격했을 때 콜백 함수
+	 *
+	 * @param victim	공격 대상
+	 */
+	open fun onAttack(victim: LivingEntity) {}
+
+	/**
+	 * 개체가 다른 누군가를 처치했을 때 콜백 함수
+	 *
+	 * @param victim	공격 대상
+	 */
+	open fun onKill(victim: LivingEntity) {}
+
+	/**
+	 * 다른 개체와의 거리 (몸의 중앙을 기준으로 한다)
+	 *
+	 * @param	other	대상 개체
+	 * @return	떨어진 거리
+	 */
+	fun distanceTo(other: Entity): Float {
+		val dx = (other.x + other.width / 2f - width / 2f) - x;
+        val dy = (other.y + other.height / 2f - height / 2f) - y;
+        return sqrt(dx * dx + dy * dy);
+	}
+
+	/**
+     * 매 프레임 호출되어 **상태를 갱신**한다.
+     *
+     * 상자나 물체처럼 로직이 없는 개체일 수도 있으니 기본은 빈 함수
+     *
+     * @param delta 직전 프레임과의 시간 간격(초). 60fps 면 약 0.0167.
+     *              '픽셀/초' 단위의 속도에 delta 를 곱하면 '이번 프레임 이동량' 이 된다.
+     *              (프레임 속도가 달라져도 같은 속도로 움직이게 하려는 공식)
+     */
+    internal open fun update(delta: Float) {}
+
+	/**
+	 * 시간이 멈췄어도 canUpdateWhileFrozen에 관계없이 실행할 로직
+	 */
+	internal open fun forceUpdate(delta: Float) {}
+
     /**
      * 이 객체가 갖고 있는 GPU 자원을 정리한다 — 화면이 닫힐 때 한 번 호출된다.
      *
@@ -114,43 +168,7 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
      * 기본 구현은 빈 함수 — Texture 같은 자원을 안 쓰는 객체는 그대로 두면 된다.
      * 텍스처를 쓰는 객체라면 override 해서 texture.dispose() 를 호출.
      */
-    open fun dispose() {
+    internal open fun dispose() {
 		texture?.dispose();
 	}
-	
-	/**
-	 * 개체가 다른 누군가를 공격했을 때 콜백 함수
-	 *
-	 * @param victim	공격 대상
-	 */
-	open fun onAttack(victim: LivingEntity) {}
-	
-	/**
-	 * 개체가 다른 누군가를 처치했을 때 콜백 함수
-	 *
-	 * @param victim	공격 대상
-	 */
-	open fun onKill(victim: LivingEntity) {}
-	
-	fun distanceTo(other: Entity): Float {
-		val dx = (other.x + other.width / 2f - width / 2f) - x;
-        val dy = (other.y + other.height / 2f - height / 2f) - y;
-        return sqrt(dx * dx + dy * dy);
-	}
-	
-	/**
-     * 매 프레임 호출되어 **상태를 갱신**한다.
-     *
-     * 상자나 물체처럼 로직이 없는 개체일 수도 있으니 기본은 빈 함수
-     *
-     * @param delta 직전 프레임과의 시간 간격(초). 60fps 면 약 0.0167.
-     *              '픽셀/초' 단위의 속도에 delta 를 곱하면 '이번 프레임 이동량' 이 된다.
-     *              (프레임 속도가 달라져도 같은 속도로 움직이게 하려는 공식)
-     */
-    open fun update(delta: Float) {}
-	
-	/**
-	 * 시간이 멈췄어도 canUpdateWhileFrozen에 관계없이 실행할 로직
-	 */
-	open fun forceUpdate(delta: Float) {}
 }
