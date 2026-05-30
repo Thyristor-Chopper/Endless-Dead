@@ -22,6 +22,7 @@ class Title(game: ZombieGame) : Screen(game) {
 	override fun update(delta: Float) {
 		titleBlinkTimer += delta;
 		if(Input.isAnyKeyJustPressed() || Input.isButtonJustPressed(Input.LEFT_MOUSE)) {
+			game.setTitleBarInfo("불러오는 중...");
 			GameManager.state = GameState.IN_PLAY;  // 타이틀 화면 설정
 			game.setScreen(ZombieWorld(game));
 			Gdx.app.postRunnable { dispose() };
