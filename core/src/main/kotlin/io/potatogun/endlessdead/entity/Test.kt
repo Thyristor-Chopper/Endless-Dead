@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.entity;
 
+import io.potatogun.endlessdead.item.Fireable;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.TestGun;
@@ -10,13 +11,14 @@ import kotlin.math.sqrt;
 /**
  * 단순 테스트용
  */
-class Test(world: World, x: Float, y: Float, private val speed: Float = 100f) : LivingEntity(world, x, y, 80f, 80f, "test.bmp", 100), InventoryEntity by InventoryEntityImpl(), HostileEntity {
+class Test(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 80f, 80f, "test.bmp", 100), InventoryEntity by InventoryEntityImpl() {
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
-	override var target: LivingEntity? = world.player
+	var target: LivingEntity = world.player
 		private set;
     private val distanceToTarget: Float?
-        get() = target?.position?.distanceTo(position);
+        get() = target.position.distanceTo(position);
+	private val speed: Float = 100f;
 
 	init {
 		addItemToInventory(TestGun(world), true);
@@ -25,11 +27,8 @@ class Test(world: World, x: Float, y: Float, private val speed: Float = 100f) : 
 	override fun update(delta: Float) {
 		super.update(delta);
 		
-		val target: LivingEntity? = this.target;
-		if(target == null)
-			return;
 		if(!target.isAlive) {
-			this.target = null;
+			this.target = world.player;
 			return;
 		}
 		
@@ -42,8 +41,8 @@ class Test(world: World, x: Float, y: Float, private val speed: Float = 100f) : 
             y += dy / distance * speed * delta;
         } else {
 			val selected: Item? = selectedItem;
-			if(selected is Gun)
-				selected.use();
+			if(selected is Fireable)
+				selected.fire(target.position, this);
 		}
     }
 	

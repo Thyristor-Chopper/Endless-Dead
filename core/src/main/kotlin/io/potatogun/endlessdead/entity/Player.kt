@@ -5,11 +5,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.Input;
+import io.potatogun.endlessdead.Position;
 import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.container.Container;
+import io.potatogun.endlessdead.item.Fireable;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Usable;
@@ -50,7 +52,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		private set;
 	var killedZombieCount = 0
 		private set;
-	var fireCount = 0
+	var firedBullets = 0
 		private set;
 	var totalDamage = 0
 		private set;
@@ -75,37 +77,40 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 
     override fun update(delta: Float) {
 		super.update(delta);
-		
-		// 아이템 사용
-		selectedItem?.let {
-			if(it is Usable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.allowContinuousUse && Input.isButtonPressed(Input.LEFT_MOUSE))))
-				useItem(it);
-		};
-		
+
 		// 플레이어 회전
 		rotatePlayer(Gdx.input.getX(), Gdx.input.getY());
-		
+
 		// 이동
 		val moved = updatePosition(delta);
 		if(moved) world.updateCameraOffset();
-		
+
 		// 아이템 가져가기 & 넣기
 		if(Input.isKeyJustPressed(Input.SPACE) || Input.isButtonJustPressed(Input.RIGHT_MOUSE))
 			interactContainer();
-		
+
+		// 아이템 사용 / 총 쏘기
+		selectedItem?.let {
+			if(it is Fireable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.allowContinuousFire && Input.isButtonPressed(Input.LEFT_MOUSE))))
+				firedBullets += it.fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.game.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), this);
+
+			if(it is Usable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.allowContinuousUse && Input.isButtonPressed(Input.LEFT_MOUSE))))
+				it.use();
+		};
+
 		// 아이템 파괴
 		if(Input.isKeyJustPressed(Input.DELETE))
 			selectedItem?.let {
 				if(it.destroy())
 					world.drawSubtitles("${it.name} destroyed");
 			};
-		
+
 		// 휠로 아이템 선택
 		if(Input.isScrolledDown())
 			selectNextItem();
 		if(Input.isScrolledUp())
 			selectPreviousItem();
-		
+
         // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width);
         y = y.coerceIn(0f, world.height);
@@ -214,12 +219,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	 */
 	fun useItem(item: Item): Boolean {
 		if(!hasItem(item) || !(item is Usable)) return false;
-		
-		val succeeded = item.use();
-		if(succeeded)
-			if(item is Gun)  // 확장성을 고려하려 &&를 안 쓰고 중첩 if문을 사용함
-				fireCount++;
-		return succeeded;
+		return item.use();
 	}
 
 	/**

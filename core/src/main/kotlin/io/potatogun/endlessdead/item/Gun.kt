@@ -7,14 +7,13 @@ import io.potatogun.endlessdead.Position;
 import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Entity;
-import io.potatogun.endlessdead.entity.HostileEntity;
-import io.potatogun.endlessdead.entity.InventoryEntity;
-import io.potatogun.endlessdead.entity.LivingEntity;
-import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.world.World;
 
 /**
  * 총 아이템 추상 클래스
+ *
+ * Usable은 아닌 이유: 총은 '사용'한다기 보단 '쏜다'의 개념에 가깝고 개체에 따라 사용 방법이 모두 상이하고 fire에 들어가는 매개변수도 다르기 때문.
+ * 총은 fire로 대체한다.
  *
  * @param world			아이템이 있는 세계
  * @param id			총 식별자
@@ -27,8 +26,8 @@ import io.potatogun.endlessdead.world.World;
  * @param maxAmmo		최대 총알 개수
  * @param initialAmmo	초기 총알 개수
  */
-abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHp: Int, val penetrable: Boolean, val fireInterval: Float, initialAmmo: Int, val maxAmmo: Int = initialAmmo) : Item(world, id, name), Fireable, Usable {
-	override val allowContinuousUse = false;
+abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHp: Int, val penetrable: Boolean, val fireInterval: Float, initialAmmo: Int, val maxAmmo: Int = initialAmmo) : Item(world, id, name), Fireable {
+	override val allowContinuousFire = false;
 	private var fireCooldown = 0f
 		set(value) {
 			if(value < 0f) field = 0f;
@@ -43,7 +42,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 			else field = value;
 		} //샷건이라는 하위클래스에서도 사용해야할 것 같아 private를 protected로 변경
 	private var cooldownTimer: Timer? = null;
-	
+
 	/**
 	 * 총에 쿨타임을 건다.
 	 */
@@ -57,14 +56,14 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 				cooldownTimer?.unregister();
 		}.register();
 	}
-	
+
 	/**
 	 * 남은 쿨타임을 전체 공격 간격에 비례하여 0~1로 정규화하여 반환한다.
 	 */
 	fun getRemainingCooldownPercentage(): Float {
 		return fireCooldown / fireInterval;
 	}
-	
+
 	/**
 	 * 총 쏘기
 	 *
@@ -88,23 +87,6 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 		}
 		
 		return 1;
-	}
-	
-	/**
-	 * 아이템 사용 처리
-	 *
-	 * @return 사용 성공 여부
-	 */
-	override fun use(): Boolean {
-		val holder: InventoryEntity? = this.holder;
-		if(holder is Player) {
-			return fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.game.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), world.player) > 0;
-		} else if(holder is HostileEntity) {
-			val target: LivingEntity? = holder.target;
-			return target?.let { fire(it.position, holder as Entity) > 0 } ?: false;
-		} else {
-			return false;
-		}
 	}
 
 	/**

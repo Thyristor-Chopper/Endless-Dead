@@ -28,12 +28,12 @@ import kotlin.math.sqrt;
  * @param speed			이동 속도
  * @param texture		개체 텍스처
  */
-open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, attackDamage: Int, protected var speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp), HostileEntity {
+open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, attackDamage: Int, protected var speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp) {
     var attackDamage = attackDamage
 		protected set;
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
-	override val target: LivingEntity = world.player;
+	val target: LivingEntity = world.player;
     // 💡 자식들이 언제든 거리를 실시간으로 잴 수 있게 열어둔 공용 프로퍼티
     protected val distanceToTarget: Float
         get() = target.position.distanceTo(position);
