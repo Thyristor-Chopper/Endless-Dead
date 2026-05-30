@@ -86,8 +86,8 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
     //   tile.png 는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color 를
     //   바꿔가며 두 가지 색으로 그리는 트릭(틴트) 으로 체스판을 만든다.
     private val tileTexture = Texture(Gdx.files.internal("tile.bmp"));
-    private val bgColorDark = Color(0.15f, 0.36f, 0.15f, 1f);
-    private val bgColorLight = Color(0.15f, 0.42f, 0.15f, 1f);
+    private val bgColorDark = Utils.rgb(38, 92, 38);
+    private val bgColorLight = Utils.rgb(38, 107, 38);
     private val tileSize = 64f;
 	// 제목 표시줄에 표시할 정보의 인덱스
 	private var currentTitleInfo = 0
@@ -97,7 +97,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 			else field = value;
 		};
 	private val timers = mutableListOf<Timer>();
-    private val frozenOverlay = Color(0f, 0f, 0f, 0.5f);
+    private val frozenOverlay = Utils.rgb(0, 0, 0, 0.5f);
 	private val solidColor: Texture;
 	override var isFrozen: Boolean = false  // world의 시간이 정지 되었는지 확인하는 변수
 		private set;
@@ -134,8 +134,8 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
         addEntity(player);
 		
 		// 미터기 추가
-		addWidget("hp_indicator", ProgressBar({ 80f }, { game.screenHeight - 24f }, 220f, color = Color.YELLOW));
-		addWidget("gun_ammo_indicator", ProgressBar({ game.screenWidth - 145f }, { 10f }, 130f, color = Color.ROYAL).apply { hide() });
+		addWidget("hp_indicator", ProgressBar({ 80f }, { game.screenHeight - 24f }, 220f, color = Utils.rgb(234, 197, 21)));
+		addWidget("gun_ammo_indicator", ProgressBar({ game.screenWidth - 145f }, { 10f }, 130f, color = Utils.rgb(15, 116, 240)).apply { hide() });
 		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET, style = ProgressBarStyle.SMOOTH).apply { hide() });
 		
 		// 스포너 등록
@@ -555,7 +555,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
             text = "HP: ${player.hp}",
             x = 10f,
             y = game.screenHeight - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
-            color = Color.YELLOW,
+            color = Utils.rgb(255, 240, 128),
             scale = 1.2f,
 			skipBatch = true
         );
@@ -566,7 +566,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
 				text = "${it.name} [${player.selectedItemIndex!! + 1}/${player.inventoryItemCount}]",
 				x = 10f,
 				y = 20f,
-				color = Color(1.0f, 1.0f, 0.75f, 1.0f),
+				color = Utils.rgb(255, 255, 192),
 				scale = 1.0f,
 				skipBatch = true
 			);
@@ -577,7 +577,7 @@ class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat
             text = "Score: ${ScoreManager.score}",
             x = game.screenWidth - 130f,
             y = game.screenHeight - 10f,
-            color = Color.LIME,
+            color = Utils.rgb(203, 241, 194),
             scale = 1.2f,
 			width = 120f,
 			align = Align.right,

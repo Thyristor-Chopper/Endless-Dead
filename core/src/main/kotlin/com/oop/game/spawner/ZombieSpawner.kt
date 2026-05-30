@@ -25,7 +25,7 @@ class ZombieSpawner(world: World, private val spawnInterval: Float = 3f) : Spawn
         timers.add(Timer(30f) {
             if(zombiesPerSpawn < maxZombiesPerSpawn) {
                 zombiesPerSpawn++
-                world.drawSubtitles("좀비가 더 많이 몰려옵니다")
+                world.drawSubtitles("More zombies coming...")
             }
         }.register());
     }
