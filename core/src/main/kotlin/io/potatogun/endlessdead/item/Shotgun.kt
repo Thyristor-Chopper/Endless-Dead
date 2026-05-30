@@ -36,7 +36,7 @@ class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true,
         }
 
         startFireCooldown();
-        ammo -= spreadAngles.size;
+        if(ammo > 0) ammo -= spreadAngles.size;
 
         if(ammo == 0) {
             if(shooter === world.player)

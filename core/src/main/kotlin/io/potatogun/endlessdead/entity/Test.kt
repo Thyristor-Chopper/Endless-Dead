@@ -2,7 +2,7 @@ package io.potatogun.endlessdead.entity;
 
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
-import io.potatogun.endlessdead.item.MachineGun;
+import io.potatogun.endlessdead.item.TestGun;
 import io.potatogun.endlessdead.world.World;
 
 import kotlin.math.sqrt;
@@ -17,9 +17,9 @@ class Test(world: World, x: Float, y: Float, private val speed: Float = 100f) : 
 		private set;
     private val distanceToTarget: Float?
         get() = target?.position?.distanceTo(position);
-	
+
 	init {
-		addItemToInventory(MachineGun(world), true);
+		addItemToInventory(TestGun(world), true);
 	}
 
 	override fun update(delta: Float) {
@@ -54,6 +54,6 @@ class Test(world: World, x: Float, y: Float, private val speed: Float = 100f) : 
 	
 	override fun onItemDestoryed(item: Item) {
 		if(item is Gun)
-			addItemToInventory(MachineGun(world), true);
+			addItemToInventory(TestGun(world), true);
 	}
 }

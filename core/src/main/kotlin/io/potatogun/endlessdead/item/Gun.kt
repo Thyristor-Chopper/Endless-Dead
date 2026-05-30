@@ -27,7 +27,7 @@ import io.potatogun.endlessdead.world.World;
  * @param maxAmmo		최대 총알 개수
  * @param initialAmmo	초기 총알 개수
  */
-abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHp: Int, val penetrable: Boolean, val fireInterval: Float, val maxAmmo: Int, initialAmmo: Int) : Item(world, id, name), Fireable, Usable {
+abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHp: Int, val penetrable: Boolean, val fireInterval: Float, initialAmmo: Int, val maxAmmo: Int = initialAmmo) : Item(world, id, name), Fireable, Usable {
 	override val allowContinuousUse = false;
 	private var fireCooldown = 0f
 		set(value) {
