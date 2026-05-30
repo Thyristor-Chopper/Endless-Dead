@@ -103,7 +103,7 @@ abstract class World(game: ZombieGame, val width: Float = game.screenWidth.toFlo
 	 * update 내에서만 한 번 쓰이기 때문에 inline이다.
      */
     private inline fun updateEntities(delta: Float) {
-		for(entity in entities.toList()) {
+		for(entity in entities.shuffled()) {
 			if(!(this is Freezable) || !this.isFrozen || entity.canUpdateWhileFrozen)
 				entity.update(delta);
 			entity.forceUpdate(delta);
