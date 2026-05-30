@@ -68,10 +68,8 @@ import kotlin.random.Random;
  *   카메라 이동을 눈으로 보여주기 위함이다.
  *   GameWorld.drawBackground(batch) 를 override 해서 그린다.
  *
- * @param screenWidth  화면에 보이는 영역 너비
- * @param screenHeight 화면에 보이는 영역 높이
- * @param worldWidth   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
- * @param worldHeight  월드 전체 높이
+ * @param width   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
+ * @param height  월드 전체 높이
  */
 class ZombieWorld(game: ZombieGame, width: Float = Constants.WORLD_WIDTH.toFloat(), height: Float = Constants.WORLD_HEIGHT.toFloat()) : World(game, width, height), Freezable {
     // 플레이어 — 월드 중앙 하단에서 시작.

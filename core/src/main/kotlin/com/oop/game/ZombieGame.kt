@@ -42,10 +42,6 @@ class ZombieGame(screenWidth: Int, screenHeight: Int) : Game() {
 		internal set;
     var screenHeight = screenHeight
 		internal set;
-    // 월드 크기 — 화면의 1.5배. 카메라(WASD)로 탐험 가능한 영역.
-    //   외부(DesktopLauncher)에서 접근해야 하므로 public.
-    val worldWidth = 1920;
-    val worldHeight = 1920;
 	private var titleBarInfo = "";
 
     /**
