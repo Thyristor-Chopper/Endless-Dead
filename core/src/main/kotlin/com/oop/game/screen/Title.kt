@@ -24,8 +24,11 @@ class Title(game: ZombieGame) : Screen(game) {
 		if(Input.isAnyKeyJustPressed() || Input.isButtonJustPressed(Input.LEFT_MOUSE)) {
 			game.setTitleBarInfo("불러오는 중...");
 			GameManager.state = GameState.IN_PLAY;  // 타이틀 화면 설정
-			game.setScreen(ZombieWorld(game));
-			Gdx.app.postRunnable { dispose() };
+			// 불러오는 중이 뜨게 하기 위해 다음 프레임 때 로드
+			Gdx.app.postRunnable {
+				game.setScreen(ZombieWorld(game));
+				Gdx.app.postRunnable { dispose() };
+			};
 		}
 	}
 	
