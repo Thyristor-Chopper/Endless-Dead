@@ -50,13 +50,14 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		private set;
 	var killedZombieCount = 0
 		private set;
-	var firedBullets = 0
+	var fireCount = 0
 		private set;
 	var totalDamage = 0
 		private set;
-	
+
 	init {
-		// -- 타이머들 --
+		// 타이머
+		
 		// 1. 생존 시간 기록 & 생존 시간 보너스
 		timers.add(Timer(1f) {
 			survivedDuration++;
@@ -69,88 +70,9 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		}.register();
 		timers.add(healTimer);
 	}
-	
-	private inline fun rotatePlayer(x: Int, y: Int) {
-		// 샷건 내 360도 구현 참고함
-		rotation = toDegrees(atan2((world.game.screenHeight - y) - (this.y - world.offsetY), x - (this.x - world.offsetX)).toDouble()).toFloat() - 90f;
-	}
-	
-	/**
-	 * 자판 방향 글쇠 눌림 상태에 따라 위치 변경
-	 * update()에서만 한 번 쓰이기 때문에 inline
-	 *
-	 * @return 조금이라도 이동했는지 여부
-	 */
-	private inline fun updatePosition(delta: Float): Boolean {
-		var moved = false;
-		if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A)) {
-			x -= speed * delta;
-			moved = true;
-		}
-		if(Input.isKeyPressed(Input.RIGHT) || Input.isKeyPressed(Input.D)) {
-			x += speed * delta;
-			moved = true;
-        }
-		if(Input.isKeyPressed(Input.UP) || Input.isKeyPressed(Input.W)) {
-			y += speed * delta;
-			moved = true;
-        }
-		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S)) {
-			y -= speed * delta;
-			moved = true;
-		}
-		return moved;
-	}
-	
-	/**
-	 * 플레이어가 갖고 있는 아이템을 사용한다.
-	 *
-	 * 들고 있지 않은 아이템이거나 사용 가능한 아이템이 아니라면 실패한다.
-	 *
-	 * @param	item	사용할 아이템
-	 * @return	성공 여부
-	 */
-	fun useItem(item: Item): Boolean {
-		if(!hasItem(item) || !(item is Usable)) return false;
-		
-		val succeeded = item.use();
-		if(succeeded)
-			if(item is Gun)  // 확장성을 고려하려 && 안 쓰고 중첩 if문 사용함
-				firedBullets++;
-		return succeeded;
-	}
-	
-	/**
-	 * 닿아 있는 상자와 상호작용한다.
-	 * update()에서만 한 번 쓰이기 때문에 inline
-	 */
-	private inline fun interactContainer() {
-		for(entity in world.getEntities()) {
-			if(!(entity is Container)) continue;
-			if(collidesWith(entity))
-				if(entity.isEmpty) {
-					var putItem = false;
-					selectedItem?.let {
-						world.drawSubtitles("Put ${it.name} into the container");
-						entity.putItem(it, true);
-						putItem = true;  // 하나씩만
-					} ?: world.drawSubtitles("Can't take any item; container is empty");
-					if(putItem) break;
-				} else {
-					val isPlayerItem = entity.isPlayerItem;
-					val item: Item? = entity.takeItem(this, true);
-					if(item == null) {
-						world.drawSubtitles("Failed to take the item in the container");
-					} else {
-						world.drawSubtitles("Took ${item.name} from the container");
-						if(!isPlayerItem)
-							openedContainerCount++;
-						break;  // 하나씩만
-					}
-				}
-		}
-	}
-	
+
+	// ---- 매 프레임 로직 ----
+
     override fun update(delta: Float) {
 		super.update(delta);
 		
@@ -188,7 +110,79 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
         x = x.coerceIn(0f, world.width);
         y = y.coerceIn(0f, world.height);
     }
-	
+
+	/**
+	 * 마우스 위치에 따라 플레이어를 회전한다.
+	 *
+	 * update()에서만 한 번 쓰이기 때문에 inline이다.
+	 */
+	private inline fun rotatePlayer(x: Int, y: Int) {
+		// 샷건 내 360도 구현 참고함
+		rotation = toDegrees(atan2((world.game.screenHeight - y) - (this.y - world.offsetY), x - (this.x - world.offsetX)).toDouble()).toFloat() - 90f;
+	}
+
+	/**
+	 * 자판 방향 글쇠 눌림 상태에 따라 위치 변경
+	 *
+	 * update()에서만 한 번 쓰이기 때문에 inline이다.
+	 *
+	 * @return 조금이라도 이동했는지 여부
+	 */
+	private inline fun updatePosition(delta: Float): Boolean {
+		var moved = false;
+		if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A)) {
+			x -= speed * delta;
+			moved = true;
+		}
+		if(Input.isKeyPressed(Input.RIGHT) || Input.isKeyPressed(Input.D)) {
+			x += speed * delta;
+			moved = true;
+        }
+		if(Input.isKeyPressed(Input.UP) || Input.isKeyPressed(Input.W)) {
+			y += speed * delta;
+			moved = true;
+        }
+		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S)) {
+			y -= speed * delta;
+			moved = true;
+		}
+		return moved;
+	}
+
+	/**
+	 * 닿아 있는 상자와 상호작용한다.
+	 *
+	 * update()에서만 한 번 쓰이기 때문에 inline이다.
+	 */
+	private inline fun interactContainer() {
+		for(entity in world.getEntities()) {
+			if(!(entity is Container)) continue;
+			if(collidesWith(entity))
+				if(entity.isEmpty) {
+					var putItem = false;
+					selectedItem?.let {
+						world.drawSubtitles("Put ${it.name} into the container");
+						entity.putItem(it, true);
+						putItem = true;  // 하나씩만
+					} ?: world.drawSubtitles("Can't take any item; container is empty");
+					if(putItem) break;
+				} else {
+					val isPlayerItem = entity.isPlayerItem;
+					val item: Item? = entity.takeItem(this, true);
+					if(item == null) {
+						world.drawSubtitles("Failed to take the item in the container");
+					} else {
+						world.drawSubtitles("Took ${item.name} from the container");
+						if(!isPlayerItem)
+							openedContainerCount++;
+						break;  // 하나씩만
+					}
+				}
+		}
+	}
+
+	// ---- 콜백(이벤트) 처리 ----
+
 	/**
 	 * 대미지를 받았을 때 자연 회복 타이머를 초기화하고 점수를 감점한다
 	 */
@@ -197,7 +191,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 		ScoreManager.subtractScore(5);
 		totalDamage += damage;
 	}
-	
+
 	/**
 	 * 처치한 좀비 수를 갱신한다.
 	 */
@@ -207,19 +201,51 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 			killedZombieCount++;
 		}
 	}
-	
+
+	// ---- 그 외 유틸들 ----
+
+	/**
+	 * 플레이어가 갖고 있는 아이템을 사용한다.
+	 *
+	 * 들고 있지 않은 아이템이거나 사용 가능한 아이템이 아니라면 실패한다.
+	 *
+	 * @param	item	사용할 아이템
+	 * @return	성공 여부
+	 */
+	fun useItem(item: Item): Boolean {
+		if(!hasItem(item) || !(item is Usable)) return false;
+		
+		val succeeded = item.use();
+		if(succeeded)
+			if(item is Gun)  // 확장성을 고려하려 &&를 안 쓰고 중첩 if문을 사용함
+				fireCount++;
+		return succeeded;
+	}
+
+	/**
+	 * 플레이어의 속도를 임시로 증가한다.
+	 *
+	 * @param amount	증가율
+	 * @param duration	활성 기간
+	 */
 	fun speedUp(amount: Float, duration: Float) {
 		speed += amount;
 		Utils.setTimeout(duration) {
 			speed -= amount;
 		};
 	}
-	
+
+	/**
+	 * 플레이어를 들고 있는 아이템에 맞게 그린다.
+	 */
 	override fun draw(batch: SpriteBatch) {
 		val texture = if(selectedItem is Gun) textureWithGun else this.texture;
 		super.draw(batch, texture);
 	}
-	
+
+	/**
+	 * 자원 및 타이머 정리
+	 */
 	override fun dispose() {
 		super.dispose();
 		textureWithGun.dispose();

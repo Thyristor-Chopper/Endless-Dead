@@ -1,5 +1,7 @@
 package io.potatogun.endlessdead.item;
 
+import io.potatogun.endlessdead.entity.InventoryEntity;
+import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.world.World;
 
 /**
@@ -14,9 +16,13 @@ class SpeedPotion(world: World) : Item(world, "speed_potion", "Speed Potion"), U
 	 * 포션을 사용하여 속도를 1만큼 올린다
 	 */
 	override fun use(): Boolean {
-		world.player.speedUp(20f, 30f);
-		world.drawSubtitles("SPEED UP");
-		destroy();
-		return true;
+		val holder: InventoryEntity? = this.holder;
+		if(holder is Player) {
+			holder.speedUp(20f, 30f);
+			world.drawSubtitles("SPEED UP");
+			destroy();
+			return true;
+		}
+		return false;
 	}
 }

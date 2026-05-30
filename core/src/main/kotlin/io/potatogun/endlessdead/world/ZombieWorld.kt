@@ -248,7 +248,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		game.setTitleBarStats(when(TitleInfoType.byIndex(currentTitleInfo)) {
 			TitleInfoType.OPENED	-> "연 상자: ${player.openedContainerCount}개"
 			TitleInfoType.KILLED	-> "잡은 좀비 수: ${player.killedZombieCount}"
-			TitleInfoType.FIRED		-> "발사한 총알 수: ${player.firedBullets}"
+			TitleInfoType.FIRED		-> "총 쏜 횟수: ${player.fireCount}"
 			TitleInfoType.SURVIVED	-> "생존 시간: ${Utils.parseSeconds(player.survivedDuration, "분", "초")}"
 			TitleInfoType.DAMAGE	-> "누적 피해량: ${player.totalDamage}"
 		});
@@ -503,7 +503,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 			skipBatch = true
         );
         drawText(
-            text = "Fired: ${player.firedBullets}",
+            text = "Fired: ${player.fireCount}",
             x = game.screenWidth / 2f - 70f,
             y = game.screenHeight / 2f - 50f,
             color = Color.LIGHT_GRAY,

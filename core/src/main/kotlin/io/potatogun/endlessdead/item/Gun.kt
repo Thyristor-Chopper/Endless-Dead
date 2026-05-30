@@ -7,6 +7,9 @@ import io.potatogun.endlessdead.Position;
 import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Entity;
+import io.potatogun.endlessdead.entity.InventoryEntity;
+import io.potatogun.endlessdead.entity.Player;
+import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.world.World;
 
 /**
@@ -23,7 +26,7 @@ import io.potatogun.endlessdead.world.World;
  * @param maxAmmo		최대 총알 개수
  * @param initialAmmo	초기 총알 개수
  */
-abstract class Gun(world: World, id: String, name: String, override val bulletDamage: Int, override val bulletSpeed: Float, override val bulletHp: Int, override val penetrable: Boolean, val fireInterval: Float, val maxAmmo: Int, initialAmmo: Int) : Item(world, id, name), Fireable, Usable {
+abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHp: Int, val penetrable: Boolean, val fireInterval: Float, val maxAmmo: Int, initialAmmo: Int) : Item(world, id, name), Fireable, Usable {
 	override val allowContinuousUse = false;
 	private var fireCooldown = 0f
 		set(value) {
@@ -66,10 +69,10 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	 *
 	 * @param	target	총알이 향할 좌표
 	 * @param	shooter	총알을 쏜 개체
-	 * @return	발사 성공 여부
+	 * @return	쏜 총알 개수 (실패하면 0)
 	 */
-	override fun fire(target: Position, shooter: Entity): Boolean {
-		if(!canFire) return false;
+	override fun fire(target: Position, shooter: Entity): Int {
+		if(!canFire) return 0;
 		
 		val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, penetrable, bulletHp);
 		world.addEntity(bullet);
@@ -83,7 +86,7 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 			destroy();
 		}
 		
-		return true;
+		return 1;
 	}
 	
 	/**
@@ -92,7 +95,14 @@ abstract class Gun(world: World, id: String, name: String, override val bulletDa
 	 * @return 사용 성공 여부
 	 */
 	override fun use(): Boolean {
-		return fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.game.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), world.player);
+		val holder: InventoryEntity? = this.holder;
+		if(holder is Player) {
+			return fire(Position(Gdx.input.getX().toFloat() + world.offsetX, world.game.screenHeight - Gdx.input.getY().toFloat() + world.offsetY), world.player) > 0;
+		} else if(holder is Zombie) {
+			return fire(holder.target.position, holder) > 0;
+		} else {
+			return false;
+		}
 	}
 
 	/**

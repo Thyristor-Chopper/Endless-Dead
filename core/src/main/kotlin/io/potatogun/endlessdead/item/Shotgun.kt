@@ -17,8 +17,8 @@ import kotlin.math.sin;
 class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true, 1f, 10, 10) {
     private val spreadAngles = listOf(-0.2f, -0.1f, 0f, 0.1f, 0.2f);
 
-    override fun fire(target: Position, shooter: Entity): Boolean {
-        if(!canFire) return false;
+    override fun fire(target: Position, shooter: Entity): Int {
+        if(!canFire) return 0;
 
         val centerX = shooter.x + shooter.width / 2f;
         val centerY = shooter.y + shooter.height / 2f;
@@ -44,6 +44,6 @@ class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true,
             destroy();
         }
 
-        return true;
+        return spreadAngles.size;
     }
 }

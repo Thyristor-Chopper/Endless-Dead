@@ -35,11 +35,10 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
 	open val target: LivingEntity = world.player;
-
     // 💡 자식들이 언제든 거리를 실시간으로 잴 수 있게 열어둔 공용 프로퍼티
     protected val distanceToTarget: Float
         get() = target.position.distanceTo(position);
-	
+
 	override fun update(delta: Float) {
 		super.update(delta);
 		
