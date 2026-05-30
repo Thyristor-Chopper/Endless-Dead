@@ -59,13 +59,13 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 
 	init {
 		// 타이머
-		
+
 		// 1. 생존 시간 기록 & 생존 시간 보너스
 		timers.add(Timer(1f) {
 			survivedDuration++;
 			ScoreManager.addScore(1);
 		}.register());
-		
+
 		// 2. 30초마다 자연 회복
 		healTimer = Timer(30f) {
 			heal(3);

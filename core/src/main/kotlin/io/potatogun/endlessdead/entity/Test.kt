@@ -26,16 +26,16 @@ class Test(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 80f, 80
 
 	override fun update(delta: Float) {
 		super.update(delta);
-		
+
 		if(!target.isAlive) {
 			this.target = world.player;
 			return;
 		}
-		
+
         val dx = target.x - x;
         val dy = target.y - y;
         val distance = distanceToTarget;
-		
+
         if(distance != null && distance > 320f) {
             x += dx / distance * speed * delta;
             y += dy / distance * speed * delta;
@@ -45,12 +45,12 @@ class Test(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 80f, 80
 				selected.fire(target.position, this);
 		}
     }
-	
+
 	override fun onDamage(damage: Int, attacker: Entity?) {
 		if(attacker is LivingEntity)
 			target = attacker;
 	}
-	
+
 	override fun onItemDestoryed(item: Item) {
 		if(item is Gun)
 			addItemToInventory(TestGun(world), true);

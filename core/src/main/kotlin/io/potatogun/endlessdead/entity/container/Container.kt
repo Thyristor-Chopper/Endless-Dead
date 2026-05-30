@@ -42,7 +42,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	 */
 	val isEmpty: Boolean
 		get() = (containedItem == null);
-	
+
 	/**
 	 * 상자를 화면에 그린다. 비어 있을 때와 아닐 때 텍스처가 다르기 때문에 override해서 처리한다.
 	 */
@@ -53,7 +53,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 			else this.texture;
 		super.draw(batch, texture);
 	}
-	
+
 	/**
 	 * 아이템 가져가기
 	 *
@@ -68,7 +68,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		if(isPlayerItem) isPlayerItem = false;
 		return target;
 	}
-	
+
 	/**
 	 * 아이템 넣기
 	 *
@@ -80,7 +80,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		item.holder?.removeItemFromInventory(item);
 		if(isPlayerItem) this.isPlayerItem = true;
 	}
-	
+
 	/**
 	 * 안에 들어 있는 아이템을 제거한다.
 	 *
@@ -92,7 +92,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		if(isPlayerItem) isPlayerItem = false;
 		return true;
 	}
-	
+
 	/**
 	 * 추가적인 두 텍스처도 비운다.
 	 */

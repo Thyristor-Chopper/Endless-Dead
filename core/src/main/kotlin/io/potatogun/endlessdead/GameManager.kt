@@ -25,7 +25,7 @@ object GameManager {
 	 */
 	val isPaused: Boolean
 		get() = (state == GameState.PAUSED);
-	
+
 	/**
 	 * 게임 진행 상태로 전환한다.
 	 */
@@ -33,7 +33,7 @@ object GameManager {
 		Gdx.graphics.setForegroundFPS(Constants.FPS);
 		state = GameState.PLAYING;
 	}
-	
+
 	/**
 	 * 게임을 종료 상태로 전환한다.
 	 */
@@ -41,7 +41,7 @@ object GameManager {
 		state = GameState.GAME_OVER;
 		Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
 	}
-	
+
 	/**
 	 * 게임을 일시 중지한다.
 	 */
@@ -49,14 +49,14 @@ object GameManager {
 		state = GameState.PAUSED;
 		Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
 	}
-	
+
 	/**
 	 * 일시 중지된 게임을 계속한다.
 	 */
 	inline fun resume() {
 		setPlaying();
 	}
-	
+
 	/**
 	 * 게임의 현재 상태를 나타내는 열거형.
 	 */

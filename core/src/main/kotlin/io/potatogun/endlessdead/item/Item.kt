@@ -51,11 +51,11 @@ abstract class Item(val world: World, val id: String, val name: String) {
 	fun destroy(): Boolean {
 		val first = holder?.let { it.removeItemFromInventory(this); it.onItemDestoryed(this); true } ?: false;
 		val second = container?.let { it.removeItem(); true } ?: false;
-		
+
 		cleanUp();
-		
+
 		return first || second;
-		
+
 		// 나머지는 jvm이나 달빅이 알아서 gc 해주겠지.
 	}
 

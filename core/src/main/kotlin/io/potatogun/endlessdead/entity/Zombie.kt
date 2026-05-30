@@ -40,11 +40,11 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 
 	override fun update(delta: Float) {
 		super.update(delta);
-		
+
         val dx = target.x - x;
         val dy = target.y - y;
         val distance = distanceToTarget;
-		
+
 		// 플레이어의 중심으로 정확히 모이면 어색하니까 살짝은 거리를 두게 하자.
         if(distance > target.width * (3f / 4f)) {
             x += dx / distance * speed * delta;
@@ -53,11 +53,11 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 			target.takeDamage(attackDamage, attacker = this);
 		}
     }
-	
+
 	class Weak(world: World, x: Float, y: Float) : Zombie(world, x, y, width=21f, height=30f, hp=3, speed=150f, attackDamage=1);
-	
+
 	class Normal(world: World, x: Float, y: Float) : Zombie(world, x, y, width=32f, height=45f, hp=5, speed=100f, attackDamage=3);
-	
+
 	class Strong(world: World, x: Float, y: Float) : Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, attackDamage=5) {
         // 평상시 스피드, 대미지
         val originalSpeed = speed;
@@ -129,7 +129,7 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
             // 💡 속도 세팅이 완벽히 끝난 후, 마지막에 부모를 호출해서 이동시킴
             super.update(delta);
         }
-		
+
 		// 평상시, 돌진하려고 잠깐 멈춰있음, 돌진, 돌진 쿨
         private enum class DashState {
             WALKING,

@@ -12,9 +12,6 @@ import kotlin.random.Random;
 class TestSpawner(world: World, private val spawnInterval: Float = 5f) : Spawner(world) {
     private var spawnTimer = 0f;
 
-	/**
-	 * 매 프레임 실행해서 소환할 시간이 되면 좀비를 스폰한다
-	 */
     override fun update(delta: Float) {
         spawnTimer += delta;
         if(spawnTimer >= spawnInterval) {
@@ -23,9 +20,6 @@ class TestSpawner(world: World, private val spawnInterval: Float = 5f) : Spawner
         }
     }
 
-	/**
-	 * 무작위로 좀비 종류를 골라서 월드에 추가하고 반환한다
-	 */
     private inline fun spawn() {
         var randomX: Float;
         var randomY: Float;

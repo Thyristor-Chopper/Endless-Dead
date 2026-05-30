@@ -19,7 +19,7 @@ class Title(game: EndlessDead) : Screen(game) {
 	private val title = Utils.loadTexture("title.bmp");
 	private val stillCut = Utils.loadTexture("still_cut.bmp");
 	private var titleBlinkTimer = 0f;
-	
+
 	override fun update(delta: Float) {
 		titleBlinkTimer += delta;
 		if(Input.isAnyKeyJustPressed() || Input.isButtonJustPressed(Input.LEFT_MOUSE)) {
@@ -34,15 +34,15 @@ class Title(game: EndlessDead) : Screen(game) {
 			};
 		}
 	}
-	
+
 	override fun drawBackground() {
 		batch.draw(stillCut, 0f, 0f, game.screenWidth.toFloat(), game.screenHeight.toFloat());
 	}
-	
+
 	override fun drawElements() {
 		drawTitle();
 	}
-	
+
 	private inline fun drawTitle() {
 		val titleWidth = game.screenWidth * 0.75f;
 		val titleHeight = titleWidth / 6f;
@@ -64,7 +64,7 @@ class Title(game: EndlessDead) : Screen(game) {
 		if(titleBlinkTimer >= 1f)
 			titleBlinkTimer = 0f;
 	}
-	
+
 	override fun dispose() {
 		super.dispose();
 		title.dispose();

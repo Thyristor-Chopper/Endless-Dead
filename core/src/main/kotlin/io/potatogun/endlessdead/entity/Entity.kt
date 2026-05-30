@@ -73,7 +73,7 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
 		val texture: Texture? = alternateTexture ?: this.texture;
 		texture?.let { batch.draw(it, x - width / 2f, y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false) };
 	}
-	
+
 	/**
      * 매 프레임 호출되어 자신을 그린다.
 	 *

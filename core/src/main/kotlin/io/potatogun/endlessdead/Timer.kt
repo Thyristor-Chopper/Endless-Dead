@@ -24,9 +24,9 @@ class Timer(val interval: Float, val delay: Float = interval, val onlyInPlay: Bo
 				operation();
 		}
 	};
-	
+
 	constructor(interval: Float, onlyInPlay: Boolean = true, operation: () -> Unit) : this(interval, interval, onlyInPlay, operation);
-	
+
 	/**
 	 * 타이머를 등록한다.
 	 */
@@ -34,14 +34,14 @@ class Timer(val interval: Float, val delay: Float = interval, val onlyInPlay: Bo
 		GdxTimer.schedule(task, delay, interval);
 		return this;
 	}
-	
+
 	/**
 	 * 타이머 등록을 해제한다.
 	 */
 	fun unregister() {
 		task.cancel();
 	}
-	
+
 	/**
 	 * 대기시간을 초기화한다.
 	 */

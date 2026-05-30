@@ -25,7 +25,7 @@ class InventoryEntityImpl : InventoryEntity {
 		get() = inventory.size;
 	override val isInventoryEmpty: Boolean
 		get() = inventory.isEmpty();
-	
+
 	override fun addItemToInventory(item: Item, select: Boolean): Boolean {
 		if(hasItem(item)) return false;
 		item.holder?.removeItemFromInventory(item);
@@ -34,7 +34,7 @@ class InventoryEntityImpl : InventoryEntity {
 		if(select) selectedItemIndex = inventory.size - 1;
 		return true;
 	}
-	
+
 	override fun removeItemFromInventory(index: Int) {
 		if(index < 0 || index >= inventory.size) throw IllegalArgumentException("index out of bounds");
 		val currentIndex: Int? = selectedItemIndex;
@@ -44,7 +44,7 @@ class InventoryEntityImpl : InventoryEntity {
 		else if(index == currentIndex)
 			selectPreviousItem();
 	}
-	
+
 	override fun removeItemFromInventory(item: Item): Boolean {
 		var found = false;
 		if(!inventory.isEmpty())
@@ -58,7 +58,7 @@ class InventoryEntityImpl : InventoryEntity {
 				}
 		return found;
 	}
-	
+
 	override fun selectNextItem(): Boolean {
 		val index: Int? = selectedItemIndex;
 		if(inventory.isEmpty())
@@ -71,7 +71,7 @@ class InventoryEntityImpl : InventoryEntity {
 			selectedItemIndex = index + 1;
 		return selectedItemIndex != null;
 	}
-	
+
 	override fun selectPreviousItem(): Boolean {
 		val index: Int? = selectedItemIndex;
 		if(inventory.isEmpty())
@@ -84,20 +84,20 @@ class InventoryEntityImpl : InventoryEntity {
 			selectedItemIndex = index - 1;
 		return selectedItemIndex != null;
 	}
-	
+
 	override fun selectItem(item: Item): Boolean {
 		val index = inventory.indexOfFirst({ it === item });
 		if(index == -1) return false;
 		selectedItemIndex = index;
 		return true;
 	}
-	
+
 	override fun selectItem(index: Int) {
 		if(index < 0 || index >= inventory.size) throw IllegalArgumentException("index out of bounds");
 		selectedItemIndex = index;
 	}
-	
+
 	override fun hasItem(item: Item): Boolean = inventory.any { it === item };
-	
+
 	override fun getInventory(): List<Item> = inventory.toList();
 }

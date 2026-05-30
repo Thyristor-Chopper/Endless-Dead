@@ -35,12 +35,12 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 	private val barTexture = NinePatch(rawBarTexture, 2, 2, 5, 6);
 	private val indicatorTexture: NinePatch by lazy { NinePatch(rawChunkTexture, 1, 1, 1, 1) };
 	private val chunkTexture: NinePatch by lazy { NinePatch(TextureRegion(rawChunkTexture, 1, 0, 1, CHUNK_HEIGHT), 0, 0, 1, 1) };
-	
+
 	init {
 		if(value < 0f || value > 1f)
 			throw IllegalArgumentException("invalid progress bar value");
 	}
-	
+
 	override fun draw(batch: SpriteBatch) {
 		val barX = x();
 		val barY = y();
@@ -73,7 +73,7 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 			batch.color = Color.WHITE;
 		}
 	}
-	
+
 	override fun dispose() {
 		rawBarTexture.dispose();
 		rawChunkTexture.dispose();

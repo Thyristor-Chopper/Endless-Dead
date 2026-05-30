@@ -12,7 +12,7 @@ object ScoreManager {
 			if(value < 0) field = 0;
 			else field = value;
 		};
-	
+
 	/**
 	 * 점수를 준다.
 	 *
@@ -22,7 +22,7 @@ object ScoreManager {
 		if(amount < 0) throw IllegalArgumentException("invalid score amount");
 		score += amount;
 	}
-	
+
 	/**
 	 * 점수를 감점한다.
 	 *
@@ -32,7 +32,7 @@ object ScoreManager {
 		if(amount < 0) throw IllegalArgumentException("invalid score amount");
 		score -= amount;
 	}
-	
+
 	/**
 	 * 점수를 초기화한다.
 	 */

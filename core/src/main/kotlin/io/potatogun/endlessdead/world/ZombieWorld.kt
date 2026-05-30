@@ -114,10 +114,10 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 			solidColor = Texture(this);
 			dispose();
 		};
-		
+
 		// 점수 초기화
 		ScoreManager.resetScore();
-		
+
 		// 50~100개의 건물과 상자를 무작위로 배치
 		for(i in 0 until Random.nextInt(50) + 50) {
 			val x = Random.nextInt(this.width.toInt()).toFloat();
@@ -128,19 +128,19 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 				else	-> Chest(this, x, y, item);
 			});
 		}
-		
+
 		// 플레이어 등록
         addEntity(player);
-		
+
 		// 미터기 추가
 		addWidget("hp_indicator", ProgressBar({ 80f }, { game.screenHeight - 24f }, 220f, color = Utils.rgb(234, 197, 21)));
 		addWidget("gun_ammo_indicator", ProgressBar({ game.screenWidth - 145f }, { 10f }, 130f, color = Utils.rgb(15, 116, 240)).apply { hide() });
 		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET, style = ProgressBarStyle.SMOOTH).apply { hide() });
-		
+
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this, 3f));
 		// spawners.add(io.potatogun.endlessdead.spawner.TestSpawner(this));  // 테스트
-		
+
 		// 10초마다 빈 상자 하나 리필
 		timers.add(Timer(10f) {
 			for(entity in getEntities().shuffled())
@@ -149,13 +149,13 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 					break;
 				}
 		}.register());
-		
+
 		// 제목 표시줄 정보 전환
 		timers.add(Timer(3f) {
 			currentTitleInfo++;
 		}.register());
     }
-	
+
 	/**
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다.
 	 */
@@ -168,9 +168,9 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 			else	-> SpeedPotion(this)
 		};
 	}
-	
+
 	// ---- Freezable 구현 -----
-	
+
 	override fun freeze(duration: Float) {
 		isFrozen = true;
 		unfreezeTimer?.let { it.unregister() };
@@ -179,7 +179,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 			unfreezeTimer = null;
 		};
 	}
-	
+
 	override fun unfreeze() {
 		isFrozen = false;
 		drawSubtitles("Time moves again");
@@ -213,17 +213,17 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
     private inline fun updateInPlay(delta: Float) {
 		// 제목 표시줄에 통계 표시
 		updateTitleBarInfo();
-		
+
 		// 미터기 정보 갱신
 		updateProgressBars();
-		
+
         // ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
 		super.update(delta);  // updateAllObjects과 removeDead
 		// 스포너 갱신
 		if(!isFrozen)
 			for(spawner in spawners)
 				spawner.update(delta);
-		
+
         // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
         //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
         //   offset 은 0 ~ (world - screen) 범위여야 한다.
@@ -235,11 +235,11 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
             GameManager.setGameOver();
 			game.setTitleBarStats(null);
 		}
-		
+
 		// 일시 정지
 		detectPauseKey();
     }
-	
+
 	/**
 	 * 창 제목에 정보를 표시한다.
 	 *
@@ -254,7 +254,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 			TitleInfoType.DAMAGE	-> "누적 피해량: ${player.totalDamage}"
 		});
 	}
-	
+
 	/**
 	 * 미터기 정보를 갱신한다.
 	 *
@@ -264,7 +264,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		// HP 미터기 처리
 		val hpIndicator = getWidget("hp_indicator") as ProgressBar;
 		hpIndicator.value = player.hp.toFloat() / player.maxHp;
-		
+
 		// 총 관련 미터기 처리
 		val ammoIndicator = getWidget("gun_ammo_indicator") as ProgressBar;
 		val cooldownIndicator = getWidget("gun_cooldown_indicator") as ProgressBar;
@@ -275,7 +275,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 				value = holding.ammo.toFloat() / holding.maxAmmo;
 				show();
 			};
-		
+
 			// 총의 공격 쿨타임 표시
 			if(holding.fireInterval > 0.2f) {
 				val cooldown = holding.getRemainingCooldownPercentage();
@@ -292,7 +292,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 			cooldownIndicator.hide();
 		}
 	}
-	
+
 	/**
 	 * 일시 정지 상태에서 매 프레임 로직
 	 *
@@ -330,7 +330,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 			};
         }
     }
-	
+
 	/**
 	 * <Esc>나 P 글쇠가 눌렸을 때를 감지해서 일시 정지하거나 계속한다.
 	 */
@@ -380,7 +380,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 
         // 배경에 입힌 색이 다음 그리기(게임 객체)에 영향을 주지 않도록 흰색으로 복원.
         batch.color = Color.WHITE;
-		
+
 		// 월드 텍스트 (월드 좌표) — 월드 정중앙에 표시
         //    WASD로 카메라를 움직이면 이 글자도 화면에서 움직인다.
         drawTextInWorld(
@@ -405,7 +405,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
         super.render(delta);
 
 		batch.begin();
-		
+
 		// 일시 정지 시 어둡게 변경
 		if(!GameManager.isPlaying)
 			drawFrozenOverlay();
@@ -416,10 +416,10 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
             GameManager.isPaused	-> drawPausedMessage();  // 💡 [추가] 일시정지 화면 그리기
             GameManager.isGameOver	-> drawGameOverMessage();
         }
-		
+
 		batch.end();
     }
-	
+
 	/**
 	 * 화면에 어두운 오버레이(주로 모달용)를 만든다.
 	 *
@@ -430,7 +430,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		batch.draw(solidColor, 0f, 0f, game.screenWidth.toFloat(), game.screenHeight.toFloat());
 		batch.color = Color.WHITE;
 	}
-	
+
 	/**
 	 * 일시 정지 시 띄우는 메시지
 	 *
@@ -536,7 +536,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 			skipBatch = true
         );
     }
-	
+
 	/**
 	 * 필요한 요소들을 그린다.
 	 */
@@ -562,7 +562,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
             scale = 1.2f,
 			skipBatch = true
         );
-		
+
 		// 현재 플레이어가 들고 있는 아이템
 		player.selectedItem?.let {
 			drawText(
@@ -574,7 +574,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 				skipBatch = true
 			);
 		};
-		
+
 		// 점수
 		drawText(
             text = "Score: ${ScoreManager.score}",
@@ -587,7 +587,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 			skipBatch = true
         );
     }
-	
+
     /**
 	 * 화면이 닫힐 때 — 부모도 dispose한 뒤 우리만의 자원도 해제.
 	 */
@@ -604,7 +604,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		unfreezeTimer?.unregister();
 		unfreezeTimer = null;
     }
-	
+
 	/**
 	 * 제목 표시줄에 표시할 정보 종류를 담는 열거형
 	 */
@@ -614,11 +614,11 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		FIRED,
 		SURVIVED,
 		DAMAGE;
-		
+
 		companion object {
 			private val enumEntries = TitleInfoType.entries;
 			val size = enumEntries.size;
-		
+
 			fun byIndex(index: Int) = enumEntries[index];
 		}
 	}

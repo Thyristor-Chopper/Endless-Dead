@@ -48,7 +48,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 	 */
 	protected fun startFireCooldown() {
 		fireCooldown = fireInterval;
-		
+
 		// 남은 쿨타임을 갱신한다.
 		cooldownTimer = Timer(0.01f) {
 			fireCooldown -= 0.01f;
@@ -60,9 +60,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 	/**
 	 * 남은 쿨타임을 전체 공격 간격에 비례하여 0~1로 정규화하여 반환한다.
 	 */
-	fun getRemainingCooldownPercentage(): Float {
-		return fireCooldown / fireInterval;
-	}
+	fun getRemainingCooldownPercentage(): Float = fireCooldown / fireInterval;
 
 	/**
 	 * 총 쏘기
@@ -73,19 +71,19 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 	 */
 	override fun fire(target: Position, shooter: Entity): Int {
 		if(!canFire) return 0;
-		
+
 		val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, penetrable, bulletHp);
 		world.addEntity(bullet);
 		startFireCooldown();
 		ammo--;
-		
+
 		// ammo가 다 떨어진 총은 파괴
 		if(ammo == 0) {
 			if(holder === world.player)
 				world.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
 			destroy();
 		}
-		
+
 		return 1;
 	}
 

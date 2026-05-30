@@ -19,7 +19,7 @@ object Utils {
 		if(seconds < 60) return "${seconds}$secondsSuffix";
 		return "${seconds / 60}$minutesSuffix ${seconds % 60}$secondsSuffix";
 	}
-	
+
 	/**
 	 * R, G, B 값을 받아 Color 객체로 변환한다.
 	 *
@@ -34,7 +34,7 @@ object Utils {
 			throw IllegalArgumentException("invalid color value");
 		return Color(r / 255f, g / 255f, b / 255f, a);
 	}
-	
+
 	/**
 	 * 지정한 시간 후 특정 서브루틴을 한 번만 실행한다.
 	 * 
@@ -49,6 +49,6 @@ object Utils {
 		}.register();
 		return timer!!;
 	}
-	
+
 	inline fun loadTexture(path: String): Texture = Texture(Gdx.files.internal("assets/textures/$path"));
 }

@@ -127,7 +127,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFl
     // ────────────────────────────────────────────────────────
     //  콜백 함수
     // ────────────────────────────────────────────────────────
-	
+
 	/**
 	 * 크기 조절 시 호출된다.
 	 */
@@ -156,7 +156,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFl
 		if(subtitlesTimer > 0f)
 			subtitlesTimer -= delta;
 	}
-	
+
     // ────────────────────────────────────────────────────────
     //  매 프레임 그리기
     // ────────────────────────────────────────────────────────
@@ -203,7 +203,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFl
             entity.y = originalY;
         }
     }
-	
+
 	/**
 	 * 플레이어 위치에 따라 카메라 위치 변경
 	 */
@@ -239,7 +239,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFl
         val screenY = y - offsetY;
         drawText(text, screenX, screenY, color, scale, width, align, fixedWidthChars, skipBatch);
     }
-	
+
 	/**
 	 * 화면 하단에 자막을 표시한다.
 	 *

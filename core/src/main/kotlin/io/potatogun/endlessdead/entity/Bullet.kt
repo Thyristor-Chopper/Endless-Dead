@@ -25,12 +25,12 @@ class Bullet(world: World, val gun: Fireable, val shooter: Entity, val target: P
 	override val showDamagedIndicator = false;
 	val amountX: Float;
 	val amountY: Float;
-	
+
 	init {
 		val dx = target.x - shooter.x;
 		val dy = target.y - shooter.y;
 		val distance = sqrt(dx * dx + dy * dy);
-		
+
 		if(distance > 0f) {
 			amountX = dx / distance * speed;
 			amountY = dy / distance * speed;
@@ -40,15 +40,15 @@ class Bullet(world: World, val gun: Fireable, val shooter: Entity, val target: P
 			amountY = 0f;
 		}
 	}
-	
+
 	override fun update(delta: Float) {
 		x += amountX * delta;
 		y += amountY * delta;
-		
+
 		// 화면 밖으로 나가면 소멸
 		if(x < 0f || x > world.width || y < 0f || y > world.height)
 			this.kill();
-		
+
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지 주고 총알은 소멸.
 		for(entity in world.getEntities())
 			if(entity !== this && entity !== shooter && entity is LivingEntity && (!(entity is Bullet) || (entity is Bullet && entity.gun !== this.gun)) && collidesWith(entity)) {

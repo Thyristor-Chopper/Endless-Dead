@@ -11,7 +11,7 @@ interface Fireable {
 	 * 마우스를 꾹 누를 때 연속으로 쏠 수 있는지의 여부
 	 */
 	val allowContinuousFire: Boolean;
-	
+
 	/**
 	 * 프로젝타일 쏘기
 	 *

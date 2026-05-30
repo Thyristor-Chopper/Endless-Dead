@@ -11,7 +11,7 @@ import io.potatogun.endlessdead.world.World;
  */
 class SpeedPotion(world: World) : Item(world, "speed_potion", "Speed Potion"), Usable {
 	override val allowContinuousUse = false;
-	
+
 	/**
 	 * 포션을 사용하여 속도를 1만큼 올린다
 	 */

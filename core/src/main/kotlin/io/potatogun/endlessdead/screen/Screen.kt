@@ -58,14 +58,14 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
     // ────────────────────────────────────────────────────────
     //  위젯 객체 관리
     // ────────────────────────────────────────────────────────
-	
+
 	/**
 	 * 위젯을 화면에 추가
 	 */
 	fun addWidget(id: String, widget: Widget) {
 		widgets[id] = widget;
 	}
-	
+
 	/**
 	 * 위젯을 화면에서 제거
 	 */
@@ -76,7 +76,7 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 		widget.dispose();
 		return true;
 	}
-	
+
 	/**
 	 * 위젯을 식별자로 가져오기
 	 *
@@ -89,7 +89,7 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
     // ────────────────────────────────────────────────────────
     //  콜백 함수
     // ────────────────────────────────────────────────────────
-	
+
 	/**
 	 * 크기 조절 시 호출된다.
 	 */
@@ -102,12 +102,12 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 	// ────────────────────────────────────────────────────────
     //  매 프레임 로직
     // ────────────────────────────────────────────────────────
-	
+
 	/**
      * 매 프레임 화면 로직 — 서브클래스가 override해서 화면 로직을 넣는 곳.
      */
 	protected open fun update(delta: Float) {}
-	
+
 	// ────────────────────────────────────────────────────────
     //  매 프레임 그리기
     // ────────────────────────────────────────────────────────
@@ -130,7 +130,7 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 
         // 3) 게임 로직 업데이트
         update(delta);
-		
+
 		// 4) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
 		batch.begin();
 		drawBackground();
@@ -155,12 +155,12 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
      *              begin/end 를 또 호출하면 안 된다.
      */
     protected abstract fun drawBackground();
-	
+
 	/**
 	 * 그 외 하위 클래스에서 배경과 위젯(컨트롤) 사이에 그려야 할 것들
 	 */
 	protected open fun drawElements() {}
-	
+
 	/**
 	 * 화면 내 위젯(컨트롤)들을 그린다.
 	 */
@@ -173,7 +173,7 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
     // ────────────────────────────────────────────────────────
     //  텍스트 헬퍼
     // ────────────────────────────────────────────────────────
-	
+
 	/**
      * 화면 좌표에 텍스트 그리기.
      *

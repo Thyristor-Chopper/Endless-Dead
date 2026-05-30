@@ -51,28 +51,28 @@ object Input {
 				}
 				return false;
 			}
-			
-			override fun mouseMoved(x: Int, y: Int): Boolean = false;
-			
-			override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean = false;
-			
-			override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
-			
-			override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
-			
+
 			override fun keyDown(code: Int): Boolean {
 				keyJustDown = true;
 				keyDown = true;
 				Gdx.app.postRunnable { keyJustDown = false };
 				return true;
 			}
-			
+
 			override fun keyUp(code: Int): Boolean {
 				keyDown = false;
 				keyJustDown = false;
 				return true;
 			}
-			
+
+			override fun mouseMoved(x: Int, y: Int): Boolean = false;
+
+			override fun touchDragged(x: Int, y: Int, pointer: Int): Boolean = false;
+
+			override fun touchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
+
+			override fun touchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
+
 			override fun touchCancelled(x: Int, y: Int, pointer: Int, button: Int): Boolean = false;
 			
 			override fun keyTyped(char: Char): Boolean = false;
@@ -90,11 +90,17 @@ object Input {
      *   총알 발사, 메뉴 선택처럼 '한 번만' 실행되어야 할 동작에 사용.
      */
     inline fun isKeyJustPressed(key: Int): Boolean = Gdx.input.isKeyJustPressed(key);
-	
+
+    /**
+     * 아무 키라도 눌려 있는지의 여부
+     */
 	fun isAnyKeyPressed(): Boolean = keyDown;
-	
+
+    /**
+     * 아무 키를 방금 눌렀는지의 여부
+     */
 	fun isAnyKeyJustPressed(): Boolean = keyJustDown;
-	
+
 	/**
      * 지정한 마우스 단추가 눌려 있는지의 여부
 	 *
@@ -108,9 +114,15 @@ object Input {
 	 * @param button	단추의 종류
      */
     inline fun isButtonJustPressed(button: Int): Boolean = Gdx.input.isButtonJustPressed(button);
-	
+
+	/**
+     * 방금 아래로 스크롤됐는지의 여부
+     */
     fun isScrolledDown(): Boolean = scrolledDown;
-	
+
+	/**
+     * 방금 위로 스크롤됐는지의 여부
+     */
     fun isScrolledUp(): Boolean = scrolledUp;
 
     // 자주 쓰는 키 상수를 짧은 이름으로 재노출.

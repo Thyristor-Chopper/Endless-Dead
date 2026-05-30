@@ -68,7 +68,7 @@ class EndlessDead(screenWidth: Int, screenHeight: Int) : Game() {
     override fun create() {
         setScreen(Title(this));  // 부모 Game이 제공하는 메서드
     }
-	
+
 	/**
 	 * 매 프레임 실행된다.
 	 * update를 호출하여 매 프레임 게임 자체의 갱신 로직을 실행한다.
@@ -77,7 +77,7 @@ class EndlessDead(screenWidth: Int, screenHeight: Int) : Game() {
 		super.render();
 		update();
 	}
-	
+
 	/**
 	 * 매 프레임 게임 자체의 갱신 로직.
 	 * 여기서는 제목 표시줄 내용을 갱신한다.
@@ -99,7 +99,7 @@ class EndlessDead(screenWidth: Int, screenHeight: Int) : Game() {
 		else
 			Gdx.graphics.setTitle("${title}${titleBarInfo}");
 	}
-	
+
 	/**
 	 * 현재 상태 정보를 제목 표시줄에 표시한다.
 	 *
@@ -108,7 +108,7 @@ class EndlessDead(screenWidth: Int, screenHeight: Int) : Game() {
 	fun setTitleBarInfo(info: String?) {
 		titleBarInfo = info ?: "";
 	}
-	
+
 	/**
 	 * 현재 통계 정보를 제목 표시줄에 표시한다.
 	 *

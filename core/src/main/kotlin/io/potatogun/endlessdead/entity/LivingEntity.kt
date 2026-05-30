@@ -66,7 +66,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 * 기본 무적 타이머
 	 */
 	open val defaultInvincibleDuration = 0.0f;
-	
+
 	/**
 	 * 체력 감소(대미지를 입는다.)
 	 *
@@ -76,7 +76,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 */
 	open fun takeDamage(damage: Int, invincibleDuration: Float = defaultInvincibleDuration, attacker: Entity? = null) {
 		if(damage < 0) throw IllegalArgumentException("damage must not be negative");
-		
+
 		// 무적 시간이 다 끝났을 때만 피격당함
 		if(!isInvincible) {
 			hp -= damage;
@@ -106,7 +106,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	open fun heal(amount: Int) {
 		hp += amount;
 	}
-	
+
 	/**
 	 * 개체를 즉시 죽인다.
 	 *
@@ -117,7 +117,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		onDeath(attacker);
 		if(attacker != null) attacker.onKill(this);
 	}
-	
+
 	/**
 	 * 대미지를 받았을 때 실행할 콜백 함수
 	 *
@@ -125,7 +125,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 * @param attacker	공격자
 	 */
 	open fun onDamage(damage: Int, attacker: Entity?) {}
-	
+
 	/**
 	 * 죽었을 때 실행할 콜백 함수
 	 *
@@ -138,12 +138,12 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 */
 	override fun forceUpdate(delta: Float) {
 		super.forceUpdate(delta);
-		
+
 		if(invincibilityTimer > 0f)
 			invincibilityTimer -= delta;
 		if(damagedIndicatorTimer > 0f)
 			damagedIndicatorTimer -= delta;
-		
+
 		// 몸 대미지 처리
 		for(entity in world.getEntities())
 			if(entity !== this && collidesWith(entity) && distanceTo(entity) < 8f && entity.bodyDamage > 0 && (!ignoreFriendBodyDamage || (ignoreFriendBodyDamage && this::class != entity::class))) {
@@ -151,7 +151,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 				takeDamage(entity.bodyDamage, attacker=attacker);
 			}
 	}
-	
+
 	/**
 	 * 대미지를 입은 경우 붉게 바꾼다.
 	 */
