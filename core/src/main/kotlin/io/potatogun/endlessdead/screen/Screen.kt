@@ -37,9 +37,16 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 	// SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
     //   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
     @JvmField protected val batch = SpriteBatch();
+	// 월드 내에서 카메라의 좌표계가 아닌 화면 자체의 좌표계(기본값)가 필요할 때 (HUD나 위젯 그리기 시 필요) - https://javadoc.io/static/com.badlogicgames.gdx/gdx/1.12.1/com/badlogic/gdx/math/Matrix4.html 참고
+	@JvmField protected val screenProjectionMatrix = batch.projectionMatrix.cpy();
+	// 기본 글꼴
     @JvmField protected val font = BitmapFont();
 	// 등록된 위젯들
     private val widgets = mutableMapOf<String, Widget>();
+	
+	init {
+		batch.projectionMatrix = screenProjectionMatrix;
+	}
 
     // ────────────────────────────────────────────────────────
     //  위젯 객체 관리
@@ -80,7 +87,7 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 	 * 크기 조절 시 호출된다.
 	 */
 	override fun resize(width: Int, height: Int) {
-		updateProjectionDimensions(batch.projectionMatrix, width.toFloat(), height.toFloat());
+		screenProjectionMatrix.setToOrtho2D(0f, 0f, width.toFloat(), height.toFloat());
 	}
 
 	// ────────────────────────────────────────────────────────

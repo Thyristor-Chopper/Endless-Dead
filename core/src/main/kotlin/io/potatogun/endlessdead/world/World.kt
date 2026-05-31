@@ -40,8 +40,6 @@ import io.potatogun.endlessdead.screen.Screen;
 abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val height: Float = game.screenHeight) : Screen(game) {
 	// OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     private val camera = OrthographicCamera();
-	// 카메라의 좌표계가 아닌 화면 자체의 좌표계(기본값) (HUD나 위젯 그리기 시 필요) - https://javadoc.io/static/com.badlogicgames.gdx/gdx/1.12.1/com/badlogic/gdx/math/Matrix4.html 참고
-	private val screenProjectionMatrix = batch.projectionMatrix.cpy();
 	/**
 	 * 이 월드의 플레이어
 	 */
@@ -155,7 +153,6 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
 	 */
 	override fun resize(width: Int, height: Int) {
 		super.resize(width, height);
-		updateProjectionDimensions(screenProjectionMatrix, width.toFloat(), height.toFloat());
 		setCameraCenter();
 		updateCameraOffset();
 	}
