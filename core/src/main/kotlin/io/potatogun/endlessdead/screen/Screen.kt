@@ -79,6 +79,11 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 	 */
 	fun getWidget(id: String): Widget = widgets[id] ?: throw IllegalArgumentException("invalid widget ID");
 
+	/**
+	 * 모든 위젯 목록 (읽기 전용)
+	 */
+	fun getWidgets(): List<Widget> = widgets.values.toList();
+
     // ────────────────────────────────────────────────────────
     //  콜백 함수
     // ────────────────────────────────────────────────────────
