@@ -62,7 +62,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFl
     // ────────────────────────────────────────────────────────
 
     /**
-	 * 객체를 월드에 등록 — 이후부터 자동으로 update/draw 된다.
+	 * 개체를 월드에 등록 — 이후부터 자동으로 update/draw 된다.
 	 *
 	 * @param entity 추가할 개체
 	 */
@@ -71,13 +71,16 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFl
     }
 
     /**
-	 * 특정 객체를 수동 제거. 보통은 isAlive()=false 후 removeDead() 로 정리.
+	 * 특정 개체를 수동 제거. 보통은 isAlive()=false 후 removeDead() 로 정리.
 	 *
 	 * @param entity 제거할 개체
+	 * @return 성공 여부
 	 */
-    fun removeEntity(entity: Entity) {
+    fun removeEntity(entity: Entity): Boolean {
+		if(!entities.any { it === entity }) return false;
         entities.remove(entity);
 		entity.dispose();
+		return true;
     }
 
     /**
@@ -118,10 +121,8 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFl
         for(entity in entities)
             if(entity is LivingEntity && !entity.isAlive)
                 toRemove.add(entity);
-        for(entity in toRemove) {
-            entities.remove(entity);
-			entity.dispose();
-		}
+        for(entity in toRemove)
+			removeEntity(entity);
     }
 
     // ────────────────────────────────────────────────────────

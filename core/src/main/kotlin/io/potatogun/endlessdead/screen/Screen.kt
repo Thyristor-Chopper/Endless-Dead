@@ -68,6 +68,8 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 
 	/**
 	 * 위젯을 화면에서 제거
+	 *
+	 * @return 성공 여부
 	 */
 	fun removeWidget(id: String): Boolean {
 		val widget: Widget? = widgets[id];
