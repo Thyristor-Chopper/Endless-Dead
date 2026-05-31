@@ -5,9 +5,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-import io.potatogun.endlessdead.Position;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.entity.Entity;
+import io.potatogun.endlessdead.position.MutablePosition;
+import io.potatogun.endlessdead.position.Position;
+import io.potatogun.endlessdead.position.toMutablePosition;
 import io.potatogun.endlessdead.world.World;
 
 import java.lang.Math.toDegrees;
@@ -40,20 +42,18 @@ import kotlin.math.sqrt;
  *    }
  *
  * @param world		개체가 속한 세계
- * @param x			왼쪽 아래 꼭짓점의 월드 좌표 x
- * @param y 		왼쪽 아래 꼭짓점의 월드 좌표 y
+ * @param position	개체의 처음 위치
  * @param width		가로 크기 (픽셀)
  * @param height	세로 크기 (픽셀)
  * @param texture	개체 텍스처(없을 수도 있음)
  */
-abstract class Entity(val world: World, var x: Float, var y: Float, val width: Float, val height: Float, texture: String? = null) {
+abstract class Entity(val world: World, position: Position, val width: Float, val height: Float, texture: String? = null) {
 	// 개체의 텍스처
 	protected val texture: Texture? = texture?.let { Utils.loadTexture(it) };
 	/**
-	 * 좌표를 Position 객체로 감싸서 돌려준다.
+	 * 개체의 평면좌표 위치
 	 */
-	val position: Position
-		get() = Position(x, y);
+	val position = position.toMutablePosition();
 	/**
 	 * TimeStopper 아이템의 영향을 받는지의 여부
 	 */
@@ -75,7 +75,7 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
     // 개체에 등록된 기본 텍스처 대신에 쓸 텍스처를 alternateTexture로 넘길 수 있다.
     protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
 		val texture: Texture? = alternateTexture ?: this.texture;
-		texture?.let { batch.draw(it, x - width / 2f, y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false) };
+		texture?.let { batch.draw(it, position.x - width / 2f, position.y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false) };
 	}
 
 	/**
@@ -95,7 +95,7 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
      * 매번 새 Rectangle 을 만든다. 성능이 극한으로 중요한 곳이라면 재사용해야
      * 하지만, 이 강의의 규모에서는 가독성을 더 우선한다.
      */
-    inline fun getBounds(): Rectangle = Rectangle(x, y, width, height);
+    inline fun getBounds(): Rectangle = Rectangle(position.x, position.y, width, height);
 
     /**
      * 다른 객체와 충돌했는지 검사 — AABB(축 정렬 경계 상자) 방식.
@@ -133,11 +133,7 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
 	 * @param	other	대상 개체
 	 * @return	떨어진 거리
 	 */
-	fun distanceTo(other: Entity): Float {
-		val dx = (other.x + other.width / 2f - width / 2f) - x;
-        val dy = (other.y + other.height / 2f - height / 2f) - y;
-        return sqrt(dx * dx + dy * dy);
-	}
+	fun distanceTo(other: Entity): Float = position.distanceTo(other.position);
 
 	/**
 	 * 특정 위치를 향해 회전한다.
@@ -146,7 +142,7 @@ abstract class Entity(val world: World, var x: Float, var y: Float, val width: F
 	 */
 	fun rotateTo(position: Position) {
 		// 샷건 내 360도 구현 참고함
-		rotation = toDegrees(atan2((world.game.screenHeight - position.y) - (this.y - world.offsetY), position.x - (this.x - world.offsetX)).toDouble()).toFloat() - 90f;
+		rotation = toDegrees(atan2((world.game.screenHeight - position.y) - (this.position.y - world.offsetY), position.x - (this.position.x - world.offsetX)).toDouble()).toFloat() - 90f;
 	}
 
 	/**

@@ -3,11 +3,11 @@ package io.potatogun.endlessdead.item;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 
-import io.potatogun.endlessdead.Position;
 import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.entity.InventoryEntity;
+import io.potatogun.endlessdead.position.Position;
 import io.potatogun.endlessdead.world.World;
 
 import java.lang.Math.toRadians;
@@ -47,10 +47,22 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 		};  // 샷건이라는 하위클래스에서도 사용해야할 것 같아 private를 protected로 변경
 	private var cooldownTimer: Timer? = null;
 
+	init {
+		if(fireInterval < 0f) throw IllegalArgumentException("invalid fire interval");
+		if(bulletDamage < 0) throw IllegalArgumentException("invalid bullet damage");
+		if(bulletSpeed < 0f) throw IllegalArgumentException("invalid bullet speed");
+		if(bulletHp < 0f) throw IllegalArgumentException("invalid bullet HP");
+		if(initialAmmo < 0f) throw IllegalArgumentException("invalid ammo");
+		if(maxAmmo < 0f) throw IllegalArgumentException("invalid max ammo");
+		if(initialAmmo > maxAmmo) throw IllegalArgumentException("ammo count can't be greater than max ammo");
+	}
+
 	/**
 	 * 총에 쿨타임을 건다.
 	 */
 	protected fun startFireCooldown() {
+		if(fireInterval == 0f) return;
+
 		fireCooldown = fireInterval;
 
 		// 남은 쿨타임을 갱신한다. update, delta를 쓰지 않은 이유는 이건 게임 프레임과는 독립적이라고 보기 때문.
@@ -104,8 +116,8 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 		// 개체 회전 각도에 맞는 임의의 위치를 생성한다.
 		val radians = toRadians(holder.rotation + 90.0);
 		val distance = max(world.width, world.height);  // 그냥 100f 이상 가능한 한 큰 수면 된다.
-		val targetX = cos(radians) * distance + holder.x;
-		val targetY = sin(radians) * distance + holder.y;
+		val targetX = cos(radians) * distance + holder.position.x;
+		val targetY = sin(radians) * distance + holder.position.y;
 		return fire(Position(targetX.toFloat(), targetY.toFloat()), holder) > 0;
 	}
 

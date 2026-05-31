@@ -195,13 +195,13 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
      */
     private inline fun drawEntities() {
         for(entity in entities) {
-            val originalX = entity.x;
-            val originalY = entity.y;
-            entity.x -= offsetX;
-            entity.y -= offsetY;
+            val originalX = entity.position.x;
+            val originalY = entity.position.y;
+            entity.position.x -= offsetX;
+            entity.position.y -= offsetY;
             entity.draw(batch);
-            entity.x = originalX;
-            entity.y = originalY;
+            entity.position.x = originalX;
+            entity.position.y = originalY;
         }
     }
 
@@ -209,8 +209,8 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
 	 * 플레이어 위치에 따라 카메라 위치 변경
 	 */
 	fun updateCameraOffset() {
-		offsetX = player.x - game.screenWidth / 2f;
-		offsetY = player.y - game.screenHeight / 2f;
+		offsetX = player.position.x - game.screenWidth / 2f;
+		offsetY = player.position.y - game.screenHeight / 2f;
 	}
 
     // ────────────────────────────────────────────────────────

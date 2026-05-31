@@ -2,9 +2,9 @@ package io.potatogun.endlessdead.item;
 
 import com.badlogic.gdx.graphics.Color;
 
-import io.potatogun.endlessdead.Position;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Entity;
+import io.potatogun.endlessdead.position.Position;
 import io.potatogun.endlessdead.world.World;
 
 import kotlin.math.atan2;
@@ -20,8 +20,8 @@ class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true,
     override fun fire(target: Position, shooter: Entity): Int {
         if(!canFire) return 0;
 
-        val centerX = shooter.x + shooter.width / 2f;
-        val centerY = shooter.y + shooter.height / 2f;
+        val centerX = shooter.position.x + shooter.width / 2f;
+        val centerY = shooter.position.y + shooter.height / 2f;
 
         val angle = atan2(target.y - centerY, target.x - centerX);  // 360 돌리는 거 구글링
 

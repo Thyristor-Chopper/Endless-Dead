@@ -4,18 +4,19 @@ import io.potatogun.endlessdead.item.Fireable;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.TestGun;
+import io.potatogun.endlessdead.position.Position;
 import io.potatogun.endlessdead.world.World;
 
 /**
  * 단순 테스트용
  */
-class Test(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 80f, 80f, "test.bmp", 100), InventoryEntity by InventoryEntityImpl() {
+class Test(world: World, position: Position) : LivingEntity(world, position, 80f, 80f, "test.bmp", 100), InventoryEntity by InventoryEntityImpl() {
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
 	var target: LivingEntity = world.player
 		private set;
     private val distanceToTarget: Float?
-        get() = target.position.distanceTo(position);
+        inline get() = distanceTo(target);
 	private val speed: Float = 100f;
 
 	init {
@@ -30,13 +31,13 @@ class Test(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 80f, 80
 
 		rotateTo(target.position);
 
-        val dx = target.x - x;
-        val dy = target.y - y;
+        val dx = target.position.x - position.x;
+        val dy = target.position.y - position.y;
         val distance = distanceToTarget;
 
         if(distance != null && distance > 360f) {
-            x += dx / distance * speed * delta;
-            y += dy / distance * speed * delta;
+            position.x += dx / distance * speed * delta;
+            position.y += dy / distance * speed * delta;
         } else {
 			val selected: Item? = selectedItem;
 			if(selected is Fireable)

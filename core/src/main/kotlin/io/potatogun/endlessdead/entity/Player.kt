@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.Input;
-import io.potatogun.endlessdead.Position;
 import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.Utils;
@@ -15,6 +14,7 @@ import io.potatogun.endlessdead.item.Fireable;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Usable;
+import io.potatogun.endlessdead.position.Position;
 import io.potatogun.endlessdead.world.World;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
@@ -37,7 +37,7 @@ import kotlin.math.atan2;
  *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 Entity#dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 57f, "player.bmp", 50), InventoryEntity by InventoryEntityImpl() {
+class Player(world: World, position: Position) : LivingEntity(world, position, 24f, 57f, "player.bmp", 50), InventoryEntity by InventoryEntityImpl() {
 	override val canUpdateWhileFrozen = true;
 	private val textureWithGun = Utils.loadTexture("player_holding_gun.bmp");
     private var speed = 200f
@@ -109,8 +109,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 			selectPreviousItem();
 
         // 월드 경계 안쪽으로 가두기.
-        x = x.coerceIn(0f, world.width);
-        y = y.coerceIn(0f, world.height);
+        position.x = position.x.coerceIn(0f, world.width);
+        position.y = position.y.coerceIn(0f, world.height);
     }
 
 	/**
@@ -123,19 +123,19 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	private inline fun updatePosition(delta: Float): Boolean {
 		var moved = false;
 		if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A)) {
-			x -= speed * delta;
+			position.x -= speed * delta;
 			moved = true;
 		}
 		if(Input.isKeyPressed(Input.RIGHT) || Input.isKeyPressed(Input.D)) {
-			x += speed * delta;
+			position.x += speed * delta;
 			moved = true;
         }
 		if(Input.isKeyPressed(Input.UP) || Input.isKeyPressed(Input.W)) {
-			y += speed * delta;
+			position.y += speed * delta;
 			moved = true;
         }
 		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S)) {
-			y -= speed * delta;
+			position.y -= speed * delta;
 			moved = true;
 		}
 		return moved;

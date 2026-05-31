@@ -1,8 +1,8 @@
 package io.potatogun.endlessdead.entity;
 
-import io.potatogun.endlessdead.Position;
 import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.item.Fireable;
+import io.potatogun.endlessdead.position.Position;
 import io.potatogun.endlessdead.world.World;
 
 import kotlin.math.sqrt;
@@ -13,13 +13,13 @@ import kotlin.math.sqrt;
  * @param world			총알이 있는 세계
  * @param gun 			쏜 총
  * @param shooter		쏜 개체
- * @param target		조준 위치
+ * @param target		총알이 향할 위치
  * @param speed 		총알 속도
  * @param damage		총알이 주는 피해량
  * @param penetrable	총알 관통 가능 여부
  * @param hp			총알 체력 (관통 시 감소)
  */
-class Bullet(world: World, val gun: Fireable, val shooter: Entity, val target: Position, private val speed: Float, val damage: Int, val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.x, shooter.y, 16f, 16f, "bullet.bmp", hp) {
+class Bullet(world: World, val gun: Fireable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.position, 16f, 16f, "bullet.bmp", hp) {
 	override val canUpdateWhileFrozen = true;
 	override val defaultInvincibleDuration = 0f;
 	override val showDamagedIndicator = false;
@@ -27,8 +27,12 @@ class Bullet(world: World, val gun: Fireable, val shooter: Entity, val target: P
 	val amountY: Float;
 
 	init {
-		val dx = target.x - shooter.x;
-		val dy = target.y - shooter.y;
+		if(speed < 0f) throw IllegalArgumentException("invalid speed");
+		if(damage < 0) throw IllegalArgumentException("invalid damage");
+		if(hp < 0f) throw IllegalArgumentException("invalid HP");
+
+		val dx = target.x - shooter.position.x;
+		val dy = target.y - shooter.position.y;
 		val distance = sqrt(dx * dx + dy * dy);
 
 		if(distance > 0f) {
@@ -42,11 +46,11 @@ class Bullet(world: World, val gun: Fireable, val shooter: Entity, val target: P
 	}
 
 	override fun update(delta: Float) {
-		x += amountX * delta;
-		y += amountY * delta;
+		position.x += amountX * delta;
+		position.y += amountY * delta;
 
 		// 화면 밖으로 나가면 소멸
-		if(x < 0f || x > world.width || y < 0f || y > world.height)
+		if(position.x < 0f || position.x > world.width || position.y < 0f || position.y > world.height)
 			this.kill();
 
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지 주고 총알은 소멸.

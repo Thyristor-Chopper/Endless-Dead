@@ -27,6 +27,7 @@ import io.potatogun.endlessdead.item.MachineGun;
 import io.potatogun.endlessdead.item.Shotgun;
 import io.potatogun.endlessdead.item.SpeedPotion;
 import io.potatogun.endlessdead.item.TimeStopper;
+import io.potatogun.endlessdead.position.Position;
 import io.potatogun.endlessdead.spawner.Spawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
 import io.potatogun.endlessdead.widget.ProgressBar;
@@ -73,7 +74,7 @@ import kotlin.random.Random;
 class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, width, height), Freezable {
     // 플레이어 — 월드 중앙 하단에서 시작.
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
-    override val player = Player(this, x = width / 2, y = height / 2);
+    override val player = Player(this, Position(width / 2, height / 2));
     // 좀비들만 따로 모아두는 관리용 리스트
     val zombies: List<Zombie>
 		inline get() = getEntities().filterIsInstance<Zombie>();
@@ -122,10 +123,11 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		for(i in 0 until Random.nextInt(50) + 50) {
 			val x = Random.nextInt(this.width.toInt()).toFloat();
 			val y = Random.nextInt(this.height.toInt()).toFloat();
+			val position = Position(x, y);
 			val item: Item = generateRandomItem();  // 들어있을 아이템
 			addEntity(when(Random.nextInt(2)) {
-				0		-> Building(this, x, y, item);
-				else	-> Chest(this, x, y, item);
+				0		-> Building(this, position, item);
+				else	-> Chest(this, position, item);
 			});
 		}
 

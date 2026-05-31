@@ -1,7 +1,8 @@
 package io.potatogun.endlessdead.spawner;
 
-import io.potatogun.endlessdead.Position;
 import io.potatogun.endlessdead.entity.Test;
+import io.potatogun.endlessdead.position.Position;
+import io.potatogun.endlessdead.position.distanceTo;
 import io.potatogun.endlessdead.world.World;
 
 import kotlin.random.Random;
@@ -26,7 +27,7 @@ class TestSpawner(world: World, private val spawnInterval: Float = 5f) : Spawner
 		do {
 			randomX = Random.nextFloat() * (world.width - 70f);
 			randomY = Random.nextFloat() * (world.height - 70f);
-		} while(Position(randomX, randomY).distanceTo(world.player.position) < 64f);
-        world.addEntity(Test(world, randomX, randomY));
+		} while(Position(randomX, randomY).distanceTo(world.player) < 64f);
+        world.addEntity(Test(world, Position(randomX, randomY)));
     }
 }

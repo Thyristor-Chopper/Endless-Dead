@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.entity;
 
+import io.potatogun.endlessdead.position.Position;
 import io.potatogun.endlessdead.world.World;
 
 import kotlin.math.sqrt;
@@ -19,8 +20,7 @@ import kotlin.math.sqrt;
  *   ▸ 이동 패턴을 사인파, 원운동 등으로 바꾸기
  *
  * @param world			개체가 속한 세계
- * @param x				왼쪽 아래 꼭짓점의 월드 좌표 x
- * @param y 			왼쪽 아래 꼭짓점의 월드 좌표 y
+ * @param position		개체의 처음 위치
  * @param width			가로 크기 (픽셀)
  * @param height		세로 크기 (픽셀)
  * @param hp			최대 체력
@@ -28,7 +28,7 @@ import kotlin.math.sqrt;
  * @param speed			이동 속도
  * @param texture		개체 텍스처
  */
-open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, attackDamage: Int, protected var speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, x, y, width, height, texture, hp) {
+open class Zombie(world: World, position: Position, width: Float, height: Float, hp: Int, attackDamage: Int, protected var speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, position, width, height, texture, hp) {
     var attackDamage = attackDamage
 		protected set;
 	override val penetrationDamage = 1;
@@ -36,29 +36,29 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 	val target: LivingEntity = world.player;
     // 💡 자식들이 언제든 거리를 실시간으로 잴 수 있게 열어둔 공용 프로퍼티
     protected val distanceToTarget: Float
-        get() = target.position.distanceTo(position);
+        inline get() = distanceTo(target);
 
 	override fun update(delta: Float) {
 		super.update(delta);
 
-        val dx = target.x - x;
-        val dy = target.y - y;
+        val dx = target.position.x - position.x;
+        val dy = target.position.y - position.y;
         val distance = distanceToTarget;
 
 		// 플레이어의 중심으로 정확히 모이면 어색하니까 살짝은 거리를 두게 하자.
         if(distance > target.width * (3f / 4f)) {
-            x += dx / distance * speed * delta;
-            y += dy / distance * speed * delta;
+            position.x += dx / distance * speed * delta;
+            position.y += dy / distance * speed * delta;
         } else {
 			target.takeDamage(attackDamage, attacker = this);
 		}
     }
 
-	class Weak(world: World, x: Float, y: Float) : Zombie(world, x, y, width=21f, height=30f, hp=3, speed=150f, attackDamage=1);
+	class Weak(world: World, position: Position) : Zombie(world, position, width=21f, height=30f, hp=3, speed=150f, attackDamage=1);
 
-	class Normal(world: World, x: Float, y: Float) : Zombie(world, x, y, width=32f, height=45f, hp=5, speed=100f, attackDamage=3);
+	class Normal(world: World, position: Position) : Zombie(world, position, width=32f, height=45f, hp=5, speed=100f, attackDamage=3);
 
-	class Strong(world: World, x: Float, y: Float) : Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, attackDamage=5) {
+	class Strong(world: World, position: Position) : Zombie(world, position, width=49f, height=70f, hp=15, speed=50f, attackDamage=5) {
         // 평상시 스피드, 대미지
         val originalSpeed = speed;
         val originalDamage = attackDamage;
@@ -77,8 +77,8 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
                         stateTimer = 0.5f;
 
                         // 대기 상태에 들어가는 첫 프레임, 이때 플레이어를 조준해서 방향을 기억해둔다
-                        val dx = target.x - x;
-                        val dy = target.y - y;
+                        val dx = target.position.x - position.x;
+                        val dy = target.position.y - position.y;
                         if(dist > 0) {
                             dashDirX = dx / dist;
                             dashDirY = dy / dist;
@@ -98,8 +98,8 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
                     speed = 0f;
                     attackDamage = 20;
 
-                    x += dashDirX * 800f * delta;
-                    y += dashDirY * 800f * delta;
+                    position.x += dashDirX * 800f * delta;
+                    position.y += dashDirY * 800f * delta;
 
                     // 돌진 중에 플레이어랑 부딪히면, 대미지 주고 즉시 쿨타임으로 넘어감
                     if(collidesWith(target)) {
