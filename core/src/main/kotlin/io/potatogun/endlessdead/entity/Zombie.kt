@@ -67,12 +67,12 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 	class Strong(world: World, position: Position) : Zombie(world, position, width=49f, height=70f, hp=15, speed=50f, attackDamage=5) {
         // 평상시 스피드, 대미지
         private val originalSpeed = super.speed;
-		override var speed = originalSpeed;
         private val originalDamage = super.attackDamage;
+		override var speed = originalSpeed;
 		override var attackDamage = originalDamage;
         private var dashState = DashState.WALKING;
         private var stateTimer = 0f;
-        //  돌진할 '방향(벡터)'을 기억해 둘 변수
+        // 돌진할 '방향(벡터)'을 기억해 둘 변수
         private var dashDirX = 0f;
         private var dashDirY = 0f;
 		// 강한 좀비는 살짝 붉게
@@ -136,7 +136,7 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
                 }
             }
 
-            // 💡 속도 세팅이 완벽히 끝난 후, 마지막에 부모를 호출해서 이동시킴
+            // 속도 세팅이 완벽히 끝난 후, 마지막에 부모를 호출해서 이동시킴
             super.update(delta);
         }
 
