@@ -253,6 +253,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 			TitleInfoType.FIRED		-> "총 쏜 횟수: ${player.fireCount}"
 			TitleInfoType.SURVIVED	-> "생존 시간: ${Utils.parseSeconds(player.survivedDuration, "분", "초")}"
 			TitleInfoType.DAMAGE	-> "누적 피해량: ${player.totalDamage}"
+			TitleInfoType.ZOMBIES	-> "현재 좀비 수: ${zombies.size}"
 		});
 	}
 
@@ -617,7 +618,8 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		KILLED,
 		FIRED,
 		SURVIVED,
-		DAMAGE;
+		DAMAGE,
+		ZOMBIES;
 
 		companion object {
 			private val enumEntries = TitleInfoType.entries;
