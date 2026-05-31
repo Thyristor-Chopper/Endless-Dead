@@ -44,6 +44,8 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
     /**
 	 * 카메라 오프셋 — 월드의 어느 지점이 화면 좌하단에 오는지.
      *   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
+	 * JvmField를 여기다가 붙이면 ZombieWorld에서 Float#coerceIn 메쏘드를 썼기 때문에
+	 *   원시 타입인 float가 아닌 랩퍼 Float로 바뀌어 null 위험성이 있으므로 붙이지 않는다.
 	 */
     var offsetX: Float = width / 2f - game.screenWidth / 2f;
     var offsetY: Float = height / 2f - game.screenHeight / 2f;
