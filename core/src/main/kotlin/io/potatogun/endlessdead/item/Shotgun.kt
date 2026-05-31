@@ -20,8 +20,8 @@ class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true,
     override fun fire(target: Position, shooter: Entity): Int {
         if(!canFire) return 0;
 
-        val centerX = shooter.x + shooter.width / 2f;
-        val centerY = shooter.y + shooter.height / 2f;
+        val centerX = shooter.x;
+        val centerY = shooter.y;
 
         val angle = atan2(target.y - centerY, target.x - centerX);  // 360 돌리는 거 구글링
 
