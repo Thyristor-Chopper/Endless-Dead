@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  * 여기에서 미리 정의된 텍스처는 Entity#dispose가 아닌 Game#dispose에서 정리된다.
  */
 object Textures {
-	private val shared: Map<String, Texture> = mapOf(
+	private val shared = mapOf<String, Texture>(
 		"building" to loadTexture("building.bmp"),
 		"building_player_item" to loadTexture("building_player_added.bmp"),
 		"bullet" to loadTexture("bullet.bmp"),
