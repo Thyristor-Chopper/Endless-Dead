@@ -2,22 +2,21 @@ package io.potatogun.endlessdead.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Input;
-import io.potatogun.endlessdead.Utils;
+import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
 /**
  * 타이틀 화면
  */
 class Title(game: EndlessDead) : Screen(game) {
-	private val title = Utils.loadTexture("title.bmp");
-	private val stillCut = Utils.loadTexture("still_cut.bmp");
+	private val title = Textures.loadTexture("title.bmp");
+	private val stillCut = Textures.loadTexture("still_cut.bmp");
 	private var titleBlinkTimer = 0f;
 
 	override fun update(delta: Float) {

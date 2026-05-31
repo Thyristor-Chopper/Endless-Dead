@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.entity;
 
+import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.item.Fireable;
 import io.potatogun.endlessdead.position.Position;
@@ -19,7 +20,7 @@ import kotlin.math.sqrt;
  * @param penetrable	총알 관통 가능 여부
  * @param hp			총알 체력 (관통 시 감소)
  */
-class Bullet(world: World, @JvmField val gun: Fireable, @JvmField val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.position, 16f, 16f, "bullet.bmp", hp) {
+class Bullet(world: World, @JvmField val gun: Fireable, @JvmField val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.position, 16f, 16f, Textures.getShared("bullet"), hp) {
 	override val canUpdateWhileFrozen = true;
 	override val defaultInvincibleDuration = 0f;
 	override val showDamagedIndicator = false;
@@ -63,4 +64,9 @@ class Bullet(world: World, @JvmField val gun: Fireable, @JvmField val shooter: E
 					this.kill();
 			}
 	}
+
+	/**
+	 * 공유 자원이기 때문에 여기서 정리하지 않고 다른 인스턴스에서 재활용한다.
+	 */
+	override fun dispose() {}
 }

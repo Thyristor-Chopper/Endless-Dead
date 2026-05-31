@@ -22,9 +22,7 @@ import io.potatogun.endlessdead.world.World;
  * @param emptyTexture	상자가 비어 있을 때 사용할 텍스처
  * @param initialItem	처음 들어있는 아이템
  */
-abstract class Container(world: World, position: Position, width: Float, height: Float, texture: String, emptyTexture: String? = null, initialItem: Item? = null) : Entity(world, position, width, height, texture) {
-	// 비어 있을 때의 텍스처
-	private val emptyTexture: Texture? = emptyTexture?.let { Utils.loadTexture(it) };
+abstract class Container(world: World, position: Position, width: Float, height: Float, texture: Texture?, private val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, position, width, height, texture) {
 	// 플레이어가 직접 아이템을 넣었을 때의 텍스처
 	open protected val playerItemTexture: Texture? = null;
 	/**
@@ -98,7 +96,7 @@ abstract class Container(world: World, position: Position, width: Float, height:
 	 */
 	override fun dispose() {
 		super.dispose();
-		playerItemTexture?.let { it.dispose() };
-		emptyTexture?.let { it.dispose() };
+		playerItemTexture?.dispose();
+		emptyTexture?.dispose();
 	}
 }

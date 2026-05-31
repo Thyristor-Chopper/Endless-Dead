@@ -12,6 +12,7 @@ import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.ScoreManager;
+import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.entity.Entity;
@@ -86,7 +87,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
     //
     //   tile.png는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color를
     //   바꿔가며 두 가지 색으로 그리는 트릭(틴트)으로 체스판을 만든다.
-    private val tileTexture = Utils.loadTexture("tile.bmp");
+    private val tileTexture = Textures.loadTexture("tile.bmp");
     private val bgColorDark = Utils.rgb(38, 92, 38);
     private val bgColorLight = Utils.rgb(38, 107, 38);
     private val tileSize = 64f;
@@ -177,7 +178,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 
 	override fun freeze(duration: Float) {
 		isFrozen = true;
-		unfreezeTimer?.let { it.unregister() };
+		unfreezeTimer?.unregister();
 		unfreezeTimer = Utils.setTimeout(duration) {
 			unfreeze();
 			unfreezeTimer = null;

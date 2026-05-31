@@ -2,12 +2,10 @@ package io.potatogun.endlessdead.widget;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import io.potatogun.endlessdead.Utils;
+import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
 
 import kotlin.math.ceil;
@@ -31,24 +29,17 @@ private const val CHUNK_MARGIN = 2f;				// 각 청크 사이의 간격
  * @param style		미터기의 스타일
  */
 class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, val color: Color = Color.WHITE, val style: ProgressBarStyle = ProgressBarStyle.SMOOTH) : Widget(x, y, width, height) {
-	// 미터기 틀 텍스처
-	private val barTexture = Utils.loadTexture("progress_bar.bmp");
-	// 미터기 채움 텍스처
-	private val fillTexture = Utils.loadTexture("progress_chunk.bmp");
 	// 크기 조절 가능한 미터기 틀
-	private val bar = NinePatch(barTexture, 2, 2, 5, 6);
+	private val bar = Textures.progressBar;
 	// 크기 조절 가능한 미터기를 채워줄 친구
-	private val fill: NinePatch;
+	private val fill: NinePatch = when(style) {
+		ProgressBarStyle.CHUNKED	-> Textures.progressChunkedFill
+		ProgressBarStyle.SMOOTH		-> Textures.progressSmoothFill
+	};
 
 	init {
 		if(value < 0f || value > 1f)
 			throw IllegalArgumentException("invalid progress bar value");
-
-		// 스타일에 따라 채움 객체를 변형해서 지정한다.
-		fill = when(style) {
-			ProgressBarStyle.CHUNKED	-> NinePatch(TextureRegion(fillTexture, 1, 0, 1, fillTexture.getHeight()), 0, 0, 1, 1)
-			ProgressBarStyle.SMOOTH		-> NinePatch(fillTexture, 1, 1, 1, 1)
-		};
 	}
 
 	override fun draw(batch: SpriteBatch) {
@@ -82,10 +73,5 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 			}
 			batch.color = Color.WHITE;
 		}
-	}
-
-	override fun dispose() {
-		barTexture.dispose();
-		fillTexture.dispose();
 	}
 }

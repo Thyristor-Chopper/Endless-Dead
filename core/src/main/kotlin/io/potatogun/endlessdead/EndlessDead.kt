@@ -113,4 +113,11 @@ class EndlessDead() : Game() {
 	fun setTitleBarStats(info: String?) {
 		titleBarStats = info ?: "";
 	}
+
+	/**
+	 * 공유 자원을 정리한다.
+	 */
+	override fun dispose() {
+		Textures.disposeShared();
+	}
 }

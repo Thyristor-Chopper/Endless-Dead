@@ -1,8 +1,10 @@
 package io.potatogun.endlessdead.entity;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.position.Position;
 import io.potatogun.endlessdead.world.World;
@@ -32,7 +34,7 @@ import kotlin.math.sqrt;
  * @param speed			이동 속도 (var이긴 하지만 자바의 원시 float은 null이 될 수 없기 때문에 @JvmField이 있어도 NullPointerException에서 안전하다.)
  * @param texture		개체 텍스처
  */
-open class Zombie(world: World, position: Position, width: Float, height: Float, hp: Int, attackDamage: Int, protected @JvmField var speed: Float, texture: String = "zombie.bmp") : LivingEntity(world, position, width, height, texture, hp) {
+open class Zombie(world: World, position: Position, width: Float, height: Float, hp: Int, attackDamage: Int, protected @JvmField var speed: Float, texture: Texture = Textures.getShared("zombie")) : LivingEntity(world, position, width, height, texture, hp) {
     var attackDamage = attackDamage
 		protected set;
 	override val penetrationDamage = 1;
@@ -54,6 +56,11 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 			target.takeDamage(attackDamage, attacker = this);
 		}
     }
+
+	/**
+	 * 공유 자원이기 때문에 여기서 정리하지 않고 다른 인스턴스에서 재활용한다.
+	 */
+	override fun dispose() {}
 
 	class Weak(world: World, position: Position) : Zombie(world, position, width=21f, height=30f, hp=3, speed=150f, attackDamage=1);
 

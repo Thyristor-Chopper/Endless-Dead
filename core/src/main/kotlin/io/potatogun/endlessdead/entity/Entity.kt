@@ -48,9 +48,7 @@ import kotlin.math.sqrt;
  * @param height	세로 크기 (픽셀)
  * @param texture	개체 텍스처(없을 수도 있음)
  */
-abstract class Entity(val world: World, position: Position, val width: Float, val height: Float, texture: String? = null) {
-	// 개체의 텍스처
-	protected @JvmField val texture: Texture? = texture?.let { Utils.loadTexture(it) };
+abstract class Entity(val world: World, position: Position, val width: Float, val height: Float, protected @JvmField val texture: Texture? = null) {
 	/**
 	 * 개체의 평면좌표 위치
 	 */

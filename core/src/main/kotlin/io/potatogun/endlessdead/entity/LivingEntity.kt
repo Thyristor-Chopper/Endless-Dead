@@ -17,7 +17,7 @@ import io.potatogun.endlessdead.world.World;
  * @param texture	개체 텍스처(없을 수도 있음)
  * @param initialHp	초기(최대) 체력
  */
-abstract class LivingEntity(world: World, position: Position, width: Float, height: Float, texture: String? = null, initialHP: Int) : Entity(world, position, width, height, texture) {
+abstract class LivingEntity(world: World, position: Position, width: Float, height: Float, texture: Texture? = null, initialHP: Int) : Entity(world, position, width, height, texture) {
 	/**
 	 * 개체의 최대 체력. 참고로 camelCase에서 hp같은 두문자어는 전부 대문자여야 맞다고 한다.
 	 */
