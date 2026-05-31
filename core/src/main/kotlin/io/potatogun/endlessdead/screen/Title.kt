@@ -22,6 +22,8 @@ class Title(game: EndlessDead) : Screen(game) {
 
 	override fun update(delta: Float) {
 		titleBlinkTimer += delta;
+		if(titleBlinkTimer >= 1f)
+			titleBlinkTimer = 0f;
 		if(Input.isAnyKeyJustPressed() || Input.isButtonJustPressed(Input.LEFT_MOUSE)) {
 			game.setTitleBarInfo("불러오는 중...");
 			GameManager.setPlaying();
@@ -40,16 +42,12 @@ class Title(game: EndlessDead) : Screen(game) {
 	}
 
 	override fun drawElements() {
-		drawTitle();
-	}
-
-	private inline fun drawTitle() {
 		val titleWidth = game.screenWidth * 0.75f;
 		val titleHeight = titleWidth / 6f;
 		val titleX = (game.screenWidth - titleWidth) / 2f;
 		val titleY = game.screenHeight / 2f + 80f;
-
 		batch.draw(title, titleX, titleY, titleWidth, titleHeight);
+
 		if(titleBlinkTimer % 1f < 0.5f)
 			drawText(
 				text = "Press any key to start",
@@ -61,8 +59,6 @@ class Title(game: EndlessDead) : Screen(game) {
 				align = Align.center,
 				skipBatch = true
 			);
-		if(titleBlinkTimer >= 1f)
-			titleBlinkTimer = 0f;
 	}
 
 	override fun dispose() {

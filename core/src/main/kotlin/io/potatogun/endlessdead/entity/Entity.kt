@@ -130,7 +130,7 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
      *   더 정밀한 판정(원, 다각형, 픽셀 단위)이 필요하면 서브클래스에서
      *   별도 메서드를 만들거나 이 메서드를 override 해서 바꿀 수 있다.
      *
-     * 왜 GameObject 에 둘까?
+     * 왜 Entity에 둘까?
      *   모든 게임 객체가 '충돌할 수 있다' 는 공통 능력을 가지기 때문.
      *   그래서 player.collidesWith(enemy), bullet.collidesWith(wall) 처럼
      *   어떤 조합이든 똑같은 문법으로 쓸 수 있다.
