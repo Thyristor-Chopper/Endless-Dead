@@ -71,6 +71,13 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
 	// 텍스처 회전 각도
 	open var rotation = 0f
 		protected set;
+	// 혹시 몰라서...
+	var x: Float
+		inline get() = position.x
+		inline set(value) { position.x = value };
+	var y: Float
+		inline get() = position.y
+		inline set(value) { position.y = value };
 
     // 개체에 등록된 기본 텍스처 대신에 쓸 텍스처를 alternateTexture로 넘길 수 있다.
     protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {

@@ -47,7 +47,7 @@ inline fun Position.distanceTo(other: Entity): Float = distanceTo(other.position
 inline fun Position.toMutablePosition(): MutablePosition = MutablePosition(x, y);
 
 /**
- * 위치(평면좌표)를 저장하는 레코드이다.
+ * 위치(평면좌표)를 저장하는 immutable 레코드이다.
  *
  * @param x	X좌표
  * @param y	Y좌표
