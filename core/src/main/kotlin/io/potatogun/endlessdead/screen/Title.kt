@@ -36,7 +36,7 @@ class Title(game: EndlessDead) : Screen(game) {
 	}
 
 	override fun drawBackground() {
-		batch.draw(stillCut, 0f, 0f, game.screenWidth.toFloat(), game.screenHeight.toFloat());
+		batch.draw(stillCut, 0f, 0f, game.screenWidth, game.screenHeight);
 	}
 
 	override fun drawElements() {
@@ -57,7 +57,7 @@ class Title(game: EndlessDead) : Screen(game) {
 				y = game.screenHeight / 2f - 30f,
 				color = Color.WHITE,
 				scale = 1f,
-				width = game.screenWidth.toFloat(),
+				width = game.screenWidth,
 				align = Align.center,
 				skipBatch = true
 			);

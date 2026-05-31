@@ -28,22 +28,18 @@ import io.potatogun.endlessdead.screen.Title;
  *    플랫폼별 런처(DesktopLauncher 등)만 따로 두면 된다.
  *
  *  자기 게임을 만들 때 고칠 곳:
- *   ▸ screenWidth / screenHeight   : 창(카메라) 크기
- *   ▸ worldWidth  / worldHeight    : 스크롤 가능한 월드 크기
  *   ▸ create() 안에서 setScreen에 넘기는 Screen을 자기 Screen으로 교체
  */
-class EndlessDead(screenWidth: Int, screenHeight: Int) : Game() {
+class EndlessDead() : Game() {
 	// 게임 제목
 	val title = "Endless Dead";
     /** 
-	 * 화면(창) 크기 — DesktopLauncher 가 창 크기 설정에도 이 값을 읽어간다.
-     *   public(기본)으로 둔 이유: 외부(DesktopLauncher)에서 접근해야 하므로.
-	 * 창 크기 조절 허용을 위해 var이다.
+	 * 화면(창) 크기
 	 */
-    var screenWidth = screenWidth
-		internal set;
-    var screenHeight = screenHeight
-		internal set;
+    val screenWidth: Float
+		inline get() = Gdx.graphics.getWidth().toFloat();
+    val screenHeight: Float
+		inline get() = Gdx.graphics.getHeight().toFloat();
 	private var titleBarInfo = "";
 	private var titleBarStats = "";
 	/**

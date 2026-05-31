@@ -27,7 +27,7 @@ fun main() {
     //   EndlessDead은 LibGDX 의 Game 을 상속한 클래스 (EndlessDead.kt 참고).
     //   이 시점에는 단순히 설계도만 들고 있을 뿐, 실제 화면은 아직 안 만들어진다.
     //   화면 생성은 LibGDX 가 나중에 game.create() 를 호출할 때 일어난다.
-    val game = EndlessDead(800, 600);
+    val game = EndlessDead();
 
     // ─────────────────────────────────────────
     // 2) 창(Window) 설정
@@ -40,8 +40,8 @@ fun main() {
     //   처럼 더 간결하게 쓸 수 있다.
     val config = Lwjgl3ApplicationConfiguration();
     config.setTitle("${game.title} - 시작하는 중...");				// 창 제목
-    config.setWindowedMode(game.screenWidth, game.screenHeight);	// 창 크기 (OopGame 이 들고 있는 값 사용)
-    config.setResizable(true);
+    config.setWindowedMode(800, 600);								// 창 크기
+    config.setResizable(true);										// 크기 조절 가능
 	config.setWindowSizeLimits(320, 240, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT);
     config.useVsync(false);										// 수직동기화를 꺼야 랙이 줄어듦
     config.setForegroundFPS(10);									// 타이틀 화면에서는 낮은 fps로

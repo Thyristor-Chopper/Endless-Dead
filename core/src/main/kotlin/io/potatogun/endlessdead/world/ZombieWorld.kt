@@ -430,7 +430,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 	 */
 	private inline fun drawFrozenOverlay() {
 		batch.color = frozenOverlay;
-		batch.draw(solidColor, 0f, 0f, game.screenWidth.toFloat(), game.screenHeight.toFloat());
+		batch.draw(solidColor, 0f, 0f, game.screenWidth, game.screenHeight);
 		batch.color = Color.WHITE;
 	}
 
@@ -446,7 +446,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
             y = game.screenHeight / 2f + 20f,
             color = Color.YELLOW,
             scale = 2.0f,
-			width = game.screenWidth.toFloat(),
+			width = game.screenWidth,
 			align = Align.center,
 			skipBatch = true
         );
@@ -456,7 +456,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
             y = game.screenHeight / 2f - 20f,
             color = Color.WHITE,
             scale = 1.0f,
-			width = game.screenWidth.toFloat(),
+			width = game.screenWidth,
 			align = Align.center,
 			skipBatch = true
         );
@@ -474,7 +474,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
             y = game.screenHeight / 2f + 40f,
             color = Color.RED,
             scale = 2.0f,
-			width = game.screenWidth.toFloat(),
+			width = game.screenWidth,
 			align = Align.center,
 			skipBatch = true
         );
@@ -484,7 +484,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
             y = game.screenHeight / 2f + 10f,
             color = Color.WHITE,
             scale = 1.0f,
-			width = game.screenWidth.toFloat(),
+			width = game.screenWidth,
 			align = Align.center,
 			skipBatch = true
         );

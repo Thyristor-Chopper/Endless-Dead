@@ -36,7 +36,7 @@ import io.potatogun.endlessdead.screen.Screen;
  * @param width		월드 전체 너비
  * @param height	월드 전체 높이
  */
-abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFloat(), val height: Float = game.screenHeight.toFloat()) : Screen(game) {
+abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val height: Float = game.screenHeight) : Screen(game) {
 	/**
 	 * 이 월드의 플레이어
 	 */
@@ -175,7 +175,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFl
 				y = 20f,
 				color = subtitlesColor,
 				scale = 1.0f,
-				width = game.screenWidth.toFloat(),
+				width = game.screenWidth,
 				align = Align.center,
 				skipBatch = true
 			);

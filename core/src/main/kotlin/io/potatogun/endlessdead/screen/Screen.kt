@@ -52,7 +52,7 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 	 */
 	private inline fun setCameraCenter() {
         // false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
-		camera.setToOrtho(false, game.screenWidth.toFloat(), game.screenHeight.toFloat());
+		camera.setToOrtho(false, game.screenWidth, game.screenHeight);
 	}
 
     // ────────────────────────────────────────────────────────
@@ -96,8 +96,6 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 	 * 크기 조절 시 호출된다.
 	 */
 	override fun resize(width: Int, height: Int) {
-		game.screenWidth = width;
-		game.screenHeight = height;
 		setCameraCenter();
 	}
 
