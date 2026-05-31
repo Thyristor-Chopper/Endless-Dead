@@ -1,5 +1,9 @@
 package io.potatogun.endlessdead.entity;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.position.Position;
 import io.potatogun.endlessdead.world.World;
 
@@ -28,7 +32,7 @@ import kotlin.math.sqrt;
  * @param speed			이동 속도
  * @param texture		개체 텍스처
  */
-open class Zombie(world: World, position: Position, width: Float, height: Float, hp: Int, attackDamage: Int, protected var speed: Float = 100f, texture: String = "zombie.bmp") : LivingEntity(world, position, width, height, texture, hp) {
+open class Zombie(world: World, position: Position, width: Float, height: Float, hp: Int, attackDamage: Int, protected var speed: Float, texture: String = "zombie.bmp") : LivingEntity(world, position, width, height, texture, hp) {
     var attackDamage = attackDamage
 		protected set;
 	override val penetrationDamage = 1;
@@ -57,8 +61,8 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 
 	class Strong(world: World, position: Position) : Zombie(world, position, width=49f, height=70f, hp=15, speed=50f, attackDamage=5) {
         // 평상시 스피드, 대미지
-        val originalSpeed = speed;
-        val originalDamage = attackDamage;
+        private val originalSpeed = speed;
+        private val originalDamage = attackDamage;
         private var dashState = DashState.WALKING;
         private var stateTimer = 0f;
         //  돌진할 '방향(벡터)'을 기억해 둘 변수
@@ -126,6 +130,12 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
             // 💡 속도 세팅이 완벽히 끝난 후, 마지막에 부모를 호출해서 이동시킴
             super.update(delta);
         }
+
+		override fun draw(batch: SpriteBatch) {
+			batch.color = Utils.rgb(255, 192, 192);
+			super.draw(batch);
+			batch.color = Color.WHITE;
+		}
 
 		// 평상시, 돌진하려고 잠깐 멈춰있음, 돌진, 돌진 쿨
         private enum class DashState {
