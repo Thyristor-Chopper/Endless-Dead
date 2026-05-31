@@ -33,7 +33,7 @@ import io.potatogun.endlessdead.spawner.ZombieSpawner;
 import io.potatogun.endlessdead.widget.ProgressBar;
 import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
 
-import kotlin.math.floor;
+import kotlin.math.ceil;
 import kotlin.random.Random;
 
 /**
@@ -344,7 +344,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 	}
 
     /**
-     * 배경 그리기 — GameWorld.drawBackground(batch) 를 override.
+     * 배경 그리기
      *
      * 부모가 이미 batch.begin()을 호출한 상태에서 이 함수를 부르므로,
      * 여기선 batch.draw() 호출만 하면 된다. (begin/end를 또 부르면 안 된다)
@@ -358,22 +358,19 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
      *   tile.png가 흰색이라 어떤 색이든 그대로 적용된다.
      *   끝에 다시 흰색으로 되돌려두지 않으면 그 다음 그리는 것까지 영향을 받으니 주의.
      */
-    override fun drawBackground() {
-        // 현재 카메라 시작점이 속한 타일 인덱스 (여유분으로 -1)
-        val startCol = floor(offsetX / tileSize).toInt() - 1;
-        val startRow = floor(offsetY / tileSize).toInt() - 1;
-        // 화면을 채우는 데 필요한 타일 개수 (여유분 +3)
-        val cols = (game.screenWidth / tileSize).toInt() + 3;
-        val rows = (game.screenHeight / tileSize).toInt() + 3;
+    override fun drawWorldBackground() {
+        // 화면을 채우는 데 필요한 타일 개수
+        val cols = ceil(width / tileSize).toInt();
+        val rows = ceil(height / tileSize).toInt();
 
-        for(row in startRow until startRow + rows)
-            for(col in startCol until startCol + cols) {
+        for(row in 0 until rows)
+            for(col in 0 until cols) {
                 // 행+열이 짝수면 어둡게, 홀수면 밝게 → 체스판 패턴
                 batch.color = if ((row + col) % 2 == 0) bgColorDark else bgColorLight;
 
                 // 월드 좌표의 타일 위치에서 offset 만큼 빼면 화면 좌표
-                val drawX = col * tileSize - offsetX;
-                val drawY = row * tileSize - offsetY;
+                val drawX = col * tileSize;
+                val drawY = row * tileSize;
                 batch.draw(tileTexture, drawX, drawY, tileSize, tileSize);
             }
 

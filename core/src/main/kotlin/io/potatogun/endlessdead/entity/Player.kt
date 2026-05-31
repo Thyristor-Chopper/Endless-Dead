@@ -91,10 +91,6 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 				useItem(it);
 		};
 
-		// 이동
-		val moved = updatePosition(delta);
-		if(moved) world.updateCameraOffset();
-
 		// 아이템 파괴
 		if(Input.isKeyJustPressed(Input.DELETE))
 			selectedItem?.let {
@@ -108,9 +104,9 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 		if(Input.isScrolledUp())
 			selectPreviousItem();
 
-        // 월드 경계 안쪽으로 가두기.
-        x = x.coerceIn(0f, world.width);
-        y = y.coerceIn(0f, world.height);
+		// 이동
+		val moved = updatePosition(delta);
+		if(moved) world.updateCameraOffset();
     }
 
 	/**
@@ -138,6 +134,14 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 			y -= speed * delta;
 			moved = true;
 		}
+
+        // 월드 경계 안쪽으로 가두기.
+		val originalX = x;
+		val originalY = y;
+        x = x.coerceIn(0f, world.width);
+        y = y.coerceIn(0f, world.height);
+		moved = moved || x != originalX || y != originalY;
+
 		return moved;
 	}
 

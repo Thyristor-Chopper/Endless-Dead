@@ -166,7 +166,7 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
 	 */
 	fun rotateTo(position: Position) {
 		// 샷건 내 360도 구현 참고함
-		rotation = toDegrees(atan2((world.game.screenHeight - position.y) - (this.y - world.offsetY), position.x - (this.x - world.offsetX)).toDouble()).toFloat() - 90f;
+		rotation = toDegrees(atan2((world.game.screenHeight - position.y) - (this.y - world.offsetY + world.game.screenHeight / 2f), position.x - (this.x - world.offsetX + world.game.screenWidth / 2f)).toDouble()).toFloat() - 90f;
 	}
 
 	/**

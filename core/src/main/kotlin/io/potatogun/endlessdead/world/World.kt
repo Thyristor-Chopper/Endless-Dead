@@ -49,13 +49,13 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
     /**
 	 * 카메라 오프셋 — 월드의 어느 지점이 화면 좌하단에 오는지.
      *   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
-	 * 참고로 이 둘은 coerceIn을 썼지만 빌드 시 자바 원시 자료형인
-	 *   float로 바뀌고 랩퍼인 Float가 되지는 않는다(jar 디컴파일해서 직접 확인함).
 	 */
-    var offsetX: Float = width / 2f - game.screenWidth / 2f
-		private set;
-    var offsetY: Float = height / 2f - game.screenHeight / 2f
-		private set;
+    var offsetX: Float
+		get() = camera.position.x
+		private set(value) { camera.position.x = value };
+    var offsetY: Float
+		get() = camera.position.y
+		private set(value) { camera.position.y = value };
     // 등록된 객체들만 update/draw 된다.
     // private 으로 감춘 이유: 외부가 직접 add/remove 하면
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. addEntity(), removeEntity()라는 공식 창구만 허용.
@@ -179,12 +179,6 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
 		removeDead();
 		if(subtitlesTimer > 0f)
 			subtitlesTimer -= delta;
-
-        // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
-        //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
-        //   offset 은 0 ~ (world - screen) 범위여야 한다.
-        offsetX = offsetX.coerceIn(0f, width - game.screenWidth);
-        offsetY = offsetY.coerceIn(0f, height - game.screenHeight);
 	}
 
     // ────────────────────────────────────────────────────────
@@ -192,11 +186,27 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
     // ────────────────────────────────────────────────────────
 
 	/**
+	 * 월드의 배경은 일반적인 화면(스크린)의 배경과 다르게 카메라의 위치에 따라 달라지기 때문에
+	 * 하위 클래스는 drawWorldBackground에서 구현해야 한다.
+	 */
+	final override fun drawBackground() {
+		// 카메라 위치에 상대적으로 맞추기 위해 좌표계를 카메라로 변경
+		batch.projectionMatrix = camera.combined;
+		// 월드의 배경을 그린다.
+        drawWorldBackground();
+		// 다시 화면의 좌표계로 변경한다.
+		batch.projectionMatrix = screenProjectionMatrix;
+	}
+
+	/**
+	 * 월드의 배경을 그린다.
+	 */
+	abstract fun drawWorldBackground();
+
+	/**
 	 * 배경 오버레이와 개체, 자막을 그린다.
 	 */
 	override fun drawElements() {
-		// 1) 카메라 상태 갱신
-		camera.update();
 		// 개체를 플레이어 위치(카메라 위치)에 상대적으로 맞추기 위해 좌표계를 카메라로 변경
 		batch.projectionMatrix = camera.combined;
 		// 개체들을 그린다.
@@ -231,23 +241,22 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
 	 * drawElements에서만 한 번 쓰이기 때문에 인라인 함수이다.
      */
     private inline fun drawEntities() {
-        for(entity in entities) {
-            val originalX = entity.x;
-            val originalY = entity.y;
-            entity.x -= offsetX;
-            entity.y -= offsetY;
+        for(entity in entities)
             entity.draw(batch);
-            entity.x = originalX;
-            entity.y = originalY;
-        }
     }
 
 	/**
 	 * 플레이어 위치에 따라 카메라 위치 변경
 	 */
 	fun updateCameraOffset() {
-		offsetX = player.x - game.screenWidth / 2f;
-		offsetY = player.y - game.screenHeight / 2f;
+        // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
+        //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
+        //   offset 은 0 ~ (world - screen) 범위여야 한다.
+		val screenWidth = game.screenWidth;
+		val screenHeight = game.screenHeight;
+        offsetX = player.x.coerceIn(screenWidth / 2f, width - screenWidth / 2f);
+        offsetY = player.y.coerceIn(screenHeight / 2f, height - screenHeight / 2f);
+		camera.update();
 	}
 
     // ────────────────────────────────────────────────────────
@@ -259,8 +268,6 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
      *
      * 월드의 특정 지점에 고정되므로, 카메라를 움직이면 텍스트도 따라 움직인다.
      *   → 지도 표지판, NPC 머리 위 말풍선, 특정 지역 이름 등에 적합.
-     *
-     * 구현 원리: 월드 좌표에서 카메라 offset 만큼 빼서 화면 좌표로 바꾼 뒤 drawText 호출.
 	 *
 	 * @param text				출력할 메시지
 	 * @param x					X 위치
@@ -273,9 +280,9 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
 	 * @param skipBatch			batch.begin()/end() 사이에서 사용할 경우 true
      */
     fun drawTextInWorld(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, fixedWidthChars: String = "", skipBatch: Boolean = false) {
-        val screenX = x - offsetX;
-        val screenY = y - offsetY;
-        drawText(text, screenX, screenY, color, scale, width, align, fixedWidthChars, skipBatch);
+		batch.projectionMatrix = camera.combined;
+        drawText(text, x, y, color, scale, width, align, fixedWidthChars, skipBatch);
+		batch.projectionMatrix = screenProjectionMatrix;
     }
 
 	/**
