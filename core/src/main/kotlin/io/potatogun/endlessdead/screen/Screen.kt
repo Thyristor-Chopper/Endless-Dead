@@ -3,13 +3,12 @@ package io.potatogun.endlessdead.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.EndlessDead;
+import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.widget.Widget;
 
 /**
@@ -33,7 +32,7 @@ import io.potatogun.endlessdead.widget.Widget;
  *
  * @param game 화면이 속한 게임
  */
-abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
+abstract class Screen(@JvmField val game: EndlessDead) : ScreenAdapter() {
 	// SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
     //   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
     @JvmField protected val batch = SpriteBatch();
@@ -116,17 +115,13 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
      * HUD/텍스트를 그리려면 render(delta) 도 override 해서 super 호출 뒤에 그린다.
      */
 	override fun render(delta: Float) {
-		// 1) 이전 프레임 잔상 지우기
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		
-        // 2) 화면 로직 업데이트
+        // 1) 화면 로직 업데이트
         update(delta);
 
-		// 3) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
+		// 2) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
 		batch.begin();
 		drawBackground();
-		drawElements();
+		drawElements(delta);
 		drawWidgets();
 		batch.end();
 	}
@@ -151,7 +146,7 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 	/**
 	 * 그 외 하위 클래스에서 배경과 위젯(컨트롤) 사이에 그려야 할 것들
 	 */
-	protected open fun drawElements() {}
+	protected open fun drawElements(delta: Float) {}
 
 	/**
 	 * 화면 내 위젯(컨트롤)들을 그린다.
@@ -160,10 +155,6 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 		for(widget in widgets.values)
 			if(widget.isVisible)
 				widget.draw(batch);
-	}
-
-	protected inline fun updateProjectionDimensions(matrix: Matrix4, width: Float, height: Float) {
-		matrix.setToOrtho2D(0f, 0f, width, height);
 	}
 
     // ────────────────────────────────────────────────────────
@@ -185,20 +176,10 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 	 * @param scale				글자 크기(배)
 	 * @param width				텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
 	 * @param align				글자 정렬(없으면 왼쪽 정렬)
-	 * @param fixedWidthChars	고정폭으로 사용할 문자 (기본이 null이 아닌 이유는 실제로 빈 문자열이면 고정폭이 없다는 뜻)
 	 * @param skipBatch			batch.begin()/end() 사이에서 사용할 경우 true
      */
-	fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, fixedWidthChars: String = "", skipBatch: Boolean = false) {
-        font.setFixedWidthGlyphs(fixedWidthChars);
-        font.color = color;
-        font.data.setScale(scale);
-        if(!skipBatch) batch.begin();
-		val boxWidth: Float? = width;
-		if(boxWidth != null)
-			font.draw(batch, text, x, y, boxWidth, align, false);
-		else
-			font.draw(batch, text, x, y);
-        if(!skipBatch) batch.end();
+	fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, skipBatch: Boolean = false) {
+		Utils.drawText(batch, font, text, x, y, color, scale, width, align, skipBatch);
     }
 
 	// ────────────────────────────────────────────────────────

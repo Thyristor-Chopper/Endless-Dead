@@ -29,7 +29,7 @@ class Title(game: EndlessDead) : Screen(game) {
 			// 불러오는 중이 막히지 않고 바로 뜨게 하기 위해 다음 프레임 때 로드
 			Gdx.app.postRunnable {
 				game.currentRound = 1;
-				game.setScreen(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat()));
+				game.setScreen(WorldViewer(game).apply { loadWorld(ZombieWorld(game, this, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat())) });
 				game.setTitleBarInfo(null);
 				Gdx.app.postRunnable { dispose() };
 			};
@@ -40,7 +40,7 @@ class Title(game: EndlessDead) : Screen(game) {
 		batch.draw(stillCut, 0f, 0f, game.screenWidth, game.screenHeight);
 	}
 
-	override fun drawElements() {
+	override fun drawElements(delta: Float) {
 		val titleWidth = game.screenWidth * 0.75f;
 		val titleHeight = titleWidth / 6f;
 		val titleX = (game.screenWidth - titleWidth) / 2f;

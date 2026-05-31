@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.EndlessDead;
+import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.entity.InventoryEntity;
@@ -17,6 +18,7 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.screen.Screen;
+import io.potatogun.endlessdead.screen.WorldViewer;
 
 /**
  * 게임 내 월드 = '월드 하나' 의 추상 기본 클래스.
@@ -34,12 +36,15 @@ import io.potatogun.endlessdead.screen.Screen;
  *  이 클래스를 상속해 자기 게임의 월드를 만든다 (ZombieWorld 참고).
  *
  * @param game		월드가 속한 게임
+ * @param viewer	월드를 보여주는 스크린
  * @param width		월드 전체 너비
  * @param height	월드 전체 높이
  */
-abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val height: Float = game.screenHeight) : Screen(game) {
+abstract class World(@JvmField val game: EndlessDead, @JvmField val viewer: WorldViewer, @JvmField val width: Float, @JvmField val height: Float) {
 	// OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     private val camera = OrthographicCamera();
+	@JvmField internal val batch = SpriteBatch().apply { projectionMatrix = camera.combined };
+    @JvmField protected val font = BitmapFont();
 	/**
 	 * 이 월드의 플레이어
 	 */
@@ -59,10 +64,6 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. addEntity(), removeEntity()라는 공식 창구만 허용.
     //   (5주차에서 배운 캡슐화의 실제 사례)
     private val entities = mutableListOf<Entity>();
-	// 자막 타이머 관련 필드들
-	private var subtitlesTimer = 0f;
-	private var subtitlesMessage: String? = null;
-	private var subtitlesColor = Color.WHITE;
 
     init {
         setCameraCenter();
@@ -151,8 +152,8 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
 	/**
 	 * 크기 조절 시 호출된다.
 	 */
-	override fun resize(width: Int, height: Int) {
-		super.resize(width, height);
+	internal fun resize(width: Int, height: Int) {
+		batch.projectionMatrix = camera.combined;
 		setCameraCenter();
 		updateCameraOffset();
 	}
@@ -171,68 +172,43 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
      * 객체 간 상호작용(충돌·점수·생사 결정)이 있는 게임이면 override해서
      * 위 두 호출 사이에 그 로직을 끼워 넣는다 (ZombieWorld 참고).
      */
-    override fun update(delta: Float) {
+    internal open fun update(delta: Float) {
 		updateEntities(delta);
 		removeDead();
-		if(subtitlesTimer > 0f)
-			subtitlesTimer -= delta;
 	}
 
     // ────────────────────────────────────────────────────────
     //  매 프레임 그리기
     // ────────────────────────────────────────────────────────
 
-	/**
-	 * 월드의 배경은 일반적인 화면(스크린)의 배경과 다르게 카메라의 위치에 따라 달라지기 때문에
-	 * 하위 클래스는 drawWorldBackground에서 구현해야 한다.
-	 */
-	final override fun drawBackground() {
-		// 카메라 위치에 상대적으로 맞추기 위해 좌표계를 카메라로 변경
-		batch.projectionMatrix = camera.combined;
-		// 월드의 배경을 그린다.
-        drawWorldBackground();
-		// 다시 화면의 좌표계로 변경한다.
-		batch.projectionMatrix = screenProjectionMatrix;
+	internal open fun drawElements(delta: Float) {
+		drawEntities();
 	}
 
 	/**
-	 * 월드의 배경을 그린다.
+	 * 배경을 그리는 자리 — 모든 서브클래스가 반드시 구현해야 한다.
+	 *
+	 * 'abstract' 인 이유:
+	 *   기본 동작('아무것도 안 함') 이 의미 있지 않다. 게임마다 배경은 다르고,
+	 *   '배경이 없다' 는 결정도 명시적으로 내려야 한다고 본다. 그래서 강제 구현.
+	 *   (검은 배경을 원하면 그냥 비어있는 함수로 override 하면 됨)
+	 *
+	 *   참고: update() 는 abstract 가 아닌 open 이다 — 거기엔 쓸 만한 default 가
+	 *   존재하기 때문. 'default 가 의미 있는가?' 가 abstract / open 을 가르는 기준.
+	 *   (7주차 강의 포인트)
+	 *
+	 * @param batch 이미 begin() 된 SpriteBatch — 여기에 batch.draw(texture, ...)로 그린다.
+	 *              begin/end 를 또 호출하면 안 된다.
 	 */
-	abstract fun drawWorldBackground();
-
-	/**
-	 * 배경 오버레이와 개체, 자막을 그린다.
-	 */
-	override fun drawElements() {
-		// 개체를 플레이어 위치(카메라 위치)에 상대적으로 맞추기 위해 좌표계를 카메라로 변경
-		batch.projectionMatrix = camera.combined;
-		// 개체들을 그린다.
-        drawEntities();
-		// 다시 화면의 좌표계로 변경하여 HUD나 미터기를 그릴 준비를 한다.
-		batch.projectionMatrix = screenProjectionMatrix;
-
-		// 자막이 있으면 표시
-		if(subtitlesTimer > 0f) subtitlesMessage?.let {
-			drawText(
-				text = it,
-				x = 0f,
-				y = 20f,
-				color = subtitlesColor,
-				scale = 1.0f,
-				width = game.screenWidth,
-				align = Align.center,
-				skipBatch = true
-			);
-		};
-	}
+	internal abstract fun drawBackground();
 
     /**
      * 등록된 모든 객체를 그린다.
      *
-     * 이렇게 해야 서브클래스의 draw() 는 '자기 위치에 그냥 그려라' 만 구현하면 되고,
+     * 이렇게 해야 서브클래스의 draw() 는 '자기 위치에 그냥 그려라'만 구현하면 되고,
      *   카메라가 움직이든 말든 신경 쓸 필요가 없다.
 	 *
-	 * drawElements에서만 한 번 쓰이기 때문에 인라인 함수이다.
+	 * render에서만 한 번 쓰이기 때문에 인라인 함수이다.
      */
     private inline fun drawEntities() {
         for(entity in entities)
@@ -252,6 +228,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
         offsetX = player.x.coerceIn(screenWidth / 2f, width - screenWidth / 2f);
         offsetY = player.y.coerceIn(screenHeight / 2f, height - screenHeight / 2f);
 		camera.update();
+		batch.projectionMatrix = camera.combined;
 	}
 
     // ────────────────────────────────────────────────────────
@@ -271,34 +248,18 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
 	 * @param scale				글자 크기(배)
 	 * @param width				텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
 	 * @param align				글자 정렬(없으면 왼쪽 정렬)
-	 * @param fixedWidthChars	고정폭으로 사용할 문자 (기본이 null이 아닌 이유는 실제로 빈 문자열이면 고정폭이 없다는 뜻)
 	 * @param skipBatch			batch.begin()/end() 사이에서 사용할 경우 true
      */
-    fun drawTextInWorld(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, fixedWidthChars: String = "", skipBatch: Boolean = false) {
-		batch.projectionMatrix = camera.combined;
-        drawText(text, x, y, color, scale, width, align, fixedWidthChars, skipBatch);
-		batch.projectionMatrix = screenProjectionMatrix;
+    fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, skipBatch: Boolean = false) {
+		Utils.drawText(batch, font, text, x, y, color, scale, width, align, skipBatch);
     }
-
-	/**
-	 * 화면 하단에 자막을 표시한다.
-	 *
-	 * @param message	표시할 내용
-	 * @param duration	표시 시간(초)
-	 * @param color		글자 색
-	 */
-	fun drawSubtitles(message: String, duration: Int = 3, color: Color = Color.WHITE) {
-		subtitlesTimer = duration.toFloat();
-		subtitlesMessage = message;
-		subtitlesColor = color;
-	}
 
 	// ────────────────────────────────────────────────────────
     //  자원 정리
     // ────────────────────────────────────────────────────────
 
-    override fun dispose() {
-        super.dispose();
+    internal open fun dispose() {
+		batch.dispose();
         for(entity in entities) {
 			if(entity is InventoryEntity)
 				for(item in entity.getInventory())

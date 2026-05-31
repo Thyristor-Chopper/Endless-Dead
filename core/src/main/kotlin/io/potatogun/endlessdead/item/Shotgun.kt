@@ -40,7 +40,7 @@ class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true,
 
         if(ammo == 0) {
             if(shooter === world.player)
-                world.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON);
+                world.viewer.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON);
             destroy();
         }
 

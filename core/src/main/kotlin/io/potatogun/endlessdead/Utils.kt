@@ -3,6 +3,9 @@ package io.potatogun.endlessdead;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.Timer;
 
@@ -42,11 +45,39 @@ object Utils {
 	 * @param operation	실행할 서브루틴
 	 */
 	inline fun setTimeout(delay: Float, crossinline operation: () -> Unit): Timer {
-		var timer: Timer? = null;  // 선언 이후 대입해야 해서 어쩔 수 없이 var
+		lateinit var timer: Timer;  // 선언 이후 대입해야 해서 어쩔 수 없이 var
 		timer = Timer(delay + 86400f, delay, false) {
 			operation();
-			timer?.unregister();
+			timer.unregister();
 		}.register();
-		return timer!!;
+		return timer;
 	}
+	
+	/**
+     * 텍스트 그리기.
+     *
+     * 주의: y 축은 위쪽이 크다. '위쪽'에 글자를 쓰려면 y = screenHeight-10 처럼.
+	 *
+	 * @param batch				그리기 도구
+	 * @param fpnt				글꼴
+	 * @param text				출력할 메시지
+	 * @param x					X 위치
+	 * @param y					Y 위치
+	 * @param color				글자 색
+	 * @param scale				글자 크기(배)
+	 * @param width				텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
+	 * @param align				글자 정렬(없으면 왼쪽 정렬)
+	 * @param skipBatch			batch.begin()/end() 사이에서 사용할 경우 true
+     */
+	fun drawText(batch: SpriteBatch, font: BitmapFont, text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, skipBatch: Boolean = false) {
+        font.color = color;
+        font.data.setScale(scale);
+        if(!skipBatch) batch.begin();
+		val boxWidth: Float? = width;
+		if(boxWidth != null)
+			font.draw(batch, text, x, y, boxWidth, align, false);
+		else
+			font.draw(batch, text, x, y);
+        if(!skipBatch) batch.end();
+    }
 }

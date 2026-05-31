@@ -21,7 +21,7 @@ class Bandage(world: World) : Item(world, "bandage", "Bandage"), Usable {
 		if(holder is LivingEntity) {
 			holder.heal(10);
 			if(holder is Player)
-				world.drawSubtitles("Healed 10 HP");
+				world.viewer.drawSubtitles("Healed 10 HP");
 			destroy();
 			return true;
 		}

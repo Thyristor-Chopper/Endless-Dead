@@ -96,7 +96,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 		if(Input.isKeyJustPressed(Input.DELETE))
 			selectedItem?.let {
 				if(it.destroy())
-					world.drawSubtitles("${it.name} destroyed");
+					world.viewer.drawSubtitles("${it.name} destroyed");
 			};
 
 		// 휠로 아이템 선택
@@ -158,18 +158,18 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 				if(entity.isEmpty) {
 					var putItem = false;
 					selectedItem?.let {
-						world.drawSubtitles("Put ${it.name} into the container");
+						world.viewer.drawSubtitles("Put ${it.name} into the container");
 						entity.putItem(it, true);
 						putItem = true;  // 하나씩만
-					} ?: world.drawSubtitles("Can't take any item; container is empty");
+					} ?: world.viewer.drawSubtitles("Can't take any item; container is empty");
 					if(putItem) break;
 				} else {
 					val isPlayerItem = entity.isPlayerItem;
 					val item: Item? = entity.takeItem(this, true);
 					if(item == null) {
-						world.drawSubtitles("Failed to take the item in the container");
+						world.viewer.drawSubtitles("Failed to take the item in the container");
 					} else {
-						world.drawSubtitles("Took ${item.name} from the container");
+						world.viewer.drawSubtitles("Took ${item.name} from the container");
 						if(!isPlayerItem)
 							openedContainerCount++;
 						break;  // 하나씩만

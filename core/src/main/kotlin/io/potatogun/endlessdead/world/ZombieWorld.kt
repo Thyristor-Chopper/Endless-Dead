@@ -2,10 +2,7 @@ package io.potatogun.endlessdead.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
@@ -29,10 +26,9 @@ import io.potatogun.endlessdead.item.Shotgun;
 import io.potatogun.endlessdead.item.SpeedPotion;
 import io.potatogun.endlessdead.item.TimeStopper;
 import io.potatogun.endlessdead.position.Position;
+import io.potatogun.endlessdead.screen.WorldViewer;
 import io.potatogun.endlessdead.spawner.Spawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
-import io.potatogun.endlessdead.widget.ProgressBar;
-import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
 
 import kotlin.math.ceil;
 import kotlin.math.floor;
@@ -73,13 +69,10 @@ import kotlin.random.Random;
  * @param width   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
  * @param height  월드 전체 높이
  */
-class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, width, height), Freezable {
+class ZombieWorld(game: EndlessDead, viewer: WorldViewer, width: Float, height: Float) : World(game, viewer, width, height), Freezable {
     // 플레이어 — 월드 중앙 하단에서 시작.
     //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
     override val player = Player(this, Position(width / 2, height / 2));
-    // 좀비들만 따로 모아두는 관리용 리스트
-    val zombies: List<Zombie>
-		inline get() = getEntities().filterIsInstance<Zombie>();
 	private val spawners = mutableListOf<Spawner>();
     // ── 체스판 배경 설정 (drawBackground()에서 사용) ──
     //   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
@@ -91,16 +84,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
     private val bgColorDark = Utils.rgb(38, 92, 38);
     private val bgColorLight = Utils.rgb(38, 107, 38);
     private val tileSize = 64f;
-	// 제목 표시줄에 표시할 정보의 인덱스
-	private var currentTitleInfo = 0
-		set(value) {
-			if(value >= TitleInfoType.size) field = 0;
-			else if(value < 0) field = TitleInfoType.size - 1;
-			else field = value;
-		};
 	private val timers = mutableListOf<Timer>();
-    private val frozenOverlay = Utils.rgb(0, 0, 0, 0.5f);
-	private val solidColor: Texture;
 	override var isFrozen: Boolean = false  // world의 시간이 정지 되었는지 확인하는 변수
 		private set;
 	private var unfreezeTimer: Timer? = null;
@@ -110,14 +94,6 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
      *   이렇게 등록해야 update / draw 루프에 포함된다.
      */
     init {
-		// 단색용 텍스처 생성
-		Pixmap(1, 1, Pixmap.Format.RGBA8888).run {
-			setColor(Color.WHITE);
-			fill();
-			solidColor = Texture(this);
-			dispose();
-		};
-
 		// 점수 초기화
 		ScoreManager.resetScore();
 
@@ -136,11 +112,6 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		// 플레이어 등록
         addEntity(player);
 
-		// 미터기 추가
-		addWidget("hp_indicator", ProgressBar({ 80f }, { game.screenHeight - 24f }, 220f, color = Utils.rgb(234, 197, 21)));
-		addWidget("gun_ammo_indicator", ProgressBar({ game.screenWidth - 145f }, { 10f }, 130f, color = Utils.rgb(15, 116, 240), style = ProgressBarStyle.CHUNKED).apply { hide() });
-		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide() });
-
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this, 3f));
 
@@ -151,12 +122,6 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 					entity.putItem(generateRandomItem());
 					break;
 				}
-		}.register());
-
-		// 제목 표시줄 정보 전환
-		timers.add(Timer(3f, false) {
-			if(!GameManager.isGameOver)
-				currentTitleInfo++;
 		}.register());
     }
 
@@ -187,7 +152,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 
 	override fun unfreeze() {
 		isFrozen = false;
-		drawSubtitles("Time moves again");
+		viewer.drawSubtitles("Time moves again");
 	}
 
     // ────────────────────────────────────────────────────────
@@ -195,30 +160,11 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
     // ────────────────────────────────────────────────────────
 
     /**
-     * 매 프레임 게임 로직 — 모든 '입력 처리·상태 변경' 은 이 안에서.
-     *
-     * 상태별로 해야 할 일이 완전히 다르므로 when 으로 분기한다.
-     * (입력 처리가 render() 가 아닌 update() 에 있는 이유:
-     *  '로직과 그리기의 분리' — render 는 매 프레임 그리는 일에만 집중하고,
-     *  상태 변화·입력은 update 가 책임진다.)
-     */
-    override fun update(delta: Float) {
-        when {
-            GameManager.isPlaying	-> updateInPlay(delta);
-            GameManager.isPaused	-> updatePaused();
-            GameManager.isGameOver	-> updateGameOver();
-        }
-    }
-
-    /**
 	 * IN_PLAY 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
 	 *
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-    private inline fun updateInPlay(delta: Float) {
-		// 제목 표시줄에 통계 표시
-		updateTitleBarInfo();
-
+    override fun update(delta: Float) {
         // ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
 		super.update(delta);  // updateAllObjects과 removeDead
 		// 스포너 갱신
@@ -226,124 +172,16 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 			for(spawner in spawners)
 				spawner.update(delta);
 
-		// 미터기 정보 갱신
-		updateProgressBars();
-
 		// 피가 0 이하가 되면 진짜 게임 오버!
         if(!player.isAlive) {
             GameManager.setGameOver();
 			game.setTitleBarStats(null);
 		}
-
-		// 일시 정지
-		detectPauseKey();
     }
 
-	/**
-	 * 창 제목에 정보를 표시한다.
-	 */
-	private fun updateTitleBarInfo() {
-		game.setTitleBarStats(when(TitleInfoType.byIndex(currentTitleInfo)) {
-			TitleInfoType.OPENED	-> "연 상자: ${player.openedContainerCount}개"
-			TitleInfoType.KILLED	-> "잡은 좀비 수: ${player.killedZombieCount}"
-			TitleInfoType.FIRED		-> "총 쏜 횟수: ${player.fireCount}"
-			TitleInfoType.SURVIVED	-> "생존 시간: ${Utils.parseSeconds(player.survivedDuration, "분", "초")}"
-			TitleInfoType.DAMAGE	-> "누적 피해량: ${player.totalDamage}"
-			TitleInfoType.ZOMBIES	-> "현재 좀비 수: ${zombies.size}"
-		});
-	}
-
-	/**
-	 * 미터기 정보를 갱신한다.
-	 *
-	 * updateInPlay에서만 한 번 쓰이기 때문에 inline이다.
-	 */
-	private inline fun updateProgressBars() {
-		// HP 미터기 처리
-		val hpIndicator = getWidget("hp_indicator") as ProgressBar;
-		hpIndicator.value = player.hp.toFloat() / player.maxHP;
-
-		// 총 관련 미터기 처리
-		val ammoIndicator = getWidget("gun_ammo_indicator") as ProgressBar;
-		val cooldownIndicator = getWidget("gun_cooldown_indicator") as ProgressBar;
-		val holding: Item? = player.selectedItem;
-		if(holding != null && holding is Gun) {
-			// 총의 ammo를 미터기로 표시
-			ammoIndicator.apply {
-				value = holding.ammo.toFloat() / holding.maxAmmo;
-				show();
-			};
-
-			// 총의 공격 쿨타임 표시
-			if(holding.fireInterval > 0.2f) {
-				val cooldown = holding.getRemainingCooldownPercentage();
-				if(cooldown > 0f)
-					cooldownIndicator.apply {
-						value = cooldown;
-						show();
-					};
-				else
-					cooldownIndicator.hide();
-			}
-		} else {
-			ammoIndicator.hide();
-			cooldownIndicator.hide();
-		}
-	}
-
-	/**
-	 * 일시 정지 상태에서 매 프레임 로직
-	 *
-	 * 객체 업데이트(super.update)나 타이머(spawner.tick)를 호출하지 않음.
-	 *   세상이 그대로 멈춰있는 상태가 됨
-	 *
-	 * update에서만 한 번 쓰이기 때문에 inline이다.
-	 */
-	private inline fun updatePaused() {
-		// 제목 표시줄에 통계 표시
-		updateTitleBarInfo();
-		
-		// 일시 정지 키 누름만 감지
-		detectPauseKey();
-    }
-
-    /**
-	 * 게임 오버 상태에서 매 프레임 처리
-	 *
-	 * update에서만 한 번 쓰이기 때문에 inline이다.
-	 */
-    private inline fun updateGameOver() {
-        // ESC 키가 '막 눌린 순간' 앱 종료.
-        //   isKeyJustPressed 로 한 이유: 누르고 있는 동안 매 프레임 exit 호출되지 않게.
-        if(Input.isKeyJustPressed(Input.ESCAPE))
-            Gdx.app.exit();
-
-        // R 키나 사이띄개를 누르면 다시 시작
-        if(Input.isKeyJustPressed(Input.R) || Input.isKeyJustPressed(Input.SPACE)) {
-			game.setTitleBarInfo("다시 시작하는 중...");
-            // 불러오는 중이 막히지 않고 바로 뜨게 하기 위해 다음 프레임 때 로드
-			Gdx.app.postRunnable {
-				GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
-				game.currentRound++;
-				game.setScreen(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat()));  // 월드를 아예 새로 파서 화면을 덮어씌움
-				game.setTitleBarInfo(null);
-				Gdx.app.postRunnable { this@ZombieWorld.dispose() };  // 추가: 메모리 누수 방지
-			};
-        }
-    }
-
-	/**
-	 * <Esc>나 P 글쇠가 눌렸을 때를 감지해서 일시 정지하거나 계속한다.
-	 */
-	private fun detectPauseKey() {
-		// P키를 누르면 일시 정지 <-> 게임 진행 중 상태 토글!
-        if(Input.isKeyJustPressed(Input.P) || Input.isKeyJustPressed(Input.ESCAPE)) {
-            if(GameManager.isPlaying)
-				GameManager.pause();
-			else if(GameManager.isPaused)
-				GameManager.resume();
-        }
-	}
+    // ────────────────────────────────────────────────────────
+    //  매 프레임 그리기
+    // ────────────────────────────────────────────────────────
 
     /**
      * 배경 그리기
@@ -360,7 +198,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
      *   tile.png가 흰색이라 어떤 색이든 그대로 적용된다.
      *   끝에 다시 흰색으로 되돌려두지 않으면 그 다음 그리는 것까지 영향을 받으니 주의.
      */
-    override fun drawWorldBackground() {
+    override fun drawBackground() {
 		// game.screenWidth는 Graphics#getWidth 메쏘드를 호출하므로 반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
 		val screenWidth = game.screenWidth;
 		val screenHeight = game.screenHeight;
@@ -387,7 +225,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 
 		// 월드 텍스트 (월드 좌표) — 월드 정중앙에 표시
         //    WASD로 카메라를 움직이면 이 글자도 화면에서 움직인다.
-        drawTextInWorld(
+        drawText(
             text = "*",
             x = width / 2 - 24f,
             y = height / 2 + 20f,
@@ -398,207 +236,11 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
     }
 
     /**
-     * 매 프레임 그리기 — 부모가 배경·객체까지 그려준 뒤, 텍스트 UI 를 얹는다.
-     *
-     * 이 함수에서는 '그리기'만 한다. 입력 처리·상태 변경은 update()의 책임.
-     *
-     * 주의: super.render(delta) 가 화면 clear + 배경 + 객체까지 그리므로,
-     *       텍스트는 반드시 super 호출 '이후' 그려야 가려지지 않는다.
-     */
-    override fun render(delta: Float) {
-        super.render(delta);
-
-		batch.begin();
-
-		// 일시 정지 시 어둡게 변경
-		if(!GameManager.isPlaying)
-			drawFrozenOverlay();
-
-        // ── 상태별로 그리는 것이 다름 ──
-        when {
-              // 플레이 중에는 추가로 그릴 것 없음
-            GameManager.isPaused	-> drawPausedMessage();  // 💡 [추가] 일시정지 화면 그리기
-            GameManager.isGameOver	-> drawGameOverMessage();
-        }
-
-		batch.end();
-    }
-
-	/**
-	 * 화면에 어두운 오버레이(주로 모달용)를 만든다.
-	 *
-	 * render에서만 한 번 쓰이기 때문에 inline이다.
-	 */
-	private inline fun drawFrozenOverlay() {
-		batch.color = frozenOverlay;
-		batch.draw(solidColor, 0f, 0f, game.screenWidth, game.screenHeight);
-		batch.color = Color.WHITE;
-	}
-
-	/**
-	 * 일시 정지 시 띄우는 메시지
-	 *
-	 * render에서만 한 번 쓰이기 때문에 inline이다.
-	 */
-    private inline fun drawPausedMessage() {
-        drawText(
-            text = "PAUSED",
-            x = 0f,
-            y = game.screenHeight / 2f + 20f,
-            color = Color.YELLOW,
-            scale = 2.0f,
-			width = game.screenWidth,
-			align = Align.center,
-			skipBatch = true
-        );
-        drawText(
-            text = "Press <P> or <Esc> to rdwesume",
-            x = 0f,
-            y = game.screenHeight / 2f - 20f,
-            color = Color.WHITE,
-            scale = 1.0f,
-			width = game.screenWidth,
-			align = Align.center,
-			skipBatch = true
-        );
-    }
-
-    /**
-	 * 게임 오버 시 화면 중앙에 띄우는 안내 메시지
-	 *
-	 * render에서만 한 번 쓰이기 때문에 inline이다.
-	 */
-    private inline fun drawGameOverMessage() {
-        drawText(
-            text = "YOU DIED!",
-            x = 0f,
-            y = game.screenHeight / 2f + 40f,
-            color = Color.RED,
-            scale = 2.0f,
-			width = game.screenWidth,
-			align = Align.center,
-			skipBatch = true
-        );
-        drawText(
-            text = "Press <Esc> to exit or press <R> or <Space> for a new game",
-            x = 0f,
-            y = game.screenHeight / 2f + 10f,
-            color = Color.WHITE,
-            scale = 1.0f,
-			width = game.screenWidth,
-			align = Align.center,
-			skipBatch = true
-        );
-
-		// 통계
-        drawText(
-            text = "Opened containers: ${player.openedContainerCount}",
-            x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 20f,
-            color = Color.LIGHT_GRAY,
-            scale = 1.0f,
-			skipBatch = true
-        );
-        drawText(
-            text = "Killed zombies: ${player.killedZombieCount}",
-            x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 35f,
-            color = Color.LIGHT_GRAY,
-            scale = 1.0f,
-			skipBatch = true
-        );
-        drawText(
-            text = "Fired: ${player.fireCount}",
-            x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 50f,
-            color = Color.LIGHT_GRAY,
-            scale = 1.0f,
-			skipBatch = true
-        );
-        drawText(
-            text = "Survived duration: ${Utils.parseSeconds(player.survivedDuration, "m", "s")}",
-            x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 65f,
-            color = Color.LIGHT_GRAY,
-            scale = 1.0f,
-			skipBatch = true
-        );
-        drawText(
-            text = "Total damage: ${player.totalDamage}",
-            x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 80f,
-            color = Color.LIGHT_GRAY,
-            scale = 1.0f,
-			skipBatch = true
-        );
-        drawText(
-            text = "Score: ${ScoreManager.score}",
-            x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 95f,
-            color = Color.LIGHT_GRAY,
-            scale = 1.0f,
-			skipBatch = true
-        );
-    }
-
-	/**
-	 * 필요한 요소들을 그린다.
-	 */
-	override fun drawElements() {
-		super.drawElements();
-		
-        // ── 항상 보이는 UI ──
-        drawHud();
-	}
-
-    /**
-	 * 항상 화면에 표시되는 정보 — HP 표시와 월드 중앙 표지.
-	 * drawElements에서만 한 번 쓰이기 때문에 inline이다.
-	 */
-    private inline fun drawHud() {
-        // 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
-        //    카메라가 움직여도 항상 이 위치에 있다.
-        drawText(
-            text = "HP: ${player.hp}",
-            x = 10f,
-            y = game.screenHeight - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
-            color = Utils.rgb(255, 240, 128),
-            scale = 1.2f,
-			skipBatch = true
-        );
-
-		// 현재 플레이어가 들고 있는 아이템
-		player.selectedItem?.let {
-			drawText(
-				text = "${it.name} [${player.selectedItemIndex!! + 1}/${player.inventoryItemCount}]",
-				x = 10f,
-				y = 20f,
-				color = Utils.rgb(255, 255, 192),
-				scale = 1.0f,
-				skipBatch = true
-			);
-		};
-
-		// 점수
-		drawText(
-            text = "Score: ${ScoreManager.score}",
-            x = game.screenWidth - 130f,
-            y = game.screenHeight - 10f,
-            color = Utils.rgb(203, 241, 194),
-            scale = 1.2f,
-			width = 120f,
-			align = Align.right,
-			skipBatch = true
-        );
-    }
-
-    /**
 	 * 화면이 닫힐 때 — 부모도 dispose한 뒤 우리만의 자원도 해제.
 	 */
     override fun dispose() {
         super.dispose();
         tileTexture.dispose();
-		solidColor.dispose();
 		for(timer in timers)
 			timer.unregister();
 		timers.clear();
@@ -608,23 +250,4 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		unfreezeTimer?.unregister();
 		unfreezeTimer = null;
     }
-
-	/**
-	 * 제목 표시줄에 표시할 정보 종류를 담는 열거형
-	 */
-	private enum class TitleInfoType {
-		OPENED,
-		KILLED,
-		FIRED,
-		SURVIVED,
-		DAMAGE,
-		ZOMBIES;
-
-		companion object {
-			private val enumEntries = TitleInfoType.entries;
-			val size = enumEntries.size;
-
-			fun byIndex(index: Int) = enumEntries[index];
-		}
-	}
 }

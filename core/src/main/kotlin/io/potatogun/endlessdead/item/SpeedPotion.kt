@@ -19,7 +19,7 @@ class SpeedPotion(world: World) : Item(world, "speed_potion", "Speed Potion"), U
 		val holder: InventoryEntity? = this.holder;
 		if(holder is Player) {
 			holder.speedUp(20f, 30f);
-			world.drawSubtitles("SPEED UP");
+			world.viewer.drawSubtitles("SPEED UP");
 			destroy();
 			return true;
 		}
