@@ -43,7 +43,7 @@ object Utils {
 	 */
 	inline fun setTimeout(delay: Float, crossinline operation: () -> Unit): Timer {
 		var timer: Timer? = null;  // 선언 이후 대입해야 해서 어쩔 수 없이 var
-		timer = Timer(delay) {
+		timer = Timer(delay + 86400f, delay, false) {
 			operation();
 			timer?.unregister();
 		}.register();

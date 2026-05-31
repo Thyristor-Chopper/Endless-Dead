@@ -151,8 +151,9 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		}.register());
 
 		// 제목 표시줄 정보 전환
-		timers.add(Timer(3f) {
-			currentTitleInfo++;
+		timers.add(Timer(3f, false) {
+			if(!GameManager.isGameOver)
+				currentTitleInfo++;
 		}.register());
     }
 
@@ -243,10 +244,8 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 
 	/**
 	 * 창 제목에 정보를 표시한다.
-	 *
-	 * updateInPlay에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-	private inline fun updateTitleBarInfo() {
+	private fun updateTitleBarInfo() {
 		game.setTitleBarStats(when(TitleInfoType.byIndex(currentTitleInfo)) {
 			TitleInfoType.OPENED	-> "연 상자: ${player.openedContainerCount}개"
 			TitleInfoType.KILLED	-> "잡은 좀비 수: ${player.killedZombieCount}"
@@ -303,6 +302,9 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
 	private inline fun updatePaused() {
+		// 제목 표시줄에 통계 표시
+		updateTitleBarInfo();
+		
 		// 일시 정지 키 누름만 감지
 		detectPauseKey();
     }
