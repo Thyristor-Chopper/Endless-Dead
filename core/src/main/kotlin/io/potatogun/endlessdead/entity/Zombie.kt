@@ -42,9 +42,6 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 	override fun update(delta: Float) {
 		super.update(delta);
 
-		// 투명 포션을 마신 플레이어는 못 본 척하기
-		if(target.isInvisibleToOthers) return;
-
         val dx = target.x - x;
         val dy = target.y - y;
         val distance = distanceTo(target);

@@ -93,10 +93,6 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
 				throw IllegalArgumentException("invalid opacity");
 			color.a = value;
 		};
-	/**
-	 * 다른 개체(이 게임에선 좀비)가 이 개체를 인지할 수 있는지의 여부
-	 */
-	var isInvisibleToOthers = false;
 
 	/**
      * 매 프레임 호출되어 자신을 그린다.
@@ -113,12 +109,9 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
     protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
 		val texture: Texture? = alternateTexture ?: this.texture;
 		texture?.let {
-			val invisible = isInvisibleToOthers;  // 그리는 사이에 바뀔까봐 사본으로...
-			if(invisible) color.a /= 3f;
 			batch.color = color;
 			batch.draw(it, x - width / 2f, y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
 			batch.color = Color.WHITE;
-			if(invisible) color.a *= 3f;
 		};
 	}
 

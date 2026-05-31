@@ -162,13 +162,13 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다.
 	 */
 	private fun generateRandomItem(): Item {
-		val rand = Random.nextInt(10) + 1;  // 1~10
+		val rand = Random.nextInt(100) + 1;  // 1~100
 		return when {
-			rand <= 4	-> MachineGun(this)	// 40%
-			rand <= 7	-> Shotgun(this)		// 30%
-			rand <= 8	-> Bandage(this)		// 10%
-			rand <= 9	-> TimeStopper(this)	// 10%
-			else	-> SpeedPotion(this)		// 10%
+			rand <= 40	-> MachineGun(this)	// 40%
+			rand <= 70	-> Shotgun(this)		// 30%
+			rand <= 85	-> Bandage(this)		// 15%
+			rand <= 95	-> SpeedPotion(this)	// 10%
+			else		-> TimeStopper(this)	// 5%
 		};
 	}
 
