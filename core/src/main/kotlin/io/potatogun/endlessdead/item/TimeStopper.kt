@@ -19,7 +19,7 @@ class TimeStopper(world: World) : Item(world, "time_stopper", "Time Stopper"), U
     override fun use(): Boolean {
 		val holder: InventoryEntity? = this.holder;
 		if(holder is Player) {
-			if(!(world is Freezable)) {
+			if(world !is Freezable) {
 				world.drawSubtitles("Can't use this item here");
 				return false;
 			}

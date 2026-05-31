@@ -34,7 +34,7 @@ class Test(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 80f, 80
         val dy = target.y - y;
         val distance = distanceToTarget;
 
-        if(distance != null && distance > 320f) {
+        if(distance != null && distance > 360f) {
             x += dx / distance * speed * delta;
             y += dy / distance * speed * delta;
         } else {

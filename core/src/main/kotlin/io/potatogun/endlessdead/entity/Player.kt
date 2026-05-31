@@ -148,7 +148,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	 */
 	private inline fun interactContainer() {
 		for(entity in world.getEntities()) {
-			if(!(entity is Container)) continue;
+			if(entity !is Container) continue;
 			if(collidesWith(entity))
 				if(entity.isEmpty) {
 					var putItem = false;
@@ -205,7 +205,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 24f, 
 	 * @return	성공 여부
 	 */
 	fun useItem(item: Item): Boolean {
-		if(!hasItem(item) || !(item is Usable)) return false;
+		if(!hasItem(item) || item !is Usable) return false;
 		val succeeded = item.use();
 		if(succeeded)
 			if(item is Fireable)

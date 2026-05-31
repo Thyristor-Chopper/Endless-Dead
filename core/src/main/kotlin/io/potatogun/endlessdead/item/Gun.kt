@@ -27,8 +27,8 @@ import kotlin.math.sin;
  * @param bulletHp		총알 체력
  * @param penetrable	총알 관통 가능 여부
  * @param fireInterval	공격 속도
- * @param maxAmmo		최대 총알 개수
  * @param initialAmmo	초기 총알 개수
+ * @param maxAmmo		최대 총알 개수
  */
 abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHp: Int, val penetrable: Boolean, val fireInterval: Float, initialAmmo: Int, val maxAmmo: Int = initialAmmo) : Item(world, id, name), Fireable, Usable {
 	override val allowContinuousUse = false;
@@ -44,7 +44,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 			if(value < 0) field = 0;
 			else if(value > maxAmmo) field = maxAmmo;
 			else field = value;
-		} //샷건이라는 하위클래스에서도 사용해야할 것 같아 private를 protected로 변경
+		};  // 샷건이라는 하위클래스에서도 사용해야할 것 같아 private를 protected로 변경
 	private var cooldownTimer: Timer? = null;
 
 	/**
@@ -53,7 +53,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 	protected fun startFireCooldown() {
 		fireCooldown = fireInterval;
 
-		// 남은 쿨타임을 갱신한다.
+		// 남은 쿨타임을 갱신한다. update, delta를 쓰지 않은 이유는 이건 게임 프레임과는 독립적이라고 보기 때문.
 		cooldownTimer = Timer(0.01f) {
 			fireCooldown -= 0.01f;
 			if(fireCooldown == 0f)
@@ -62,7 +62,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 	}
 
 	/**
-	 * 남은 쿨타임을 전체 공격 간격에 비례하여 0~1로 정규화하여 반환한다.
+	 * 남은 쿨타임을 전체 공격 간격에 비례하여 0.0~1.0로 정규화하여 반환한다.
 	 */
 	fun getRemainingCooldownPercentage(): Float = fireCooldown / fireInterval;
 
@@ -90,7 +90,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 
 		return 1;
 	}
-	
+
 	/**
 	 * 기본값으로 개체가 보는 방향으로 총을 쏜다.
 	 *
@@ -99,7 +99,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 	override fun use(): Boolean {
 		val holder: InventoryEntity? = this.holder;
 		if(holder == null) return false;
-		if(!(holder is Entity)) return false;  // 말이 안 되는 상황
+		if(holder !is Entity) return false;  // 말이 안 되는 상황
 
 		// 개체 회전 각도에 맞는 임의의 위치를 생성한다.
 		val radians = toRadians(holder.rotation + 90.0);

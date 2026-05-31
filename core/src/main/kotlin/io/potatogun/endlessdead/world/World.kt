@@ -92,13 +92,13 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth.toFl
     fun getEntities(): List<Entity> = entities.toList();
 
     /**
-     * 등록된 모든 객체에게 'update(delta) 한 프레임 진행' 을 시킨다.
+     * 등록된 모든 개체에게 'update(delta) 한 프레임 진행' 을 시킨다.
 	 *
 	 * update 내에서만 한 번 쓰이기 때문에 inline이다.
      */
     private inline fun updateEntities(delta: Float) {
 		for(entity in entities.shuffled()) {
-			if(!(this is Freezable) || !this.isFrozen || entity.canUpdateWhileFrozen)
+			if(this !is Freezable || !this.isFrozen || entity.canUpdateWhileFrozen)
 				entity.update(delta);
 			entity.forceUpdate(delta);
 		}
