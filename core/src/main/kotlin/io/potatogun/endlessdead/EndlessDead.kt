@@ -30,7 +30,7 @@ import io.potatogun.endlessdead.screen.Title;
  *  자기 게임을 만들 때 고칠 곳:
  *   ▸ create() 안에서 setScreen에 넘기는 Screen을 자기 Screen으로 교체
  */
-class EndlessDead() : Game() {
+class EndlessDead : Game() {
 	// 게임 제목
 	@JvmField val title = "Endless Dead";
     /** 
