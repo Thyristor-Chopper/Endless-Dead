@@ -133,7 +133,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
         addEntity(player);
 
 		// 미터기 추가
-		addWidget("hp_indicator", ProgressBar({ 80f }, { game.screenHeight - 24f }, 220f, color = Utils.rgb(234, 197, 21)));
+		addWidget("hp_indicator", ProgressBar({ 80f }, { game.screenHeight - 24f }, 220f, color = Utils.rgb(234, 197, 21), style = ProgressBarStyle.SMOOTH));
 		addWidget("gun_ammo_indicator", ProgressBar({ game.screenWidth - 145f }, { 10f }, 130f, color = Utils.rgb(15, 116, 240)).apply { hide() });
 		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET, style = ProgressBarStyle.SMOOTH).apply { hide() });
 
@@ -160,12 +160,13 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다.
 	 */
 	private fun generateRandomItem(): Item {
-		return when(Random.nextInt(5)) {
-			0		-> MachineGun(this)
-			1		-> Shotgun(this)
-			2		-> Bandage(this)
-			3		-> TimeStopper(this)
-			else	-> SpeedPotion(this)
+		val rand = Random.nextInt(10) + 1;  // 1~10
+		return when {
+			rand <= 4	-> MachineGun(this)	// 40%
+			rand <= 7	-> Shotgun(this)		// 30%
+			rand <= 8	-> Bandage(this)		// 10%
+			rand <= 9	-> TimeStopper(this)	// 10%
+			else	-> SpeedPotion(this)		// 10%
 		};
 	}
 

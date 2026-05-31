@@ -41,7 +41,7 @@ object Utils {
 	 * @param delay		지연 시간(초)
 	 * @param operation	실행할 서브루틴
 	 */
-	fun setTimeout(delay: Float, operation: () -> Unit): Timer {
+	inline fun setTimeout(delay: Float, crossinline operation: () -> Unit): Timer {
 		var timer: Timer? = null;  // 선언 이후 대입해야 해서 어쩔 수 없이 var
 		timer = Timer(delay) {
 			operation();
