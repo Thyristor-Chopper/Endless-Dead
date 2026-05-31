@@ -47,7 +47,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
 	 */
 	abstract val player: Player;
     /**
-	 * 카메라 오프셋 — 월드의 어느 지점이 화면 좌하단에 오는지.
+	 * 카메라 오프셋 — 월드의 어느 지점이 화면 중앙에 오는지.
      *   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
 	 */
     var offsetX: Float
@@ -92,7 +92,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
     }
 
     /**
-	 * 특정 개체를 수동 제거. 보통은 isAlive()=false 후 removeDead() 로 정리.
+	 * 특정 개체를 수동 제거. 보통은 isAlive=false 후 removeDead() 로 정리.
 	 *
 	 * @param entity 제거할 개체
 	 * @return 성공 여부
@@ -131,7 +131,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
     /**
      * isAlive가 false인 객체들을 한꺼번에 제거한다.
      *
-     * 보통 update() 끝에서 호출 — 상호작용 결과 죽음을 표시한 객체를 정리.
+     * update()에서 호출 — 상호작용 결과 죽음을 표시한 객체를 정리.
      *
      * 순회 도중 삭제 시 인덱스 꼬임을 막으려고 '먼저 모아 두고 → 한꺼번에 삭제' 패턴.
 	 *
@@ -230,10 +230,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
 	}
 
     /**
-     * 등록된 모든 객체를 그린다 — 카메라 오프셋을 반영해서.
-     *
-     * 핵심 트릭: 객체의 월드 좌표에서 offset 을 잠깐 빼서 '화면 좌표' 처럼 만든 뒤
-     *           draw() 시키고, 끝나면 원래 월드 좌표로 되돌린다.
+     * 등록된 모든 객체를 그린다.
      *
      * 이렇게 해야 서브클래스의 draw() 는 '자기 위치에 그냥 그려라' 만 구현하면 되고,
      *   카메라가 움직이든 말든 신경 쓸 필요가 없다.
