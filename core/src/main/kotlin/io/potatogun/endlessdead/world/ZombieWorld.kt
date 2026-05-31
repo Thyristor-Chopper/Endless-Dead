@@ -224,12 +224,6 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 			for(spawner in spawners)
 				spawner.update(delta);
 
-        // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
-        //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
-        //   offset 은 0 ~ (world - screen) 범위여야 한다.
-        offsetX = offsetX.coerceIn(0f, width - game.screenWidth);
-        offsetY = offsetY.coerceIn(0f, height - game.screenHeight);
-
 		// 미터기 정보 갱신
 		updateProgressBars();
 

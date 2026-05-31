@@ -44,11 +44,13 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
     /**
 	 * 카메라 오프셋 — 월드의 어느 지점이 화면 좌하단에 오는지.
      *   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
-	 * JvmField를 여기다가 붙이면 ZombieWorld에서 Float#coerceIn 메쏘드를 썼기 때문에
-	 *   원시 타입인 float가 아닌 랩퍼 Float로 바뀌어 null 위험성이 있으므로 붙이지 않는다.
+	 * 참고로 이 둘은 coerceIn을 썼지만 빌드 시 자바 원시 자료형인
+	 *   float로 바뀌고 랩퍼인 Float가 되지는 않는다(jar 디컴파일해서 직접 확인함).
 	 */
-    var offsetX: Float = width / 2f - game.screenWidth / 2f;
-    var offsetY: Float = height / 2f - game.screenHeight / 2f;
+    var offsetX: Float = width / 2f - game.screenWidth / 2f
+		private set;
+    var offsetY: Float = height / 2f - game.screenHeight / 2f
+		private set;
     // 등록된 객체들만 update/draw 된다.
     // private 으로 감춘 이유: 외부가 직접 add/remove 하면
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. addEntity(), removeEntity()라는 공식 창구만 허용.
@@ -158,6 +160,12 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
 		removeDead();
 		if(subtitlesTimer > 0f)
 			subtitlesTimer -= delta;
+
+        // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
+        //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
+        //   offset 은 0 ~ (world - screen) 범위여야 한다.
+        offsetX = offsetX.coerceIn(0f, width - game.screenWidth);
+        offsetY = offsetY.coerceIn(0f, height - game.screenHeight);
 	}
 
     // ────────────────────────────────────────────────────────
