@@ -35,7 +35,7 @@ abstract class LivingEntity(world: World, position: Position, width: Float, heig
 	 * 개체가 살아있는지의 여부
 	 */
 	val isAlive: Boolean
-		get() = hp > 0;
+		inline get() = hp > 0;
 	// 피격 시 잠깐 동안 대미지를 안 받게 해주는 무적 타이머.
 	private var invincibilityTimer: Float = 0f
 		set(value) {

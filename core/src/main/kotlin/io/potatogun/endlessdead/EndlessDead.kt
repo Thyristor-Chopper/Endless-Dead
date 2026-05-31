@@ -32,7 +32,7 @@ import io.potatogun.endlessdead.screen.Title;
  */
 class EndlessDead() : Game() {
 	// 게임 제목
-	val title = "Endless Dead";
+	@JvmField val title = "Endless Dead";
     /** 
 	 * 화면(창) 크기
 	 */

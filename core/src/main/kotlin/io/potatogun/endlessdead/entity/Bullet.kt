@@ -19,12 +19,12 @@ import kotlin.math.sqrt;
  * @param penetrable	총알 관통 가능 여부
  * @param hp			총알 체력 (관통 시 감소)
  */
-class Bullet(world: World, val gun: Fireable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.position, 16f, 16f, "bullet.bmp", hp) {
+class Bullet(world: World, @JvmField val gun: Fireable, @JvmField val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.position, 16f, 16f, "bullet.bmp", hp) {
 	override val canUpdateWhileFrozen = true;
 	override val defaultInvincibleDuration = 0f;
 	override val showDamagedIndicator = false;
-	val amountX: Float;
-	val amountY: Float;
+	@JvmField val amountX: Float;
+	@JvmField val amountY: Float;
 
 	init {
 		if(speed < 0f) throw IllegalArgumentException("invalid speed");

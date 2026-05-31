@@ -50,11 +50,11 @@ import kotlin.math.sqrt;
  */
 abstract class Entity(val world: World, position: Position, val width: Float, val height: Float, texture: String? = null) {
 	// 개체의 텍스처
-	protected val texture: Texture? = texture?.let { Utils.loadTexture(it) };
+	protected @JvmField val texture: Texture? = texture?.let { Utils.loadTexture(it) };
 	/**
 	 * 개체의 평면좌표 위치
 	 */
-	val position = position.toMutablePosition();
+	@JvmField val position = position.toMutablePosition();
 	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)
 	//   기존에는 x과 y가 backing field가 있는 실제 var였고 
 	//   val position / get() = Position(x, y)가 있었다.
@@ -121,7 +121,7 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
      * 매번 새 Rectangle 을 만든다. 성능이 극한으로 중요한 곳이라면 재사용해야
      * 하지만, 이 강의의 규모에서는 가독성을 더 우선한다.
      */
-    inline fun getBounds(): Rectangle = Rectangle(x, y, width, height);
+    inline fun getBounds(): Rectangle = Rectangle(x - width / 2f, y - height / 2f, width, height);
 
     /**
      * 다른 객체와 충돌했는지 검사 — AABB(축 정렬 경계 상자) 방식.

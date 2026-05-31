@@ -38,8 +38,8 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
     private val camera = OrthographicCamera();
 	// SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
     //   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
-    protected val batch = SpriteBatch();
-    protected val font = BitmapFont();
+    @JvmField protected val batch = SpriteBatch();
+    @JvmField protected val font = BitmapFont();
 	// 등록된 위젯들
     private val widgets = mutableMapOf<String, Widget>();
 

@@ -32,12 +32,12 @@ import kotlin.math.sqrt;
  * @param speed			이동 속도
  * @param texture		개체 텍스처
  */
-open class Zombie(world: World, position: Position, width: Float, height: Float, hp: Int, attackDamage: Int, protected var speed: Float, texture: String = "zombie.bmp") : LivingEntity(world, position, width, height, texture, hp) {
+open class Zombie(world: World, position: Position, width: Float, height: Float, hp: Int, attackDamage: Int, protected @JvmField var speed: Float, texture: String = "zombie.bmp") : LivingEntity(world, position, width, height, texture, hp) {
     var attackDamage = attackDamage
 		protected set;
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
-	val target: LivingEntity = world.player;
+	@JvmField val target: LivingEntity = world.player;
 
 	override fun update(delta: Float) {
 		super.update(delta);
