@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead.entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
@@ -82,6 +83,20 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
 	// 텍스처 회전 각도
 	open var rotation = 0f
 		protected set;
+	// 개체 오버레이 색 (color는 mutable 객체이므로 val)
+	protected open val color = Color.WHITE;
+	// 개체 투명도
+	protected open var opacity: Float
+		get() = color.a
+		set(value) {
+			if(value < 0f || value > 1f)
+				throw IllegalArgumentException("invalid opacity");
+			color.a = value;
+		};
+	/**
+	 * 다른 개체(이 게임에선 좀비)가 이 개체를 인지할 수 있는지의 여부
+	 */
+	var isInvisibleToOthers = false;
 
 	/**
      * 매 프레임 호출되어 자신을 그린다.
@@ -97,7 +112,14 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
     // 개체에 등록된 기본 텍스처 대신에 쓸 텍스처를 alternateTexture로 넘길 수 있다.
     protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
 		val texture: Texture? = alternateTexture ?: this.texture;
-		texture?.let { batch.draw(it, x - width / 2f, y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false) };
+		texture?.let {
+			val invisible = isInvisibleToOthers;  // 그리는 사이에 바뀔까봐 사본으로...
+			if(invisible) color.a /= 3f;
+			batch.color = color;
+			batch.draw(it, x - width / 2f, y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+			batch.color = Color.WHITE;
+			if(invisible) color.a *= 3f;
+		};
 	}
 
     /**

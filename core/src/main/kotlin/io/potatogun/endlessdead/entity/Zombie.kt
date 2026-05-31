@@ -42,6 +42,9 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 	override fun update(delta: Float) {
 		super.update(delta);
 
+		// 투명 포션을 마신 플레이어는 못 본 척하기
+		if(target.isInvisibleToOthers) return;
+
         val dx = target.x - x;
         val dy = target.y - y;
         val distance = distanceTo(target);
@@ -68,6 +71,8 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
         //  돌진할 '방향(벡터)'을 기억해 둘 변수
         private var dashDirX = 0f;
         private var dashDirY = 0f;
+		// 강한 좀비는 살짝 붉게
+		override val color = Utils.rgb(255, 192, 192);
 
         override fun update(delta: Float) {
             when(dashState) {
@@ -130,12 +135,6 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
             // 💡 속도 세팅이 완벽히 끝난 후, 마지막에 부모를 호출해서 이동시킴
             super.update(delta);
         }
-
-		override fun draw(batch: SpriteBatch) {
-			batch.color = Utils.rgb(255, 192, 192);
-			super.draw(batch);
-			batch.color = Color.WHITE;
-		}
 
 		// 평상시, 돌진하려고 잠깐 멈춰있음, 돌진, 돌진 쿨
         private enum class DashState {
