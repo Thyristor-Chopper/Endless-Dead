@@ -249,6 +249,7 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
         // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
         //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
         //   offset 은 0 ~ (world - screen) 범위여야 한다.
+		// game.screenWidth는 Graphics#getWidth 메쏘드를 호출하므로 반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
 		val screenWidth = game.screenWidth;
 		val screenHeight = game.screenHeight;
         offsetX = player.x.coerceIn(screenWidth / 2f, width - screenWidth / 2f);
