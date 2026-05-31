@@ -25,7 +25,7 @@ abstract class Item(val world: World, val id: String, val name: String) {
 		};
 	/**
 	 * 아이템이 들어 있는 상자
-	 * holder와 container 중 반드시 하나는 null이어야 한다.
+	 * 정상적인 상황이라면 holder와 container 중 반드시 하나는 null이어야 한다.
 	 */
 	val container: Container?
 		get() {

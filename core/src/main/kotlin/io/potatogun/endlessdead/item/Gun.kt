@@ -103,7 +103,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 
 		// 개체 회전 각도에 맞는 임의의 위치를 생성한다.
 		val radians = toRadians(holder.rotation + 90.0);
-		val distance = max(world.width, world.height);
+		val distance = max(world.width, world.height);  // 그냥 100f 이상 가능한 한 큰 수면 된다.
 		val targetX = cos(radians) * distance + holder.x;
 		val targetY = sin(radians) * distance + holder.y;
 		return fire(Position(targetX.toFloat(), targetY.toFloat()), holder) > 0;
