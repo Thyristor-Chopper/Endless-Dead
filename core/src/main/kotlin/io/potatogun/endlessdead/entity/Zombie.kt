@@ -31,13 +31,10 @@ import kotlin.math.sqrt;
  * @param height		세로 크기 (픽셀)
  * @param hp			최대 체력
  * @param attackDamage	공격력
- * @param speed			이동 속도 (var이긴 하지만 자바의 원시 float은 null이 될 수 없기 때문에 @JvmField이 있어도 null에서 안전하다.
- *						           빌드 후 직접 Fernflower로 자바로 디컴파일해서 Float 랩퍼가 아닌 원시 float임을 확인했다.)
+ * @param speed			이동 속도
  * @param texture		개체 텍스처
  */
-open class Zombie(world: World, position: Position, width: Float, height: Float, hp: Int, attackDamage: Int, protected @JvmField var speed: Float, texture: Texture = Textures.getShared("zombie")) : LivingEntity(world, position, width, height, texture, hp) {
-    var attackDamage = attackDamage
-		protected set;
+open class Zombie(world: World, position: Position, width: Float, height: Float, hp: Int, protected open val attackDamage: Int, protected open val speed: Float, texture: Texture = Textures.getShared("zombie")) : LivingEntity(world, position, width, height, texture, hp) {
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
 	@JvmField val target: LivingEntity = world.player;
@@ -69,8 +66,10 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 
 	class Strong(world: World, position: Position) : Zombie(world, position, width=49f, height=70f, hp=15, speed=50f, attackDamage=5) {
         // 평상시 스피드, 대미지
-        private val originalSpeed = speed;
-        private val originalDamage = attackDamage;
+        private val originalSpeed = super.speed;
+		override var speed = originalSpeed;
+        private val originalDamage = super.attackDamage;
+		override var attackDamage = originalDamage;
         private var dashState = DashState.WALKING;
         private var stateTimer = 0f;
         //  돌진할 '방향(벡터)'을 기억해 둘 변수
