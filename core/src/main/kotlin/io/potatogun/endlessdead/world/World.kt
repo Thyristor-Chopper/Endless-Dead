@@ -45,8 +45,8 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
 	 * 카메라 오프셋 — 월드의 어느 지점이 화면 좌하단에 오는지.
      *   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
 	 */
-    @JvmField var offsetX: Float = width / 2f - game.screenWidth / 2f;
-    @JvmField var offsetY: Float = height / 2f - game.screenHeight / 2f;
+    var offsetX: Float = width / 2f - game.screenWidth / 2f;
+    var offsetY: Float = height / 2f - game.screenHeight / 2f;
     // 등록된 객체들만 update/draw 된다.
     // private 으로 감춘 이유: 외부가 직접 add/remove 하면
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. addEntity(), removeEntity()라는 공식 창구만 허용.
