@@ -23,19 +23,19 @@ import kotlin.math.sqrt;
  * ────────────────────────────────────────────────────────────
  *  왜 이런 게 필요한가?
  * ────────────────────────────────────────────────────────────
- *  Player, Enemy, Bullet 은 기능은 다르지만
+ *  Player, Enemy, Bullet은 기능은 다르지만
  *    - 화면의 특정 위치(x, y)에 있고
  *    - 어떤 크기(width, height)를 가지고
  *    - 매 프레임 스스로 상태를 갱신(update)하고
  *    - 자신을 그릴 줄(draw) 안다
- *  이 '공통 속성/행동'을 한 곳에 모아둔 것이 GameObject 이다.
+ *  이 '공통 속성/행동'을 한 곳에 모아둔 것이 Entity이다.
  *
- *  World는 이 Entity 타입으로만 객체들을 관리한다.
+ *  World는 이 Entity 타입으로만 개체들을 관리한다.
  *  즉, 우리가 Player든 Bullet이든 'Entity를 상속'하기만 하면
  *  World가 자동으로 update/draw/제거까지 해준다 (다형성).
  *
  * ────────────────────────────────────────────────────────────
- *  사용법 — 새로운 게임 객체 만들기
+ *  사용법 — 새로운 게임 개체 만들기
  * ────────────────────────────────────────────────────────────
  *    class Bullet(world: World, x: Float, y: Float) : Entity(world, x, y, 8f, 16f, "bullet.png") {
  *        override fun update(delta: Float) { y += 400f * delta }
@@ -54,6 +54,17 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
 	 * 개체의 평면좌표 위치
 	 */
 	val position = position.toMutablePosition();
+	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)
+	//   기존에는 x과 y가 backing field가 있는 실제 var였고 
+	//   val position / get() = Position(x, y)가 있었다.
+	//   하지만 매번 Position 객체를 새로 생성하는 것은 오버헤드가 상당할 것 같아서
+	//   이렇게 바꾸었다.
+	var x: Float
+		inline get() = position.x
+		inline set(value) { position.x = value };
+	var y: Float
+		inline get() = position.y
+		inline set(value) { position.y = value };
 	/**
 	 * TimeStopper 아이템의 영향을 받는지의 여부
 	 */
@@ -71,19 +82,6 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
 	// 텍스처 회전 각도
 	open var rotation = 0f
 		protected set;
-	// 혹시 몰라서...
-	var x: Float
-		inline get() = position.x
-		inline set(value) { position.x = value };
-	var y: Float
-		inline get() = position.y
-		inline set(value) { position.y = value };
-
-    // 개체에 등록된 기본 텍스처 대신에 쓸 텍스처를 alternateTexture로 넘길 수 있다.
-    protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
-		val texture: Texture? = alternateTexture ?: this.texture;
-		texture?.let { batch.draw(it, x - width / 2f, y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false) };
-	}
 
 	/**
      * 매 프레임 호출되어 자신을 그린다.
@@ -94,6 +92,12 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
 	 */
 	internal open fun draw(batch: SpriteBatch) {
 		draw(batch, null);
+	}
+
+    // 개체에 등록된 기본 텍스처 대신에 쓸 텍스처를 alternateTexture로 넘길 수 있다.
+    protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
+		val texture: Texture? = alternateTexture ?: this.texture;
+		texture?.let { batch.draw(it, x - width / 2f, y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false) };
 	}
 
     /**
@@ -116,9 +120,7 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
      *   그래서 player.collidesWith(enemy), bullet.collidesWith(wall) 처럼
      *   어떤 조합이든 똑같은 문법으로 쓸 수 있다.
      */
-    inline fun collidesWith(other: Entity): Boolean {
-        return getBounds().overlaps(other.getBounds());
-    }
+    inline fun collidesWith(other: Entity): Boolean = getBounds().overlaps(other.getBounds());
 
 	/**
 	 * 개체가 다른 누군가를 공격했을 때 콜백 함수
@@ -182,10 +184,10 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
      *
      * 왜 필요한가?
      *   Texture, Sound 같은 LibGDX 자원은 GPU/네이티브 메모리를 점유한다.
-     *   garbage collector 는 이 메모리를 해제해 주지 못한다 → dispose() 명시적 호출 필요.
+     *   garbage collector는 이 메모리를 해제해 주지 못한다 → dispose() 명시적 호출 필요.
      *
      * 기본 구현은 빈 함수 — Texture 같은 자원을 안 쓰는 객체는 그대로 두면 된다.
-     * 텍스처를 쓰는 객체라면 override 해서 texture.dispose() 를 호출.
+     * 텍스처를 쓰는 객체라면 override 해서 texture.dispose()를 호출.
      */
     internal open fun dispose() {
 		texture?.dispose();
