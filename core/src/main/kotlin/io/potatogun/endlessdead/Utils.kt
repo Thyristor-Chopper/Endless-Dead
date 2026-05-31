@@ -50,5 +50,10 @@ object Utils {
 		return timer!!;
 	}
 
+	/**
+	 * 지정한 이름의 텍스처를 가져온다.
+	 *
+	 * @param path 화일 이름
+	 */
 	inline fun loadTexture(path: String): Texture = Texture(Gdx.files.internal("assets/textures/$path"));
 }
