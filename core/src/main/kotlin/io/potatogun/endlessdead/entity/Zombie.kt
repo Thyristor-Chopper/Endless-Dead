@@ -34,16 +34,13 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
 	val target: LivingEntity = world.player;
-    // 💡 자식들이 언제든 거리를 실시간으로 잴 수 있게 열어둔 공용 프로퍼티
-    protected val distanceToTarget: Float
-        inline get() = distanceTo(target);
 
 	override fun update(delta: Float) {
 		super.update(delta);
 
         val dx = target.position.x - position.x;
         val dy = target.position.y - position.y;
-        val distance = distanceToTarget;
+        val distance = distanceTo(target);
 
 		// 플레이어의 중심으로 정확히 모이면 어색하니까 살짝은 거리를 두게 하자.
         if(distance > target.width * (3f / 4f)) {
@@ -71,17 +68,17 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
         override fun update(delta: Float) {
             when(dashState) {
                 DashState.WALKING -> {
-                    val dist = distanceToTarget;
-                    if(dist < 250f) {
+                    val distance = distanceTo(target);
+                    if(distance < 250f) {
                         dashState = DashState.PREPARING;
                         stateTimer = 0.5f;
 
                         // 대기 상태에 들어가는 첫 프레임, 이때 플레이어를 조준해서 방향을 기억해둔다
                         val dx = target.position.x - position.x;
                         val dy = target.position.y - position.y;
-                        if(dist > 0) {
-                            dashDirX = dx / dist;
-                            dashDirY = dy / dist;
+                        if(distance > 0) {
+                            dashDirX = dx / distance;
+                            dashDirY = dy / distance;
                         }
                     }
                 }
