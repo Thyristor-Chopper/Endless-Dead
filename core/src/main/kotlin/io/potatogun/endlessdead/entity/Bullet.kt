@@ -24,8 +24,8 @@ class Bullet(world: World, @JvmField val gun: Fireable, @JvmField val shooter: E
 	override val canUpdateWhileFrozen = true;
 	override val defaultInvincibleDuration = 0f;
 	override val showDamagedIndicator = false;
-	@JvmField val amountX: Float;
-	@JvmField val amountY: Float;
+	private val amountX: Float;
+	private val amountY: Float;
 
 	init {
 		if(speed < 0f) throw IllegalArgumentException("invalid speed");
