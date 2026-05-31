@@ -4,9 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.EndlessDead;
@@ -34,26 +34,12 @@ import io.potatogun.endlessdead.widget.Widget;
  * @param game 화면이 속한 게임
  */
 abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
-	// OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
-    private val camera = OrthographicCamera();
 	// SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
     //   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
     @JvmField protected val batch = SpriteBatch();
     @JvmField protected val font = BitmapFont();
 	// 등록된 위젯들
     private val widgets = mutableMapOf<String, Widget>();
-
-    init {
-        setCameraCenter();
-    }
-
-	/**
-	 * 카메라를 '왼쪽 아래 = (0,0), 오른쪽 위 = (screenWidth, screenHeight)'로 설정.
-	 */
-	private inline fun setCameraCenter() {
-        // false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
-		camera.setToOrtho(false, game.screenWidth, game.screenHeight);
-	}
 
     // ────────────────────────────────────────────────────────
     //  위젯 객체 관리
@@ -96,7 +82,7 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 	 * 크기 조절 시 호출된다.
 	 */
 	override fun resize(width: Int, height: Int) {
-		setCameraCenter();
+		updateProjectionDimensions(batch.projectionMatrix, width.toFloat(), height.toFloat());
 	}
 
 	// ────────────────────────────────────────────────────────
@@ -120,18 +106,14 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
      * HUD/텍스트를 그리려면 render(delta) 도 override 해서 super 호출 뒤에 그린다.
      */
 	override fun render(delta: Float) {
-		// 1) 이전 프레임의 잔상 지우기 (검은색으로 채움)
-        Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
+		// 1) 이전 프레임 잔상 지우기
+		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        // 2) 카메라 상태 갱신
-        camera.update();
-		batch.projectionMatrix = camera.combined;
-
-        // 3) 게임 로직 업데이트
+		
+        // 2) 화면 로직 업데이트
         update(delta);
 
-		// 4) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
+		// 3) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
 		batch.begin();
 		drawBackground();
 		drawElements();
@@ -168,6 +150,10 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 		for(widget in widgets.values)
 			if(widget.isVisible)
 				widget.draw(batch);
+	}
+
+	protected inline fun updateProjectionDimensions(matrix: Matrix4, width: Float, height: Float) {
+		matrix.setToOrtho2D(0f, 0f, width, height);
 	}
 
     // ────────────────────────────────────────────────────────

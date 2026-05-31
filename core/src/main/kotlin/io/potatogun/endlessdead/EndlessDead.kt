@@ -37,9 +37,9 @@ class EndlessDead() : Game() {
 	 * 화면(창) 크기
 	 */
     val screenWidth: Float
-		inline get() = Gdx.graphics.getWidth().toFloat();
+		inline get() = Gdx.graphics.width.toFloat();
     val screenHeight: Float
-		inline get() = Gdx.graphics.getHeight().toFloat();
+		inline get() = Gdx.graphics.height.toFloat();
 	private var titleBarInfo = "";
 	private var titleBarStats = "";
 	/**

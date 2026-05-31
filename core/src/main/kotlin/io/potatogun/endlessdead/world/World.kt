@@ -3,6 +3,7 @@ package io.potatogun.endlessdead.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
@@ -37,6 +38,10 @@ import io.potatogun.endlessdead.screen.Screen;
  * @param height	월드 전체 높이
  */
 abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val height: Float = game.screenHeight) : Screen(game) {
+	// OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
+    private val camera = OrthographicCamera();
+	// 카메라의 좌표계가 아닌 화면 자체의 좌표계(기본값) (HUD나 위젯 그리기 시 필요) - https://javadoc.io/static/com.badlogicgames.gdx/gdx/1.12.1/com/badlogic/gdx/math/Matrix4.html 참고
+	private val screenProjectionMatrix = batch.projectionMatrix.cpy();
 	/**
 	 * 이 월드의 플레이어
 	 */
@@ -60,6 +65,18 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
 	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
+
+    init {
+        setCameraCenter();
+    }
+
+	/**
+	 * 카메라를 '왼쪽 아래 = (0,0), 오른쪽 위 = (screenWidth, screenHeight)'로 설정.
+	 */
+	private inline fun setCameraCenter() {
+        // false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
+		camera.setToOrtho(false, game.screenWidth, game.screenHeight);
+	}
 
     // ────────────────────────────────────────────────────────
     //  개체 관리
@@ -138,6 +155,8 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
 	 */
 	override fun resize(width: Int, height: Int) {
 		super.resize(width, height);
+		updateProjectionDimensions(screenProjectionMatrix, width.toFloat(), height.toFloat());
+		setCameraCenter();
 		updateCameraOffset();
 	}
 
@@ -176,7 +195,15 @@ abstract class World(game: EndlessDead, val width: Float = game.screenWidth, val
 	 * 배경 오버레이와 개체, 자막을 그린다.
 	 */
 	override fun drawElements() {
+		// 1) 카메라 상태 갱신
+		camera.update();
+		// 개체를 플레이어 위치(카메라 위치)에 상대적으로 맞추기 위해 좌표계를 카메라로 변경
+		batch.projectionMatrix = camera.combined;
+		// 개체들을 그린다.
         drawEntities();
+		// 다시 화면의 좌표계로 변경하여 HUD나 미터기를 그릴 준비를 한다.
+		batch.projectionMatrix = screenProjectionMatrix;
+
 		// 자막이 있으면 표시
 		if(subtitlesTimer > 0f) subtitlesMessage?.let {
 			drawText(
