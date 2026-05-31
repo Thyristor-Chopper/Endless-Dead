@@ -38,14 +38,14 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 	override fun update(delta: Float) {
 		super.update(delta);
 
-        val dx = target.position.x - position.x;
-        val dy = target.position.y - position.y;
+        val dx = target.x - x;
+        val dy = target.y - y;
         val distance = distanceTo(target);
 
 		// 플레이어의 중심으로 정확히 모이면 어색하니까 살짝은 거리를 두게 하자.
         if(distance > target.width * (3f / 4f)) {
-            position.x += dx / distance * speed * delta;
-            position.y += dy / distance * speed * delta;
+            x += dx / distance * speed * delta;
+            y += dy / distance * speed * delta;
         } else {
 			target.takeDamage(attackDamage, attacker = this);
 		}
@@ -74,8 +74,8 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
                         stateTimer = 0.5f;
 
                         // 대기 상태에 들어가는 첫 프레임, 이때 플레이어를 조준해서 방향을 기억해둔다
-                        val dx = target.position.x - position.x;
-                        val dy = target.position.y - position.y;
+                        val dx = target.x - x;
+                        val dy = target.y - y;
                         if(distance > 0) {
                             dashDirX = dx / distance;
                             dashDirY = dy / distance;
@@ -95,8 +95,8 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
                     speed = 0f;
                     attackDamage = 20;
 
-                    position.x += dashDirX * 800f * delta;
-                    position.y += dashDirY * 800f * delta;
+                    x += dashDirX * 800f * delta;
+                    y += dashDirY * 800f * delta;
 
                     // 돌진 중에 플레이어랑 부딪히면, 대미지 주고 즉시 쿨타임으로 넘어감
                     if(collidesWith(target)) {

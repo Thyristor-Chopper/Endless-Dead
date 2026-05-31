@@ -31,13 +31,13 @@ class Test(world: World, position: Position) : LivingEntity(world, position, 80f
 
 		rotateTo(target.position);
 
-        val dx = target.position.x - position.x;
-        val dy = target.position.y - position.y;
+        val dx = target.x - x;
+        val dy = target.y - y;
         val distance = distanceToTarget;
 
         if(distance != null && distance > 360f) {
-            position.x += dx / distance * speed * delta;
-            position.y += dy / distance * speed * delta;
+            x += dx / distance * speed * delta;
+            y += dy / distance * speed * delta;
         } else {
 			val selected: Item? = selectedItem;
 			if(selected is Fireable)

@@ -31,8 +31,8 @@ class Bullet(world: World, val gun: Fireable, val shooter: Entity, private val t
 		if(damage < 0) throw IllegalArgumentException("invalid damage");
 		if(hp < 0f) throw IllegalArgumentException("invalid HP");
 
-		val dx = target.x - shooter.position.x;
-		val dy = target.y - shooter.position.y;
+		val dx = target.x - shooter.x;
+		val dy = target.y - shooter.y;
 		val distance = sqrt(dx * dx + dy * dy);
 
 		if(distance > 0f) {
@@ -46,11 +46,11 @@ class Bullet(world: World, val gun: Fireable, val shooter: Entity, private val t
 	}
 
 	override fun update(delta: Float) {
-		position.x += amountX * delta;
-		position.y += amountY * delta;
+		x += amountX * delta;
+		y += amountY * delta;
 
 		// 화면 밖으로 나가면 소멸
-		if(position.x < 0f || position.x > world.width || position.y < 0f || position.y > world.height)
+		if(x < 0f || x > world.width || y < 0f || y > world.height)
 			this.kill();
 
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지 주고 총알은 소멸.

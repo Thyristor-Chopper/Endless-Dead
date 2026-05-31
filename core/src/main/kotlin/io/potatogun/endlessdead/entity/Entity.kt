@@ -82,7 +82,7 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
     // 개체에 등록된 기본 텍스처 대신에 쓸 텍스처를 alternateTexture로 넘길 수 있다.
     protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
 		val texture: Texture? = alternateTexture ?: this.texture;
-		texture?.let { batch.draw(it, position.x - width / 2f, position.y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false) };
+		texture?.let { batch.draw(it, x - width / 2f, y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false) };
 	}
 
 	/**
@@ -102,7 +102,7 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
      * 매번 새 Rectangle 을 만든다. 성능이 극한으로 중요한 곳이라면 재사용해야
      * 하지만, 이 강의의 규모에서는 가독성을 더 우선한다.
      */
-    inline fun getBounds(): Rectangle = Rectangle(position.x, position.y, width, height);
+    inline fun getBounds(): Rectangle = Rectangle(x, y, width, height);
 
     /**
      * 다른 객체와 충돌했는지 검사 — AABB(축 정렬 경계 상자) 방식.
@@ -149,7 +149,7 @@ abstract class Entity(val world: World, position: Position, val width: Float, va
 	 */
 	fun rotateTo(position: Position) {
 		// 샷건 내 360도 구현 참고함
-		rotation = toDegrees(atan2((world.game.screenHeight - position.y) - (this.position.y - world.offsetY), position.x - (this.position.x - world.offsetX)).toDouble()).toFloat() - 90f;
+		rotation = toDegrees(atan2((world.game.screenHeight - position.y) - (this.y - world.offsetY), position.x - (this.x - world.offsetX)).toDouble()).toFloat() - 90f;
 	}
 
 	/**

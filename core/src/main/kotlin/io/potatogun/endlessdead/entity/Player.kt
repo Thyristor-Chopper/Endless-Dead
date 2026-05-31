@@ -109,8 +109,8 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 			selectPreviousItem();
 
         // 월드 경계 안쪽으로 가두기.
-        position.x = position.x.coerceIn(0f, world.width);
-        position.y = position.y.coerceIn(0f, world.height);
+        x = x.coerceIn(0f, world.width);
+        y = y.coerceIn(0f, world.height);
     }
 
 	/**
@@ -123,19 +123,19 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 	private inline fun updatePosition(delta: Float): Boolean {
 		var moved = false;
 		if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A)) {
-			position.x -= speed * delta;
+			x -= speed * delta;
 			moved = true;
 		}
 		if(Input.isKeyPressed(Input.RIGHT) || Input.isKeyPressed(Input.D)) {
-			position.x += speed * delta;
+			x += speed * delta;
 			moved = true;
         }
 		if(Input.isKeyPressed(Input.UP) || Input.isKeyPressed(Input.W)) {
-			position.y += speed * delta;
+			y += speed * delta;
 			moved = true;
         }
 		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S)) {
-			position.y -= speed * delta;
+			y -= speed * delta;
 			moved = true;
 		}
 		return moved;
