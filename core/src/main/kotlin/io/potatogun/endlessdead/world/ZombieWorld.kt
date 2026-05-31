@@ -265,7 +265,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 	private inline fun updateProgressBars() {
 		// HP 미터기 처리
 		val hpIndicator = getWidget("hp_indicator") as ProgressBar;
-		hpIndicator.value = player.hp.toFloat() / player.maxHp;
+		hpIndicator.value = player.hp.toFloat() / player.maxHP;
 
 		// 총 관련 미터기 처리
 		val ammoIndicator = getWidget("gun_ammo_indicator") as ProgressBar;

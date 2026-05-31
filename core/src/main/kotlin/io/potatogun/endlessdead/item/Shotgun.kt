@@ -32,7 +32,7 @@ class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true,
                 centerY + sin(finalAngle) * 100f  // 구글링했음
             );
 
-            world.addEntity(Bullet(world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, penetrable, bulletHp));
+            world.addEntity(Bullet(world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, penetrable, bulletHP));
         }
 
         startFireCooldown();

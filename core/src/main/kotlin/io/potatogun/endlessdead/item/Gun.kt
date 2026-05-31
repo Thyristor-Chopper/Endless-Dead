@@ -19,18 +19,20 @@ import kotlin.math.sin;
 /**
  * 총 아이템 추상 클래스
  *
+ * 참고로 camelCase에서 hp같은 두문자어는 전부 대문자여야 맞다고 한다.
+ *
  * @param world			아이템이 있는 세계
  * @param id			총 식별자
  * @param name			총 이름
  * @param bulletDamage	총알 피해량
  * @param bulletSpeed	총알 속도
- * @param bulletHp		총알 체력
+ * @param bulletHP		총알 체력
  * @param penetrable	총알 관통 가능 여부
  * @param fireInterval	공격 속도
  * @param initialAmmo	초기 총알 개수
  * @param maxAmmo		최대 총알 개수
  */
-abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHp: Int, val penetrable: Boolean, val fireInterval: Float, initialAmmo: Int, val maxAmmo: Int = initialAmmo) : Item(world, id, name), Fireable, Usable {
+abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHP: Int, val penetrable: Boolean, val fireInterval: Float, initialAmmo: Int, val maxAmmo: Int = initialAmmo) : Item(world, id, name), Fireable, Usable {
 	override val allowContinuousUse = false;
 	private var fireCooldown = 0f
 		set(value) {
@@ -51,7 +53,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 		if(fireInterval < 0f) throw IllegalArgumentException("invalid fire interval");
 		if(bulletDamage < 0) throw IllegalArgumentException("invalid bullet damage");
 		if(bulletSpeed < 0f) throw IllegalArgumentException("invalid bullet speed");
-		if(bulletHp < 0f) throw IllegalArgumentException("invalid bullet HP");
+		if(bulletHP < 0f) throw IllegalArgumentException("invalid bullet HP");
 		if(initialAmmo < 0f) throw IllegalArgumentException("invalid ammo");
 		if(maxAmmo < 0f) throw IllegalArgumentException("invalid max ammo");
 		if(initialAmmo > maxAmmo) throw IllegalArgumentException("ammo count can't be greater than max ammo");
@@ -88,7 +90,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 	override fun fire(target: Position, shooter: Entity): Int {
 		if(!canFire) return 0;
 
-		val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, penetrable, bulletHp);
+		val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, penetrable, bulletHP);
 		world.addEntity(bullet);
 		startFireCooldown();
 		ammo--;
