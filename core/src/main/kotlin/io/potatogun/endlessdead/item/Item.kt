@@ -37,13 +37,6 @@ abstract class Item(val world: World, val id: String, val name: String) {
 		};
 
 	/**
-	 * 같은 종류의 아이템인지를 비교한다.
-	 */
-	open fun equals(other: Item): Boolean {
-		return id == other.id;
-	}
-
-	/**
 	 * 아이템을 파괴한다.
 	 *
 	 * @return 아이템 존재 여부
