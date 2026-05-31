@@ -31,7 +31,8 @@ import kotlin.math.sqrt;
  * @param height		세로 크기 (픽셀)
  * @param hp			최대 체력
  * @param attackDamage	공격력
- * @param speed			이동 속도 (var이긴 하지만 자바의 원시 float은 null이 될 수 없기 때문에 @JvmField이 있어도 NullPointerException에서 안전하다.)
+ * @param speed			이동 속도 (var이긴 하지만 자바의 원시 float은 null이 될 수 없기 때문에 @JvmField이 있어도 null에서 안전하다.
+ *						           빌드 후 직접 Fernflower로 자바로 디컴파일해서 Float 랩퍼가 아닌 원시 float임을 확인했다.)
  * @param texture		개체 텍스처
  */
 open class Zombie(world: World, position: Position, width: Float, height: Float, hp: Int, attackDamage: Int, protected @JvmField var speed: Float, texture: Texture = Textures.getShared("zombie")) : LivingEntity(world, position, width, height, texture, hp) {
