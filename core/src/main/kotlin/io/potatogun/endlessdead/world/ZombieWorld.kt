@@ -39,8 +39,8 @@ import kotlin.random.Random;
  *  게임 월드 예제 — Player vs Enemy 회피 게임 (이미지 사용).
  * ════════════════════════════════════════════════════════════
  *
- *  GameWorld 를 상속해 만든 가장 작은 플레이 가능한 예제.
- *  학생은 이 파일을 참고해서 자기만의 월드를 만들면 된다.
+ *  World를 상속해 만든 가장 작은 플레이 가능한 예제.
+ *  이 파일을 참고해서 자기만의 월드를 만들면 된다.
  *
  *  ── 조작법 ──
  *   ▸ 화살표 키  : 플레이어 이동
@@ -53,7 +53,8 @@ import kotlin.random.Random;
  *   ▸ tile.png    — 64x64 흰색 정사각형 (체스판 배경에 색만 입혀 사용)
  *
  *  ── 게임 상태 ──
- *   IN_PLAY   : 일반 진행 (이동·충돌 체크)
+ *   PLAYING   : 일반 진행 (이동·충돌 체크)
+ *   PAUSED    : 일시 중지 상태
  *   GAME_OVER : 충돌 후 정지, ESC 입력 대기
  *
  *  ── 텍스트 데모 ──
@@ -159,9 +160,7 @@ class ZombieWorld(game: EndlessDead, viewer: WorldViewer, width: Float, height: 
     // ────────────────────────────────────────────────────────
 
     /**
-	 * IN_PLAY 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
-	 *
-	 * update에서만 한 번 쓰이기 때문에 inline이다.
+	 * PLAYING 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
 	 */
     override fun update(delta: Float) {
         // ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
