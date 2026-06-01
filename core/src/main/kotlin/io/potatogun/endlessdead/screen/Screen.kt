@@ -148,12 +148,26 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 	protected open fun drawElements() {}
 
 	/**
-	 * 화면 내 위젯(컨트롤)들을 그린다.
+	 * 스크린에 등록된 위젯(컨트롤)들을 그린다.
 	 */
 	private inline fun drawWidgets() {
-		for(widget in widgets.values)
-			if(widget.isVisible)
-				widget.draw(batch);
+		drawWidgets(widgets.values.toList());
+	}
+
+	/**
+	 * 스크린의 addWidget로 직접 등록하지 않은, 따로 지정한 목록의 위젯(컨트롤)들을 수동으로 그린다.
+	 */
+	inline fun drawWidgets(widgets: List<Widget>) {
+		for(widget in widgets)
+			drawWidget(widget);
+	}
+
+	/**
+	 * 스크린의 addWidget로 직접 등록하지 않은 위젯(컨트롤)을 수동으로 그린다.
+	 */
+	fun drawWidget(widget: Widget) {
+		if(widget.isVisible)
+			widget.draw(batch);
 	}
 
     // ────────────────────────────────────────────────────────

@@ -20,6 +20,7 @@ import io.potatogun.endlessdead.world.World;
 import io.potatogun.endlessdead.world.ZombieWorld;
 import io.potatogun.endlessdead.widget.Button;
 import io.potatogun.endlessdead.widget.ProgressBar;
+import io.potatogun.endlessdead.widget.Widget;
 import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
 
 /**
@@ -44,6 +45,10 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
+	// 일시 중지/게임 오버 오버레이 위에도 뜨는 위젯들
+    private val topWidgets = mutableListOf<Widget>();
+	// 재시작 단추.
+	private val replayButton: Button;
 
 	init {
 		// 단색용 텍스처 생성
@@ -58,6 +63,10 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		addWidget("hp_indicator", ProgressBar({ 80f }, { game.screenHeight - 24f }, 220f, color = Utils.rgb(234, 197, 21)));
 		addWidget("gun_ammo_indicator", ProgressBar({ game.screenWidth - 145f }, { 10f }, 130f, color = Utils.rgb(15, 116, 240), style = ProgressBarStyle.CHUNKED).apply { hide() });
 		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide() });
+
+		// 다시 시작 단추
+		replayButton = Button({ game.screenWidth / 2 - 60f }, { 120f }, 120f, caption = "Replay", onClick = { restartGame() }).apply { hide() };
+		topWidgets.add(replayButton);
 
 		// 제목 표시줄 정보 전환
 		timers.add(Timer(3f, false) {
@@ -107,7 +116,6 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 *  상태 변화·입력은 update 가 책임진다.)
 	 */
 	override fun update(delta: Float) {
-		// 이곳은 월드가 아닌 뷰어 자체의 로직만 다룬다.
         when {
             GameManager.isPlaying	-> updateInPlay(delta);
             GameManager.isPaused	-> updatePaused();
@@ -121,6 +129,8 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
     private inline fun updateInPlay(delta: Float) {
+		replayButton.hide();
+
 		world?.update(delta);
 
 		if(subtitlesTimer > 0f)
@@ -216,10 +226,12 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
 	private inline fun updatePaused() {
+		replayButton.hide();
+
 		// 제목 표시줄에 통계 표시
 		updateTitleBarInfo();
 		
-		// 일시 정지 키 누름만 감지
+		// 일시 정지 키 누름 감지
 		detectPauseKey();
     }
 
@@ -229,31 +241,37 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
     private inline fun updateGameOver() {
+		replayButton.show();
+
         // ESC 키가 '막 눌린 순간' 앱 종료.
         //   isKeyJustPressed로 한 이유: 누르고 있는 동안 매 프레임 exit이 호출되지 않게.
         if(Input.isKeyJustPressed(Input.ESCAPE))
             Gdx.app.exit();
 
         // R 키나 사이띄개를 누르면 다시 시작
-        if(Input.isKeyJustPressed(Input.R) || Input.isKeyJustPressed(Input.SPACE)) {
-			game.setTitleBarInfo("다시 시작하는 중...");
-            // 불러오는 중이 막히지 않고 바로 뜨게 하기 위해 다음 프레임 때 로드
-			Gdx.app.postRunnable {
-				GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
-				game.currentRound++;
-				loadWorld(ZombieWorld(game, this, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat()), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
-				game.setTitleBarInfo(null);
-			};
-        }
+        if(Input.isKeyJustPressed(Input.R) || Input.isKeyJustPressed(Input.SPACE))
+			restartGame();
     }
+
+	private fun restartGame() {
+		game.setTitleBarInfo("다시 시작하는 중...");
+		// 불러오는 중이 막히지 않고 바로 뜨게 하기 위해 다음 프레임 때 로드
+		Gdx.app.postRunnable {
+			GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
+			game.currentRound++;
+			loadWorld(ZombieWorld(game, this, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat()), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
+			game.setTitleBarInfo(null);
+		};
+	}
 
 	/**
 	 * <Esc>나 P 글쇠가 눌렸을 때를 감지해서 일시 정지하거나 계속한다.
 	 */
 	private fun detectPauseKey() {
 		// P키를 누르면 일시 정지 <-> 게임 진행 중 상태 토글!
-        if(Input.isKeyJustPressed(Input.P) || Input.isKeyJustPressed(Input.ESCAPE)) {
-            if(GameManager.isPlaying)
+		val resumeKeyPressed = Input.isKeyJustPressed(Input.SPACE) || Input.isButtonJustPressed(Input.LEFT_MOUSE);
+        if(Input.isKeyJustPressed(Input.P) || Input.isKeyJustPressed(Input.ESCAPE) || resumeKeyPressed) {
+            if(GameManager.isPlaying && !resumeKeyPressed)
 				GameManager.pause();
 			else if(GameManager.isPaused)
 				GameManager.resume();
@@ -283,6 +301,8 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
             GameManager.isPaused	-> drawPausedMessage();  // 일시정지 화면 그리기
             GameManager.isGameOver	-> drawGameOverMessage();
         }
+
+		drawWidgets(topWidgets);
 
 		batch.end();
 	}
@@ -315,7 +335,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 			skipBatch = true
         );
         drawText(
-            text = "Press <P> or <Esc> to resume",
+            text = "Click anywhere or press <P> or <Esc> or <Space> to resume",
             x = 0f,
             y = game.screenHeight / 2f - 20f,
             color = Color.WHITE,
@@ -405,6 +425,8 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 				skipBatch = true
 			);
 		}
+		
+		replayButton.draw(batch);
     }
 
 	/**

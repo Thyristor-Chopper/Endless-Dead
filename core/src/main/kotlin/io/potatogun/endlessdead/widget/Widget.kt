@@ -20,7 +20,7 @@ abstract class Widget(var x: () -> Float, var y: () -> Float, @JvmField val widt
 	/**
 	 * 컨트롤을 화면에 그리는 로직
 	 */
-	abstract fun draw(batch: SpriteBatch);
+	internal abstract fun draw(batch: SpriteBatch);
 
 	/**
 	 * 자원 해제
