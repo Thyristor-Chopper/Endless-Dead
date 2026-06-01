@@ -107,7 +107,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 
 		// 이동
 		val moved = updatePosition(delta);
-		if(moved) world.updateCameraOffset();
+		if(moved) world.updateCamera();
     }
 
 	/**

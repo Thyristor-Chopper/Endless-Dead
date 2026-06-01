@@ -70,8 +70,7 @@ import kotlin.random.Random;
  * @param height  월드 전체 높이
  */
 class ZombieWorld(game: EndlessDead, viewer: WorldViewer, width: Float, height: Float) : World(game, viewer, width, height), Freezable {
-    // 플레이어 — 월드 중앙 하단에서 시작.
-    //   월드 크기를 함께 넘겨서, 경계 밖으로 못 나가게 한다.
+    // 플레이어 — 월드 중앙에서 시작.
     override val player = Player(this, Position(width / 2, height / 2));
 	private val spawners = mutableListOf<Spawner>();
     // ── 체스판 배경 설정 (drawBackground()에서 사용) ──
@@ -85,7 +84,7 @@ class ZombieWorld(game: EndlessDead, viewer: WorldViewer, width: Float, height: 
     private val bgColorLight = Utils.rgb(38, 107, 38);
     private val tileSize = 64f;
 	private val timers = mutableListOf<Timer>();
-	override var isFrozen: Boolean = false  // world의 시간이 정지 되었는지 확인하는 변수
+	override var isFrozen: Boolean = false  // world의 시간이 정지되었는지 확인하는 변수
 		private set;
 	private var unfreezeTimer: Timer? = null;
 

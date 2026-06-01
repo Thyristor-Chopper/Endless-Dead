@@ -154,7 +154,7 @@ abstract class World(@JvmField val game: EndlessDead, @JvmField val viewer: Worl
 	 */
 	internal fun resize(width: Int, height: Int) {
 		setCameraCenter();
-		updateCameraOffset();
+		updateCamera();
 	}
 
     // ────────────────────────────────────────────────────────
@@ -192,7 +192,7 @@ abstract class World(@JvmField val game: EndlessDead, @JvmField val viewer: Worl
 	 *
 	 * 'abstract' 인 이유:
 	 *   기본 동작('아무것도 안 함') 이 의미 있지 않다. 게임마다 배경은 다르고,
-	 *   '배경이 없다' 는 결정도 명시적으로 내려야 한다고 본다. 그래서 강제 구현.
+	 *   '배경이 없다'는 결정도 명시적으로 내려야 한다고 본다. 그래서 강제 구현.
 	 *   (검은 배경을 원하면 그냥 비어있는 함수로 override 하면 됨)
 	 *
 	 *   참고: update() 는 abstract 가 아닌 open 이다 — 거기엔 쓸 만한 default 가
@@ -227,7 +227,7 @@ abstract class World(@JvmField val game: EndlessDead, @JvmField val viewer: Worl
 	/**
 	 * 플레이어 위치에 따라 카메라 위치 변경
 	 */
-	fun updateCameraOffset() {
+	fun updateCamera() {
         // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
         //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
         //   offset 은 0 ~ (world - screen) 범위여야 한다.

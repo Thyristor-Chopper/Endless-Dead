@@ -21,6 +21,12 @@ import io.potatogun.endlessdead.world.ZombieWorld;
 import io.potatogun.endlessdead.widget.ProgressBar;
 import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
 
+/**
+ * 월드를 불러오고 월드를 화면에 프로젝션해주는 스크린이다.
+ *
+ * 객체 생성 이후 '반드시, 바로' loadWorld(World)를 호출해야 한다. 
+ *   (월드가 없는 상황 - world == null - 은 구현하지 않았기 떄문에 오류가 날 것이다.)
+ */
 class WorldViewer(game: EndlessDead) : Screen(game) {
 	private lateinit var world: World;
 	private val frozenOverlay = Utils.rgb(0, 0, 0, 0.5f);
@@ -62,8 +68,8 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	fun loadWorld(worldToShow: World) {
 		val previousWorld: World? = if(::world.isInitialized) world else null;
 		world = worldToShow;
+		worldToShow.updateCamera();
 		Gdx.app.postRunnable { previousWorld?.dispose() };
-		worldToShow.updateCameraOffset();
 	}
 
 	override fun resize(width: Int, height: Int) {
