@@ -11,6 +11,7 @@ import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.ScoreManager;
+import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.entity.Zombie;
@@ -31,6 +32,7 @@ import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
 class WorldViewer(game: EndlessDead) : Screen(game) {
 	// 표시할 월드
 	private var world: World? = null;
+	private val noWorldOverlay = Utils.rgb(255, 255, 255, 0.5f);
 	private val frozenOverlay = Utils.rgb(0, 0, 0, 0.5f);
     private val solidColor: Texture;
 	// 제목 표시줄에 표시할 정보의 인덱스
@@ -45,8 +47,11 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
-	// 재시작 단추.
+	// 게임 오버 화면의 단추.
 	private val replayButton: Button;
+	private val titleButton: Button;
+	// 로드된 월드가 없을 때 보일 placeholder 배경
+	private val lazyStillCut = lazy { Textures.loadTexture("still_cut.bmp") };
 
 	init {
 		// 단색용 텍스처 생성
@@ -62,8 +67,18 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		addWidget("gun_ammo_indicator", ProgressBar({ game.screenWidth - 145f }, { 10f }, 130f, color = Utils.rgb(15, 116, 240), style = ProgressBarStyle.CHUNKED).apply { hide() });
 		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide() });
 
-		// 다시 시작 단추
-		replayButton = Button({ game.screenWidth / 2 - 60f }, { 120f }, 120f, caption = "Replay", onClick = { restartGame() });
+		// 게임 오버 단추
+		replayButton = Button({ game.screenWidth / 2 - 125f }, { 120f }, 120f, caption = "Replay", onClick = {
+			restartGame();
+		});
+		titleButton = Button({ game.screenWidth / 2 + 5f }, { 120f }, 120f, caption = "Back to title", onClick = {
+			unloadWorld(true);
+			GameManager.standBy();
+			game.currentRound = 0;
+			game.setTitleBarStats(null);
+			game.setTitleBarInfo(null);
+			game.setScreen(Title(game));
+		});
 
 		// 제목 표시줄 정보 전환
 		timers.add(Timer(3f, false) {
@@ -126,13 +141,13 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
     private inline fun updateInPlay(delta: Float) {
+		// 제목 표시줄에 통계 표시
+		updateTitleBarInfo();
+
 		world?.update(delta);
 
 		if(subtitlesTimer > 0f)
 			subtitlesTimer -= delta;
-
-		// 제목 표시줄에 통계 표시
-		updateTitleBarInfo();
 
 		// 미터기 정보 갱신
 		updateProgressBars();
@@ -415,8 +430,9 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 			);
 		}
 
-		// 다시 시작 단추 그리기(게임 오버 화면에서만 보임)
+		// 게임 오버 관련 단추 그리기(게임 오버 화면에서만 보임)
 		drawWidget(replayButton);
+		drawWidget(titleButton);
     }
 
 	/**
@@ -426,7 +442,10 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		if(world != null) return;
 		
 		// 표시할 월드가 없을 때 보일 placeholder (일반적으로 볼 일은 없다.)
-		drawText("No world loaded!", 0f, game.screenHeight / 2f, Color.RED, 1.0f, game.screenWidth, Align.center, true);
+		batch.color = noWorldOverlay;
+		batch.draw(lazyStillCut.value, 0f, 0f, game.screenWidth.toFloat(), game.screenHeight.toFloat());
+		batch.color = Color.WHITE;
+		drawText("No world loaded!", 0f, game.screenHeight / 2f, Color.SCARLET, 2.0f, game.screenWidth, Align.center, true);
 	}
 
 	override fun drawElements() {
@@ -519,6 +538,8 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		for(timer in timers)
 			timer.unregister();
 		timers.clear();
+		if(lazyStillCut.isInitialized())
+			lazyStillCut.value.dispose();
 	}
 
 	/**

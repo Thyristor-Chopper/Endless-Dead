@@ -9,7 +9,7 @@ object GameManager {
 	/**
 	 * 게임의 현재 상태
 	 */
-	private var state = GameState.TITLE;
+	private var state = GameState.STANDBY;
 	/**
 	 * 현재 게임이 진행 중인지의 여부
 	 */
@@ -25,6 +25,13 @@ object GameManager {
 	 */
 	val isPaused: Boolean
 		get() = (state == GameState.PAUSED);
+
+	/**
+	 * 준비 상태로 전환한다.
+	 */
+	fun standBy() {
+		state = GameState.STANDBY;
+	}
 
 	/**
 	 * 게임 진행 상태로 전환한다.
@@ -61,7 +68,7 @@ object GameManager {
 	 * 게임의 현재 상태를 나타내는 열거형.
 	 */
 	private enum class GameState {
-		TITLE,
+		STANDBY,
 		PLAYING,
 		PAUSED,
 		GAME_OVER;
