@@ -11,15 +11,20 @@ import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Utils;
 
-class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 20f, private var caption: String, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
+class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 20f, caption: String, accessKey: Char? = null, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
 	private val button: NinePatch = Textures.button;
 	private val buttonHover: NinePatch = Textures.buttonHover;
 	private val buttonPressed: NinePatch = Textures.buttonPressed;
     private val font = BitmapFont();
-	// private val accessKeyMatch = Regex("[&]([A-Za-z0-9])");
-	// override val accessKey: Char? = accessKey ?: accessKeyMatch.find(caption)?.value?.get(1);
-	// private val caption = caption.replaceFirst(accessKeyMatch, "$1");
+	private val accessKey: Char?;
+	private val caption: String;
 	private var previouslyPressed = false;
+
+	init {
+		val accessKeyMatch = Regex("[&]([A-Za-z])");
+		this.accessKey = (accessKey ?: accessKeyMatch.find(caption)?.value?.get(1))?.uppercaseChar();
+		this.caption = caption.replaceFirst(accessKeyMatch, "$1");
+	}
 
 	override fun draw(batch: SpriteBatch) {
 		val x = this.x();
@@ -47,10 +52,10 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 20f, 
 
 		toDraw.draw(batch, x, y, width, height);
 		Utils.drawText(batch, font, caption, x, y + height / 2f + 7f, Color.BLACK, 1.0f, width, Align.center, true);
-	}
 
-	fun setCaption(caption: String) {
-		this.caption = caption;
+		// 바로 가기 키 처리
+		if(accessKey != null && Input.isKeyJustPressed(accessKey.code - 36))
+			onClick();
 	}
 
 	private inline fun fireClickEvent() {

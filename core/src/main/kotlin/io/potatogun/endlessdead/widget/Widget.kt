@@ -16,10 +16,6 @@ abstract class Widget(var x: () -> Float, var y: () -> Float, @JvmField val widt
 	 */
 	var isVisible = true
 		private set;
-	/**
-	 * 바로 가기 키
-	 */
-	open val accessKey: Char? = null
 
 	/**
 	 * 컨트롤을 화면에 그리는 로직
