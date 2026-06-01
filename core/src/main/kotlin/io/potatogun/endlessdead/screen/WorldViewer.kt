@@ -452,7 +452,8 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		batch.color = noWorldOverlay;
 		batch.draw(lazyStillCut.value, 0f, 0f, game.screenWidth.toFloat(), game.screenHeight.toFloat());
 		batch.color = Color.WHITE;
-		drawText("No world loaded!", 0f, game.screenHeight / 2f, Color.SCARLET, 2.0f, game.screenWidth, Align.center, true);
+		// 월드가 없다는 메시지 없이 그냥 placeholder 배경 그림만 넣는 게 나으려나.
+		// drawText("No world loaded!", 0f, game.screenHeight / 2f, Color.SCARLET, 2.0f, game.screenWidth, Align.center, true);
 	}
 
 	override fun drawElements() {
