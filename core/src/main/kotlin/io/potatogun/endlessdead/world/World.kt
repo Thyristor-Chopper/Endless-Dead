@@ -43,7 +43,7 @@ import io.potatogun.endlessdead.screen.WorldViewer;
 abstract class World(@JvmField val game: EndlessDead, @JvmField val viewer: WorldViewer, @JvmField val width: Float, @JvmField val height: Float) {
 	// OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     private val camera = OrthographicCamera();
-	@JvmField internal val batch = SpriteBatch().apply { projectionMatrix = camera.combined };
+	@JvmField protected val batch = SpriteBatch().apply { projectionMatrix = camera.combined };
     @JvmField protected val font = BitmapFont();
 	/**
 	 * 이 월드의 플레이어
@@ -153,7 +153,6 @@ abstract class World(@JvmField val game: EndlessDead, @JvmField val viewer: Worl
 	 * 크기 조절 시 호출된다.
 	 */
 	internal fun resize(width: Int, height: Int) {
-		batch.projectionMatrix = camera.combined;
 		setCameraCenter();
 		updateCameraOffset();
 	}
@@ -181,8 +180,11 @@ abstract class World(@JvmField val game: EndlessDead, @JvmField val viewer: Worl
     //  매 프레임 그리기
     // ────────────────────────────────────────────────────────
 
-	internal open fun drawElements(delta: Float) {
-		drawEntities();
+	internal fun render() {
+		batch.begin();
+		drawBackground();
+		drawElements();
+		batch.end();
 	}
 
 	/**
@@ -200,7 +202,14 @@ abstract class World(@JvmField val game: EndlessDead, @JvmField val viewer: Worl
 	 * @param batch 이미 begin() 된 SpriteBatch — 여기에 batch.draw(texture, ...)로 그린다.
 	 *              begin/end 를 또 호출하면 안 된다.
 	 */
-	internal abstract fun drawBackground();
+	protected abstract fun drawBackground();
+
+	/**
+	 * 월드에서 그려야 할 요소(등록된 개체 등)를 그린다.
+	 */
+	protected open fun drawElements() {
+		drawEntities();
+	}
 
     /**
      * 등록된 모든 객체를 그린다.
@@ -208,7 +217,7 @@ abstract class World(@JvmField val game: EndlessDead, @JvmField val viewer: Worl
      * 이렇게 해야 서브클래스의 draw() 는 '자기 위치에 그냥 그려라'만 구현하면 되고,
      *   카메라가 움직이든 말든 신경 쓸 필요가 없다.
 	 *
-	 * render에서만 한 번 쓰이기 때문에 인라인 함수이다.
+	 * drawElements에서만 한 번 쓰이기 때문에 인라인 함수이다.
      */
     private inline fun drawEntities() {
         for(entity in entities)

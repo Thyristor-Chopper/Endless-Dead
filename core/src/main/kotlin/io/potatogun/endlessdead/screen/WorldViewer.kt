@@ -2,7 +2,6 @@ package io.potatogun.endlessdead.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Align;
@@ -95,6 +94,8 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
     private inline fun updateInPlay(delta: Float) {
+		world.update(delta);
+
 		if(subtitlesTimer > 0f)
 			subtitlesTimer -= delta;
 
@@ -222,17 +223,6 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
      *       텍스트는 반드시 super 호출 '이후' 그려야 가려지지 않는다.
      */
 	override fun render(delta: Float) {
-		// 이전 프레임 잔상 지우기
-		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-	
-		// 월드 관련 처리...
-		if(GameManager.isPlaying) world.update(delta);
-		world.batch.begin();
-		world.drawBackground();
-		world.drawElements(delta);
-		world.batch.end();
-
 		super.render(delta);
 
 		batch.begin();
@@ -369,11 +359,16 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
     }
 
 	/**
-	 * 월드가 아닌 뷰어 자체의 배경은 없다.
+	 * 월드가 아닌 뷰어 자체의 배경은 없다(그려봤자 월드의 배경이 반투명하지 않는 이상 가려질 것이다).
 	 */
 	override fun drawBackground() {}
 
-	override fun drawElements(delta: Float) {
+	override fun drawElements() {
+		// 월드 관련 처리...
+		batch.end();  // 월드의 그리기 배치를 처리하기 전에 화면 자체의 배치를 잠시 중지.
+		world.render();
+		batch.begin();  // 월드의 그리기가 끝나면 화면의 그리기 배치를 다시 시작
+
 		// 자막이 있으면 표시
 		if(subtitlesTimer > 0f) subtitlesMessage?.let {
 			drawText(

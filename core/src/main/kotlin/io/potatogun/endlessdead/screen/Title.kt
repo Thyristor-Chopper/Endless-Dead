@@ -40,7 +40,7 @@ class Title(game: EndlessDead) : Screen(game) {
 		batch.draw(stillCut, 0f, 0f, game.screenWidth, game.screenHeight);
 	}
 
-	override fun drawElements(delta: Float) {
+	override fun drawElements() {
 		val titleWidth = game.screenWidth * 0.75f;
 		val titleHeight = titleWidth / 6f;
 		val titleX = (game.screenWidth - titleWidth) / 2f;
