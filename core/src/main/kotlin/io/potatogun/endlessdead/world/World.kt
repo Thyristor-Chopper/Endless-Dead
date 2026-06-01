@@ -20,6 +20,8 @@ import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.screen.Screen;
 import io.potatogun.endlessdead.screen.WorldViewer;
 
+import kotlin.math.max;
+
 /**
  * 게임 내 월드 = '월드 하나' 의 추상 기본 클래스.
  * '월드'의 개념에 맞게 플레이어나 적 등의 개체 등을 추가한다.
@@ -219,8 +221,20 @@ abstract class World(val game: EndlessDead, val viewer: WorldViewer, @JvmField v
 	 * drawElements에서만 한 번 쓰이기 때문에 인라인 함수이다.
      */
     private inline fun drawEntities() {
-        for(entity in entities)
-            entity.draw(batch);
+		// game.screenWidth는 Graphics#getWidth 메쏘드를 호출하므로 반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
+		val halfScreenWidth = game.screenWidth / 2f;
+		val halfScreenHeight = game.screenHeight / 2f;
+		val offsetX = this.offsetX;
+		val offsetY = this.offsetY;
+
+        for(entity in entities) {
+			// 보이는 개체만 그리기 (자원 낭비 감소)
+			val maxEntityLength = max(entity.width, entity.height);
+			val entityX = entity.x;
+			val entityY = entity.y;
+			if(entityX >= offsetX - halfScreenWidth - maxEntityLength && entityX <= offsetX + halfScreenWidth + maxEntityLength && entityY >= offsetY - halfScreenHeight - maxEntityLength && entityY <= offsetY + halfScreenHeight + maxEntityLength)
+				entity.draw(batch);
+		}
     }
 
 	/**
