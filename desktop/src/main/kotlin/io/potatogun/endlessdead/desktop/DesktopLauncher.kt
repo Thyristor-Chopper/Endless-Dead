@@ -39,7 +39,7 @@ fun main() {
     //   Lwjgl3ApplicationConfiguration().apply { setTitle(...); setWindowedMode(...); ... }
     //   처럼 더 간결하게 쓸 수 있다.
     val config = Lwjgl3ApplicationConfiguration();
-    config.setTitle("${game.title} - 시작하는 중...");				// 창 제목
+    config.setTitle("${game.title} - Loading...");					// 창 제목
     config.setWindowedMode(800, 600);								// 창 크기
     config.setResizable(true);										// 크기 조절 가능
 	config.setWindowSizeLimits(320, 240, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT);

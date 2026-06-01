@@ -80,14 +80,14 @@ class EndlessDead : Game() {
 	 */
 	private inline fun update() {
 		val gameStateIndicator = when {
-			GameManager.isPaused	-> "[일시 중지]"
-			GameManager.isGameOver	-> "[게임 오버]"
+			GameManager.isPaused	-> "[Paused]"
+			GameManager.isGameOver	-> "[Game Over]"
 			else					-> ""
 		}.run {
 			if(this.isBlank()) ""
 			else " $this"
 		};
-		val roundInfo = if(currentRound > 0) " - 라운드 $currentRound" else "";
+		val roundInfo = if(currentRound > 0) " - Round $currentRound" else "";
 		val titleBarInfo = if(this.titleBarInfo.isBlank()) "" else " - $titleBarInfo";
 		val titleBarStats = if(this.titleBarStats.isBlank()) "" else " / $titleBarStats";
 		if(titleBarInfo.isEmpty())

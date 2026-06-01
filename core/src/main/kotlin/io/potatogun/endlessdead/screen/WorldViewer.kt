@@ -174,12 +174,12 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		}
 		
 		game.setTitleBarStats(when(TitleInfoType.byIndex(currentTitleInfo)) {
-			TitleInfoType.OPENED	-> "연 상자: ${world.player.openedContainerCount}개"
-			TitleInfoType.KILLED	-> "잡은 좀비 수: ${world.player.killedZombieCount}"
-			TitleInfoType.FIRED		-> "총 쏜 횟수: ${world.player.fireCount}"
-			TitleInfoType.SURVIVED	-> "생존 시간: ${Utils.parseSeconds(world.player.survivedDuration, "분", "초")}"
-			TitleInfoType.DAMAGE	-> "누적 피해량: ${world.player.totalDamage}"
-			TitleInfoType.ZOMBIES	-> "현재 좀비 수: ${world.getEntities().filterIsInstance<Zombie>().size}"
+			TitleInfoType.OPENED	-> "Opened chests: ${world.player.openedContainerCount}"
+			TitleInfoType.KILLED	-> "Killed zombies: ${world.player.killedZombieCount}"
+			TitleInfoType.FIRED		-> "Fired: ${world.player.fireCount}"
+			TitleInfoType.SURVIVED	-> "Survived duration: ${Utils.parseSeconds(world.player.survivedDuration, "분", "초")}"
+			TitleInfoType.DAMAGE	-> "Total damage: ${world.player.totalDamage}"
+			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.getEntities().filterIsInstance<Zombie>().size}"
 		});
 	}
 
