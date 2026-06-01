@@ -27,6 +27,7 @@ import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
  * 객체 생성 이후 loadWorld(World)를 호출해야 한다. 
  */
 class WorldViewer(game: EndlessDead) : Screen(game) {
+	// 표시할 월드
 	private var world: World? = null;
 	private val frozenOverlay = Utils.rgb(0, 0, 0, 0.5f);
     private val solidColor: Texture;
@@ -42,7 +43,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
-	
+
 	init {
 		// 단색용 텍스처 생성
 		Pixmap(1, 1, Pixmap.Format.RGBA8888).run {
@@ -64,11 +65,17 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		}.register());
 	}
 
-	fun loadWorld(worldToShow: World) {
-		val previousWorld: World? = world;
-		world = worldToShow;
-		worldToShow.updateCamera();
-		Gdx.app.postRunnable { previousWorld?.dispose() };
+	/**
+	 * 지정한 월드를 불러와서 보여준다.
+	 *
+	 * @param world		불러올 월드
+	 * @param dispose	기존 월드의 자원을 정리할지의 여부
+	 */
+	fun loadWorld(world: World, dispose: Boolean = false) {
+		val previousWorld: World? = this.world;
+		this.world = world;
+		world.updateCamera();
+		if(dispose) Gdx.app.postRunnable { previousWorld?.dispose() };
 	}
 
 	override fun resize(width: Int, height: Int) {
@@ -219,7 +226,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 			Gdx.app.postRunnable {
 				GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
 				game.currentRound++;
-				loadWorld(ZombieWorld(game, this, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat()));  // 월드를 아예 새로 파서 화면을 덮어씌움
+				loadWorld(ZombieWorld(game, this, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat()), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
 				game.setTitleBarInfo(null);
 			};
         }
