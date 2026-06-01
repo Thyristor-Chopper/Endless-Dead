@@ -21,6 +21,8 @@ import kotlin.math.sin;
  *
  * 참고로 camelCase에서 hp같은 두문자어는 전부 대문자여야 맞다고 한다.
  *
+ * @JvmField가 있는 곳은 빌드 후 직접 디컴파일하여 null이 불가능한 원시 int, float로 바뀜을 확인했다.
+ *
  * @param world			아이템이 있는 세계
  * @param id			총 식별자
  * @param name			총 이름
