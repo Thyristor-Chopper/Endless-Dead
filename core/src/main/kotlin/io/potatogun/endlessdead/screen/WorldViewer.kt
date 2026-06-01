@@ -24,11 +24,10 @@ import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
 /**
  * 월드를 불러오고 월드를 화면에 프로젝션해주는 스크린이다.
  *
- * 객체 생성 이후 '반드시, 바로' loadWorld(World)를 호출해야 한다. 
- *   (월드가 없는 상황 - world == null - 은 구현하지 않았기 떄문에 오류가 날 것이다.)
+ * 객체 생성 이후 loadWorld(World)를 호출해야 한다. 
  */
 class WorldViewer(game: EndlessDead) : Screen(game) {
-	private lateinit var world: World;
+	private var world: World? = null;
 	private val frozenOverlay = Utils.rgb(0, 0, 0, 0.5f);
     private val solidColor: Texture;
 	// 제목 표시줄에 표시할 정보의 인덱스
@@ -66,7 +65,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	}
 
 	fun loadWorld(worldToShow: World) {
-		val previousWorld: World? = if(::world.isInitialized) world else null;
+		val previousWorld: World? = world;
 		world = worldToShow;
 		worldToShow.updateCamera();
 		Gdx.app.postRunnable { previousWorld?.dispose() };
@@ -74,7 +73,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 
 	override fun resize(width: Int, height: Int) {
 		super.resize(width, height);
-		world.resize(width, height);
+		world?.resize(width, height);
 	}
 
 	/**
@@ -100,7 +99,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
     private inline fun updateInPlay(delta: Float) {
-		world.update(delta);
+		world?.update(delta);
 
 		if(subtitlesTimer > 0f)
 			subtitlesTimer -= delta;
@@ -119,6 +118,13 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 * 창 제목에 정보를 표시한다.
 	 */
 	private fun updateTitleBarInfo() {
+		val world: World? = this.world;
+		
+		if(world == null) {
+			game.setTitleBarStats(null);
+			return;
+		}
+		
 		game.setTitleBarStats(when(TitleInfoType.byIndex(currentTitleInfo)) {
 			TitleInfoType.OPENED	-> "연 상자: ${world.player.openedContainerCount}개"
 			TitleInfoType.KILLED	-> "잡은 좀비 수: ${world.player.killedZombieCount}"
@@ -135,13 +141,25 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 * updateInPlay에서만 한 번 쓰이기 때문에 inline이다.
 	 */
 	private inline fun updateProgressBars() {
-		// HP 미터기 처리
 		val hpIndicator = getWidget("hp_indicator") as ProgressBar;
-		hpIndicator.value = world.player.hp.toFloat() / world.player.maxHP;
-
-		// 총 관련 미터기 처리
 		val ammoIndicator = getWidget("gun_ammo_indicator") as ProgressBar;
 		val cooldownIndicator = getWidget("gun_cooldown_indicator") as ProgressBar;
+		
+		val world: World? = this.world;
+		if(world == null) {
+			hpIndicator.hide();
+			ammoIndicator.hide();
+			cooldownIndicator.hide();
+			return;
+		}
+
+		// HP 미터기 처리
+		hpIndicator.apply {
+			value = world.player.hp.toFloat() / world.player.maxHP;
+			show();
+		};
+
+		// 총 관련 미터기 처리
 		val holding: Item? = world.player.selectedItem;
 		if(holding != null && holding is Gun) {
 			// 총의 ammo를 미터기로 표시
@@ -314,65 +332,72 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
         );
 
 		// 통계
-        drawText(
-            text = "Opened containers: ${world.player.openedContainerCount}",
-            x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 20f,
-            color = Color.LIGHT_GRAY,
-            scale = 1.0f,
-			skipBatch = true
-        );
-        drawText(
-            text = "Killed zombies: ${world.player.killedZombieCount}",
-            x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 35f,
-            color = Color.LIGHT_GRAY,
-            scale = 1.0f,
-			skipBatch = true
-        );
-        drawText(
-            text = "Fired: ${world.player.fireCount}",
-            x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 50f,
-            color = Color.LIGHT_GRAY,
-            scale = 1.0f,
-			skipBatch = true
-        );
-        drawText(
-            text = "Survived duration: ${Utils.parseSeconds(world.player.survivedDuration, "m", "s")}",
-            x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 65f,
-            color = Color.LIGHT_GRAY,
-            scale = 1.0f,
-			skipBatch = true
-        );
-        drawText(
-            text = "Total damage: ${world.player.totalDamage}",
-            x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 80f,
-            color = Color.LIGHT_GRAY,
-            scale = 1.0f,
-			skipBatch = true
-        );
-        drawText(
-            text = "Score: ${ScoreManager.score}",
-            x = game.screenWidth / 2f - 70f,
-            y = game.screenHeight / 2f - 95f,
-            color = Color.LIGHT_GRAY,
-            scale = 1.0f,
-			skipBatch = true
-        );
+		val world: World? = this.world;
+		if(world != null) {
+			drawText(
+				text = "Opened containers: ${world.player.openedContainerCount}",
+				x = game.screenWidth / 2f - 70f,
+				y = game.screenHeight / 2f - 20f,
+				color = Color.LIGHT_GRAY,
+				scale = 1.0f,
+				skipBatch = true
+			);
+			drawText(
+				text = "Killed zombies: ${world.player.killedZombieCount}",
+				x = game.screenWidth / 2f - 70f,
+				y = game.screenHeight / 2f - 35f,
+				color = Color.LIGHT_GRAY,
+				scale = 1.0f,
+				skipBatch = true
+			);
+			drawText(
+				text = "Fired: ${world.player.fireCount}",
+				x = game.screenWidth / 2f - 70f,
+				y = game.screenHeight / 2f - 50f,
+				color = Color.LIGHT_GRAY,
+				scale = 1.0f,
+				skipBatch = true
+			);
+			drawText(
+				text = "Survived duration: ${Utils.parseSeconds(world.player.survivedDuration, "m", "s")}",
+				x = game.screenWidth / 2f - 70f,
+				y = game.screenHeight / 2f - 65f,
+				color = Color.LIGHT_GRAY,
+				scale = 1.0f,
+				skipBatch = true
+			);
+			drawText(
+				text = "Total damage: ${world.player.totalDamage}",
+				x = game.screenWidth / 2f - 70f,
+				y = game.screenHeight / 2f - 80f,
+				color = Color.LIGHT_GRAY,
+				scale = 1.0f,
+				skipBatch = true
+			);
+			drawText(
+				text = "Score: ${ScoreManager.score}",
+				x = game.screenWidth / 2f - 70f,
+				y = game.screenHeight / 2f - 95f,
+				color = Color.LIGHT_GRAY,
+				scale = 1.0f,
+				skipBatch = true
+			);
+		}
     }
 
 	/**
 	 * 월드가 아닌 뷰어 자체의 배경은 없다(그려봤자 월드의 배경이 반투명하지 않는 이상 가려질 것이다).
 	 */
-	override fun drawBackground() {}
+	override fun drawBackground() {
+		if(world != null) return;
+		
+		drawText("No world loaded!", 0f, game.screenHeight / 2f, Color.RED, 1.0f, game.screenWidth, Align.center, true);
+	}
 
 	override fun drawElements() {
 		// 월드 관련 처리...
 		batch.end();  // 월드의 그리기 배치를 처리하기 전에 화면 자체의 배치를 잠시 중지.
-		world.render();
+		world?.render();
 		batch.begin();  // 월드의 그리기가 끝나면 화면의 그리기 배치를 다시 시작
 
 		// 자막이 있으면 표시
@@ -398,6 +423,9 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 * drawElements에서만 한 번 쓰이기 때문에 inline이다.
 	 */
     private inline fun drawHud() {
+		val world: World? = this.world;
+		if(world == null) return;
+
         // 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
         //    카메라가 움직여도 항상 이 위치에 있다.
         drawText(
@@ -450,7 +478,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	override fun dispose() {
 		super.dispose();
 		solidColor.dispose();
-		world.dispose();
+		world?.dispose();
 		for(timer in timers)
 			timer.unregister();
 		timers.clear();
