@@ -417,6 +417,8 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	override fun drawElements() {
 		// 월드 관련 처리...
 		batch.end();  // 월드의 그리기 배치를 처리하기 전에 화면 자체의 배치를 잠시 중지.
+		// 왜 World#render를 Screen#render가 아닌 drawElements에서 하냐고 묻는다면
+		//   월드 뷰어 스크린 입장에서 월드는 이 스크린의 요소 중 하나일 뿐이기 때문이다.
 		world?.render();
 		batch.begin();  // 월드의 그리기가 끝나면 화면의 그리기 배치를 다시 시작
 
