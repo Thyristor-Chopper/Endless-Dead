@@ -88,20 +88,20 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	}
 
 	/**
-	 * 지정한 월드를 불러와서 보여준다.
+	 * 지정한 월드를 연다.
 	 *
-	 * @param world		불러올 월드
-	 * @param dispose	기존 월드의 자원을 정리할지의 여부
+	 * @param world					불러올 월드
+	 * @param disposePreviousWorld	기존 월드의 자원을 정리할지의 여부
 	 */
-	fun loadWorld(world: World, dispose: Boolean = false) {
+	fun loadWorld(world: World, disposePreviousWorld: Boolean = false) {
 		val previousWorld: World? = this.world;
 		this.world = world;
 		world.updateCamera();
-		if(dispose) Gdx.app.postRunnable { previousWorld?.dispose() };
+		if(disposePreviousWorld) Gdx.app.postRunnable { previousWorld?.dispose() };
 	}
 
 	/**
-	 * 월드를 언로딩한다.
+	 * 현재 보여주고 있는 월드를 닫는다.
 	 *
 	 * @param 	dispose	월드의 자원을 정리할지의 여부
 	 * @return	성공 여부
@@ -122,10 +122,10 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	/**
 	 * 매 프레임 게임 로직 — 모든 '입력 처리·상태 변경'은 이 안에서.
 	 *
-	 * 상태별로 해야 할 일이 완전히 다르므로 when 으로 분기한다.
-	 * (입력 처리가 render() 가 아닌 update() 에 있는 이유:
-	 *  '로직과 그리기의 분리' — render 는 매 프레임 그리는 일에만 집중하고,
-	 *  상태 변화·입력은 update 가 책임진다.)
+	 * 상태별로 해야 할 일이 완전히 다르므로 when으로 분기한다.
+	 * (입력 처리가 render()가 아닌 update() 에 있는 이유:
+	 *  '로직과 그리기의 분리' — render는 매 프레임 그리는 일에만 집중하고,
+	 *  상태 변화·입력은 update가 책임진다.)
 	 */
 	override fun update(delta: Float) {
         when {

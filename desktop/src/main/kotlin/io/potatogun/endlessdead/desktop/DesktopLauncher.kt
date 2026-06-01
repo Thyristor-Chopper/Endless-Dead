@@ -44,7 +44,7 @@ fun main() {
     config.setResizable(true);										// 크기 조절 가능
 	config.setWindowSizeLimits(320, 240, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT);
     config.useVsync(false);										// 수직동기화를 꺼야 랙이 줄어듦
-    config.setForegroundFPS(10);									// 타이틀 화면에서는 낮은 fps로
+    config.setForegroundFPS(20);									// 타이틀 화면에서는 낮은 fps로
 	config.setWindowIcon(FileType.Internal, "assets/icon_16.png", "assets/icon_32.png", "assets/icon_128.png");
 
     // ─────────────────────────────────────────

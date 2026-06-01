@@ -128,17 +128,16 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
     /**
      * 배경을 그리는 자리 — 모든 서브클래스가 반드시 구현해야 한다.
      *
-     * 'abstract' 인 이유:
-     *   기본 동작('아무것도 안 함') 이 의미 있지 않다. 게임마다 배경은 다르고,
-     *   '배경이 없다' 는 결정도 명시적으로 내려야 한다고 본다. 그래서 강제 구현.
-     *   (검은 배경을 원하면 그냥 비어있는 함수로 override 하면 됨)
+     * 'abstract'인 이유:
+     *   기본 동작('아무것도 안 함')이 의미 있지 않다. 게임마다 배경은 다르고,
+     *   '배경이 없다'는 결정도 명시적으로 내려야 한다고 본다. 그래서 강제 구현.
+     *   (검은 배경을 원하면 그냥 비어있는 함수로 override하면 됨)
      *
-     *   참고: update() 는 abstract 가 아닌 open 이다 — 거기엔 쓸 만한 default 가
-     *   존재하기 때문. 'default 가 의미 있는가?' 가 abstract / open 을 가르는 기준.
-     *   (7주차 강의 포인트)
+     *   참고: update()는 abstract가 아닌 open이다 — 거기엔 쓸 만한 default가
+     *   존재하기 때문. 'default가 의미 있는가?'가 abstract / open을 가르는 기준.
      *
-     * @param batch 이미 begin() 된 SpriteBatch — 여기에 batch.draw(texture, ...) 로 그린다.
-     *              begin/end 를 또 호출하면 안 된다.
+     * @param batch 이미 begin()된 SpriteBatch — 여기에 batch.draw(texture, ...)로 그린다.
+     *              begin/end를 또 호출하면 안 된다.
      */
     protected abstract fun drawBackground();
 

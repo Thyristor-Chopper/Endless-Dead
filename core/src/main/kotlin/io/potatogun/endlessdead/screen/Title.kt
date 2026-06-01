@@ -9,6 +9,7 @@ import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.widget.Button;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
 /**
@@ -19,21 +20,29 @@ class Title(game: EndlessDead) : Screen(game) {
 	private val stillCut = Textures.loadTexture("still_cut.bmp");
 	private var titleBlinkTimer = 0f;
 
+	init {
+		addWidget("play_button", Button({ game.screenWidth / 2 - 125f }, { 120f }, 120f, caption = "Play", onClick = { startGame() }));
+		addWidget("quit_button", Button({ game.screenWidth / 2 + 5f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() }));
+	}
+
+	private fun startGame() {
+		game.setTitleBarInfo("불러오는 중...");
+		GameManager.setPlaying();
+		// 불러오는 중이 막히지 않고 바로 뜨게 하기 위해 다음 프레임 때 로드
+		Gdx.app.postRunnable {
+			game.currentRound = 1;
+			game.setScreen(WorldViewer(game).apply { loadWorld(ZombieWorld(game, this, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat())) });
+			game.setTitleBarInfo(null);
+			Gdx.app.postRunnable { dispose() };
+		};
+	}
+
 	override fun update(delta: Float) {
 		titleBlinkTimer += delta;
 		if(titleBlinkTimer >= 1f)
 			titleBlinkTimer = 0f;
-		if(Input.isAnyKeyJustPressed() || Input.isButtonJustPressed(Input.LEFT_MOUSE)) {
-			game.setTitleBarInfo("불러오는 중...");
-			GameManager.setPlaying();
-			// 불러오는 중이 막히지 않고 바로 뜨게 하기 위해 다음 프레임 때 로드
-			Gdx.app.postRunnable {
-				game.currentRound = 1;
-				game.setScreen(WorldViewer(game).apply { loadWorld(ZombieWorld(game, this, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat())) });
-				game.setTitleBarInfo(null);
-				Gdx.app.postRunnable { dispose() };
-			};
-		}
+		if(Input.isAnyKeyJustPressed())
+			startGame();
 	}
 
 	override fun drawBackground() {

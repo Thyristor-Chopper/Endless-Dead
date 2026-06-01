@@ -31,6 +31,7 @@ object GameManager {
 	 */
 	fun standBy() {
 		state = GameState.STANDBY;
+		Gdx.graphics.setForegroundFPS(20);  // 20fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
 	}
 
 	/**
@@ -46,7 +47,7 @@ object GameManager {
 	 */
 	fun setGameOver() {
 		state = GameState.GAME_OVER;
-		Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
+		Gdx.graphics.setForegroundFPS(20);  // 20fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
 	}
 
 	/**
@@ -54,7 +55,7 @@ object GameManager {
 	 */
 	fun pause() {
 		state = GameState.PAUSED;
-		Gdx.graphics.setForegroundFPS(10);  // 10fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
+		Gdx.graphics.setForegroundFPS(20);  // 20fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
 	}
 
 	/**
