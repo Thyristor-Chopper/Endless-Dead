@@ -59,14 +59,6 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		addWidget("gun_ammo_indicator", ProgressBar({ game.screenWidth - 145f }, { 10f }, 130f, color = Utils.rgb(15, 116, 240), style = ProgressBarStyle.CHUNKED).apply { hide() });
 		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide() });
 
-		// 일시 중지 단추
-		addWidget("pause_button", Button({ 30f }, { game.screenHeight - 60f }, 30f, 30f, "| |", onClick = {
-			if(GameManager.isPlaying)
-				GameManager.pause();
-			else if(GameManager.isPaused)
-				GameManager.resume();
-		}));
-
 		// 제목 표시줄 정보 전환
 		timers.add(Timer(3f, false) {
 			if(!GameManager.isGameOver)
@@ -115,17 +107,6 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 *  상태 변화·입력은 update 가 책임진다.)
 	 */
 	override fun update(delta: Float) {
-		val pauseButton = getWidget("pause_button") as Button;
-		pauseButton.apply {
-			show();
-			if(GameManager.isPlaying)
-				setCaption("| |");
-			else if(GameManager.isPaused)
-				setCaption("l>");
-			else
-				hide();
-		};
-
 		// 이곳은 월드가 아닌 뷰어 자체의 로직만 다룬다.
         when {
             GameManager.isPlaying	-> updateInPlay(delta);
