@@ -47,9 +47,11 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
-	// 게임 오버 화면의 단추.
+	// 일시 중지 및 게임 오버 화면의 단추.
+	private val resumeButton: Button;
 	private val replayButton: Button;
 	private val titleButton: Button;
+	private val quitButton: Button;
 	// 로드된 월드가 없을 때 보일 placeholder 배경
 	private val lazyStillCut = lazy { Textures.loadTexture("still_cut.bmp") };
 
@@ -67,11 +69,14 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		addWidget("gun_ammo_indicator", ProgressBar({ game.screenWidth - 145f }, { 10f }, 130f, color = Utils.rgb(15, 116, 240), style = ProgressBarStyle.CHUNKED).apply { hide() });
 		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide() });
 
-		// 게임 오버 단추
-		replayButton = Button({ game.screenWidth / 2 - 125f }, { 120f }, 120f, caption = "Replay", onClick = {
+		// 일시 중지 및 게임 오버 단추
+		resumeButton = Button({ game.screenWidth / 2f - 185f }, { 120f }, 120f, caption = "Resume", onClick = {
+			GameManager.resume();
+		});
+		replayButton = Button({ game.screenWidth / 2f - 185f }, { 120f }, 120f, caption = "Replay", onClick = {
 			restartGame();
 		});
-		titleButton = Button({ game.screenWidth / 2 + 5f }, { 120f }, 120f, caption = "Back to title", onClick = {
+		titleButton = Button({ game.screenWidth / 2f - 60f }, { 120f }, 120f, caption = "Back to title", onClick = {
 			unloadWorld(true);
 			GameManager.standBy();
 			game.currentRound = 0;
@@ -79,6 +84,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 			game.setTitleBarInfo(null);
 			game.setScreen(Title(game));
 		});
+		quitButton = Button({ game.screenWidth / 2f + 65f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() });
 
 		// 제목 표시줄 정보 전환
 		timers.add(Timer(3f, false) {
@@ -275,7 +281,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 */
 	private fun detectPauseKey() {
 		// P키를 누르면 일시 정지 <-> 게임 진행 중 상태 토글!
-		val resumeKeyPressed = Input.isKeyJustPressed(Input.SPACE) || Input.isButtonJustPressed(Input.LEFT_MOUSE);
+		val resumeKeyPressed = Input.isKeyJustPressed(Input.SPACE);
         if(Input.isKeyJustPressed(Input.P) || Input.isKeyJustPressed(Input.ESCAPE) || resumeKeyPressed) {
             if(GameManager.isPlaying && !resumeKeyPressed)
 				GameManager.pause();
@@ -348,6 +354,10 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 			align = Align.center,
 			skipBatch = true
         );
+
+		drawWidget(resumeButton);
+		drawWidget(titleButton);
+		drawWidget(quitButton);
     }
 
     /**
@@ -433,6 +443,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		// 게임 오버 관련 단추 그리기(게임 오버 화면에서만 보임)
 		drawWidget(replayButton);
 		drawWidget(titleButton);
+		drawWidget(quitButton);
     }
 
 	/**

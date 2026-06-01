@@ -15,10 +15,12 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 20f, 
 	private val button: NinePatch = Textures.button;
 	private val buttonHover: NinePatch = Textures.buttonHover;
 	private val buttonPressed: NinePatch = Textures.buttonPressed;
+	private val buttonDisabled: NinePatch = Textures.buttonDisabled;
     private val font = BitmapFont();
 	private val accessKey: Char?;
 	private val caption: String;
 	private var previouslyPressed = false;
+	private var isEnabled = true;
 
 	init {
 		val accessKeyMatch = Regex("[&]([A-Za-z])");
@@ -32,11 +34,16 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 20f, 
 
 		val mouseX = Gdx.input.getX();
 		val mouseY = Gdx.graphics.height - Gdx.input.getY();
-		val isHover = mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
-		val isPressed = Input.isButtonPressed(Input.LEFT_MOUSE);
+		val isHover = isEnabled && mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+		val isPressed = isEnabled && Input.isButtonPressed(Input.LEFT_MOUSE);
+		val fontColor = if(!isEnabled) Color.LIGHT_GRAY else Color.BLACK;
 
 		val toDraw: NinePatch =
-			if(isPressed && isHover) {
+			if(!isEnabled) {
+				previouslyPressed = false;
+
+				buttonDisabled
+			} else if(isPressed && isHover) {
 				previouslyPressed = true;
 
 				buttonPressed
@@ -51,11 +58,19 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 20f, 
 			};
 
 		toDraw.draw(batch, x, y, width, height);
-		Utils.drawText(batch, font, caption, x, y + height / 2f + 7f, Color.BLACK, 1.0f, width, Align.center, true);
+		Utils.drawText(batch, font, caption, x, y + height / 2f + 7f, fontColor, 1.0f, width, Align.center, true);
 
 		// 바로 가기 키 처리
 		if(accessKey != null && Input.isKeyJustPressed(accessKey.code - 36))
 			onClick();
+	}
+
+	fun enable() {
+		isEnabled = true;
+	}
+
+	fun disable() {
+		isEnabled = false;
 	}
 
 	private inline fun fireClickEvent() {
