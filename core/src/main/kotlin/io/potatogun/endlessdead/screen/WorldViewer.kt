@@ -345,7 +345,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 			skipBatch = true
         );
         drawText(
-            text = "Click anywhere or press <P> or <Esc> or <Space> to resume",
+            text = "Press <P> or <Esc> or <Space> to resume",
             x = 0f,
             y = game.screenHeight / 2f - 20f,
             color = Color.WHITE,
