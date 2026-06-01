@@ -45,8 +45,6 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
-	// 일시 중지/게임 오버 오버레이 위에도 뜨는 위젯들
-    private val topWidgets = mutableListOf<Widget>();
 	// 재시작 단추.
 	private val replayButton: Button;
 
@@ -65,8 +63,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide() });
 
 		// 다시 시작 단추
-		replayButton = Button({ game.screenWidth / 2 - 60f }, { 120f }, 120f, caption = "Replay", onClick = { restartGame() }).apply { hide() };
-		topWidgets.add(replayButton);
+		replayButton = Button({ game.screenWidth / 2 - 60f }, { 120f }, 120f, caption = "Replay", onClick = { restartGame() });
 
 		// 제목 표시줄 정보 전환
 		timers.add(Timer(3f, false) {
@@ -129,8 +126,6 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
     private inline fun updateInPlay(delta: Float) {
-		replayButton.hide();
-
 		world?.update(delta);
 
 		if(subtitlesTimer > 0f)
@@ -226,8 +221,6 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
 	private inline fun updatePaused() {
-		replayButton.hide();
-
 		// 제목 표시줄에 통계 표시
 		updateTitleBarInfo();
 		
@@ -241,8 +234,6 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
     private inline fun updateGameOver() {
-		replayButton.show();
-
         // ESC 키가 '막 눌린 순간' 앱 종료.
         //   isKeyJustPressed로 한 이유: 누르고 있는 동안 매 프레임 exit이 호출되지 않게.
         if(Input.isKeyJustPressed(Input.ESCAPE))
@@ -301,8 +292,6 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
             GameManager.isPaused	-> drawPausedMessage();  // 일시정지 화면 그리기
             GameManager.isGameOver	-> drawGameOverMessage();
         }
-
-		drawWidgets(topWidgets);
 
 		batch.end();
 	}
@@ -425,8 +414,9 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 				skipBatch = true
 			);
 		}
-		
-		replayButton.draw(batch);
+
+		// 다시 시작 단추 그리기(게임 오버 화면에서만 보임)
+		drawWidget(replayButton);
     }
 
 	/**
