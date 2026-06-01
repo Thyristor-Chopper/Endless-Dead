@@ -11,7 +11,7 @@ import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Utils;
 
-class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 20f, caption: String, accessKey: Char? = null, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
+class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, caption: String, accessKey: Char? = null, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
 	private val button: NinePatch = Textures.button;
 	private val buttonHover: NinePatch = Textures.buttonHover;
 	private val buttonPressed: NinePatch = Textures.buttonPressed;
@@ -36,7 +36,7 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 20f, 
 		val mouseY = Gdx.graphics.height - Gdx.input.getY();
 		val isHover = isEnabled && mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
 		val isPressed = isEnabled && Input.isButtonPressed(Input.LEFT_MOUSE);
-		val fontColor = if(!isEnabled) Color.LIGHT_GRAY else Color.BLACK;
+		val fontColor = if(!isEnabled) Color.LIGHT_GRAY else Color.WHITE;
 
 		val toDraw: NinePatch =
 			if(!isEnabled) {
@@ -58,9 +58,13 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 20f, 
 			};
 
 		toDraw.draw(batch, x, y, width, height);
-		Utils.drawText(batch, font, caption, x, y + height / 2f + 7f, fontColor, 1.0f, width, Align.center, true);
+		Utils.drawText(batch, font, caption, x, y + height / 2f + 6f, fontColor, 1.0f, width, Align.center, true);
 
-		// 바로 가기 키 처리
+		detectAccessKeyPress();
+	}
+
+	// 바로 가기 키 처리
+	fun detectAccessKeyPress() {
 		if(accessKey != null && Input.isKeyJustPressed(accessKey.code - 36))
 			onClick();
 	}
