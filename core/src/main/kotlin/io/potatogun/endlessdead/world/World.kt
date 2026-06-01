@@ -37,7 +37,7 @@ import io.potatogun.endlessdead.screen.WorldViewer;
  *
  * @param game		월드가 속한 게임
  * @param viewer	월드를 보여주는 스크린
- * @param width		월드 전체 너비
+ * @param width		월드 전체 너비 (JvmField이 있지만 빌드 후 Fernflower로 자바로 디컴파일하여 null이 불가능한 원시 float임을 확인함.)
  * @param height	월드 전체 높이
  */
 abstract class World(val game: EndlessDead, val viewer: WorldViewer, @JvmField val width: Float, @JvmField val height: Float) {
