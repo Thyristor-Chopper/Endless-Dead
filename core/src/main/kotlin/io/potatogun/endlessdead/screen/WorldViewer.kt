@@ -78,13 +78,27 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		if(dispose) Gdx.app.postRunnable { previousWorld?.dispose() };
 	}
 
+	/**
+	 * 월드를 언로딩한다.
+	 *
+	 * @param 	dispose	월드의 자원을 정리할지의 여부
+	 * @return	성공 여부
+	 */
+	fun unloadWorld(dispose: Boolean = false): Boolean {
+		val currentWorld: World? = world;
+		if(currentWorld == null) return false;
+		world = null;
+		if(dispose) Gdx.app.postRunnable { currentWorld.dispose() };
+		return true;
+	}
+
 	override fun resize(width: Int, height: Int) {
 		super.resize(width, height);
-		world?.resize(width, height);
+		world?.onResize(width, height);
 	}
 
 	/**
-	 * 매 프레임 게임 로직 — 모든 '입력 처리·상태 변경' 은 이 안에서.
+	 * 매 프레임 게임 로직 — 모든 '입력 처리·상태 변경'은 이 안에서.
 	 *
 	 * 상태별로 해야 할 일이 완전히 다르므로 when 으로 분기한다.
 	 * (입력 처리가 render() 가 아닌 update() 에 있는 이유:

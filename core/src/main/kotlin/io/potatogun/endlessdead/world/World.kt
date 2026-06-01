@@ -152,7 +152,7 @@ abstract class World(val game: EndlessDead, val viewer: WorldViewer, @JvmField v
 	/**
 	 * 크기 조절 시 호출된다.
 	 */
-	internal fun resize(width: Int, height: Int) {
+	internal fun onResize(width: Int, height: Int) {
 		setCameraCenter();
 		updateCamera();
 	}
