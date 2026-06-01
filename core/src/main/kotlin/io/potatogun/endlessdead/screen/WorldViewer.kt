@@ -53,7 +53,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	private val titleButton: Button;
 	private val quitButton: Button;
 	// 로드된 월드가 없을 때 보일 placeholder 배경
-	private val lazyStillCut = lazy { Textures.loadTexture("still_cut.bmp") };
+	private val lazyStillCut = lazy { Textures.loadTexture("title/still_cut.bmp") };
 
 	init {
 		// 단색용 텍스처 생성
@@ -70,10 +70,10 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide() });
 
 		// 일시 중지 및 게임 오버 단추
-		resumeButton = Button({ game.screenWidth / 2f - 185f }, { 120f }, 120f, caption = "Resume", onClick = {
+		resumeButton = Button({ game.screenWidth / 2f - 195f }, { 120f }, 120f, caption = "Resume", onClick = {
 			GameManager.resume();
 		});
-		replayButton = Button({ game.screenWidth / 2f - 185f }, { 120f }, 120f, caption = "Replay", onClick = {
+		replayButton = Button({ game.screenWidth / 2f - 195f }, { 120f }, 120f, caption = "Replay", onClick = {
 			restartGame();
 		});
 		titleButton = Button({ game.screenWidth / 2f - 60f }, { 120f }, 120f, caption = "Back to title", onClick = {
@@ -84,7 +84,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 			game.setTitleBarInfo(null);
 			game.setScreen(Title(game));
 		});
-		quitButton = Button({ game.screenWidth / 2f + 65f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() });
+		quitButton = Button({ game.screenWidth / 2f + 75f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() });
 
 		// 제목 표시줄 정보 전환
 		timers.add(Timer(3f, false) {

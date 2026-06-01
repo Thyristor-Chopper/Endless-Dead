@@ -38,9 +38,9 @@ import kotlin.math.atan2;
  *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 Entity#dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, position: Position) : LivingEntity(world, position, 24f, 57f, Textures.loadTexture("player.bmp"), 50), InventoryEntity by InventoryEntityImpl() {
+class Player(world: World, position: Position) : LivingEntity(world, position, 24f, 57f, Textures.loadTexture("entity/player.bmp"), 50), InventoryEntity by InventoryEntityImpl() {
 	override val canUpdateWhileFrozen = true;
-	private val textureWithGun = Textures.loadTexture("player_holding_gun.bmp");
+	private val textureWithGun = Textures.loadTexture("entity/player_holding_gun.bmp");
     private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머

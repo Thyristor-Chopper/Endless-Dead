@@ -16,13 +16,13 @@ import io.potatogun.endlessdead.world.ZombieWorld;
  * 타이틀 화면
  */
 class Title(game: EndlessDead) : Screen(game) {
-	private val title = Textures.loadTexture("title.bmp");
-	private val stillCut = Textures.loadTexture("still_cut.bmp");
+	private val title = Textures.loadTexture("title/title.bmp");
+	private val stillCut = Textures.loadTexture("title/still_cut.bmp");
 	private var titleBlinkTimer = 0f;
 
 	init {
-		addWidget("play_button", Button({ game.screenWidth / 2 - 125f }, { 120f }, 120f, caption = "Play", onClick = { startGame() }));
-		addWidget("quit_button", Button({ game.screenWidth / 2 + 5f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() }));
+		addWidget("play_button", Button({ game.screenWidth / 2 - 130f }, { 120f }, 120f, caption = "Play", onClick = { startGame() }));
+		addWidget("quit_button", Button({ game.screenWidth / 2 + 10f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() }));
 	}
 
 	private fun startGame() {

@@ -14,21 +14,21 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 object Textures {
 	private val shared = mapOf<String, Lazy<Texture>>(
-		"attacking_zombie" to lazy { loadTexture("zombie_attacking.bmp") },
-		"building" to lazy { loadTexture("building.bmp") },
-		"building_player_item" to lazy { loadTexture("building_player_added.bmp") },
-		"bullet" to lazy { loadTexture("bullet.bmp") },
-		"button" to lazy { loadTexture("button.bmp") },
-		"button_hover" to lazy { loadTexture("button_hover.bmp") },
-		"button_pressed" to lazy { loadTexture("button_pressed.bmp") },
-		"button_disabled" to lazy { loadTexture("button_disabled.bmp") },
-		"chest" to lazy { loadTexture("chest.bmp") },
-		"chest_player_item" to lazy { loadTexture("chest_player_added.bmp") },
-		"empty_building" to lazy { loadTexture("building_empty.bmp") },
-		"empty_chest" to lazy { loadTexture("chest_empty.bmp") },
-		"progress_bar" to lazy { loadTexture("progress_bar.bmp") },
-		"progress_fill" to lazy { loadTexture("progress_chunk.bmp") },
-		"zombie" to lazy { loadTexture("zombie.bmp") },
+		"attacking_zombie" to lazy { loadTexture("entity/zombie_attacking.bmp") },
+		"building" to lazy { loadTexture("entity/building.bmp") },
+		"building_player_item" to lazy { loadTexture("entity/building_player_added.bmp") },
+		"bullet" to lazy { loadTexture("entity/bullet.bmp") },
+		"button" to lazy { loadTexture("widget/button.bmp") },
+		"button_hover" to lazy { loadTexture("widget/button_hover.bmp") },
+		"button_pressed" to lazy { loadTexture("widget/button_pressed.bmp") },
+		"button_disabled" to lazy { loadTexture("widget/button_disabled.bmp") },
+		"chest" to lazy { loadTexture("entity/chest.bmp") },
+		"chest_player_item" to lazy { loadTexture("entity/chest_player_added.bmp") },
+		"empty_building" to lazy { loadTexture("entity/building_empty.bmp") },
+		"empty_chest" to lazy { loadTexture("entity/chest_empty.bmp") },
+		"progress_bar" to lazy { loadTexture("widget/progress_bar.bmp") },
+		"progress_fill" to lazy { loadTexture("widget/progress_chunk.bmp") },
+		"zombie" to lazy { loadTexture("entity/zombie.bmp") },
 	);
 	val button: NinePatch by lazy { NinePatch(shared["button"]!!.value, 12, 12, 7, 6) };
 	val buttonHover: NinePatch by lazy { NinePatch(shared["button_hover"]!!.value, 12, 12, 7, 6) };
