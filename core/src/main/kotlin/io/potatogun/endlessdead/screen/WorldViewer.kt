@@ -266,14 +266,10 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
     }
 
 	private fun restartGame() {
-		game.setTitleBarInfo("다시 시작하는 중...");
-		// 불러오는 중이 막히지 않고 바로 뜨게 하기 위해 다음 프레임 때 로드
-		Gdx.app.postRunnable {
-			GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
-			game.currentRound++;
-			loadWorld(ZombieWorld(game, this, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat()), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
-			game.setTitleBarInfo(null);
-		};
+		GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
+		game.currentRound++;
+		loadWorld(ZombieWorld(game, this, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat()), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
+		game.setTitleBarInfo(null);
 	}
 
 	/**

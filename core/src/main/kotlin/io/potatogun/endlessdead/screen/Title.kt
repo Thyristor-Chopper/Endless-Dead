@@ -26,15 +26,11 @@ class Title(game: EndlessDead) : Screen(game) {
 	}
 
 	private fun startGame() {
-		game.setTitleBarInfo("불러오는 중...");
 		GameManager.setPlaying();
-		// 불러오는 중이 막히지 않고 바로 뜨게 하기 위해 다음 프레임 때 로드
-		Gdx.app.postRunnable {
-			game.currentRound = 1;
-			game.setScreen(WorldViewer(game).apply { loadWorld(ZombieWorld(game, this, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat())) });
-			game.setTitleBarInfo(null);
-			Gdx.app.postRunnable { dispose() };
-		};
+		game.currentRound = 1;
+		game.setScreen(WorldViewer(game).apply { loadWorld(ZombieWorld(game, this, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat())) });
+		game.setTitleBarInfo(null);
+		Gdx.app.postRunnable { dispose() };
 	}
 
 	override fun update(delta: Float) {
