@@ -33,7 +33,7 @@ import io.potatogun.endlessdead.widget.Widget;
  *
  * @param game 화면이 속한 게임
  */
-abstract class Screen(@JvmField val game: EndlessDead) : ScreenAdapter() {
+abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 	// SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
     //   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
     @JvmField protected val batch = SpriteBatch();

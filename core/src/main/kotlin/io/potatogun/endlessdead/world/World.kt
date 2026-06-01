@@ -40,10 +40,10 @@ import io.potatogun.endlessdead.screen.WorldViewer;
  * @param width		월드 전체 너비
  * @param height	월드 전체 높이
  */
-abstract class World(@JvmField val game: EndlessDead, @JvmField val viewer: WorldViewer, @JvmField val width: Float, @JvmField val height: Float) {
+abstract class World(val game: EndlessDead, val viewer: WorldViewer, @JvmField val width: Float, @JvmField val height: Float) {
 	// OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     private val camera = OrthographicCamera();
-	@JvmField protected val batch = SpriteBatch().apply { projectionMatrix = camera.combined };
+	@JvmField protected val batch = SpriteBatch();
     @JvmField protected val font = BitmapFont();
 	/**
 	 * 이 월드의 플레이어
