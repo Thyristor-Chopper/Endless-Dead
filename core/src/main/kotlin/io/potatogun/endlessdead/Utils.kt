@@ -18,7 +18,7 @@ object Utils {
 	 *
 	 * @param seconds	초
 	 */
-	fun parseSeconds(seconds: Int, minutesSuffix: String = " minute(s)", secondsSuffix: String = "second(s)"): String {
+	fun parseSeconds(seconds: Int, minutesSuffix: String = " minute(s)", secondsSuffix: String = " second(s)"): String {
 		if(seconds < 60) return "${seconds}$secondsSuffix";
 		return "${seconds / 60}$minutesSuffix ${seconds % 60}$secondsSuffix";
 	}

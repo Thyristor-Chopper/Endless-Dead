@@ -411,7 +411,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 				skipBatch = true
 			);
 			drawText(
-				text = "Survived duration: ${Utils.parseSeconds(world.player.survivedDuration)}",
+				text = "Survived duration: ${Utils.parseSeconds(world.player.survivedDuration, "m", "s")}",
 				x = game.screenWidth / 2f - 70f,
 				y = game.screenHeight / 2f - 65f,
 				color = Color.LIGHT_GRAY,
