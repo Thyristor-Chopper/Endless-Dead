@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 object Textures {
 	private val shared = mapOf<String, Lazy<Texture>>(
+		"attacking_zombie" to lazy { loadTexture("zombie_attacking.bmp") },
 		"building" to lazy { loadTexture("building.bmp") },
 		"building_player_item" to lazy { loadTexture("building_player_added.bmp") },
 		"bullet" to lazy { loadTexture("bullet.bmp") },

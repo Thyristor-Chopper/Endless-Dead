@@ -35,9 +35,11 @@ import kotlin.math.sqrt;
  * @param texture		개체 텍스처
  */
 open class Zombie(world: World, position: Position, width: Float, height: Float, hp: Int, protected open val attackDamage: Int, protected open val speed: Float, texture: Texture = Textures.getShared("zombie")) : LivingEntity(world, position, width, height, texture, hp) {
+	protected open val attackingTexture = Textures.getShared("attacking_zombie");
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
 	@JvmField val target: LivingEntity = world.player;
+	private var attackTextureTimer = 0f;
 
 	override fun update(delta: Float) {
 		super.update(delta);
@@ -48,12 +50,24 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 
 		// 플레이어의 중심으로 정확히 모이면 어색하니까 살짝은 거리를 두게 하자.
         if(distance > target.width * (3f / 4f)) {
+			attackTextureTimer = 0f;
             x += dx / distance * speed * delta;
             y += dy / distance * speed * delta;
         } else {
+			attackTextureTimer -= delta;
+			if(attackTextureTimer <= 0f)
+				attackTextureTimer = 0.75f;
+
 			target.takeDamage(attackDamage, attacker = this);
 		}
     }
+	
+	override fun draw(batch: SpriteBatch) {
+		if(attackTextureTimer % 0.75f > 0.5f)
+			super.draw(batch, attackingTexture);
+		else
+			super.draw(batch);
+	}
 
 	/**
 	 * 공유 자원이기 때문에 여기서 정리하지 않고 다른 인스턴스에서 재활용한다.
