@@ -390,7 +390,6 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 */
 	override fun drawBackground() {
 		if(world != null) return;
-		
 		drawText("No world loaded!", 0f, game.screenHeight / 2f, Color.RED, 1.0f, game.screenWidth, Align.center, true);
 	}
 
