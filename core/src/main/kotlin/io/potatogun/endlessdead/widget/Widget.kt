@@ -10,12 +10,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * @param width		컨트롤 너비
  * @param height	컨트롤 높이
  */
-abstract class Widget(var x: () -> Float, var y: () -> Float, val width: Float, val height: Float) {
+abstract class Widget(var x: () -> Float, var y: () -> Float, @JvmField val width: Float, @JvmField val height: Float) {
 	/**
 	 * 컨트롤이 화면에 그려지는지의 여부
 	 */
 	var isVisible = true
 		private set;
+	/**
+	 * 바로 가기 키
+	 */
+	open val accessKey: Char? = null
 
 	/**
 	 * 컨트롤을 화면에 그리는 로직

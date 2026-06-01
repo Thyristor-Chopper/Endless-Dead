@@ -17,6 +17,9 @@ object Textures {
 		"building" to lazy { loadTexture("building.bmp") },
 		"building_player_item" to lazy { loadTexture("building_player_added.bmp") },
 		"bullet" to lazy { loadTexture("bullet.bmp") },
+		"button" to lazy { loadTexture("button.bmp") },
+		"button_hover" to lazy { loadTexture("button_hover.bmp") },
+		"button_pressed" to lazy { loadTexture("button_pressed.bmp") },
 		"chest" to lazy { loadTexture("chest.bmp") },
 		"chest_player_item" to lazy { loadTexture("chest_player_added.bmp") },
 		"empty_building" to lazy { loadTexture("building_empty.bmp") },
@@ -25,6 +28,9 @@ object Textures {
 		"progress_fill" to lazy { loadTexture("progress_chunk.bmp") },
 		"zombie" to lazy { loadTexture("zombie.bmp") },
 	);
+	val button: NinePatch by lazy { NinePatch(shared["button"]!!.value, 3, 3, 3, 3) };
+	val buttonHover: NinePatch by lazy { NinePatch(shared["button_hover"]!!.value, 3, 3, 3, 3) };
+	val buttonPressed: NinePatch by lazy { NinePatch(shared["button_pressed"]!!.value, 3, 3, 3, 3) };
 	val progressBar: NinePatch by lazy { NinePatch(shared["progress_bar"]!!.value, 2, 2, 5, 6) };
 	val progressChunkedFill: NinePatch by lazy { NinePatch(TextureRegion(shared["progress_fill"]!!.value, 1, 0, 1, shared["progress_fill"]!!.value.getHeight()), 0, 0, 1, 1) };
 	val progressSmoothFill: NinePatch by lazy { NinePatch(shared["progress_fill"]!!.value, 1, 1, 1, 1) };

@@ -18,6 +18,7 @@ import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.world.World;
 import io.potatogun.endlessdead.world.ZombieWorld;
+import io.potatogun.endlessdead.widget.Button;
 import io.potatogun.endlessdead.widget.ProgressBar;
 import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
 
@@ -57,6 +58,14 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		addWidget("hp_indicator", ProgressBar({ 80f }, { game.screenHeight - 24f }, 220f, color = Utils.rgb(234, 197, 21)));
 		addWidget("gun_ammo_indicator", ProgressBar({ game.screenWidth - 145f }, { 10f }, 130f, color = Utils.rgb(15, 116, 240), style = ProgressBarStyle.CHUNKED).apply { hide() });
 		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide() });
+
+		// 일시 중지 단추
+		addWidget("pause_button", Button({ 30f }, { game.screenHeight - 60f }, 30f, 30f, "| |", onClick = {
+			if(GameManager.isPlaying)
+				GameManager.pause();
+			else if(GameManager.isPaused)
+				GameManager.resume();
+		}));
 
 		// 제목 표시줄 정보 전환
 		timers.add(Timer(3f, false) {
@@ -106,6 +115,17 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 *  상태 변화·입력은 update 가 책임진다.)
 	 */
 	override fun update(delta: Float) {
+		val pauseButton = getWidget("pause_button") as Button;
+		pauseButton.apply {
+			show();
+			if(GameManager.isPlaying)
+				setCaption("| |");
+			else if(GameManager.isPaused)
+				setCaption("l>");
+			else
+				hide();
+		};
+
 		// 이곳은 월드가 아닌 뷰어 자체의 로직만 다룬다.
         when {
             GameManager.isPlaying	-> updateInPlay(delta);
@@ -115,7 +135,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	}
 
     /**
-	 * IN_PLAY 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
+	 * PLAYING 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
 	 *
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
@@ -229,7 +249,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 */
     private inline fun updateGameOver() {
         // ESC 키가 '막 눌린 순간' 앱 종료.
-        //   isKeyJustPressed 로 한 이유: 누르고 있는 동안 매 프레임 exit 호출되지 않게.
+        //   isKeyJustPressed로 한 이유: 누르고 있는 동안 매 프레임 exit이 호출되지 않게.
         if(Input.isKeyJustPressed(Input.ESCAPE))
             Gdx.app.exit();
 
@@ -314,7 +334,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 			skipBatch = true
         );
         drawText(
-            text = "Press <P> or <Esc> to rdwesume",
+            text = "Press <P> or <Esc> to resume",
             x = 0f,
             y = game.screenHeight / 2f - 20f,
             color = Color.WHITE,
@@ -407,10 +427,12 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
     }
 
 	/**
-	 * 월드가 아닌 뷰어 자체의 배경은 없다(그려봤자 월드의 배경이 반투명하지 않는 이상 가려질 것이다).
+	 * 일반적으로 월드가 아닌 뷰어 자체의 배경은 없다(그려봤자 월드의 배경이 반투명하지 않는 이상 가려질 것이다).
 	 */
 	override fun drawBackground() {
 		if(world != null) return;
+		
+		// 표시할 월드가 없을 때 보일 placeholder (일반적으로 볼 일은 없다.)
 		drawText("No world loaded!", 0f, game.screenHeight / 2f, Color.RED, 1.0f, game.screenWidth, Align.center, true);
 	}
 
