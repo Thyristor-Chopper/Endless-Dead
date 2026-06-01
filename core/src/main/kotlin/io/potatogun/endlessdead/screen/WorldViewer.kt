@@ -73,7 +73,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		resumeButton = Button({ game.screenWidth / 2f - 195f }, { 120f }, 120f, caption = "Resume", onClick = {
 			GameManager.resume();
 		});
-		replayButton = Button({ game.screenWidth / 2f - 195f }, { 120f }, 120f, caption = "Replay", onClick = {
+		replayButton = Button({ game.screenWidth / 2f - 195f }, { 120f }, 120f, caption = "Continue", onClick = {
 			restartGame();
 		});
 		titleButton = Button({ game.screenWidth / 2f - 60f }, { 120f }, 120f, caption = "Back to title", onClick = {
@@ -373,7 +373,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 			skipBatch = true
         );
         drawText(
-            text = "Press <Esc> to exit or press <R> or <Space> for a new game",
+            text = "Press <Esc> to exit or press <R> or <Space> to continue",
             x = 0f,
             y = game.screenHeight / 2f + 10f,
             color = Color.WHITE,
