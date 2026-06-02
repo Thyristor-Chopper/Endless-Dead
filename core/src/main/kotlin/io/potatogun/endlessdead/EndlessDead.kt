@@ -8,8 +8,13 @@ import io.potatogun.endlessdead.screen.Title;
 import io.potatogun.endlessdead.screen.WorldViewer;
 
 // 일부 로우 레벨 최적화 관련 참고 사항
-// - public/protected이고 null이 아니거나 val인 것들은 약간의 오버헤드 감소를 위해 @JvmField를 붙였다. 확실히 코틀린만의 보호장치를 우회할 위험이 없다고 생각되는 곳에만 붙였으며 int, float는 직접 빌드 후 디컴파일러로 Java로 디컴파일하여 랩퍼 Integer나 Float가 아닌 null 불가 원시 int, float임을 확인했다.
-// - 아무 함수나 마구잡이로 인라인화하지 않았고 한 줄짜리 간단한 함수나 딱 한 곳에서만 호출되는(update 내에서 세부 로직을 구현한 메쏘드들을 호출한 것 등) 함수들만 명시적 인라인화를 했다. 
+//
+// - public/protected이고 null이 아니거나 val인 것들은 약간의 getter 함수 호출 오버헤드 감소를 위해 @JvmField를 붙였다. 
+//   확실히 코틀린만의 보호장치를 우회할 위험이 없다고 생각되는 곳에만 붙였으며 int, float는 
+//   직접 빌드 후 디컴파일러로 Java로 디컴파일하여 랩퍼 Integer나 Float가 아닌 null 불가 원시 int, float임을 확인했다.
+//
+// - 아무 함수나 마구잡이로 인라인화하지 않았고 한 줄짜리 간단한 함수나 딱 한 곳에서만 
+//   호출되는(update 내에서 세부 로직을 구현한 메쏘드들을 호출한 것 등) 함수들만 명시적 인라인화를 했다. 
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
