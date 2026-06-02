@@ -46,7 +46,7 @@ abstract class Game : GdxGame() {
 			throw IllegalArgumentException("an instance of this type of world viewer has been randomly created elsewhere but has not been registered normally");
 		} catch(e: Exception) {
 			if(e is IllegalArgumentException || e is NullPointerException)
-				throw IllegalArgumentException("the specified world viewer class does not have a valid standard constructor");
+				throw IllegalArgumentException("the specified world viewer class does not use the standard constructor format");
 			else
 				throw e;
 		};
