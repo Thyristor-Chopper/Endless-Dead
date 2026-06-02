@@ -111,4 +111,8 @@ object Utils {
 			font.draw(batch, text, x, y);
         if(!skipBatch) batch.end();
     }
+
+	inline fun max(x: Float, y: Float) = if(x > y) x else y;
+
+	inline fun abs(n: Float) = if(n < 0) -n else n;
 }

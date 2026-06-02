@@ -22,8 +22,6 @@ import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.screen.Screen;
 import io.potatogun.endlessdead.screen.WorldViewer;
 
-import kotlin.math.max;
-
 /**
  * 게임 내 월드 = '월드 하나' 의 추상 기본 클래스.
  * '월드'의 개념에 맞게 플레이어나 적 등의 개체 등을 추가한다.
@@ -77,6 +75,9 @@ abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmFiel
     private val entities = mutableListOf<Entity>();
 	// 타이머
 	@JvmField protected val timerManager = TimerManager();
+	// 부동소수점 나누기는 느리기 때문에 어차피 width, height가 val니까 미리 캐시
+	protected val halfWidth = width / 2f;
+	protected val halfHeight = height / 2f;
 
     init {
         setCameraCenter();
@@ -231,15 +232,16 @@ abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmFiel
 	 * drawElements에서만 한 번 쓰이기 때문에 인라인 함수이다.
      */
     private inline fun drawEntities() {
-		// Window.width는 Graphics#getWidth 메쏘드를 호출하므로 반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
-		val halfScreenWidth = Window.width / 2f;
-		val halfScreenHeight = Window.height / 2f;
+		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생하여
+		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
+		val halfScreenWidth = Window.halfWidth;
+		val halfScreenHeight = Window.halfHeight;
 		val offsetX = this.offsetX;
 		val offsetY = this.offsetY;
 
         for(entity in entities) {
 			// 보이는 개체만 그리기 (자원 낭비 감소)
-			val maxEntityLength = max(entity.width, entity.height);
+			val maxEntityLength = Utils.max(entity.width, entity.height);
 			val entityX = entity.x;
 			val entityY = entity.y;
 			if(entityX >= offsetX - halfScreenWidth - maxEntityLength && entityX <= offsetX + halfScreenWidth + maxEntityLength && entityY >= offsetY - halfScreenHeight - maxEntityLength && entityY <= offsetY + halfScreenHeight + maxEntityLength)
@@ -254,11 +256,13 @@ abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmFiel
         // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
         //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
         //   offset 은 0 ~ (world - screen) 범위여야 한다.
-		// Window.width는 Graphics#getWidth 메쏘드를 호출하므로 반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
-		val screenWidth = Window.width;
-		val screenHeight = Window.height;
-        offsetX = player.x.coerceIn(screenWidth / 2f, width - screenWidth / 2f);
-        offsetY = player.y.coerceIn(screenHeight / 2f, height - screenHeight / 2f);
+
+		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생하여
+		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
+		val halfScreenWidth = Window.halfWidth;
+		val halfScreenHeight = Window.halfHeight;
+        offsetX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);
+        offsetY = player.y.coerceIn(halfScreenHeight, height - halfScreenHeight);
 		camera.update();
 		batch.projectionMatrix = camera.combined;
 	}

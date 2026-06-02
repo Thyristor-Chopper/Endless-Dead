@@ -72,7 +72,7 @@ import kotlin.random.Random;
  */
 class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, width, height), Freezable {
     // 플레이어 — 월드 중앙에서 시작.
-    override val player = Player(this, Position(width / 2, height / 2));
+    override val player = Player(this, Position(halfWidth, halfHeight));
 	private val spawners = mutableListOf<Spawner>();
     // ── 체스판 배경 설정 (drawBackground()에서 사용) ──
     //   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
@@ -192,15 +192,19 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
      *   끝에 다시 흰색으로 되돌려두지 않으면 그 다음 그리는 것까지 영향을 받으니 주의.
      */
     override fun drawBackground() {
-		// Window.width는 Graphics#getWidth 메쏘드를 호출하므로 반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
-		val screenWidth = Window.width;
-		val screenHeight = Window.height;
+		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생하여
+		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
+
+		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생한다.
+		//   이 함수 콜 오버헤드와 부동 소수점 나눗셈 연산 중 후자가 더 성능에 영향이 있다고 하여
+		//   필드 접근 콜을 두 번 하는 건 그냥 넘어가자.
+
 		// 현재 카메라 시작점이 속한 타일 인덱스
-		val startCol = floor((offsetX - screenWidth / 2f) / tileSize).toInt();
-		val startRow = floor((offsetY - screenHeight / 2f) / tileSize).toInt();
+		val startCol = floor((offsetX - Window.halfWidth) / tileSize).toInt();
+		val startRow = floor((offsetY - Window.halfHeight) / tileSize).toInt();
         // 화면을 채우는 데 필요한 타일 개수 (여유분으로 1)
-        val cols = ceil(screenWidth / tileSize).toInt() + 1;
-        val rows = ceil(screenHeight / tileSize).toInt() + 1;
+        val cols = ceil(Window.width / tileSize).toInt() + 1;
+        val rows = ceil(Window.height / tileSize).toInt() + 1;
 
         for(row in startRow until startRow + rows)
             for(col in startCol until startCol + cols) {
@@ -220,8 +224,8 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
         //    WASD로 카메라를 움직이면 이 글자도 화면에서 움직인다.
         drawText(
             text = "*",
-            x = width / 2 - 24f,
-            y = height / 2 + 20f,
+            x = halfWidth / 2 - 24f,
+            y = halfHeight + 20f,
             color = Color.FOREST,
             scale = 8.0f,
 			skipBatch = true

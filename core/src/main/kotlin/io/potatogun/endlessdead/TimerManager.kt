@@ -34,7 +34,12 @@ class TimerManager {
 			timer.tick(delta);
 	}
 
+	/**
+	 * 등록된 모든 타이머를 해제한다.
+	 */
 	fun clearTimers() {
 		timers.clear();
+		// 자바 가상머신이 gc 해주길...
+		//   참 소멸자 개념이랑 C++처럼 수동으로 delete하는 게 왜 없냐...
 	}
 }

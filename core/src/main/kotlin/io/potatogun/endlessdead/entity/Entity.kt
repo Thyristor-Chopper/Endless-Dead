@@ -81,8 +81,10 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	 */
 	open val penetrationDamage = 0;
 	// 텍스처 회전 각도
-	open var rotation = 0f
-		protected set;
+	private var rotation = 0f;
+	// 부동소수점 나눗셈 오버헤드를 줄이기 위해 캐시
+	private var isRotated90 = false;
+	private var isRotated180 = false;
 	// 개체 오버레이 색 (color는 mutable 객체이므로 val)
 	protected open val color = Color.WHITE;
 	// 개체 투명도
@@ -95,6 +97,14 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 		};
 	// 타이머
 	@JvmField protected val timerManager = TimerManager();
+	// 최적화... 부동소수점 나누기는 느리기 때문에 어차피 width, height가 val니까 미리 캐시
+	protected val halfWidth = width / 2f;
+	protected val halfHeight = height / 2f;
+	// 매번 계산하면 오버헤드가 상당하므로 회전 시에만 계산해서 캐시
+	var collideCheckWidth2x = width * 2f
+		private set;
+	var collideCheckHeight2x = height * 2f
+		private set;
 
 	/**
      * 매 프레임 호출되어 자신을 그린다.
@@ -111,19 +121,12 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
     protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
 		val texture: Texture? = alternateTexture ?: this.texture;
 		texture?.let {
-			if(batch.color == Color.WHITE) batch.color = color;  // 대미지 시 붉게가 작동하게 하기 위해.
-			batch.draw(it, x - width / 2f, y - height / 2f, width / 2f, height / 2f, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+			if(batch.color == Color.WHITE) batch.color = color;  // 대미지 시 붉게가 작동하게 하기 위해.]
+			
+			batch.draw(it, x - halfWidth, y - halfHeight, halfWidth, halfHeight, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
 			batch.color = Color.WHITE;
 		};
 	}
-
-    /**
-     * 이 객체가 차지하는 사각형 영역 — 충돌 판정에 쓴다.
-     *
-     * 매번 새 Rectangle 을 만든다. 성능이 극한으로 중요한 곳이라면 재사용해야
-     * 하지만, 이 강의의 규모에서는 가독성을 더 우선한다.
-     */
-    inline fun getBounds(): Rectangle = Rectangle(x - width / 2f, y - height / 2f, width, height);
 
     /**
      * 다른 객체와 충돌했는지 검사 — AABB(축 정렬 경계 상자) 방식.
@@ -137,7 +140,13 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
      *   그래서 player.collidesWith(enemy), bullet.collidesWith(wall) 처럼
      *   어떤 조합이든 똑같은 문법으로 쓸 수 있다.
      */
-    inline fun collidesWith(other: Entity): Boolean = getBounds().overlaps(other.getBounds());
+    inline fun collidesWith(other: Entity): Boolean {
+		// 원본 코드: getBounds().overlaps(other.getBounds()); 한 줄
+		//   매번 새 사각형 객체를 만들어서 확인하여 오버헤드도 상당하고
+		//   update() 내에서 collidesWith하는 경우도 많아 GC할 거리도 매 프레임 엄청나게 불어난다.
+
+		return Utils.abs(x - other.x) * 4f < collideCheckWidth2x + other.collideCheckWidth2x && Utils.abs(y - other.y) * 4f < collideCheckHeight2x + other.collideCheckHeight2x;
+	}
 
 	/**
 	 * 개체가 다른 누군가를 공격했을 때 콜백 함수
@@ -162,13 +171,18 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	fun distanceTo(other: Entity): Float = position.distanceTo(other.position);
 
 	/**
+	 * 회전 각도를 구한다.
+	 */
+	fun getRotationAngle() = rotation;
+
+	/**
 	 * 특정 위치를 향해 회전한다.
 	 * 
 	 * @param position 타겟 방향
 	 */
-	fun rotateTo(position: Position) {
+	inline fun rotateTo(position: Position) {
 		// 샷건 내 360도 구현 참고함
-		rotation = toDegrees(atan2((Window.height - position.y) - (this.y - world.offsetY + Window.height / 2f), position.x - (this.x - world.offsetX + Window.width / 2f)).toDouble()).toFloat() - 90f;
+		rotate(toDegrees(atan2((Window.height - position.y) - (this.y - world.offsetY + Window.halfHeight), position.x - (this.x - world.offsetX + Window.halfWidth)).toDouble()).toFloat() - 90f);
 	}
 
 	/**
@@ -178,6 +192,17 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	 */
 	fun rotate(degrees: Float) {
 		rotation = degrees;
+
+		if(rotation % 180f == 0f) {
+			collideCheckWidth2x = width * 2f;
+			collideCheckHeight2x = height * 2f;
+		} else if((rotation + 90f) % 180f == 0f) {
+			collideCheckWidth2x = height * 2f;
+			collideCheckHeight2x = width * 2f;
+		} else {  // 사각형의 세밀한 회전을 구하기에는 연산량이 너무 늘어나니까 그냥 평균으로 때우자. 어차피 지금 플레이어 외에 회전하는 개체가 없다.
+			collideCheckWidth2x = width + height;
+			collideCheckHeight2x = collideCheckWidth2x;
+		}
 	}
 
 	/**
