@@ -18,10 +18,6 @@ object Window {
 		private set;
 	var halfHeight = 0f
 		private set;
-	val width: Float get() = Gdx.graphics.width.toFloat();
-	val height: Float get() = Gdx.graphics.height.toFloat();
-	val halfWidth: Float get() = Gdx.graphics.width.toFloat() / 2f;
-	val halfHeight: Float get() = Gdx.graphics.height.toFloat() / 2f;
 	var titleBarInfo: String? by Delegates.observable(null) { _, _, _ -> updateTitle() };
 	var titleBarStats: String? by Delegates.observable(null) { _, _, _ -> updateTitle() };
 
