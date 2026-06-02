@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Input;
-import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.Utils;
@@ -64,7 +64,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 		// 1. 생존 시간 기록 & 생존 시간 보너스
 		timers.add(Timer(1f) {
 			survivedDuration++;
-			ScoreManager.addScore(1);
+			GameManager.addScore(1);
 		}.register());
 
 		// 2. 30초마다 자연 회복
@@ -185,7 +185,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 	 */
 	override fun onDamage(damage: Int, attacker: Entity?) {
 		healTimer.reset();
-		ScoreManager.subtractScore(5);
+		GameManager.subtractScore(5);
 		totalDamage += damage;
 	}
 
@@ -194,7 +194,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 	 */
 	override fun onKill(victim: LivingEntity) {
 		if(victim is Zombie) {
-			ScoreManager.addScore(10);
+			GameManager.addScore(10);
 			killedZombieCount++;
 		}
 	}

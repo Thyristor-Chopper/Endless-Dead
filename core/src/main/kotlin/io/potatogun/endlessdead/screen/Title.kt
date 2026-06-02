@@ -28,12 +28,10 @@ class Title(game: EndlessDead) : Screen(game) {
 
 	private fun startGame() {
 		GameManager.setPlaying();
-		game.currentRound = 1;
 		val worldViewer = WorldViewer.getViewer(game);
-		worldViewer.loadWorld(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat()));
+		worldViewer.loadWorld(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT));
 		game.setScreen(worldViewer);
-		game.setTitleBarInfo(null);
-		Gdx.app.postRunnable { dispose() };
+		// Gdx.app.postRunnable { dispose() };
 	}
 
 	override fun update(delta: Float) {

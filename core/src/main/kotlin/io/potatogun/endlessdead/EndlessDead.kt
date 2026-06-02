@@ -37,22 +37,6 @@ import io.potatogun.endlessdead.screen.WorldViewer;
  *   ▸ create() 안에서 setScreen에 넘기는 Screen을 자기 Screen으로 교체
  */
 class EndlessDead : Game() {
-	// 게임 제목
-	@JvmField val title = "Endless Dead";
-    /** 
-	 * 화면(창) 크기
-	 */
-    val screenWidth: Float
-		inline get() = Gdx.graphics.width.toFloat();
-    val screenHeight: Float
-		inline get() = Gdx.graphics.height.toFloat();
-	private var titleBarInfo = "";
-	private var titleBarStats = "";
-	/**
-	 * 현재 라운드 (0이면 아직 게임이 시작되지 않은 것)
-	 */
-	var currentRound = 0
-		internal set;
 	// 미리 등록된 스크린
 	val titleScreen: Title by lazy { Title(this) };
 
@@ -71,56 +55,8 @@ class EndlessDead : Game() {
      */
     override fun create() {
         setScreen(titleScreen);  // 부모 Game이 제공하는 메서드
+		Window.setTitle(Constants.GAME_TITLE);
     }
-
-	/**
-	 * 매 프레임 실행된다.
-	 * update를 호출하여 매 프레임 게임 자체의 갱신 로직을 실행한다.
-	 */
-	override fun render() {
-		super.render();
-		update();
-	}
-
-	/**
-	 * 매 프레임 게임 자체의 갱신 로직.
-	 * 여기서는 제목 표시줄 내용을 갱신한다.
-	 */
-	private inline fun update() {
-		val gameStateIndicator = when {
-			GameManager.isPaused	-> "[Paused]"
-			GameManager.isGameOver	-> "[Game Over]"
-			else					-> ""
-		}.run {
-			if(this.isBlank()) ""
-			else " $this"
-		};
-		val roundInfo = if(currentRound > 0) " - Round $currentRound" else "";
-		val titleBarInfo = if(this.titleBarInfo.isBlank()) "" else " - $titleBarInfo";
-		val titleBarStats = if(this.titleBarStats.isBlank()) "" else " / $titleBarStats";
-		if(titleBarInfo.isEmpty())
-			Window.setTitle("${title}${roundInfo}${titleBarStats}${gameStateIndicator}");
-		else
-			Window.setTitle("${title}${titleBarInfo}");
-	}
-
-	/**
-	 * 현재 상태 정보를 제목 표시줄에 표시한다.
-	 *
-	 * @param info 상태
-	 */
-	fun setTitleBarInfo(info: String?) {
-		titleBarInfo = info ?: "";
-	}
-
-	/**
-	 * 현재 통계 정보를 제목 표시줄에 표시한다.
-	 *
-	 * @param info 통계
-	 */
-	fun setTitleBarStats(info: String?) {
-		titleBarStats = info ?: "";
-	}
 
 	/**
 	 * 공유 자원을 정리한다.

@@ -9,11 +9,19 @@ object Constants {
 	 */
 	const val FPS = 60;
 	/**
+	 * 중지 상태일 때 FPS
+	 */
+	const val PASSIVE_FPS = 20;
+	/**
 	 * 월드의 너비
 	 */
-	const val ZOMBIE_WORLD_WIDTH = 1920;
+	const val ZOMBIE_WORLD_WIDTH = 1920f;
 	/**
 	 * 월드의 높이
 	 */
-	const val ZOMBIE_WORLD_HEIGHT = 1920;
+	const val ZOMBIE_WORLD_HEIGHT = 1920f;
+	/**
+	 * 게임 제목
+	 */
+	const val GAME_TITLE = "Endless Dead";
 }

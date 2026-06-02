@@ -39,12 +39,12 @@ fun main() {
     //   Lwjgl3ApplicationConfiguration().apply { setTitle(...); setWindowedMode(...); ... }
     //   처럼 더 간결하게 쓸 수 있다.
     val config = Lwjgl3ApplicationConfiguration();
-    config.setTitle("${game.title} - Loading...");					// 창 제목
+    config.setTitle("${Constants.GAME_TITLE} - Loading...");		// 창 제목
     config.setWindowedMode(800, 600);								// 창 크기
     config.setResizable(true);										// 크기 조절 가능
-	config.setWindowSizeLimits(320, 240, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT);
+	config.setWindowSizeLimits(320, 240, Constants.ZOMBIE_WORLD_WIDTH.toInt(), Constants.ZOMBIE_WORLD_HEIGHT.toInt());
     config.useVsync(false);										// 수직동기화를 꺼야 랙이 줄어듦
-    config.setForegroundFPS(20);									// 타이틀 화면에서는 낮은 fps로
+    config.setForegroundFPS(Constants.PASSIVE_FPS);					// 타이틀 화면에서는 낮은 fps로
 	config.setWindowIcon(FileType.Internal, "assets/icon_16.png", "assets/icon_32.png", "assets/icon_128.png");
 
     // ─────────────────────────────────────────

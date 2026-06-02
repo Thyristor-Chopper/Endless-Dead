@@ -10,7 +10,6 @@ import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Input;
-import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.Utils;
@@ -82,9 +81,6 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 		titleButton = Button({ Window.width / 2f - 60f }, { 120f }, 120f, caption = "Back to title", onClick = {
 			unloadWorld(true);
 			GameManager.standBy();
-			game.currentRound = 0;
-			game.setTitleBarStats(null);
-			game.setTitleBarInfo(null);
 			game.setScreen(game.titleScreen);
 		});
 		quitButton = Button({ Window.width / 2f + 75f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() });
@@ -179,18 +175,18 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 		val world: World? = this.world;
 		
 		if(world == null) {
-			game.setTitleBarStats(null);
+			Window.titleBarStats = null;
 			return;
 		}
 		
-		game.setTitleBarStats(when(TitleInfoType.byIndex(currentTitleInfo)) {
+		Window.titleBarStats = when(TitleInfoType.byIndex(currentTitleInfo)) {
 			TitleInfoType.OPENED	-> "Opened chests: ${world.player.openedContainerCount}"
 			TitleInfoType.KILLED	-> "Killed zombies: ${world.player.killedZombieCount}"
 			TitleInfoType.FIRED		-> "Fired: ${world.player.fireCount}"
 			TitleInfoType.SURVIVED	-> "Survived duration: ${Utils.parseSeconds(world.player.survivedDuration, "m", "s")}"
 			TitleInfoType.DAMAGE	-> "Total damage: ${world.player.totalDamage}"
 			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.getEntities().filterIsInstance<Zombie>().size}"
-		});
+		};
 	}
 
 	/**
@@ -277,9 +273,7 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 
 	private fun restartGame() {
 		GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
-		game.currentRound++;
-		loadWorld(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat()), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
-		game.setTitleBarInfo(null);
+		loadWorld(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
 	}
 
 	/**
@@ -437,7 +431,7 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 				skipBatch = true
 			);
 			drawText(
-				text = "Score: ${ScoreManager.score}",
+				text = "Score: ${GameManager.score}",
 				x = Window.width / 2f - 70f,
 				y = Window.height / 2f - 95f,
 				color = Color.LIGHT_GRAY,
@@ -525,7 +519,7 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 
 		// 점수
 		drawText(
-            text = "Score: ${ScoreManager.score}",
+            text = "Score: ${GameManager.score}",
             x = Window.width - 130f,
             y = Window.height - 10f,
             color = Utils.rgb(203, 241, 194),

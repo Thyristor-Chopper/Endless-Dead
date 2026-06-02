@@ -40,7 +40,7 @@ import kotlin.math.max;
  *
  * @param game		월드가 속한 게임
  * @param width		월드 전체 너비 (JvmField이 있지만 빌드 후 Fernflower로 자바로 디컴파일하여 null이 불가능한 원시 float임을 확인함.)
- * @param height	월드 전체 높이
+ * @param height	월드 전체 높이 (위와 동일)
  */
 abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmField val height: Float) {
 	// OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
