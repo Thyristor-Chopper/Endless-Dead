@@ -62,7 +62,7 @@ class EndlessDead : Game() {
     }
 
 	/**
-	 * 공유 자원을 정리한다.
+	 * 자원을 정리한다.
 	 */
 	override fun dispose() {
 		super.dispose();

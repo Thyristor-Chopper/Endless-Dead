@@ -39,6 +39,7 @@ abstract class Game : GdxGame() {
 		val viewer: WorldViewer? = worldViewers.firstOrNull { it::class == viewerClass };
 		if(viewer != null) return viewer as T;
 
+		// 인자로 받은 클래스로 생성하는 건 잘 모르겠어서 약간 검색함...
 		val viewerToAdd = try {
 			viewerClass.primaryConstructor!!.call(this)
 		} catch(e: InvocationTargetException) {
