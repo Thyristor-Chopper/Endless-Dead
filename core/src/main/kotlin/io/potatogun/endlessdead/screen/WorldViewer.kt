@@ -29,9 +29,9 @@ import java.util.WeakHashMap;
 /**
  * 월드를 불러오고 월드를 화면에 프로젝션해주는 스크린이다.
  *
- * 한 게임 당 두 개 이상의 뷰어를 생성하지 못하게 하기 위해 직접 생성할 수 없고 WorldViewer.getViewer(Game)을 사용한다.
+ * 한 게임 당 두 개 이상의 뷰어를 생성할 수 없다.
  */
-class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
+class WorldViewer(game: EndlessDead) : Screen(game) {
 	// 표시할 월드
 	private var world: World? = null;
 	private val noWorldOverlay = Utils.rgb(255, 255, 255, 0.5f);
@@ -58,6 +58,12 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 	private val lazyStillCut = lazy { Textures.loadTexture("title/still_cut.bmp") };
 
 	init {
+		// 같은 게임 인스턴스에 대해 두 개 이상의 월드뷰어를 만들지 못하게 한다.
+		if(WorldViewer.viewerInstance[game] != null)
+			throw IllegalStateException("only once instance of WorldViewer may be created for each game instances");
+
+		WorldViewer.viewerInstance[game] = this;
+
 		// 단색용 텍스처 생성
 		Pixmap(1, 1, Pixmap.Format.RGBA8888).run {
 			setColor(Color.WHITE);
@@ -100,7 +106,7 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 	 */
 	fun loadWorld(world: World, disposePreviousWorld: Boolean = false) {
 		if(world.game !== this.game)  // 안전을 위해 동일 게임 인스턴스에 속한 월드만 불러오게 함
-			throw IllegalArgumentException("WorldViewer can only project worlds that belongs to the same game instance of this viewer");
+			throw IllegalArgumentException("WorldViewer can only project worlds that belong to the same game instance of this viewer");
 		val previousWorld: World? = this.world;
 		this.world = world;
 		world.updateCamera();
