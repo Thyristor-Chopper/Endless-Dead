@@ -106,10 +106,10 @@ abstract class World(val game: EndlessDead, val viewer: WorldViewer, @JvmField v
     }
 
     /**
-     * 현재 등록된 객체 목록의 '읽기용 복사본'.
+     * 현재 등록된 개체 목록의 '읽기용 복사본'.
      *
-     * toList() 로 복사해서 주는 이유:
-     *   외부가 받은 리스트에 add/remove 하면 내부 상태가 망가진다.
+     * toList()로 복사해서 주는 이유:
+     *   외부가 받은 리스트에 add/remove하면 내부 상태가 망가진다.
      *   복사본을 줘서 '훔쳐보기만 하고 건드리진 못하게' 한다.
 	 *
 	 * @return 읽기 전용 개체 목록
@@ -117,7 +117,7 @@ abstract class World(val game: EndlessDead, val viewer: WorldViewer, @JvmField v
     fun getEntities(): List<Entity> = entities.toList();
 
     /**
-     * 등록된 모든 개체에게 'update(delta) 한 프레임 진행' 을 시킨다.
+     * 등록된 모든 개체에게 'update(delta) 한 프레임 진행'을 시킨다.
 	 *
 	 * update 내에서만 한 번 쓰이기 때문에 inline이다.
      */
@@ -165,14 +165,11 @@ abstract class World(val game: EndlessDead, val viewer: WorldViewer, @JvmField v
     // ────────────────────────────────────────────────────────
 
 	/**
-     * 매 프레임 게임 로직 — 서브클래스가 override 해서 자기 게임 로직을 넣는 곳.
+     * 매 프레임 게임 로직 — 서브클래스가 override해서 자기 게임 로직을 넣는 곳.
      *
      * 기본 구현은 가장 단순한 '갱신 → 정리' 시나리오를 보여준다:
      *   ① updateAllObjects(delta) — 각 객체가 자기 위치 갱신
-     *   ② removeDead()            — isAlive=false인 객체 제거
-     *
-     * 객체 간 상호작용(충돌·점수·생사 결정)이 있는 게임이면 override해서
-     * 위 두 호출 사이에 그 로직을 끼워 넣는다 (ZombieWorld 참고).
+     *   ② removeDead()            — isAlive=false인 개체 제거
      */
     internal open fun update(delta: Float) {
 		updateEntities(delta);

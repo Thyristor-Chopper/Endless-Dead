@@ -54,6 +54,9 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
             x += dx / distance * speed * delta;
             y += dy / distance * speed * delta;
         } else {
+			// 플레이어에게 대미지 주기
+			// 처음 템플릿(예제) 코드에서는 모든 상호작용을 월드에서 처리했으나
+			//   난 좀비'가' 누군가에게 직접 대미지를 주는 게 맞는 것 같아서 여기서 처리함.
 			attackTextureTimer -= delta;
 			if(attackTextureTimer <= 0f)
 				attackTextureTimer = 0.75f;
