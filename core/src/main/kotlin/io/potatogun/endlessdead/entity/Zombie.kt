@@ -64,7 +64,7 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 			target.takeDamage(attackDamage, attacker = this);
 		}
     }
-	
+
 	override fun draw(batch: SpriteBatch) {
 		if(attackTextureTimer % 0.75f > 0.5f)
 			super.draw(batch, attackingTexture);
