@@ -13,11 +13,6 @@ object Window {
 		private set;
 	var height = 0f
 		private set;
-	// 부동 소수점 나눗셈은 느리기 때문에 창 크기의 절반도 캐시
-	var halfWidth = 0f
-		private set;
-	var halfHeight = 0f
-		private set;
 	var titleBarInfo: String? by Delegates.observable(null) { _, _, _ -> updateTitle() };
 	var titleBarStats: String? by Delegates.observable(null) { _, _, _ -> updateTitle() };
 
@@ -52,9 +47,5 @@ object Window {
 
 		width = floatWidth;
 		height = floatHeight;
-
-		// 부동 소수점 나눗셈은 느리기 때문에 창 크기의 절반도 캐시
-		halfWidth = floatWidth / 2f;
-		halfHeight = floatHeight / 2f;
 	}
 }

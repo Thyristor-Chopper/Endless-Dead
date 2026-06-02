@@ -75,18 +75,18 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		addWidget("gun_cooldown_indicator", ProgressBar({ Window.width - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide() });
 
 		// 일시 중지 및 게임 오버 단추
-		resumeButton = Button({ Window.halfWidth - 195f }, { 120f }, 120f, caption = "Resume", onClick = {
+		resumeButton = Button({ Window.width * 0.5f - 195f }, { 120f }, 120f, caption = "Resume", onClick = {
 			game.gameManager.resume();
 		});
-		replayButton = Button({ Window.halfWidth - 195f }, { 120f }, 120f, caption = "Continue", onClick = {
+		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, 120f, caption = "Continue", onClick = {
 			restartGame();
 		});
-		titleButton = Button({ Window.halfWidth - 60f }, { 120f }, 120f, caption = "Back to title", onClick = {
+		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, 120f, caption = "Back to title", onClick = {
 			unloadWorld(true);
 			game.gameManager.standBy();
 			game.setScreen(game.titleScreen);
 		});
-		quitButton = Button({ Window.halfWidth + 75f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() });
+		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() });
 
 		// 제목 표시줄 정보 전환
 		timerManager.registerTimer(Timer(3f) {
@@ -342,7 +342,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
         drawText(
             text = "PAUSED",
             x = 0f,
-            y = Window.halfHeight + 20f,
+            y = Window.height * 0.5f + 20f,
             color = Color.YELLOW,
             scale = 2.0f,
 			width = Window.width,
@@ -352,7 +352,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
         drawText(
             text = "Press <P> or <Esc> or <Space> to resume",
             x = 0f,
-            y = Window.halfHeight - 20f,
+            y = Window.height * 0.5f - 20f,
             color = Color.WHITE,
             scale = 1.0f,
 			width = Window.width,
@@ -374,7 +374,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
         drawText(
             text = "YOU DIED!",
             x = 0f,
-            y = Window.halfHeight + 40f,
+            y = Window.height * 0.5f + 40f,
             color = Color.RED,
             scale = 2.0f,
 			width = Window.width,
@@ -384,7 +384,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
         drawText(
             text = "Press <Esc> to exit or press <R> or <Space> to continue",
             x = 0f,
-            y = Window.halfHeight + 10f,
+            y = Window.height * 0.5f + 10f,
             color = Color.WHITE,
             scale = 1.0f,
 			width = Window.width,
@@ -397,48 +397,48 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		if(world != null) {
 			drawText(
 				text = "Opened containers: ${world.player.openedContainerCount}",
-				x = Window.halfWidth - 70f,
-				y = Window.halfHeight - 20f,
+				x = Window.width * 0.5f - 70f,
+				y = Window.height * 0.5f - 20f,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f,
 				skipBatch = true
 			);
 			drawText(
 				text = "Killed zombies: ${world.player.killedZombieCount}",
-				x = Window.halfWidth - 70f,
-				y = Window.halfHeight - 35f,
+				x = Window.width * 0.5f - 70f,
+				y = Window.height * 0.5f - 35f,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f,
 				skipBatch = true
 			);
 			drawText(
 				text = "Fired: ${world.player.fireCount}",
-				x = Window.halfWidth - 70f,
-				y = Window.halfHeight - 50f,
+				x = Window.width * 0.5f - 70f,
+				y = Window.height * 0.5f - 50f,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f,
 				skipBatch = true
 			);
 			drawText(
 				text = "Survived duration: ${Utils.parseSeconds(world.player.survivedDuration, "m", "s")}",
-				x = Window.halfWidth - 70f,
-				y = Window.halfHeight - 65f,
+				x = Window.width * 0.5f - 70f,
+				y = Window.height * 0.5f - 65f,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f,
 				skipBatch = true
 			);
 			drawText(
 				text = "Total damage: ${world.player.totalDamage}",
-				x = Window.halfWidth - 70f,
-				y = Window.halfHeight - 80f,
+				x = Window.width * 0.5f - 70f,
+				y = Window.height * 0.5f - 80f,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f,
 				skipBatch = true
 			);
 			drawText(
 				text = "Score: ${game.scoreManager.score}",
-				x = Window.halfWidth - 70f,
-				y = Window.halfHeight - 95f,
+				x = Window.width * 0.5f - 70f,
+				y = Window.height * 0.5f - 95f,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f,
 				skipBatch = true
@@ -462,7 +462,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		batch.draw(lazyStillCut.value, 0f, 0f, Window.width, Window.height);
 		batch.color = Color.WHITE;
 		// 월드가 없다는 메시지 없이 그냥 placeholder 배경 그림만 넣는 게 나으려나.
-		// drawText("No world loaded!", 0f, Window.halfHeight, Color.SCARLET, 2.0f, Window.width, Align.center, true);
+		// drawText("No world loaded!", 0f, Window.height * 0.5f, Color.SCARLET, 2.0f, Window.width, Align.center, true);
 	}
 
 	override fun drawElements() {

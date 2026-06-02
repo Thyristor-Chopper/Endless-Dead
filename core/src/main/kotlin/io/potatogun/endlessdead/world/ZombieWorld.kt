@@ -72,7 +72,7 @@ import kotlin.random.Random;
  */
 class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, width, height), Freezable {
     // 플레이어 — 월드 중앙에서 시작.
-    override val player = Player(this, Position(halfWidth, halfHeight));
+    override val player = Player(this, Position(width * 0.5f, width * 0.5f));
 	private val spawners = mutableListOf<Spawner>();
     // ── 체스판 배경 설정 (drawBackground()에서 사용) ──
     //   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
@@ -197,8 +197,8 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		//   필드 접근 콜을 두 번 하는 건 그냥 넘어가자.
 
 		// 현재 카메라 시작점이 속한 타일 인덱스
-		val startCol = floor((offsetX - Window.halfWidth) / tileSize).toInt();
-		val startRow = floor((offsetY - Window.halfHeight) / tileSize).toInt();
+		val startCol = floor((offsetX - Window.width * 0.5f) / tileSize).toInt();
+		val startRow = floor((offsetY - Window.height * 0.5f) / tileSize).toInt();
         // 화면을 채우는 데 필요한 타일 개수 (여유분으로 1)
         val cols = ceil(Window.width / tileSize).toInt() + 1;
         val rows = ceil(Window.height / tileSize).toInt() + 1;
@@ -221,8 +221,8 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
         //    WASD로 카메라를 움직이면 이 글자도 화면에서 움직인다.
         drawText(
             text = "*",
-            x = halfWidth - 24f,
-            y = halfHeight + 20f,
+            x = width * 0.5f - 24f,
+            y = height * 0.5f + 20f,
             color = Color.FOREST,
             scale = 8.0f,
 			skipBatch = true

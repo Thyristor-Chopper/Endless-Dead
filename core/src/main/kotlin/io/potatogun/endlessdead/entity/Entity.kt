@@ -97,9 +97,6 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 		};
 	// 타이머
 	@JvmField protected val timerManager = TimerManager();
-	// 최적화... 부동소수점 나누기는 느리기 때문에 어차피 width, height가 val니까 미리 캐시
-	protected val halfWidth = width / 2f;
-	protected val halfHeight = height / 2f;
 	// 매번 계산하면 오버헤드가 상당하므로 회전 시에만 계산해서 캐시
 	var collideCheckWidth2x = width * 2f
 		private set;
@@ -122,7 +119,9 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 		val texture: Texture? = alternateTexture ?: this.texture;
 		texture?.let {
 			if(batch.color == Color.WHITE) batch.color = color;  // 대미지 시 붉게가 작동하게 하기 위해.]
-			
+
+			val halfWidth = width * 0.5f;
+			val halfHeight = height * 0.5f;
 			batch.draw(it, x - halfWidth, y - halfHeight, halfWidth, halfHeight, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
 			batch.color = Color.WHITE;
 		};
@@ -182,7 +181,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	 */
 	inline fun rotateTo(position: Position) {
 		// 샷건 내 360도 구현 참고함
-		rotate(toDegrees(atan2((Window.height - position.y) - (this.y - world.offsetY + Window.halfHeight), position.x - (this.x - world.offsetX + Window.halfWidth)).toDouble()).toFloat() - 90f);
+		rotate(toDegrees(atan2((Window.height - position.y) - (this.y - world.offsetY + Window.height * 0.5f), position.x - (this.x - world.offsetX + Window.width * 0.5f)).toDouble()).toFloat() - 90f);
 	}
 
 	/**

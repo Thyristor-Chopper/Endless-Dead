@@ -21,8 +21,8 @@ class Title(game: EndlessDead) : Screen(game) {
 	private var titleBlinkTimer = 0f;
 
 	init {
-		addWidget("play_button", Button({ Window.halfWidth - 130f }, { 120f }, 120f, caption = "Play", onClick = { startGame() }));
-		addWidget("quit_button", Button({ Window.halfWidth + 10f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() }));
+		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, 120f, caption = "Play", onClick = { startGame() }));
+		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() }));
 	}
 
 	private fun startGame() {
@@ -50,15 +50,15 @@ class Title(game: EndlessDead) : Screen(game) {
 	override fun drawElements() {
 		val titleWidth = Window.width * 0.75f;
 		val titleHeight = titleWidth / 6f;
-		val titleX = (Window.width - titleWidth) / 2f;  // 여기선 어차피 나누기를 하기 때문에 halfWidth를 써서 보는 성능 이득이 없음
-		val titleY = Window.halfHeight + 80f;
+		val titleX = (Window.width - titleWidth) * 0.5f;
+		val titleY = Window.height * 0.5f + 80f;
 		batch.draw(title, titleX, titleY, titleWidth, titleHeight);
 
 		if(titleBlinkTimer % 1f < 0.5f)
 			drawText(
 				text = "Press any key to start",
 				x = 0f,
-				y = Window.halfHeight - 30f,
+				y = Window.height * 0.5f - 30f,
 				color = Color.WHITE,
 				scale = 1f,
 				width = Window.width,

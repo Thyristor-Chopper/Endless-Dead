@@ -18,9 +18,6 @@ abstract class Widget(var x: () -> Float, var y: () -> Float, @JvmField val widt
 	 */
 	var isVisible = true
 		private set;
-	// 부동소수점 나누기는 느리기 때문에 어차피 width, height가 val니까 미리 캐시
-	protected val halfWidth = width / 2f;
-	protected val halfHeight = height / 2f;
 
 	/**
 	 * 컨트롤을 화면에 그리는 로직

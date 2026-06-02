@@ -75,9 +75,6 @@ abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmFiel
     private val entities = mutableListOf<Entity>();
 	// 타이머
 	@JvmField protected val timerManager = TimerManager();
-	// 부동소수점 나누기는 느리기 때문에 어차피 width, height가 val니까 미리 캐시
-	protected val halfWidth = width / 2f;
-	protected val halfHeight = height / 2f;
 
     init {
         setCameraCenter();
@@ -234,8 +231,8 @@ abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmFiel
     private inline fun drawEntities() {
 		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생하여
 		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
-		val halfScreenWidth = Window.halfWidth;
-		val halfScreenHeight = Window.halfHeight;
+		val halfScreenWidth = Window.width * 0.5f;
+		val halfScreenHeight = Window.height * 0.5f;
 		val offsetX = this.offsetX;
 		val offsetY = this.offsetY;
 
@@ -259,8 +256,8 @@ abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmFiel
 
 		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생하여
 		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
-		val halfScreenWidth = Window.halfWidth;
-		val halfScreenHeight = Window.halfHeight;
+		val halfScreenWidth = Window.width * 0.5f;
+		val halfScreenHeight = Window.height * 0.5f;
         offsetX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);
         offsetY = player.y.coerceIn(halfScreenHeight, height - halfScreenHeight);
 		camera.update();
