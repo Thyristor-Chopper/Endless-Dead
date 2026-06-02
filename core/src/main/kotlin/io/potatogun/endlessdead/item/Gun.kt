@@ -2,8 +2,9 @@ package io.potatogun.endlessdead.item;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Timer.Task;
 
-import io.potatogun.endlessdead.Timer;
+import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.entity.InventoryEntity;
@@ -49,7 +50,7 @@ abstract class Gun(world: World, id: String, name: String, @JvmField val bulletD
 			else if(value > maxAmmo) field = maxAmmo;
 			else field = value;
 		};  // 샷건이라는 하위클래스에서도 사용해야할 것 같아 private를 protected로 변경
-	private var cooldownTimer: Timer? = null;
+	private var cooldownTimer: Task? = null;
 
 	init {
 		if(fireInterval < 0f) throw IllegalArgumentException("invalid fire interval");
@@ -70,11 +71,16 @@ abstract class Gun(world: World, id: String, name: String, @JvmField val bulletD
 		fireCooldown = fireInterval;
 
 		// 남은 쿨타임을 갱신한다. update, delta를 쓰지 않은 이유는 이건 게임 프레임과는 독립적이라고 보기 때문.
-		cooldownTimer = Timer(world.game, 0.01f) {
+		cooldownTimer?.let { Utils.clearInterval(it) };
+		cooldownTimer = Utils.setInterval(0.01f) {
 			fireCooldown -= 0.01f;
-			if(fireCooldown == 0f)
-				cooldownTimer?.unregister();
-		}.register();
+			if(fireCooldown == 0f) {
+				cooldownTimer?.let {
+					Utils.clearInterval(it);
+					cooldownTimer = null;
+				};
+			}
+		};
 	}
 
 	/**
@@ -129,6 +135,9 @@ abstract class Gun(world: World, id: String, name: String, @JvmField val bulletD
 	 * 쿨타임 해제 타이머 정리
 	 */
 	override fun cleanUp() {
-		cooldownTimer?.unregister();
+		cooldownTimer?.let {
+			Utils.clearInterval(it);
+			cooldownTimer = null;
+		};
 	}
 }

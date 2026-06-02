@@ -1,6 +1,5 @@
 package io.potatogun.endlessdead.spawner;
 
-import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.position.Position;
 import io.potatogun.endlessdead.position.distanceTo;
@@ -18,16 +17,8 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
     private var spawnTimer = 0f;
     private var zombiesPerSpawn = 1;
     private val maxZombiesPerSpawn = 8;
-    private val spawnIncreaseTimer: Timer;
-
-    init {
-        spawnIncreaseTimer = Timer(world.game, 30f) {
-            if(zombiesPerSpawn < maxZombiesPerSpawn) {
-                zombiesPerSpawn++;
-                world.viewer?.drawSubtitles("More zombies coming...");
-            }
-        }.register();
-    }
+    private var spawnIncreaseTimer = 0f;
+    private val spawnIncreaseInterval = 30f;
 
 	/**
 	 * 매 프레임 실행해서 소환할 시간이 되면 좀비를 스폰한다
@@ -38,6 +29,15 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
             spawnTimer -= spawnInterval;
             for(i in 1..zombiesPerSpawn)
                 spawnRandomZombie();
+        }
+
+        spawnIncreaseTimer += delta;
+        if(spawnIncreaseTimer >= spawnIncreaseInterval) {
+            spawnIncreaseTimer -= spawnIncreaseInterval;
+            if(zombiesPerSpawn < maxZombiesPerSpawn) {
+                zombiesPerSpawn++;
+                world.viewer?.drawSubtitles("More zombies coming...");
+            }
         }
     }
 
@@ -62,11 +62,4 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 
         world.addEntity(newZombie);
     }
-
-	/**
-	 * 타이머 해제
-	 */
-	override fun cleanUp() {
-		spawnIncreaseTimer.unregister();
-	}
 }

@@ -84,7 +84,6 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
     private val bgColorDark = Utils.rgb(38, 92, 38);
     private val bgColorLight = Utils.rgb(38, 107, 38);
     private val tileSize = 64f;
-	private val timers = mutableListOf<Timer>();
 	override var isFrozen: Boolean = false  // world의 시간이 정지되었는지 확인하는 변수
 		private set;
 	private var unfreezer: Task? = null;
@@ -116,13 +115,10 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		spawners.add(ZombieSpawner(this, 3f));
 
 		// 10초마다 빈 상자 하나 리필
-		timers.add(Timer(game, 10f) {
-			for(entity in getEntities().shuffled())
-				if(entity is Container && entity.isEmpty) {
-					entity.putItem(generateRandomItem());
-					break;
-				}
-		}.register());
+		registerTimer(Timer(10f) {
+			val emptyContainers = getEntities().filterIsInstance<Container>().filter { it.isEmpty };
+			emptyContainers.randomOrNull()?.putItem(generateRandomItem());
+		});
     }
 
 	/**
@@ -238,11 +234,6 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
     override fun dispose() {
         super.dispose();
         tileTexture.dispose();
-		for(timer in timers)
-			timer.unregister();
-		timers.clear();
-		for(spawner in spawners)
-			spawner.cleanUp();
 		spawners.clear();
 		unfreezer?.let {
 			Utils.clearTimeout(it);

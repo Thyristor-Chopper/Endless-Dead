@@ -43,8 +43,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 			else if(value < 0) field = TitleInfoType.size - 1;
 			else field = value;
 		};
-	private val timers = mutableListOf<Timer>();
-	// 자막 타이머 관련 필드들
+	// 자막 타이머 관련 필드들. 우리가 만든 Timer 객체와 달리 일정 시간 간격으로 '계속' 실행하는 그런 게 아니기 때문에 따로 관리.
 	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
 	private var subtitlesColor = Color.WHITE;
@@ -90,10 +89,10 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		quitButton = Button({ Window.width / 2f + 75f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() });
 
 		// 제목 표시줄 정보 전환
-		timers.add(Timer(3f) {
+		registerTimer(Timer(3f) {
 			if(game.gameManager.isPlaying || game.gameManager.isPaused)
 				currentTitleInfo++;
-		}.register());
+		});
 	}
 
 	/**
@@ -144,7 +143,9 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 *  상태 변화·입력은 update가 책임진다.)
 	 */
 	override fun update(delta: Float) {
-        when {
+		super.update(delta);
+
+		when {
             game.gameManager.isPlaying	-> updateInPlay(delta);
             game.gameManager.isPaused	-> updatePaused();
             game.gameManager.isGameOver	-> updateGameOver();
@@ -551,9 +552,6 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		super.dispose();
 		solidColor.dispose();
 		world?.dispose();
-		for(timer in timers)
-			timer.unregister();
-		timers.clear();
 		if(lazyStillCut.isInitialized())
 			lazyStillCut.value.dispose();
 	}

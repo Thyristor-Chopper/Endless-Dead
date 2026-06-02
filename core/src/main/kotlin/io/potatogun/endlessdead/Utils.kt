@@ -41,7 +41,7 @@ object Utils {
 	/**
 	 * 지정한 시간 후 특정 서브루틴을 한 번만 실행한다.
 	 *
-	 * 우리가 만든 Timer 클래스는 게임 인스턴스 종속적이지만 이쪽은 게임과는 독립적이기 때문에 libGDX의 Timer 클래스를 직접 사용한다.
+	 * 우리가 만든 Timer 클래스는 우리 게임의 상태 등에 종속적이지만 이쪽은 게임과는 독립적이기 때문에 libGDX의 Timer 클래스를 직접 사용한다.
 	 * 
 	 * @param delay		지연 시간(초)
 	 * @param operation	실행할 서브루틴
@@ -54,8 +54,34 @@ object Utils {
 		}.apply { Timer.schedule(this, delay) };
 	}
 
+	/**
+	 * setTimeout으로 생성한 일회용 타이머를 취소한다.
+	 */
 	inline fun clearTimeout(timeout: Task) {
 		timeout.cancel();
+	}
+
+	/**
+	 * 지정한 시간마다 특정 서브루틴을 실행한다.
+	 *
+	 * 우리가 만든 Timer 클래스는 우리 게임의 상태 등에 종속적이지만 이쪽은 게임과는 독립적이기 때문에 libGDX의 Timer 클래스를 직접 사용한다.
+	 * 
+	 * @param interval	실행 간격(초)
+	 * @param operation	실행할 서브루틴
+	 */
+	inline fun setInterval(interval: Float, crossinline operation: () -> Unit): Task {
+		return object : Task() {
+			override fun run() {
+				operation();
+			}
+		}.apply { Timer.schedule(this, interval, interval) };
+	}
+
+	/**
+	 * setInterval으로 생성한 타이머를 취소한다.
+	 */
+	inline fun clearInterval(interval: Task) {
+		interval.cancel();
 	}
 	
 	/**

@@ -34,6 +34,8 @@ class Title(game: EndlessDead) : Screen(game) {
 	}
 
 	override fun update(delta: Float) {
+		super.update(delta);
+
 		titleBlinkTimer += delta;
 		if(titleBlinkTimer >= 1f)
 			titleBlinkTimer = 0f;
