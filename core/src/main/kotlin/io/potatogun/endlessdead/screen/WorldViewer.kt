@@ -35,7 +35,8 @@ import kotlin.reflect.KClass;
  * 동일한 종류의 월드 뷰어는 한 게임 인스턴스당 하나만 생성할 수 있다.
  *
  * 월드 뷰어는 WorldViewer(Game) 생성자를 직접 호출하여 만들 경우 반드시 Game#addWorldViewer로 등록해야 한다.
- *   아니면 Game#getWorldViewer를 통해 원하는 뷰어 종류를 전달하여 자동으로 생성하게 할 수도 있다.
+ *   Game#getWorldViewer를 통해 원하는 뷰어 종류를 전달하여 없으면 자동으로 생성하게 할 수도 있지만 Game 매개변수
+ *   하나만을 받는 뷰어만 지원된다. 다른 방식의 생성자를 쓰는 경우 직접 생성하고 addWorldViewer를 할 것.
  */
 open class WorldViewer(game: Game) : Screen(game) {
 	// 표시할 월드
