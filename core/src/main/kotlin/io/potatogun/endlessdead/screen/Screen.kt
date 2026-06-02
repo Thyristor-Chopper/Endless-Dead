@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
-import io.potatogun.endlessdead.EndlessDead;
+import io.potatogun.endlessdead.Game;
 import io.potatogun.endlessdead.TimerManager;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.widget.Widget;
@@ -32,9 +32,9 @@ import io.potatogun.endlessdead.widget.Widget;
  *   ▸ update(delta)         — 자기 게임 로직 (대부분 override 함)
  *   ▸ render(delta)         — 객체 위에 텍스트/HUD 추가 그리기 (선택)
  *
- * @param game 화면이 속한 게임
+ * @param game 화면이 속한 게임. 추상이 아닌 구현체 클래스에서 실제 게임인 EndlessDead 형을 쓸 수 있게 open
  */
-abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
+abstract class Screen(open val game: Game) : ScreenAdapter() {
 	// SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
     //   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
     @JvmField protected val batch = SpriteBatch();

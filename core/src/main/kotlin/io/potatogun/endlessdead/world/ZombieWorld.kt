@@ -7,7 +7,9 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
+import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Input;
+import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.Utils;
@@ -94,7 +96,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
      */
     init {
 		// 점수 초기화
-		game.scoreManager.resetScore();
+		ScoreManager.resetScore();
 
 		// 50~100개의 건물과 상자를 무작위로 배치
 		for(i in 0 until Random.nextInt(50) + 50) {
@@ -168,7 +170,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
         if(!player.isAlive) {
-            game.gameManager.setGameOver();
+            GameManager.setGameOver();
 		}
     }
 

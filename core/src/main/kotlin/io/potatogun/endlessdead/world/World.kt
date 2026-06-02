@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
-import io.potatogun.endlessdead.EndlessDead;
+import io.potatogun.endlessdead.Game;
 import io.potatogun.endlessdead.TimerManager;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.Window;
@@ -41,19 +41,14 @@ import io.potatogun.endlessdead.screen.WorldViewer;
  * @param width		월드 전체 너비 (JvmField이 있지만 빌드 후 Fernflower로 자바로 디컴파일하여 null이 불가능한 원시 float임을 확인함.)
  * @param height	월드 전체 높이 (위와 동일)
  */
-abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmField val height: Float) {
+abstract class World(val game: Game, @JvmField val width: Float, @JvmField val height: Float) {
 	// OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     private val camera = OrthographicCamera();
 	@JvmField protected val batch = SpriteBatch();
     @JvmField protected val font = BitmapFont();
 	// 월드를 보여주는 스크린. 만약 뷰어가 다른 월드를 띄우고 있으면 null일 수도 있음에 주의
 	val viewer: WorldViewer?
-		get() {
-			val worldViewer = WorldViewer.getViewer(game);
-			if(worldViewer.getProjectingWorld() === this)
-				return worldViewer;
-			return null;
-		};
+		get() = game.getWorldViewers().firstOrNull { it.getProjectingWorld() === this };
 	/**
 	 * 이 월드의 플레이어
 	 */

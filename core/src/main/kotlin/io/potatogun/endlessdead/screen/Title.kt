@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
+import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Window;
@@ -14,8 +15,10 @@ import io.potatogun.endlessdead.world.ZombieWorld;
 
 /**
  * 타이틀 화면
+ *
+ * override 없이 val game: EndlessDead가 있는 건 field shadowing이라고 한다.
  */
-class Title(game: EndlessDead) : Screen(game) {
+class Title(override val game: EndlessDead) : Screen(game) {
 	private val title = Textures.loadTexture("title/title.bmp");
 	private val stillCut = Textures.loadTexture("title/still_cut.bmp");
 	private var titleBlinkTimer = 0f;
@@ -26,8 +29,8 @@ class Title(game: EndlessDead) : Screen(game) {
 	}
 
 	private fun startGame() {
-		game.gameManager.setPlaying();
-		val worldViewer = WorldViewer.getViewer(game);
+		GameManager.setPlaying();
+		val worldViewer = game.getWorldViewer(ZombieWorldViewer::class);
 		worldViewer.loadWorld(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT));
 		game.setScreen(worldViewer);
 		// Gdx.app.postRunnable { dispose() };
