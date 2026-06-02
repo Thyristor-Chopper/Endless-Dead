@@ -31,8 +31,6 @@ import java.util.WeakHashMap;
  * WorldViewer 자체는 정말 월드 자체만을 보여주는 기본적인 뷰어이다.
  *
  * 이를 확장하여 HUD나 다채로운 화면을 구현해보자.
- *
- * override 없이 val game: EndlessDead가 있는 건 field shadowing이라고 한다.
  */
 class ZombieWorldViewer(override val game: EndlessDead) : WorldViewer(game) {
 	private val noWorldOverlay = Utils.rgb(255, 255, 255, 0.5f);

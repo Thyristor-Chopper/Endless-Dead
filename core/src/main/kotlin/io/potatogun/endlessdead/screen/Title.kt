@@ -15,8 +15,6 @@ import io.potatogun.endlessdead.world.ZombieWorld;
 
 /**
  * 타이틀 화면
- *
- * override 없이 val game: EndlessDead가 있는 건 field shadowing이라고 한다.
  */
 class Title(override val game: EndlessDead) : Screen(game) {
 	private val title = Textures.loadTexture("title/title.bmp");
