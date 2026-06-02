@@ -224,7 +224,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
         //    WASD로 카메라를 움직이면 이 글자도 화면에서 움직인다.
         drawText(
             text = "*",
-            x = halfWidth / 2 - 24f,
+            x = halfWidth - 24f,
             y = halfHeight + 20f,
             color = Color.FOREST,
             scale = 8.0f,

@@ -35,7 +35,7 @@ object Window {
 	private fun updateTitle() {
 		val titleBarInfo = this.titleBarInfo?.let { " - $it" } ?: "";
 		val titleBarStats = this.titleBarStats?.let { " / $it" } ?: "";
-		Window.setTitle("${Constants.GAME_TITLE}${titleBarInfo}${titleBarStats}");
+		setTitle("${Constants.GAME_TITLE}${titleBarInfo}${titleBarStats}");
 	}
 
 	/**
@@ -49,7 +49,7 @@ object Window {
 		height = floatHeight;
 
 		// 부동 소수점 나눗셈은 느리기 때문에 창 크기의 절반도 캐시
-		Window.halfWidth = floatWidth / 2f;
-		Window.halfHeight = floatHeight / 2f;
+		halfWidth = floatWidth / 2f;
+		halfHeight = floatHeight / 2f;
 	}
 }
