@@ -31,8 +31,11 @@ import kotlin.reflect.KClass;
 /**
  * 월드를 불러오고 월드를 화면에 프로젝션해주는 스크린이다.
  *
- * 상속받아서 더 확장된 월드 뷰어를 만드는 것은 자유이지만,
+ * 상속받아서 더 확장된 월드 뷰어를 만들어도 되지만
  * 동일한 종류의 월드 뷰어는 한 게임 인스턴스당 하나만 생성할 수 있다.
+ *
+ * 월드 뷰어는 WorldViewer(Game) 생성자를 직접 호출하여 만들 경우 반드시 Game#addWorldViewer로 등록해야 한다.
+ *   아니면 Game#getWorldViewer를 통해 원하는 뷰어 종류를 전달하여 자동으로 생성하게 할 수도 있다.
  */
 open class WorldViewer(game: Game) : Screen(game) {
 	// 표시할 월드
@@ -43,6 +46,7 @@ open class WorldViewer(game: Game) : Screen(game) {
 	private var subtitlesColor = Color.WHITE;
 
 	init {
+		// 하위 클래스 종류당 다중 인스턴스 제한은 약간 모르겠어서 구글 검색 약간 참고함
 		val classes = instances.getOrPut(game, { mutableSetOf<KClass<out WorldViewer>>() });
 		if(classes.contains(this::class))
 			throw IllegalStateException("only one instance of a type of a world viewer per game instance may be created");

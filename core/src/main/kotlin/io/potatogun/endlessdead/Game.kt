@@ -41,11 +41,13 @@ abstract class Game : GdxGame() {
 
 		val viewerToAdd = try {
 			viewerClass.primaryConstructor!!.call(this)
+		} catch(e: InvocationTargetException) {
+			throw IllegalArgumentException("an instance of this type of world viewer has been randomly created elsewhere but has not been registered normally");
 		} catch(e: Exception) {
-			if(e is IllegalArgumentException || e is InvocationTargetException || e is NullPointerException)
-				throw IllegalArgumentException("the specified world viewer class does not have a valid standard constructor")
+			if(e is IllegalArgumentException || e is NullPointerException)
+				throw IllegalArgumentException("the specified world viewer class does not have a valid standard constructor");
 			else
-				throw e
+				throw e;
 		};
 		worldViewers.add(viewerToAdd);
 		return viewerToAdd;

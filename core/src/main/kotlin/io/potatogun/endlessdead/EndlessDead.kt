@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 
 import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.screen.Title;
-import io.potatogun.endlessdead.screen.WorldViewer;
 
 // 일부 로우 레벨 최적화 관련 참고 사항
 //
