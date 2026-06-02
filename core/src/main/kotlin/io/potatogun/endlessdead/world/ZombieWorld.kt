@@ -115,7 +115,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		spawners.add(ZombieSpawner(this, 3f));
 
 		// 10초마다 빈 상자 하나 리필
-		registerTimer(Timer(10f) {
+		timerManager.registerTimer(Timer(10f) {
 			val emptyContainers = getEntities().filterIsInstance<Container>().filter { it.isEmpty };
 			emptyContainers.randomOrNull()?.putItem(generateRandomItem());
 		});

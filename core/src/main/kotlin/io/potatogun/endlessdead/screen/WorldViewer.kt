@@ -89,7 +89,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		quitButton = Button({ Window.width / 2f + 75f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() });
 
 		// 제목 표시줄 정보 전환
-		registerTimer(Timer(3f) {
+		timerManager.registerTimer(Timer(3f) {
 			if(game.gameManager.isPlaying || game.gameManager.isPaused)
 				currentTitleInfo++;
 		});

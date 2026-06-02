@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.EndlessDead;
-import io.potatogun.endlessdead.Timer;
+import io.potatogun.endlessdead.TimerManager;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.entity.Bullet;
@@ -75,8 +75,8 @@ abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmFiel
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. addEntity(), removeEntity()라는 공식 창구만 허용.
     //   (캡슐화의 실제 사례)
     private val entities = mutableListOf<Entity>();
-	// 등록된 타이머들
-	private val timers = mutableListOf<Timer>();
+	// 타이머
+	@JvmField protected val timerManager = TimerManager();
 
     init {
         setCameraCenter();
@@ -160,34 +160,6 @@ abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmFiel
     }
 
     // ────────────────────────────────────────────────────────
-    //  타이머 관리
-    // ────────────────────────────────────────────────────────
-
-    /**
-	 * 타이머 등록
-	 *
-	 * @param timer 등록할 타이머
-	 */
-    fun registerTimer(timer: Timer): Timer {
-        timers.add(timer);
-		return timer;
-    }
-
-    /**
-	 * 타이머 등록 해제
-	 *
-	 * @param timer 제거할 타이머
-	 * @return 성공 여부
-	 */
-    fun unregisterTimer(timer: Timer): Boolean = timers.remove(timer);
-
-	// update에서만 한 번 쓰여서 인라인화
-	private inline fun tickTimers(delta: Float) {
-		for(timer in timers)
-			timer.tick(delta);
-	}
-
-    // ────────────────────────────────────────────────────────
     //  콜백 함수
     // ────────────────────────────────────────────────────────
 
@@ -211,7 +183,7 @@ abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmFiel
      *   ② removeDead()            — isAlive=false인 개체 제거
      */
     internal open fun update(delta: Float) {
-		tickTimers(delta);
+		timerManager.tick(delta);
 		updateEntities(delta);
 		removeDead();
 	}
@@ -329,6 +301,6 @@ abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmFiel
             entity.dispose();
 		}
 		entities.clear();
-		timers.clear();
+		timerManager.clearTimers();
     }
 }

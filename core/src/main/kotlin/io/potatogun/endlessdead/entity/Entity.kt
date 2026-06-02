@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-import io.potatogun.endlessdead.Timer;
+import io.potatogun.endlessdead.TimerManager;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.entity.Entity;
@@ -93,32 +93,8 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 				throw IllegalArgumentException("invalid opacity");
 			color.a = value;
 		};
-	// 등록된 타이머들
-	private val timers = mutableListOf<Timer>();
-
-    /**
-	 * 타이머 등록
-	 *
-	 * @param timer 등록할 타이머
-	 */
-    fun registerTimer(timer: Timer): Timer {
-        timers.add(timer);
-		return timer;
-    }
-
-    /**
-	 * 타이머 등록 해제
-	 *
-	 * @param timer 제거할 타이머
-	 * @return 성공 여부
-	 */
-    fun unregisterTimer(timer: Timer): Boolean = timers.remove(timer);
-
-	// update에서만 한 번 쓰여서 인라인화
-	private inline fun tickTimers(delta: Float) {
-		for(timer in timers)
-			timer.tick(delta);
-	}
+	// 타이머
+	@JvmField protected val timerManager = TimerManager();
 
 	/**
      * 매 프레임 호출되어 자신을 그린다.
@@ -214,7 +190,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
      *              (프레임 속도가 달라져도 같은 속도로 움직이게 하려는 공식)
      */
     internal open fun update(delta: Float) {
-		tickTimers(delta);
+		timerManager.tick(delta);
 	}
 
 	/**
@@ -234,6 +210,6 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
      */
     internal open fun dispose() {
 		texture?.dispose();
-		timers.clear();
+		timerManager.clearTimers();
 	}
 }

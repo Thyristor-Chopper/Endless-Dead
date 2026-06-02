@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.EndlessDead;
-import io.potatogun.endlessdead.Timer;
+import io.potatogun.endlessdead.TimerManager;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.widget.Widget;
 
@@ -42,8 +42,8 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
     @JvmField protected val font = BitmapFont();
 	// 등록된 위젯들
     private val widgets = mutableMapOf<String, Widget>();
-	// 등록된 타이머들
-	private val timers = mutableListOf<Timer>();
+	// 타이머
+	@JvmField protected val timerManager = TimerManager();
 
     // ────────────────────────────────────────────────────────
     //  위젯 객체 관리
@@ -82,34 +82,6 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
 	fun getWidgets(): List<Widget> = widgets.values.toList();
 
     // ────────────────────────────────────────────────────────
-    //  타이머 관리
-    // ────────────────────────────────────────────────────────
-
-    /**
-	 * 타이머 등록
-	 *
-	 * @param timer 등록할 타이머
-	 */
-    fun registerTimer(timer: Timer): Timer {
-        timers.add(timer);
-		return timer;
-    }
-
-    /**
-	 * 타이머 등록 해제
-	 *
-	 * @param timer 제거할 타이머
-	 * @return 성공 여부
-	 */
-    fun unregisterTimer(timer: Timer): Boolean = timers.remove(timer);
-
-	// update에서만 한 번 쓰여서 인라인화
-	private inline fun tickTimers(delta: Float) {
-		for(timer in timers)
-			timer.tick(delta);
-	}
-
-    // ────────────────────────────────────────────────────────
     //  콜백 함수
     // ────────────────────────────────────────────────────────
 
@@ -128,7 +100,7 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
      * 매 프레임 화면 로직 — 서브클래스가 override해서 화면 로직을 넣는 곳.
      */
 	protected open fun update(delta: Float) {
-		tickTimers(delta);
+		timerManager.tick(delta);
 	}
 
 	// ────────────────────────────────────────────────────────
@@ -235,6 +207,6 @@ abstract class Screen(val game: EndlessDead) : ScreenAdapter() {
         for(widget in widgets.values)
             widget.dispose();
 		widgets.clear();
-		timers.clear();
+		timerManager.clearTimers();
 	}
 }
