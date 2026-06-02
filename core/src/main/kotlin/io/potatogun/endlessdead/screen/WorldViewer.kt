@@ -24,12 +24,14 @@ import io.potatogun.endlessdead.widget.ProgressBar;
 import io.potatogun.endlessdead.widget.Widget;
 import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
 
+import java.util.WeakHashMap;
+
 /**
  * 월드를 불러오고 월드를 화면에 프로젝션해주는 스크린이다.
  *
- * 객체 생성 이후 loadWorld(World)를 호출해야 한다. 
+ * 한 게임 당 두 개 이상의 뷰어를 생성하지 못하게 하기 위해 직접 생성할 수 없고 WorldViewer.getViewer(Game)을 사용한다.
  */
-class WorldViewer(game: EndlessDead) : Screen(game) {
+class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 	// 표시할 월드
 	private var world: World? = null;
 	private val noWorldOverlay = Utils.rgb(255, 255, 255, 0.5f);
@@ -82,13 +84,13 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 			game.currentRound = 0;
 			game.setTitleBarStats(null);
 			game.setTitleBarInfo(null);
-			game.setScreen(Title(game));
+			game.setScreen(game.titleScreen);
 		});
 		quitButton = Button({ game.screenWidth / 2f + 75f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() });
 
 		// 제목 표시줄 정보 전환
 		timers.add(Timer(3f, false) {
-			if(!GameManager.isGameOver)
+			if(GameManager.isPlaying || GameManager.isPaused)
 				currentTitleInfo++;
 		}.register());
 	}
@@ -100,6 +102,8 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 * @param disposePreviousWorld	기존 월드의 자원을 정리할지의 여부
 	 */
 	fun loadWorld(world: World, disposePreviousWorld: Boolean = false) {
+		if(world.game !== this.game)  // 안전을 위해 동일 게임 인스턴스에 속한 월드만 불러오게 함
+			throw IllegalArgumentException("WorldViewer can only project worlds that belongs to the same game instance of this viewer");
 		val previousWorld: World? = this.world;
 		this.world = world;
 		world.updateCamera();
@@ -119,6 +123,11 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		if(dispose) Gdx.app.postRunnable { currentWorld.dispose() };
 		return true;
 	}
+
+	/**
+	 * 현재 보여주고 있는 월드를 반환한다.
+	 */
+	fun getProjectingWorld(): World? = world;
 
 	override fun resize(width: Int, height: Int) {
 		super.resize(width, height);
@@ -268,7 +277,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	private fun restartGame() {
 		GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
 		game.currentRound++;
-		loadWorld(ZombieWorld(game, this, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat()), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
+		loadWorld(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH.toFloat(), Constants.ZOMBIE_WORLD_HEIGHT.toFloat()), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
 		game.setTitleBarInfo(null);
 	}
 
@@ -567,5 +576,14 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 
 			fun byIndex(index: Int) = enumEntries[index];
 		}
+	}
+
+	companion object {
+		private val viewerInstance = WeakHashMap<EndlessDead, WorldViewer>();
+
+		/**
+		 * 지정한 게임 인스턴스에 대한 뷰어를 반환하거나 없으면 생성한다.
+		 */
+		fun getViewer(game: EndlessDead): WorldViewer = viewerInstance.computeIfAbsent(game) { WorldViewer(game) };
 	}
 }

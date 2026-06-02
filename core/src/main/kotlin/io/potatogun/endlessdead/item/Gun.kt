@@ -100,7 +100,7 @@ abstract class Gun(world: World, id: String, name: String, @JvmField val bulletD
 		// ammo가 다 떨어진 총은 파괴
 		if(ammo == 0) {
 			if(holder === world.player)
-				world.viewer.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
+				world.viewer?.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
 			destroy();
 		}
 

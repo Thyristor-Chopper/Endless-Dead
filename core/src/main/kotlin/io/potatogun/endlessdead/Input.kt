@@ -35,6 +35,10 @@ object Input {
 	private var scrolledDown = false;
 	private var keyDown = false;
 	private var keyJustDown = false;
+	val mouseX: Int
+		inline get() = Gdx.input.getX();
+	val mouseY: Int
+		inline get() = Gdx.input.getY();
 
 	init {
 		// https://stackoverflow.com/questions/17644429/libgdx-mouse-just-clicked 참고함

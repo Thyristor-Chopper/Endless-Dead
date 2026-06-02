@@ -11,6 +11,11 @@ object GameManager {
 	 */
 	private var state = GameState.STANDBY;
 	/**
+	 * 현재 라운드 (0이면 아직 게임이 시작되지 않은 것)
+	 */
+	var currentRound = 0
+		internal set;
+	/**
 	 * 현재 게임이 진행 중인지의 여부
 	 */
 	val isPlaying: Boolean

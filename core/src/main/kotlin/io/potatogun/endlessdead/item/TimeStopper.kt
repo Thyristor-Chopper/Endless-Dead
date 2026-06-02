@@ -20,11 +20,11 @@ class TimeStopper(world: World) : Item(world, "time_stopper", "Time Stopper"), U
 		val holder: InventoryEntity? = this.holder;
 		if(holder is Player) {
 			if(world !is Freezable) {
-				world.viewer.drawSubtitles("Can't use this item here");
+				world.viewer?.drawSubtitles("Can't use this item here");
 				return false;
 			}
 			world.freeze(3f);
-			world.viewer.drawSubtitles("Time stop!");
+			world.viewer?.drawSubtitles("Time stop!");
 			destroy();
 			return true;
 		}

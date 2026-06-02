@@ -70,7 +70,7 @@ import kotlin.random.Random;
  * @param width   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
  * @param height  월드 전체 높이
  */
-class ZombieWorld(game: EndlessDead, viewer: WorldViewer, width: Float, height: Float) : World(game, viewer, width, height), Freezable {
+class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, width, height), Freezable {
     // 플레이어 — 월드 중앙에서 시작.
     override val player = Player(this, Position(width / 2, height / 2));
 	private val spawners = mutableListOf<Spawner>();
@@ -152,7 +152,7 @@ class ZombieWorld(game: EndlessDead, viewer: WorldViewer, width: Float, height: 
 
 	override fun unfreeze() {
 		isFrozen = false;
-		viewer.drawSubtitles("Time moves again");
+		viewer?.drawSubtitles("Time moves again");
 	}
 
     // ────────────────────────────────────────────────────────

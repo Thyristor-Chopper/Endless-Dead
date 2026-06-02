@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 
 import io.potatogun.endlessdead.screen.Title;
+import io.potatogun.endlessdead.screen.WorldViewer;
 
 // 일부 로우 레벨 최적화 관련 참고 사항
 // - public/protected이고 null이 아니거나 val인 것들은 약간의 오버헤드 감소를 위해 @JvmField를 붙였다. 확실히 코틀린만의 보호장치를 우회할 위험이 없다고 생각되는 곳에만 붙였으며 int, float는 직접 빌드 후 디컴파일러로 Java로 디컴파일하여 랩퍼 Integer나 Float가 아닌 null 불가 원시 int, float임을 확인했다.
@@ -27,7 +28,7 @@ import io.potatogun.endlessdead.screen.Title;
  *   여기서는 create() 안에서 setScreen(...)으로 첫 Screen 을 붙인다.)
  *
  *  왜 이 파일이 core에 있나?
- *    게임에는 특정 OS 에 의존하는 코드가 전혀 없다 (LibGDX Game 상속뿐).
+ *    게임에는 특정 OS에 의존하는 코드가 전혀 없다 (LibGDX Game 상속뿐).
  *    따라서 데스크톱·안드로이드·iOS 어느 플랫폼에서 띄우든 그대로 쓸 수 있다.
  *    플랫폼별 런처(DesktopLauncher 등)만 따로 두면 된다.
  *
@@ -51,22 +52,24 @@ class EndlessDead : Game() {
 	 */
 	var currentRound = 0
 		internal set;
+	// 미리 등록된 스크린
+	val titleScreen: Title by lazy { Title(this) };
 
     /**
      * LibGDX 가 게임 시작 시 한 번 호출하는 라이프사이클 메서드.
      *
      * 이 함수는 'Gdx.graphics / Gdx.gl / Gdx.files 같은 전역이 모두 준비된 뒤'
      * 호출되므로, Screen 안에서 SpriteBatch / BitmapFont / Texture 같은 LibGDX 자원을
-     * 만들어도 안전하다. (생성자에서 미리 Screen 을 만들면 크래시 난다.)
+     * 만들어도 안전하다. (생성자에서 미리 Screen을 만들면 크래시 난다.)
      *
      * 보통 여기서 할 일:
-     *   1. 첫 화면이나 월드(Screen 또는 World의 자식) 를 만들고
+     *   1. 첫 화면이나 월드(Screen 또는 World의 자식)를 만들고
      *   2. setScreen(...)으로 등록 → 이후 LibGDX 가 매 프레임 그 월드를 렌더
      *
      *  World가 LibGDX의 Screen 인터페이스를 상속하므로 setScreen 인자로 넘길 수 있다.
      */
     override fun create() {
-        setScreen(Title(this));  // 부모 Game이 제공하는 메서드
+        setScreen(titleScreen);  // 부모 Game이 제공하는 메서드
     }
 
 	/**

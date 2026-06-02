@@ -32,8 +32,8 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, 
 		val x = this.x();
 		val y = this.y();
 
-		val mouseX = Gdx.input.getX();
-		val mouseY = Gdx.graphics.height - Gdx.input.getY();
+		val mouseX = Input.mouseX;
+		val mouseY = Gdx.graphics.height - Input.mouseY;
 		val isHover = isEnabled && mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
 		val isPressed = isEnabled && Input.isButtonPressed(Input.LEFT_MOUSE);
 		val fontColor = if(!isEnabled) Color.LIGHT_GRAY else Color.WHITE;
