@@ -64,8 +64,6 @@ class EndlessDead : Game() {
 
 	/**
 	 * Gdx.graphics.width를 매번 실수형으로 변환하는 오버헤드를 없애기 위해 창 크기를 캐시하고 크기가 바뀔 때만 업데이트한다.
-	 *
-	 * 우리 학교 개발자 중에 나 만큼 최적화에 미친 사람이 또 있을까...
 	 */
 	override fun resize(width: Int, height: Int) {
 		Window.updateWindowDimensions();
