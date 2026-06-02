@@ -6,7 +6,6 @@ import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
-import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Window;
@@ -27,7 +26,7 @@ class Title(game: EndlessDead) : Screen(game) {
 	}
 
 	private fun startGame() {
-		GameManager.setPlaying();
+		game.gameManager.setPlaying();
 		val worldViewer = WorldViewer.getViewer(game);
 		worldViewer.loadWorld(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT));
 		game.setScreen(worldViewer);

@@ -6,8 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
-
-import io.potatogun.endlessdead.Timer;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 /**
  * 유용한 함수 모음
@@ -40,17 +40,22 @@ object Utils {
 
 	/**
 	 * 지정한 시간 후 특정 서브루틴을 한 번만 실행한다.
+	 *
+	 * 우리가 만든 Timer 클래스는 게임 인스턴스 종속적이지만 이쪽은 게임과는 독립적이기 때문에 libGDX의 Timer 클래스를 직접 사용한다.
 	 * 
 	 * @param delay		지연 시간(초)
 	 * @param operation	실행할 서브루틴
 	 */
-	inline fun setTimeout(delay: Float, crossinline operation: () -> Unit): Timer {
-		lateinit var timer: Timer;  // 선언 이후 대입해야 해서 어쩔 수 없이 var
-		timer = Timer(delay + 86400f, delay, false) {
-			operation();
-			timer.unregister();
-		}.register();
-		return timer;
+	inline fun setTimeout(delay: Float, crossinline operation: () -> Unit): Task {
+		return object : Task() {
+			override fun run() {
+				operation();
+			}
+		}.apply { Timer.schedule(this, delay) };
+	}
+
+	inline fun clearTimeout(timeout: Task) {
+		timeout.cancel();
 	}
 	
 	/**

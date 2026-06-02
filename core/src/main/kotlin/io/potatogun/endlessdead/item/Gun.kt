@@ -70,7 +70,7 @@ abstract class Gun(world: World, id: String, name: String, @JvmField val bulletD
 		fireCooldown = fireInterval;
 
 		// 남은 쿨타임을 갱신한다. update, delta를 쓰지 않은 이유는 이건 게임 프레임과는 독립적이라고 보기 때문.
-		cooldownTimer = Timer(0.01f) {
+		cooldownTimer = Timer(world.game, 0.01f) {
 			fireCooldown -= 0.01f;
 			if(fireCooldown == 0f)
 				cooldownTimer?.unregister();

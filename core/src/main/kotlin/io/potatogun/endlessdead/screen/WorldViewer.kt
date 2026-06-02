@@ -8,7 +8,6 @@ import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
-import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Timer;
@@ -60,8 +59,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	init {
 		// 같은 게임 인스턴스에 대해 두 개 이상의 월드뷰어를 만들지 못하게 한다.
 		if(WorldViewer.viewerInstance[game] != null)
-			throw IllegalStateException("only once instance of WorldViewer may be created for each game instances");
-
+			throw IllegalStateException("only one instance of WorldViewer may be created for each game instances");
 		WorldViewer.viewerInstance[game] = this;
 
 		// 단색용 텍스처 생성
@@ -79,21 +77,21 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 
 		// 일시 중지 및 게임 오버 단추
 		resumeButton = Button({ Window.width / 2f - 195f }, { 120f }, 120f, caption = "Resume", onClick = {
-			GameManager.resume();
+			game.gameManager.resume();
 		});
 		replayButton = Button({ Window.width / 2f - 195f }, { 120f }, 120f, caption = "Continue", onClick = {
 			restartGame();
 		});
 		titleButton = Button({ Window.width / 2f - 60f }, { 120f }, 120f, caption = "Back to title", onClick = {
 			unloadWorld(true);
-			GameManager.standBy();
+			game.gameManager.standBy();
 			game.setScreen(game.titleScreen);
 		});
 		quitButton = Button({ Window.width / 2f + 75f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() });
 
 		// 제목 표시줄 정보 전환
-		timers.add(Timer(3f, false) {
-			if(GameManager.isPlaying || GameManager.isPaused)
+		timers.add(Timer(3f) {
+			if(game.gameManager.isPlaying || game.gameManager.isPaused)
 				currentTitleInfo++;
 		}.register());
 	}
@@ -147,9 +145,9 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 	 */
 	override fun update(delta: Float) {
         when {
-            GameManager.isPlaying	-> updateInPlay(delta);
-            GameManager.isPaused	-> updatePaused();
-            GameManager.isGameOver	-> updateGameOver();
+            game.gameManager.isPlaying	-> updateInPlay(delta);
+            game.gameManager.isPaused	-> updatePaused();
+            game.gameManager.isGameOver	-> updateGameOver();
         }
 	}
 
@@ -278,7 +276,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
     }
 
 	private fun restartGame() {
-		GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
+		game.gameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
 		loadWorld(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
 	}
 
@@ -289,10 +287,10 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		// P키를 누르면 일시 정지 <-> 게임 진행 중 상태 토글!
 		val resumeKeyPressed = Input.isKeyJustPressed(Input.SPACE);
         if(Input.isKeyJustPressed(Input.P) || Input.isKeyJustPressed(Input.ESCAPE) || resumeKeyPressed) {
-            if(GameManager.isPlaying && !resumeKeyPressed)
-				GameManager.pause();
-			else if(GameManager.isPaused)
-				GameManager.resume();
+            if(game.gameManager.isPlaying && !resumeKeyPressed)
+				game.gameManager.pause();
+			else if(game.gameManager.isPaused)
+				game.gameManager.resume();
         }
 	}
 
@@ -310,14 +308,14 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 		batch.begin();
 
 		// 일시 정지 시 어둡게 변경
-		if(!GameManager.isPlaying)
+		if(!game.gameManager.isPlaying)
 			drawFrozenOverlay();
 
         // ── 상태별로 그리는 것이 다름 ──
         when {
               // 플레이 중에는 추가로 그릴 것 없음
-            GameManager.isPaused	-> drawPausedMessage();  // 일시정지 화면 그리기
-            GameManager.isGameOver	-> drawGameOverMessage();
+            game.gameManager.isPaused	-> drawPausedMessage();  // 일시정지 화면 그리기
+            game.gameManager.isGameOver	-> drawGameOverMessage();
         }
 
 		batch.end();
@@ -437,7 +435,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 				skipBatch = true
 			);
 			drawText(
-				text = "Score: ${GameManager.score}",
+				text = "Score: ${game.scoreManager.score}",
 				x = Window.width / 2f - 70f,
 				y = Window.height / 2f - 95f,
 				color = Color.LIGHT_GRAY,
@@ -525,7 +523,7 @@ class WorldViewer(game: EndlessDead) : Screen(game) {
 
 		// 점수
 		drawText(
-            text = "Score: ${GameManager.score}",
+            text = "Score: ${game.scoreManager.score}",
             x = Window.width - 130f,
             y = Window.height - 10f,
             color = Utils.rgb(203, 241, 194),

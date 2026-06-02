@@ -39,6 +39,10 @@ import io.potatogun.endlessdead.screen.WorldViewer;
 class EndlessDead : Game() {
 	// 미리 등록된 스크린
 	val titleScreen: Title by lazy { Title(this) };
+	// 매니저 (게임 클래스 인스턴스당 하나)
+	// @JvmField이지만 val이라 바꾸지도 못하고 클래스 생성 시 자동으로 만들어지므로 외부 자바 프로그램에 의해 null로 바뀔 여지가 없다.
+	@JvmField val gameManager = GameManager(this);
+	@JvmField val scoreManager = ScoreManager(this);
 
     /**
      * LibGDX 가 게임 시작 시 한 번 호출하는 라이프사이클 메서드.

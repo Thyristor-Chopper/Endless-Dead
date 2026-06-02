@@ -3,10 +3,10 @@ package io.potatogun.endlessdead.world;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Timer.Task;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
-import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Timer;
@@ -87,7 +87,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 	private val timers = mutableListOf<Timer>();
 	override var isFrozen: Boolean = false  // world의 시간이 정지되었는지 확인하는 변수
 		private set;
-	private var unfreezeTimer: Timer? = null;
+	private var unfreezer: Task? = null;
 
     /**
      * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -95,7 +95,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
      */
     init {
 		// 점수 초기화
-		GameManager.resetScore();
+		game.scoreManager.resetScore();
 
 		// 50~100개의 건물과 상자를 무작위로 배치
 		for(i in 0 until Random.nextInt(50) + 50) {
@@ -116,7 +116,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		spawners.add(ZombieSpawner(this, 3f));
 
 		// 10초마다 빈 상자 하나 리필
-		timers.add(Timer(10f) {
+		timers.add(Timer(game, 10f) {
 			for(entity in getEntities().shuffled())
 				if(entity is Container && entity.isEmpty) {
 					entity.putItem(generateRandomItem());
@@ -143,10 +143,10 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 
 	override fun freeze(duration: Float) {
 		isFrozen = true;
-		unfreezeTimer?.unregister();
-		unfreezeTimer = Utils.setTimeout(duration) {
+		unfreezer?.let { Utils.clearTimeout(it) };
+		unfreezer = Utils.setTimeout(duration) {
 			unfreeze();
-			unfreezeTimer = null;
+			unfreezer = null;
 		};
 	}
 
@@ -172,7 +172,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
         if(!player.isAlive) {
-            GameManager.setGameOver();
+            game.gameManager.setGameOver();
 		}
     }
 
@@ -244,7 +244,9 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		for(spawner in spawners)
 			spawner.cleanUp();
 		spawners.clear();
-		unfreezeTimer?.unregister();
-		unfreezeTimer = null;
+		unfreezer?.let {
+			Utils.clearTimeout(it);
+			unfreezer = null;
+		};
     }
 }
