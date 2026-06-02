@@ -28,7 +28,8 @@ import java.util.WeakHashMap;
 /**
  * 월드를 불러오고 월드를 화면에 프로젝션해주는 스크린이다.
  *
- * 한 게임 당 두 개 이상의 뷰어를 생성할 수 없다.
+ * 한 게임 당 두 개 이상의 뷰어를 생성할 수 없다. 싱글톤으로 하지 않은 이유는
+ * 생성자와 game 매개변수 받기 때문이다.
  */
 class WorldViewer(game: EndlessDead) : Screen(game) {
 	// 표시할 월드

@@ -7,6 +7,8 @@ import com.badlogic.gdx.Files.FileType;
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 
+import kotlin.concurrent.thread;
+
 /**
  * ════════════════════════════════════════════════════════════
  *  데스크톱에서 게임을 실행시키는 진입점 (main 함수).
@@ -15,7 +17,7 @@ import io.potatogun.endlessdead.EndlessDead;
  *  여기서 하는 일은 세 가지뿐:
  *   1. 게임 객체(EndlessDead)를 만든다
  *   2. 창(Window) 설정을 만든다
- *   3. LibGDX 에게 "이 게임을 이 설정으로 실행시켜줘" 라고 넘긴다
+ *   3. LibGDX에게 "이 게임을 이 설정으로 실행시켜줘"라고 넘긴다
  *
  *  실제 게임 내용은 EndlessDead 클래스와 각 Screen/World 클래스에서 정의된다.
  *  이 파일은 순수 'OS에 창 띄우기' 역할만 한다.
@@ -45,6 +47,7 @@ fun main() {
 	config.setWindowSizeLimits(320, 240, Constants.ZOMBIE_WORLD_WIDTH.toInt(), Constants.ZOMBIE_WORLD_HEIGHT.toInt());
     config.useVsync(false);										// 수직동기화를 꺼야 랙이 줄어듦
     config.setForegroundFPS(Constants.PASSIVE_FPS);					// 타이틀 화면에서는 낮은 fps로
+	config.setIdleFPS(Constants.PASSIVE_FPS);	
 	config.setWindowIcon(FileType.Internal, "assets/icon_16.png", "assets/icon_32.png", "assets/icon_128.png");
 
     // ─────────────────────────────────────────
