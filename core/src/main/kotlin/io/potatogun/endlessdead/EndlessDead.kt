@@ -3,6 +3,7 @@ package io.potatogun.endlessdead;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 
+import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.screen.Title;
 import io.potatogun.endlessdead.screen.WorldViewer;
 
@@ -98,9 +99,9 @@ class EndlessDead : Game() {
 		val titleBarInfo = if(this.titleBarInfo.isBlank()) "" else " - $titleBarInfo";
 		val titleBarStats = if(this.titleBarStats.isBlank()) "" else " / $titleBarStats";
 		if(titleBarInfo.isEmpty())
-			Gdx.graphics.setTitle("${title}${roundInfo}${titleBarStats}${gameStateIndicator}");
+			Window.setTitle("${title}${roundInfo}${titleBarStats}${gameStateIndicator}");
 		else
-			Gdx.graphics.setTitle("${title}${titleBarInfo}");
+			Window.setTitle("${title}${titleBarInfo}");
 	}
 
 	/**

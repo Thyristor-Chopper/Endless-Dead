@@ -14,6 +14,7 @@ import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.Utils;
+import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
@@ -67,18 +68,18 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 		};
 
 		// 미터기 추가
-		addWidget("hp_indicator", ProgressBar({ 80f }, { game.screenHeight - 24f }, 220f, color = Utils.rgb(234, 197, 21)));
-		addWidget("gun_ammo_indicator", ProgressBar({ game.screenWidth - 145f }, { 10f }, 130f, color = Utils.rgb(15, 116, 240), style = ProgressBarStyle.CHUNKED).apply { hide() });
-		addWidget("gun_cooldown_indicator", ProgressBar({ game.screenWidth - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide() });
+		addWidget("hp_indicator", ProgressBar({ 80f }, { Window.height - 24f }, 220f, color = Utils.rgb(234, 197, 21)));
+		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, 130f, color = Utils.rgb(15, 116, 240), style = ProgressBarStyle.CHUNKED).apply { hide() });
+		addWidget("gun_cooldown_indicator", ProgressBar({ Window.width - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide() });
 
 		// 일시 중지 및 게임 오버 단추
-		resumeButton = Button({ game.screenWidth / 2f - 195f }, { 120f }, 120f, caption = "Resume", onClick = {
+		resumeButton = Button({ Window.width / 2f - 195f }, { 120f }, 120f, caption = "Resume", onClick = {
 			GameManager.resume();
 		});
-		replayButton = Button({ game.screenWidth / 2f - 195f }, { 120f }, 120f, caption = "Continue", onClick = {
+		replayButton = Button({ Window.width / 2f - 195f }, { 120f }, 120f, caption = "Continue", onClick = {
 			restartGame();
 		});
-		titleButton = Button({ game.screenWidth / 2f - 60f }, { 120f }, 120f, caption = "Back to title", onClick = {
+		titleButton = Button({ Window.width / 2f - 60f }, { 120f }, 120f, caption = "Back to title", onClick = {
 			unloadWorld(true);
 			GameManager.standBy();
 			game.currentRound = 0;
@@ -86,7 +87,7 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 			game.setTitleBarInfo(null);
 			game.setScreen(game.titleScreen);
 		});
-		quitButton = Button({ game.screenWidth / 2f + 75f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() });
+		quitButton = Button({ Window.width / 2f + 75f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() });
 
 		// 제목 표시줄 정보 전환
 		timers.add(Timer(3f, false) {
@@ -329,7 +330,7 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 	 */
 	private inline fun drawFrozenOverlay() {
 		batch.color = frozenOverlay;
-		batch.draw(solidColor, 0f, 0f, game.screenWidth, game.screenHeight);
+		batch.draw(solidColor, 0f, 0f, Window.width, Window.height);
 		batch.color = Color.WHITE;
 	}
 
@@ -342,20 +343,20 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
         drawText(
             text = "PAUSED",
             x = 0f,
-            y = game.screenHeight / 2f + 20f,
+            y = Window.height / 2f + 20f,
             color = Color.YELLOW,
             scale = 2.0f,
-			width = game.screenWidth,
+			width = Window.width,
 			align = Align.center,
 			skipBatch = true
         );
         drawText(
             text = "Press <P> or <Esc> or <Space> to resume",
             x = 0f,
-            y = game.screenHeight / 2f - 20f,
+            y = Window.height / 2f - 20f,
             color = Color.WHITE,
             scale = 1.0f,
-			width = game.screenWidth,
+			width = Window.width,
 			align = Align.center,
 			skipBatch = true
         );
@@ -374,20 +375,20 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
         drawText(
             text = "YOU DIED!",
             x = 0f,
-            y = game.screenHeight / 2f + 40f,
+            y = Window.height / 2f + 40f,
             color = Color.RED,
             scale = 2.0f,
-			width = game.screenWidth,
+			width = Window.width,
 			align = Align.center,
 			skipBatch = true
         );
         drawText(
             text = "Press <Esc> to exit or press <R> or <Space> to continue",
             x = 0f,
-            y = game.screenHeight / 2f + 10f,
+            y = Window.height / 2f + 10f,
             color = Color.WHITE,
             scale = 1.0f,
-			width = game.screenWidth,
+			width = Window.width,
 			align = Align.center,
 			skipBatch = true
         );
@@ -397,48 +398,48 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 		if(world != null) {
 			drawText(
 				text = "Opened containers: ${world.player.openedContainerCount}",
-				x = game.screenWidth / 2f - 70f,
-				y = game.screenHeight / 2f - 20f,
+				x = Window.width / 2f - 70f,
+				y = Window.height / 2f - 20f,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f,
 				skipBatch = true
 			);
 			drawText(
 				text = "Killed zombies: ${world.player.killedZombieCount}",
-				x = game.screenWidth / 2f - 70f,
-				y = game.screenHeight / 2f - 35f,
+				x = Window.width / 2f - 70f,
+				y = Window.height / 2f - 35f,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f,
 				skipBatch = true
 			);
 			drawText(
 				text = "Fired: ${world.player.fireCount}",
-				x = game.screenWidth / 2f - 70f,
-				y = game.screenHeight / 2f - 50f,
+				x = Window.width / 2f - 70f,
+				y = Window.height / 2f - 50f,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f,
 				skipBatch = true
 			);
 			drawText(
 				text = "Survived duration: ${Utils.parseSeconds(world.player.survivedDuration, "m", "s")}",
-				x = game.screenWidth / 2f - 70f,
-				y = game.screenHeight / 2f - 65f,
+				x = Window.width / 2f - 70f,
+				y = Window.height / 2f - 65f,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f,
 				skipBatch = true
 			);
 			drawText(
 				text = "Total damage: ${world.player.totalDamage}",
-				x = game.screenWidth / 2f - 70f,
-				y = game.screenHeight / 2f - 80f,
+				x = Window.width / 2f - 70f,
+				y = Window.height / 2f - 80f,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f,
 				skipBatch = true
 			);
 			drawText(
 				text = "Score: ${ScoreManager.score}",
-				x = game.screenWidth / 2f - 70f,
-				y = game.screenHeight / 2f - 95f,
+				x = Window.width / 2f - 70f,
+				y = Window.height / 2f - 95f,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f,
 				skipBatch = true
@@ -459,10 +460,10 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 		
 		// 표시할 월드가 없을 때 보일 placeholder (일반적으로 볼 일은 없다.)
 		batch.color = noWorldOverlay;
-		batch.draw(lazyStillCut.value, 0f, 0f, game.screenWidth.toFloat(), game.screenHeight.toFloat());
+		batch.draw(lazyStillCut.value, 0f, 0f, Window.width, Window.height);
 		batch.color = Color.WHITE;
 		// 월드가 없다는 메시지 없이 그냥 placeholder 배경 그림만 넣는 게 나으려나.
-		// drawText("No world loaded!", 0f, game.screenHeight / 2f, Color.SCARLET, 2.0f, game.screenWidth, Align.center, true);
+		// drawText("No world loaded!", 0f, Window.height / 2f, Color.SCARLET, 2.0f, Window.width, Align.center, true);
 	}
 
 	override fun drawElements() {
@@ -481,7 +482,7 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 				y = 20f,
 				color = subtitlesColor,
 				scale = 1.0f,
-				width = game.screenWidth,
+				width = Window.width,
 				align = Align.center,
 				skipBatch = true
 			);
@@ -504,7 +505,7 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
         drawText(
             text = "HP: ${world.player.hp}",
             x = 10f,
-            y = game.screenHeight - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
+            y = Window.height - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
             color = Utils.rgb(255, 240, 128),
             scale = 1.2f,
 			skipBatch = true
@@ -525,8 +526,8 @@ class WorldViewer private constructor(game: EndlessDead) : Screen(game) {
 		// 점수
 		drawText(
             text = "Score: ${ScoreManager.score}",
-            x = game.screenWidth - 130f,
-            y = game.screenHeight - 10f,
+            x = Window.width - 130f,
+            y = Window.height - 10f,
             color = Utils.rgb(203, 241, 194),
             scale = 1.2f,
 			width = 120f,

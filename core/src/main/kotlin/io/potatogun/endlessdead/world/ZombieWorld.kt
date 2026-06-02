@@ -12,6 +12,7 @@ import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.Utils;
+import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
@@ -197,9 +198,9 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
      *   끝에 다시 흰색으로 되돌려두지 않으면 그 다음 그리는 것까지 영향을 받으니 주의.
      */
     override fun drawBackground() {
-		// game.screenWidth는 Graphics#getWidth 메쏘드를 호출하므로 반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
-		val screenWidth = game.screenWidth;
-		val screenHeight = game.screenHeight;
+		// Window.width는 Graphics#getWidth 메쏘드를 호출하므로 반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
+		val screenWidth = Window.width;
+		val screenHeight = Window.height;
 		// 현재 카메라 시작점이 속한 타일 인덱스
 		val startCol = floor((offsetX - screenWidth / 2f) / tileSize).toInt();
 		val startRow = floor((offsetY - screenHeight / 2f) / tileSize).toInt();

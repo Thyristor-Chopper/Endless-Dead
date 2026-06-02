@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
 import io.potatogun.endlessdead.Utils;
+import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.position.MutablePosition;
 import io.potatogun.endlessdead.position.Position;
@@ -164,7 +165,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	 */
 	fun rotateTo(position: Position) {
 		// 샷건 내 360도 구현 참고함
-		rotation = toDegrees(atan2((world.game.screenHeight - position.y) - (this.y - world.offsetY + world.game.screenHeight / 2f), position.x - (this.x - world.offsetX + world.game.screenWidth / 2f)).toDouble()).toFloat() - 90f;
+		rotation = toDegrees(atan2((Window.height - position.y) - (this.y - world.offsetY + Window.height / 2f), position.x - (this.x - world.offsetX + Window.width / 2f)).toDouble()).toFloat() - 90f;
 	}
 
 	/**

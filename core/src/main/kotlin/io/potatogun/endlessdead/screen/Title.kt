@@ -9,6 +9,7 @@ import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.widget.Button;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
@@ -21,8 +22,8 @@ class Title(game: EndlessDead) : Screen(game) {
 	private var titleBlinkTimer = 0f;
 
 	init {
-		addWidget("play_button", Button({ game.screenWidth / 2 - 130f }, { 120f }, 120f, caption = "Play", onClick = { startGame() }));
-		addWidget("quit_button", Button({ game.screenWidth / 2 + 10f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() }));
+		addWidget("play_button", Button({ Window.width / 2 - 130f }, { 120f }, 120f, caption = "Play", onClick = { startGame() }));
+		addWidget("quit_button", Button({ Window.width / 2 + 10f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() }));
 	}
 
 	private fun startGame() {
@@ -44,24 +45,24 @@ class Title(game: EndlessDead) : Screen(game) {
 	}
 
 	override fun drawBackground() {
-		batch.draw(stillCut, 0f, 0f, game.screenWidth, game.screenHeight);
+		batch.draw(stillCut, 0f, 0f, Window.width, Window.height);
 	}
 
 	override fun drawElements() {
-		val titleWidth = game.screenWidth * 0.75f;
+		val titleWidth = Window.width * 0.75f;
 		val titleHeight = titleWidth / 6f;
-		val titleX = (game.screenWidth - titleWidth) / 2f;
-		val titleY = game.screenHeight / 2f + 80f;
+		val titleX = (Window.width - titleWidth) / 2f;
+		val titleY = Window.height / 2f + 80f;
 		batch.draw(title, titleX, titleY, titleWidth, titleHeight);
 
 		if(titleBlinkTimer % 1f < 0.5f)
 			drawText(
 				text = "Press any key to start",
 				x = 0f,
-				y = game.screenHeight / 2f - 30f,
+				y = Window.height / 2f - 30f,
 				color = Color.WHITE,
 				scale = 1f,
-				width = game.screenWidth,
+				width = Window.width,
 				align = Align.center,
 				skipBatch = true
 			);

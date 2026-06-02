@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.Utils;
+import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.entity.InventoryEntity;
@@ -83,7 +84,7 @@ abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmFiel
 	 */
 	private inline fun setCameraCenter() {
         // false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
-		camera.setToOrtho(false, game.screenWidth, game.screenHeight);
+		camera.setToOrtho(false, Window.width, Window.height);
 	}
 
     // ────────────────────────────────────────────────────────
@@ -226,9 +227,9 @@ abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmFiel
 	 * drawElements에서만 한 번 쓰이기 때문에 인라인 함수이다.
      */
     private inline fun drawEntities() {
-		// game.screenWidth는 Graphics#getWidth 메쏘드를 호출하므로 반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
-		val halfScreenWidth = game.screenWidth / 2f;
-		val halfScreenHeight = game.screenHeight / 2f;
+		// Window.width는 Graphics#getWidth 메쏘드를 호출하므로 반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
+		val halfScreenWidth = Window.width / 2f;
+		val halfScreenHeight = Window.height / 2f;
 		val offsetX = this.offsetX;
 		val offsetY = this.offsetY;
 
@@ -249,9 +250,9 @@ abstract class World(val game: EndlessDead, @JvmField val width: Float, @JvmFiel
         // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
         //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
         //   offset 은 0 ~ (world - screen) 범위여야 한다.
-		// game.screenWidth는 Graphics#getWidth 메쏘드를 호출하므로 반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
-		val screenWidth = game.screenWidth;
-		val screenHeight = game.screenHeight;
+		// Window.width는 Graphics#getWidth 메쏘드를 호출하므로 반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
+		val screenWidth = Window.width;
+		val screenHeight = Window.height;
         offsetX = player.x.coerceIn(screenWidth / 2f, width - screenWidth / 2f);
         offsetY = player.y.coerceIn(screenHeight / 2f, height - screenHeight / 2f);
 		camera.update();
