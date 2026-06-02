@@ -192,9 +192,6 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
      *   끝에 다시 흰색으로 되돌려두지 않으면 그 다음 그리는 것까지 영향을 받으니 주의.
      */
     override fun drawBackground() {
-		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생하여
-		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
-
 		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생한다.
 		//   이 함수 콜 오버헤드와 부동 소수점 나눗셈 연산 중 후자가 더 성능에 영향이 있다고 하여
 		//   필드 접근 콜을 두 번 하는 건 그냥 넘어가자.
