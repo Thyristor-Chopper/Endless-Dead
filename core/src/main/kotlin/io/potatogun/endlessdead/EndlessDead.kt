@@ -69,6 +69,7 @@ class EndlessDead : Game() {
 	 */
 	override fun resize(width: Int, height: Int) {
 		Window.updateWindowDimensions();
+		super.resize(width, height);
 	}
 
 	/**
