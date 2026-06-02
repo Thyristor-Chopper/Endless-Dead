@@ -12,6 +12,9 @@ import kotlin.properties.Delegates;
  * 원래는 object 싱글톤이었으나 게임 인스턴스 하나마다 점수 관리자가 각각 있는 게
  *   더 적절할 것 같아 변경했다. (싱글톤 안 쓰고 이렇게 한 이유가 있으므로 참고)
  *
+ * 설득: 만약 Game(EndlessDead) 인스턴스를 두 개 만들고 각각 두 개의 창으로 띄웠는데
+ *   object 싱글톤으로 하면 두 분리된 게임이 같은 점수를 공유하게 되는 비정상적인 상황이 발생한다.
+ *
  * 하지만 한 게임 인스턴스 당 ScoreManager 하나라는 안전 장치는 유지하기 위해
  *   WorldViewer나 GameManager와 같은 방식으로 한 번만 생성할 수 있게 하였다.
  *
