@@ -91,8 +91,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
     private val bgColorDark = Utils.rgb(38, 92, 38);
     private val bgColorLight = Utils.rgb(38, 107, 38);
     private val tileSize = 64f;
-	override var isFrozen: Boolean = false  // world의 시간이 정지되었는지 확인하는 변수
-		private set;
+	private var isFrozen: Boolean = false;  // world의 시간이 정지되었는지 확인하는 변수
 	// 타이머
 	private val timerManager = TimerManager();
 	private var unfreezer: Task? = null;
@@ -145,6 +144,8 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 	}
 
 	// ---- Freezable 구현 -----
+	
+	override fun isFrozen(): Boolean = this.isFrozen;
 
 	override fun freeze(duration: Float) {
 		isFrozen = true;

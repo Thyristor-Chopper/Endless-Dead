@@ -127,7 +127,7 @@ abstract class World(@JvmField val game: Game, @JvmField val width: Float, @JvmF
     private inline fun updateEntities(delta: Float) {
 		// 매번 순서를 섞어서 먼저 등록된 개체가 먼저 처리되는 것을 방지
 		for(entity in entities.shuffled()) {
-			if(this !is Freezable || !this.isFrozen || entity.canUpdateWhileFrozen)
+			if(this !is Freezable || !this.isFrozen() || entity.canUpdateWhileFrozen)
 				entity.update(delta);
 			entity.forceUpdate(delta);
 		}
