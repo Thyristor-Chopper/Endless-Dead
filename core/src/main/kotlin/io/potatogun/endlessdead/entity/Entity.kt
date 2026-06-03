@@ -48,7 +48,7 @@ import kotlin.math.sqrt;
  * @param position	개체의 처음 위치
  * @param width		가로 크기 (픽셀)
  * @param height	세로 크기 (픽셀)
- * @param texture	개체 텍스처(없을 수도 있음) - @JvmField가 있지만 protected라 외부 자바 클래스에서 접근하라고 있는 게 아니기 때문에 성능을 위해서 씀.
+ * @param texture	개체 텍스처(없을 수도 있음) - @JvmField가 있지만 protected라 외부 자바 클래스에서 접근하라고 있는 게 아니기 때문에 캠슐화가 많이 깨지지는 않는 것 같아 성능을 위해서 씀.
  */
 abstract class Entity(val world: World, position: Position, @JvmField val width: Float, @JvmField val height: Float, @JvmField protected val texture: Texture? = null) {
 	/**
@@ -58,6 +58,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	 * 이게 없으면 entity.getPosition()이 될텐데 위치를 바꾼다고 생각해보자.
 	 * 그럼 entity.getPosition().setX(3);같이 될텐데 'get'을 해 놓고 set을 하는 게 좀 어색하지 않을까.
 	 * 어차피 val(final)이고 클래스 생성 시 바로 Position 객체가 할당되니까 null 위험성도 없지.
+	 * 그리고 entity.getPosition().getX()보다는 entity.position.getX()가 더 깔끔하지 않을까
 	 */
 	@JvmField val position = position.toMutablePosition();
 	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)
