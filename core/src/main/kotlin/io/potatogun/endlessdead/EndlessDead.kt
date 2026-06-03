@@ -2,8 +2,8 @@ package io.potatogun.endlessdead;
 
 import com.badlogic.gdx.Gdx;
 
-import io.potatogun.gdxhelper.Window;
-import io.potatogun.gdxhelper.screen.Title;
+import io.potatogun.endlessdead.Window;
+import io.potatogun.endlessdead.screen.Title;
 
 // 일부 로우 레벨 최적화 관련 참고 사항
 //
@@ -68,7 +68,6 @@ class EndlessDead : Game() {
 	 */
 	override fun dispose() {
 		super.dispose();
-		Textures.disposeShared();  // 공유 자원 정리
 		titleScreen.dispose();  // 이게 로딩이 안 됐을 리가 없다.
 	}
 }

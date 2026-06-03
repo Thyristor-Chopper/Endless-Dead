@@ -1,8 +1,11 @@
-package io.potatogun.gdxhelper;
+package io.potatogun.endlessdead;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input as GdxInput;
 import com.badlogic.gdx.InputProcessor;
+
+import io.potatogun.endlessdead.world.World;
 
 /**
  * 키보드 입력을 편리하게 읽는 도우미.

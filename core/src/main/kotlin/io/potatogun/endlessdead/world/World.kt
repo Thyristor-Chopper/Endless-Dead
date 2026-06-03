@@ -1,4 +1,4 @@
-package io.potatogun.gdxhelper.world;
+package io.potatogun.endlessdead.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -8,17 +8,19 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
-import io.potatogun.gdxhelper.Game;
-import io.potatogun.gdxhelper.TimerManager;
-import io.potatogun.gdxhelper.Utils;
-import io.potatogun.gdxhelper.Window;
-import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.entity.InventoryEntity;
-import io.potatogun.gdxhelper.entity.LivingEntity;
-import io.potatogun.gdxhelper.screen.Screen;
-import io.potatogun.gdxhelper.screen.WorldViewer;
+import io.potatogun.endlessdead.Game;
+import io.potatogun.endlessdead.TimerManager;
+import io.potatogun.endlessdead.Utils;
+import io.potatogun.endlessdead.Window;
+import io.potatogun.endlessdead.entity.Bullet;
+import io.potatogun.endlessdead.entity.Entity;
+import io.potatogun.endlessdead.entity.InventoryEntity;
+import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.container.Container;
+import io.potatogun.endlessdead.item.Item;
+import io.potatogun.endlessdead.screen.Screen;
+import io.potatogun.endlessdead.screen.WorldViewer;
 
 /**
  * 게임 내 월드 = '월드 하나' 의 추상 기본 클래스.
