@@ -104,9 +104,9 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	// 타이머
 	@JvmField protected val timerManager = TimerManager();
 	// 매번 계산하면 오버헤드가 상당하므로 회전 시에만 계산해서 캐시
-	var collideCheckWidth2x = width * 2f
+	var collideCheckWidth = width
 		private set;
-	var collideCheckHeight2x = height * 2f
+	var collideCheckHeight = height
 		private set;
 
 	/**
@@ -150,7 +150,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 		//   매번 새 사각형 객체를 만들어서 확인하여 오버헤드도 상당하고
 		//   update() 내에서 collidesWith하는 경우도 많아 GC할 거리도 매 프레임 엄청나게 불어난다.
 
-		return Utils.abs(x - other.x) * 4f < collideCheckWidth2x + other.collideCheckWidth2x && Utils.abs(y - other.y) * 4f < collideCheckHeight2x + other.collideCheckHeight2x;
+		return Utils.abs(x - other.x) < (collideCheckWidth + other.collideCheckWidth) * 0.5f && Utils.abs(y - other.y) < (collideCheckHeight + other.collideCheckHeight) * 0.5f;
 	}
 
 	/**
@@ -199,14 +199,14 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 		rotation = degrees;
 
 		if(rotation % 180f == 0f) {
-			collideCheckWidth2x = width * 2f;
-			collideCheckHeight2x = height * 2f;
+			collideCheckWidth = width;
+			collideCheckHeight = height;
 		} else if((rotation + 90f) % 180f == 0f) {
-			collideCheckWidth2x = height * 2f;
-			collideCheckHeight2x = width * 2f;
+			collideCheckWidth = height;
+			collideCheckHeight = width;
 		} else {  // 사각형의 세밀한 회전을 구하기에는 연산량이 너무 늘어나니까 그냥 평균으로 때우자. 어차피 지금 플레이어 외에 회전하는 개체가 없다.
-			collideCheckWidth2x = width + height;
-			collideCheckHeight2x = collideCheckWidth2x;
+			collideCheckWidth = width + height;
+			collideCheckHeight = collideCheckWidth;
 		}
 	}
 
