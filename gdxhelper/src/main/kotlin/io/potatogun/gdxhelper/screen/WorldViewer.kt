@@ -32,7 +32,7 @@ open class WorldViewer : Screen() {
 	private var subtitlesColor = Color.WHITE;
 
 	init {
-		instances[this] = Unit;
+		instanceMap[this] = Unit;
 	}
 
 	/**
@@ -43,7 +43,7 @@ open class WorldViewer : Screen() {
 	 */
 	fun loadWorld(world: World, disposePreviousWorld: Boolean = false) {
 		if(projectingWorld === world) return;  // 아무 작업도 할 필요 없음
-		if(instances.keys.any { it.projectingWorld === world })
+		if(instances.any { it.projectingWorld === world })
 			throw IllegalArgumentException("another viewer is already projecting that world");
 		val previousWorld: World? = projectingWorld;
 		projectingWorld = world;
@@ -130,9 +130,12 @@ open class WorldViewer : Screen() {
 
 	companion object {
 		// 생성된 모든 인스턴스를 관리하는 목록이다. 생성자에서 자동으로 추가한다. 누가 설마 자바 unsafe의 allocateInstance를 쓰진 않겠지
-		private val instances = WeakHashMap<WorldViewer, Unit>();
+		//   WeakArrayList같은 게 없으니 이런 꼼수를 쓴다. mutableListOf<WeakReference<WorldViewer>>로 하면
+		//   직접 null 참조들을 지워줘야 한다...
+		private val instanceMap = WeakHashMap<WorldViewer, Unit>();
+		private val instances = instanceMap.keys;
 		// private val instances = mutableListOf<WeakReference<WorldViewer>>();
 
-		fun getViewerByWorld(world: World): WorldViewer? = instances.keys.firstOrNull { it.projectingWorld === world };
+		fun getViewerByWorld(world: World): WorldViewer? = instances.firstOrNull { it.projectingWorld === world };
 	}
 }
