@@ -25,14 +25,13 @@ import io.potatogun.endlessdead.widget.ProgressBar;
 import io.potatogun.endlessdead.widget.Widget;
 import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
 
-import java.util.WeakHashMap;
-
 /**
  * WorldViewer 자체는 정말 월드 자체만을 보여주는 기본적인 뷰어이다.
  *
  * 이를 확장하여 HUD나 다채로운 화면을 구현해보자.
  */
-class ZombieWorldViewer(override val game: EndlessDead) : WorldViewer(game) {
+class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
+	private val endlessDead = game;  // 코틀린 왜 필드 섀도우(override 없이 같은 이름으로 덮어쓰기) 없어!
 	private val noWorldOverlay = Utils.rgb(255, 255, 255, 0.5f);
 	private val frozenOverlay = Utils.rgb(0, 0, 0, 0.5f);
     private val solidColor: Texture;
@@ -75,7 +74,7 @@ class ZombieWorldViewer(override val game: EndlessDead) : WorldViewer(game) {
 		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, 120f, caption = "Back to title", onClick = {
 			unloadWorld(true);
 			GameManager.standBy();
-			game.setScreen(game.titleScreen);
+			game.setScreen(endlessDead.titleScreen);
 		});
 		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() });
 
@@ -209,7 +208,7 @@ class ZombieWorldViewer(override val game: EndlessDead) : WorldViewer(game) {
 
 	private fun restartGame() {
 		GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
-		loadWorld(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
+		loadWorld(ZombieWorld(endlessDead, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
 	}
 
 	/**

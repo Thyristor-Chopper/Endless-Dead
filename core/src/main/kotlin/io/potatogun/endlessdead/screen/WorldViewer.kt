@@ -2,29 +2,12 @@ package io.potatogun.endlessdead.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Align;
 
-import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.Game;
 import io.potatogun.endlessdead.GameManager;
-import io.potatogun.endlessdead.Input;
-import io.potatogun.endlessdead.Textures;
-import io.potatogun.endlessdead.Timer;
-import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.Window;
-import io.potatogun.endlessdead.entity.Zombie;
-import io.potatogun.endlessdead.item.Gun;
-import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.world.World;
-import io.potatogun.endlessdead.world.ZombieWorld;
-import io.potatogun.endlessdead.widget.Button;
-import io.potatogun.endlessdead.widget.ProgressBar;
-import io.potatogun.endlessdead.widget.Widget;
-import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
-
-import java.util.WeakHashMap;
 
 import kotlin.reflect.KClass;
 
@@ -34,9 +17,11 @@ import kotlin.reflect.KClass;
  * 상속받아서 더 확장된 월드 뷰어를 만들어도 되지만
  * 동일한 종류의 월드 뷰어는 한 게임 인스턴스당 하나만 생성할 수 있다.
  *
- * 월드 뷰어는 WorldViewer(Game) 생성자를 직접 호출하여 만들 경우 반드시 Game#addWorldViewer로 등록해야 한다.
- *   Game#getWorldViewer를 통해 원하는 뷰어 종류를 전달하여 없으면 자동으로 생성하게 할 수도 있지만 Game 매개변수
- *   하나만을 받는 뷰어만 지원된다. 다른 방식의 생성자를 쓰는 경우 직접 생성하고 addWorldViewer를 할 것.
+ * 월드 뷰어는 WorldViewer(Game) 생성자를 직접 호출하여 만들 수 있으며
+ *   Game#getWorldViewer를 통해 원하는 뷰어 종류를 전달하여 없으면 자동으로 생성하게 할 수도 있지만
+ *   Game 매개변수 하나만을 받는 뷰어만 지원된다.
+ *
+ * 생성할 경우 자동으로 게임의 worldViewers에 등록된다.
  */
 open class WorldViewer(game: Game) : Screen(game) {
 	// 표시할 월드
@@ -47,11 +32,7 @@ open class WorldViewer(game: Game) : Screen(game) {
 	private var subtitlesColor = Color.WHITE;
 
 	init {
-		// 하위 클래스 종류당 다중 인스턴스 제한은 약간 모르겠어서 구글 검색 약간 참고함
-		val classes = instances.getOrPut(game, { mutableSetOf<KClass<out WorldViewer>>() });
-		if(classes.contains(this::class))
-			throw IllegalStateException("only one instance of a type of a world viewer per game instance may be created");
-		classes.add(this::class);
+		game.addWorldViewer(this);
 	}
 
 	/**
@@ -182,10 +163,5 @@ open class WorldViewer(game: Game) : Screen(game) {
 	override fun dispose() {
 		super.dispose();
 		world?.dispose();
-	}
-
-	companion object {
-		// 하위 클래스 종류당 다중 인스턴스 제한은 약간 모르겠어서 구글 검색 약간 참고함
-		private val instances = WeakHashMap<Game, MutableSet<KClass<out WorldViewer>>>();
 	}
 }

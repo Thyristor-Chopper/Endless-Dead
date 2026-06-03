@@ -16,7 +16,8 @@ import io.potatogun.endlessdead.world.ZombieWorld;
 /**
  * 타이틀 화면
  */
-class Title(override val game: EndlessDead) : Screen(game) {
+class Title(game: EndlessDead) : Screen(game) {
+	private val endlessDead = game;  // 코틀린 왜 필드 섀도우(override 없이 같은 이름으로 덮어쓰기) 없어!
 	private val title = Textures.loadTexture("title/title.bmp");
 	private val stillCut = Textures.loadTexture("title/still_cut.bmp");
 	private var titleBlinkTimer = 0f;
@@ -28,9 +29,9 @@ class Title(override val game: EndlessDead) : Screen(game) {
 
 	private fun startGame() {
 		GameManager.setPlaying();
-		val worldViewer = game.getWorldViewer(ZombieWorldViewer::class);
-		worldViewer.loadWorld(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT));
+		val worldViewer = game.getWorldViewer<ZombieWorldViewer>();
 		game.setScreen(worldViewer);
+		worldViewer.loadWorld(ZombieWorld(endlessDead, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT));
 		// Gdx.app.postRunnable { dispose() };
 	}
 

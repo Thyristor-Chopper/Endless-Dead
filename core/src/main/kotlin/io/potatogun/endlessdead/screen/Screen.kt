@@ -32,9 +32,9 @@ import io.potatogun.endlessdead.widget.Widget;
  *   ▸ update(delta)         — 자기 게임 로직 (대부분 override 함)
  *   ▸ render(delta)         — 객체 위에 텍스트/HUD 추가 그리기 (선택)
  *
- * @param game 화면이 속한 게임. 추상이 아닌 구현체 클래스에서 실제 게임인 EndlessDead 형을 쓸 수 있게 open
+ * @param game 화면이 속한 게임
  */
-abstract class Screen(open val game: Game) : ScreenAdapter() {
+abstract class Screen(val game: Game) : ScreenAdapter() {
 	// SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
     //   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
     @JvmField protected val batch = SpriteBatch();
@@ -79,7 +79,7 @@ abstract class Screen(open val game: Game) : ScreenAdapter() {
 	/**
 	 * 모든 위젯 목록 (읽기 전용)
 	 */
-	fun getWidgets(): List<Widget> = widgets.values.toList();
+	fun getWidgets(): Collection<Widget> = widgets.values;
 
     // ────────────────────────────────────────────────────────
     //  콜백 함수
