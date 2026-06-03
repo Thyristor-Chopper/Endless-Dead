@@ -3,6 +3,7 @@ package io.potatogun.endlessdead;
 import com.badlogic.gdx.Gdx;
 
 import io.potatogun.endlessdead.screen.Title;
+import io.potatogun.endlessdead.screen.ZombieWorldViewer;
 import io.potatogun.gdxhelper.Game;
 import io.potatogun.gdxhelper.Window;
 
@@ -50,7 +51,8 @@ import io.potatogun.gdxhelper.Window;
  */
 class EndlessDead : Game() {
 	// 미리 등록된 스크린
-	val titleScreen: Title by lazy { Title(this) };
+	internal val titleScreen: Title by lazy { Title(this) };
+	internal val worldViewer: ZombieWorldViewer by lazy { ZombieWorldViewer(this) };
 
     /**
      * LibGDX 가 게임 시작 시 한 번 호출하는 라이프사이클 메서드.

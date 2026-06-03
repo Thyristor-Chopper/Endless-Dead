@@ -29,7 +29,7 @@ open class WorldViewer(game: Game) : Screen(game) {
 	private var subtitlesColor = Color.WHITE;
 
 	init {
-		game.addWorldViewer(this);
+		instances.add(this);
 	}
 
 	/**
@@ -41,6 +41,8 @@ open class WorldViewer(game: Game) : Screen(game) {
 	fun loadWorld(world: World, disposePreviousWorld: Boolean = false) {
 		if(world.game !== this.game)  // 안전을 위해 동일 게임 인스턴스에 속한 월드만 불러오게 함
 			throw IllegalArgumentException("WorldViewer can only project worlds that belong to the same game instance of this viewer");
+		if(instances.any { it.getProjectingWorld() === world })
+			throw IllegalArgumentException("another viewer is already projecting that world");
 		val previousWorld: World? = this.world;
 		this.world = world;
 		world.updateCamera();
@@ -127,5 +129,12 @@ open class WorldViewer(game: Game) : Screen(game) {
 	override fun dispose() {
 		super.dispose();
 		world?.dispose();
+	}
+
+	companion object {
+		// 생성된 모든 인스턴스를 관리하는 목록이다. 생성자에서 자동으로 추가한다. 누가 설마 자바 unsafe의 allocateInstance를 쓰진 않겠지
+		private val instances = mutableListOf<WorldViewer>();
+
+		fun getViewerByWorld(world: World): WorldViewer? = instances.firstOrNull { it.getProjectingWorld() === world };
 	}
 }
