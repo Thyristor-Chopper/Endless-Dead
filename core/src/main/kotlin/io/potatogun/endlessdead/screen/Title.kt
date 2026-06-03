@@ -17,7 +17,7 @@ import io.potatogun.endlessdead.world.ZombieWorld;
  * 타이틀 화면
  */
 class Title(game: EndlessDead) : Screen(game) {
-	private val endlessDead = game;  // 아 진짜 코틀린 왜 필드 섀도우(override 없이 같은 이름으로 덮어쓰기) 없어!
+	private val endlessDead = game;  // 아 코틀린 왜 필드 섀도우(override 없이 같은 이름으로 덮어쓰기) 없어!
 	private val title = Textures.loadTexture("title/title.bmp");
 	private val stillCut = Textures.loadTexture("title/still_cut.bmp");
 	private var titleBlinkTimer = 0f;
