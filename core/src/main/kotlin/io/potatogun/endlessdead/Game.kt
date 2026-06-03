@@ -6,8 +6,6 @@ import com.badlogic.gdx.Gdx;
 import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.screen.WorldViewer;
 
-import java.lang.reflect.InvocationTargetException;
-
 import kotlin.reflect.KClass;
 
 abstract class Game : GdxGame() {
@@ -41,7 +39,7 @@ abstract class Game : GdxGame() {
 		val viewer: WorldViewer? = worldViewers[viewerClass];
 		if(viewer != null) return viewer as T;
 
-		// 인자로 받은 클래스로 인스턴스를 생성하는 건 잘 모르겠어서 검색함...
+		// 인자로 받은 클래스로 인스턴스를 생성하는 건 잘 모르겠어서 검색함... (오류 처리는 당연히 직접 했고)
 		return try {
 			viewerClass.java.constructors.firstOrNull({ it.parameterTypes.size == 1 && Game::class.java.isAssignableFrom(it.parameterTypes[0]) })!!.newInstance(this) as T;
 		} catch(e: Exception) {
