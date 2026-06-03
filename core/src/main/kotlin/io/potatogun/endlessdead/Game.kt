@@ -50,6 +50,7 @@ abstract class Game : GdxGame() {
 		return try {
 			// ?. 안 쓰고 !!. 하고 NullPointerException을 핸들링한 이유는
 			//   아래의 IllegalArgumentException과 처리 방식이 어차피 같기 때문이다.
+			//   오히려 여기서 ?.나 ?:을 쓰면 더 길어지고 반복되는 코드가 생긴다
 			viewerClass.java.constructors.firstOrNull({ it.parameterTypes.size == 1 && Game::class.java.isAssignableFrom(it.parameterTypes[0]) })!!.newInstance(this) as T;
 		} catch(e: Exception) {
 			if(e is IllegalArgumentException || e is NullPointerException)
