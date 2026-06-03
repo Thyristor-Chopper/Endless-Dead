@@ -48,7 +48,6 @@ abstract class LivingEntity(world: World, position: Position, width: Float, heig
 	/** 
 	 * 무적 타이머가 가동 중인지의 여부
 	 */
-	@get:JvmName("isInvincibilityTimerActive")
 	val isInvincibilityTimerActive: Boolean
 		get() = (invincibilityTimer > 0f);
 	/**
