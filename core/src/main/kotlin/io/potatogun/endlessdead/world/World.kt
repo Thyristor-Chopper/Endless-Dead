@@ -48,19 +48,15 @@ abstract class World(@JvmField val game: Game, @JvmField val width: Float, @JvmF
 	val viewer: WorldViewer?
 		get() = game.getWorldViewers().firstOrNull { it.getProjectingWorld() === this };
 	/**
-	 * 이 월드의 플레이어
-	 */
-	abstract val player: Player;
-    /**
 	 * 카메라 오프셋 — 월드의 어느 지점이 화면 중앙에 오는지.
      *   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
 	 */
     var offsetX: Float
 		get() = camera.position.x
-		private set(value) { camera.position.x = value };
+		protected set(value) { camera.position.x = value };
     var offsetY: Float
 		get() = camera.position.y
-		private set(value) { camera.position.y = value };
+		protected set(value) { camera.position.y = value };
     // 등록된 객체들만 update/draw 된다.
     // private 으로 감춘 이유: 외부가 직접 add/remove 하면
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. addEntity(), removeEntity()라는 공식 창구만 허용.
@@ -115,6 +111,16 @@ abstract class World(@JvmField val game: Game, @JvmField val width: Float, @JvmF
 	 * @return 읽기 전용 개체 목록
      */
     fun getEntities(): List<Entity> = entities.toList();
+
+    /**
+     * 지정한 종류의 개체 중 처음으로 등록된 것을 반환한다.
+     */
+    inline fun <reified T : Entity> get(): T? = getEntities().firstOrNull { it::class == T::class } as T?;
+
+    /**
+     * 지정한 종류의 개체를 아무거나 반환한다.
+     */
+    inline fun <reified T : Entity> getRandom(): T? = getEntities().shuffled().firstOrNull { it::class == T::class } as T?;
 
     /**
      * 등록된 모든 개체에게 'update(delta) 한 프레임 진행'을 시킨다.
@@ -237,19 +243,9 @@ abstract class World(@JvmField val game: Game, @JvmField val width: Float, @JvmF
     }
 
 	/**
-	 * 플레이어 위치에 따라 카메라 위치 변경
+	 * 카메라 갱신
 	 */
-	fun updateCamera() {
-        // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
-        //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
-        //   offset 은 0 ~ (world - screen) 범위여야 한다.
-
-		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생하여
-		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
-		val halfScreenWidth = Window.width * 0.5f;
-		val halfScreenHeight = Window.height * 0.5f;
-        offsetX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);
-        offsetY = player.y.coerceIn(halfScreenHeight, height - halfScreenHeight);
+	open fun updateCamera() {
 		camera.update();
 		batch.projectionMatrix = camera.combined;
 	}

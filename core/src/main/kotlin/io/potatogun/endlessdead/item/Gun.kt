@@ -8,6 +8,7 @@ import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.entity.InventoryEntity;
+import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.position.Position;
 import io.potatogun.endlessdead.world.World;
 
@@ -105,7 +106,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 
 		// ammo가 다 떨어진 총은 파괴
 		if(remainingBullets == 0) {
-			if(holder === world.player)
+			if(holder is Player)
 				world.viewer?.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
 			destroy();
 		}

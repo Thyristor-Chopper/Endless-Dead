@@ -16,6 +16,7 @@ import io.potatogun.endlessdead.Timer;
 import io.potatogun.endlessdead.TimerManager;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.Window;
+import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
@@ -130,18 +131,18 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 	 */
 	private fun updateTitleBarInfo() {
 		val world: World? = getProjectingWorld();
-		
-		if(world == null) {
+		val player: Player? = world?.get<Player>();
+		if(world == null || player == null) {
 			Window.titleBarStats = null;
 			return;
 		}
 		
 		Window.titleBarStats = when(TitleInfoType.byIndex(currentTitleInfo)) {
-			TitleInfoType.OPENED	-> "Opened chests: ${world.player.openedContainerCount}"
-			TitleInfoType.KILLED	-> "Killed zombies: ${world.player.killedZombieCount}"
-			TitleInfoType.FIRED		-> "Fired: ${world.player.fireCount}"
-			TitleInfoType.SURVIVED	-> "Survived duration: ${Utils.parseSeconds(world.player.survivedDuration, "m", "s")}"
-			TitleInfoType.DAMAGE	-> "Total damage: ${world.player.totalDamage}"
+			TitleInfoType.OPENED	-> "Opened chests: ${player.openedContainerCount}"
+			TitleInfoType.KILLED	-> "Killed zombies: ${player.killedZombieCount}"
+			TitleInfoType.FIRED		-> "Fired: ${player.fireCount}"
+			TitleInfoType.SURVIVED	-> "Survived duration: ${Utils.parseSeconds(player.survivedDuration, "m", "s")}"
+			TitleInfoType.DAMAGE	-> "Total damage: ${player.totalDamage}"
 			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.getEntities().filterIsInstance<Zombie>().size}"
 		};
 	}
@@ -157,7 +158,8 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 		val cooldownIndicator = getWidget("gun_cooldown_indicator") as ProgressBar;
 		
 		val world: World? = getProjectingWorld();
-		if(world == null) {
+		val player: Player? = world?.get<Player>();
+		if(world == null || player == null) {
 			hpIndicator.hide();
 			ammoIndicator.hide();
 			cooldownIndicator.hide();
@@ -166,12 +168,12 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 
 		// HP 미터기 처리
 		hpIndicator.apply {
-			value = world.player.hp.toFloat() / world.player.maxHP;
+			value = player.hp.toFloat() / player.maxHP;
 			show();
 		};
 
 		// 총 관련 미터기 처리
-		val holding: Item? = world.player.selectedItem;
+		val holding: Item? = player.selectedItem;
 		if(holding != null && holding is Gun) {
 			// 총의 ammo를 미터기로 표시
 			ammoIndicator.apply {
@@ -348,9 +350,10 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 
 		// 통계
 		val world: World? = getProjectingWorld();
-		if(world != null) {
+		val player: Player? = world?.get<Player>();
+		if(world != null && player != null) {
 			drawText(
-				text = "Opened containers: ${world.player.openedContainerCount}",
+				text = "Opened containers: ${player.openedContainerCount}",
 				x = Window.width * 0.5f - 70f,
 				y = Window.height * 0.5f - 20f,
 				color = Color.LIGHT_GRAY,
@@ -358,7 +361,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 				skipBatch = true
 			);
 			drawText(
-				text = "Killed zombies: ${world.player.killedZombieCount}",
+				text = "Killed zombies: ${player.killedZombieCount}",
 				x = Window.width * 0.5f - 70f,
 				y = Window.height * 0.5f - 35f,
 				color = Color.LIGHT_GRAY,
@@ -366,7 +369,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 				skipBatch = true
 			);
 			drawText(
-				text = "Fired: ${world.player.fireCount}",
+				text = "Fired: ${player.fireCount}",
 				x = Window.width * 0.5f - 70f,
 				y = Window.height * 0.5f - 50f,
 				color = Color.LIGHT_GRAY,
@@ -374,7 +377,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 				skipBatch = true
 			);
 			drawText(
-				text = "Survived duration: ${Utils.parseSeconds(world.player.survivedDuration, "m", "s")}",
+				text = "Survived duration: ${Utils.parseSeconds(player.survivedDuration, "m", "s")}",
 				x = Window.width * 0.5f - 70f,
 				y = Window.height * 0.5f - 65f,
 				color = Color.LIGHT_GRAY,
@@ -382,7 +385,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 				skipBatch = true
 			);
 			drawText(
-				text = "Total damage: ${world.player.totalDamage}",
+				text = "Total damage: ${player.totalDamage}",
 				x = Window.width * 0.5f - 70f,
 				y = Window.height * 0.5f - 80f,
 				color = Color.LIGHT_GRAY,
@@ -433,12 +436,13 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 	 */
     private inline fun drawHud() {
 		val world: World? = getProjectingWorld();
-		if(world == null) return;
+		val player: Player? = world?.get<Player>();
+		if(world == null || player == null) return;
 
         // 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
         //    카메라가 움직여도 항상 이 위치에 있다.
         drawText(
-            text = "HP: ${world.player.hp}",
+            text = "HP: ${player.hp}",
             x = 10f,
             y = Window.height - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
             color = Utils.rgb(255, 240, 128),
@@ -447,9 +451,9 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
         );
 
 		// 현재 플레이어가 들고 있는 아이템
-		world.player.selectedItem?.let {
+		player.selectedItem?.let {
 			drawText(
-				text = "${it.name} [${world.player.selectedItemIndex!! + 1}/${world.player.inventoryItemCount}]",
+				text = "${it.name} [${player.selectedItemIndex!! + 1}/${player.inventoryItemCount}]",
 				x = 10f,
 				y = 20f,
 				color = Utils.rgb(255, 255, 192),

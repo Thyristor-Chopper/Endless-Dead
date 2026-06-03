@@ -38,11 +38,23 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 	protected open val attackingTexture = Textures.getShared("attacking_zombie");
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
-	val target: LivingEntity = world.player;  // 자바에서도 getTarget()같은 거 많아서 어느 정도의 캡슐화는 유지하기 위해 @JvmField 없음
+	var target: LivingEntity? = null;  // 자바에서도 getTarget()같은 거 많아서 어느 정도의 캡슐화는 유지하기 위해 @JvmField 없음
 	private var attackTextureTimer = 0f;
+
+	protected fun getTargetOrReset(): LivingEntity? {
+		val target: LivingEntity? = this.target;
+		if(target == null) {
+			this.target = world.getRandom<Player>();  // 다음 프레임에...
+			return null;
+		}
+		return target;
+	}
 
 	override fun update(delta: Float) {
 		super.update(delta);
+
+		val target: LivingEntity? = getTargetOrReset();
+		if(target == null) return;
 
         val dx = target.x - x;
         val dy = target.y - y;
@@ -96,6 +108,9 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 		override val color = Utils.rgb(255, 192, 192);
 
         override fun update(delta: Float) {
+			val target: LivingEntity? = getTargetOrReset();
+			if(target == null) return;
+
             when(dashState) {
                 DashState.WALKING -> {
                     val distance = distanceTo(target);

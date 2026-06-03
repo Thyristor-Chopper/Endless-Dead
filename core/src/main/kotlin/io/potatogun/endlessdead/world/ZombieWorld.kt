@@ -75,7 +75,7 @@ import kotlin.random.Random;
  */
 class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, width, height), Freezable {
     // 플레이어 — 월드 중앙에서 시작.
-    override val player = Player(this, Position(width * 0.5f, width * 0.5f));
+    private val player = Player(this, Position(width * 0.5f, width * 0.5f));
 	private val spawners = mutableListOf<Spawner>();
     // ── 체스판 배경 설정 (drawBackground()에서 사용) ──
     //   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
@@ -235,6 +235,24 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 			skipBatch = true
         );
     }
+
+	/**
+	 * 플레이어 위치에 따라 카메라 위치 변경
+	 */
+	override fun updateCamera() {
+        // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
+        //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
+        //   offset 은 0 ~ (world - screen) 범위여야 한다.
+
+		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생하여
+		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
+		val halfScreenWidth = Window.width * 0.5f;
+		val halfScreenHeight = Window.height * 0.5f;
+        offsetX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);
+        offsetY = player.y.coerceIn(halfScreenHeight, height - halfScreenHeight);
+
+		super.updateCamera();
+	}
 
     /**
 	 * 화면이 닫힐 때 — 부모도 dispose한 뒤 우리만의 자원도 해제.

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Entity;
+import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.position.Position;
 import io.potatogun.endlessdead.world.World;
 
@@ -39,7 +40,7 @@ class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true,
         if(remainingBullets > 0) remainingBullets -= spreadAngles.size;
 
         if(remainingBullets == 0) {
-            if(shooter === world.player)
+            if(shooter is Player)
                 world.viewer?.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON);
             destroy();
         }

@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.spawner;
 
+import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.position.Position;
 import io.potatogun.endlessdead.position.distanceTo;
@@ -45,12 +46,14 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 	 * 무작위로 좀비 종류를 골라서 월드에 추가하고 반환한다
 	 */
     private inline fun spawnRandomZombie() {
+		val attackTarget: Player? = world.getRandom<Player>();
+		if(attackTarget == null) return;
         var randomX: Float;
         var randomY: Float;
 		do {
 			randomX = Random.nextFloat() * (world.width - 70f);
 			randomY = Random.nextFloat() * (world.height - 70f);
-		} while(Position(randomX, randomY).distanceTo(world.player) < 64f);
+		} while(Position(randomX, randomY).distanceTo(attackTarget) < 64f);
 
         // 주사위를 굴려서 확률로 좀비 종류 뽑기
         val rand = Random.nextInt(10);
@@ -58,7 +61,9 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
             rand < 6	-> Zombie.Weak(world, Position(randomX, randomY))		// 60% 확률
             rand < 9	-> Zombie.Normal(world, Position(randomX, randomY))	// 30% 확률
             else		-> Zombie.Strong(world, Position(randomX, randomY))	// 10% 확률
-        };
+        }.apply {
+			target = attackTarget;
+		};
 
         world.addEntity(newZombie);
     }
