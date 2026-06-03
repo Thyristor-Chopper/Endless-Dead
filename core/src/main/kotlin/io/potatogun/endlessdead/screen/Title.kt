@@ -30,8 +30,8 @@ class Title(game: EndlessDead) : Screen(game) {
 	private fun startGame() {
 		GameManager.setPlaying();
 		val worldViewer = game.getWorldViewer<ZombieWorldViewer>();
-		game.setScreen(worldViewer);
 		worldViewer.loadWorld(ZombieWorld(endlessDead, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT));
+		game.setScreen(worldViewer);
 		// Gdx.app.postRunnable { dispose() };
 	}
 
