@@ -32,6 +32,7 @@ open class WorldViewer : Screen() {
 	private var subtitlesColor = Color.WHITE;
 
 	init {
+		purgeNullInstances();
 		instances.add(WeakReference(this));
 	}
 
@@ -132,6 +133,13 @@ open class WorldViewer : Screen() {
 		// 생성된 모든 인스턴스를 관리하는 목록이다. 생성자에서 자동으로 추가한다. 누가 설마 자바 unsafe의 allocateInstance를 쓰진 않겠지
 		private val instances = mutableListOf<WeakReference<WorldViewer>>();
 
-		fun getViewerByWorld(world: World): WorldViewer? = instances.firstOrNull { it.get()?.projectingWorld === world }?.get();
+		fun getViewerByWorld(world: World): WorldViewer? {
+			purgeNullInstances();
+			return instances.firstOrNull { it.get()?.projectingWorld === world }?.get();
+		}
+
+		private inline fun purgeNullInstances() {
+			instances.removeAll { it.get() == null };
+		}
 	}
 }
