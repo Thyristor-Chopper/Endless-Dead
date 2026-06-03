@@ -31,7 +31,7 @@ import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
  * 이를 확장하여 HUD나 다채로운 화면을 구현해보자.
  */
 class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
-	private val endlessDead = game;  // 코틀린 왜 필드 섀도우(override 없이 같은 이름으로 덮어쓰기) 없어!
+	private val endlessDead = game;  // 하 나 코틀린 왜 필드 섀도우(override 없이 같은 이름으로 덮어쓰기) 없어!
 	private val noWorldOverlay = Utils.rgb(255, 255, 255, 0.5f);
 	private val frozenOverlay = Utils.rgb(0, 0, 0, 0.5f);
     private val solidColor: Texture;

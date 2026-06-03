@@ -32,9 +32,11 @@ import io.potatogun.endlessdead.widget.Widget;
  *   ▸ update(delta)         — 자기 게임 로직 (대부분 override 함)
  *   ▸ render(delta)         — 객체 위에 텍스트/HUD 추가 그리기 (선택)
  *
- * @param game 화면이 속한 게임
+ * @param game	화면이 속한 게임 - @JvmField이 있어서 비-null 안전 장치를 무력화하는 게
+ *				아니냐고 할 수도 있지만 붙인 상태로 빌드 후 자바로 디컴파일해서
+ *				@NotNull은 물론이고 Intrinsics.checkNotNullParameter(game, "game");이 있는 것을 확인함
  */
-abstract class Screen(val game: Game) : ScreenAdapter() {
+abstract class Screen(@JvmField val game: Game) : ScreenAdapter() {
 	// SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
     //   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
     @JvmField protected val batch = SpriteBatch();

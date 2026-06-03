@@ -37,11 +37,13 @@ import io.potatogun.endlessdead.screen.WorldViewer;
  *
  *  이 클래스를 상속해 자기 게임의 월드를 만든다 (ZombieWorld 참고).
  *
- * @param game		월드가 속한 게임
+ * @param game		월드가 속한 게임 - @JvmField이 있어서 비-null 안전 장치를 무력화하는 게
+ *					아니냐고 할 수도 있지만 붙인 상태로 빌드 후 자바로 디컴파일해서
+ *					@NotNull은 물론이고 Intrinsics.checkNotNullParameter까지 있는 것을 확인함
  * @param width		월드 전체 너비 (JvmField이 있지만 빌드 후 Fernflower로 자바로 디컴파일하여 null이 불가능한 원시 float임을 확인함.)
  * @param height	월드 전체 높이 (위와 동일)
  */
-abstract class World(val game: Game, @JvmField val width: Float, @JvmField val height: Float) {
+abstract class World(@JvmField val game: Game, @JvmField val width: Float, @JvmField val height: Float) {
 	// OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     private val camera = OrthographicCamera();
 	@JvmField protected val batch = SpriteBatch();

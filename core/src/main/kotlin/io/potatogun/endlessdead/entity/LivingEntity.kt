@@ -20,6 +20,7 @@ import io.potatogun.endlessdead.world.World;
 abstract class LivingEntity(world: World, position: Position, width: Float, height: Float, texture: Texture? = null, initialHP: Int) : Entity(world, position, width, height, texture) {
 	/**
 	 * 개체의 최대 체력. 참고로 camelCase에서 hp같은 두문자어는 전부 대문자여야 맞다고 한다.
+	 *   당장 DesktopLauncher의 config에서도 setForegroundFps가 아닌 setForegroundFPS이다.
 	 */
 	open val maxHP: Int = initialHP;
 	/**
