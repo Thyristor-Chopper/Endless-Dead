@@ -134,7 +134,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 	 * 창 제목에 정보를 표시한다.
 	 */
 	private fun updateTitleBarInfo() {
-		val world: World? = getProjectingWorld();
+		val world: World? = projectingWorld;
 		val player: Player? = world?.get<Player>();
 		if(world == null || player == null) {
 			Window.titleBarStats = null;
@@ -161,7 +161,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 		val ammoIndicator = getWidget("gun_ammo_indicator") as ProgressBar;
 		val cooldownIndicator = getWidget("gun_cooldown_indicator") as ProgressBar;
 		
-		val world: World? = getProjectingWorld();
+		val world: World? = projectingWorld;
 		val player: Player? = world?.get<Player>();
 		if(world == null || player == null) {
 			hpIndicator.hide();
@@ -353,7 +353,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
         );
 
 		// 통계
-		val world: World? = getProjectingWorld();
+		val world: World? = projectingWorld;
 		val player: Player? = world?.get<Player>();
 		if(world != null && player != null) {
 			drawText(
@@ -416,7 +416,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 	 * 로딩된 월드가 없을 때 placeholder 배경
 	 */
 	override fun drawBackground() {
-		if(getProjectingWorld() != null) return;
+		if(projectingWorld != null) return;
 
 		// 표시할 월드가 없을 때 보일 placeholder (일반적으로 볼 일은 없다.)
 		batch.color = noWorldOverlay;
@@ -439,7 +439,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 	 * drawElements에서만 한 번 쓰이기 때문에 inline이다.
 	 */
     private inline fun drawHud() {
-		val world: World? = getProjectingWorld();
+		val world: World? = projectingWorld;
 		val player: Player? = world?.get<Player>();
 		if(world == null || player == null) return;
 

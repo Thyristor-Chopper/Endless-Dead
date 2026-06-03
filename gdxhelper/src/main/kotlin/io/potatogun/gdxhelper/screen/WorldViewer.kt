@@ -21,8 +21,11 @@ import io.potatogun.gdxhelper.world.World;
  * 생성할 경우 자동으로 게임의 worldViewers에 등록된다.
  */
 open class WorldViewer(game: Game) : Screen(game) {
-	// 표시할 월드
-	private var world: World? = null;
+	/**
+	 * 현재 보여주고 있는 월드를 반환한다.
+	 */
+	var projectingWorld: World? = null
+		private set;
 	// 자막 타이머 관련 필드들. 우리가 만든 Timer 객체와 달리 일정 시간 간격으로 '계속' 실행하는 그런 게 아니기 때문에 따로 관리.
 	private var subtitlesTimer = 0f;
 	private var subtitlesMessage: String? = null;
@@ -41,10 +44,10 @@ open class WorldViewer(game: Game) : Screen(game) {
 	fun loadWorld(world: World, disposePreviousWorld: Boolean = false) {
 		if(world.game !== this.game)  // 안전을 위해 동일 게임 인스턴스에 속한 월드만 불러오게 함
 			throw IllegalArgumentException("WorldViewer can only project worlds that belong to the same game instance of this viewer");
-		if(instances.any { it.getProjectingWorld() === world })
+		if(instances.any { it.projectingWorld === world })
 			throw IllegalArgumentException("another viewer is already projecting that world");
-		val previousWorld: World? = this.world;
-		this.world = world;
+		val previousWorld: World? = projectingWorld;
+		projectingWorld = world;
 		world.updateCamera();
 		if(disposePreviousWorld) Gdx.app.postRunnable { previousWorld?.dispose() };
 	}
@@ -56,21 +59,16 @@ open class WorldViewer(game: Game) : Screen(game) {
 	 * @return	성공 여부
 	 */
 	fun unloadWorld(dispose: Boolean = false): Boolean {
-		val currentWorld: World? = world;
+		val currentWorld: World? = projectingWorld;
 		if(currentWorld == null) return false;
-		world = null;
+		projectingWorld = null;
 		if(dispose) Gdx.app.postRunnable { currentWorld.dispose() };
 		return true;
 	}
 
-	/**
-	 * 현재 보여주고 있는 월드를 반환한다.
-	 */
-	fun getProjectingWorld(): World? = world;
-
 	override fun resize(width: Int, height: Int) {
 		super.resize(width, height);
-		world?.onResize(width, height);
+		projectingWorld?.onResize(width, height);
 	}
 
 	/**
@@ -78,7 +76,7 @@ open class WorldViewer(game: Game) : Screen(game) {
 	 */
 	override fun update(delta: Float) {
 		// 월드 갱신
-		world?.update(delta);
+		projectingWorld?.update(delta);
 
 		// 자막 만료 타이머 갱신
 		if(subtitlesTimer > 0f)
@@ -95,7 +93,7 @@ open class WorldViewer(game: Game) : Screen(game) {
 		batch.end();  // 월드의 그리기 배치를 처리하기 전에 화면 자체의 배치를 잠시 중지.
 		// 왜 World#render를 Screen#render가 아닌 drawElements에서 하냐고 묻는다면
 		//   월드 뷰어 스크린 입장에서 월드는 이 스크린의 요소 중 하나일 뿐이기 때문이다.
-		world?.render();
+		projectingWorld?.render();
 		batch.begin();  // 월드의 그리기가 끝나면 화면의 그리기 배치를 다시 시작
 
 		// 자막이 있으면 표시
@@ -128,13 +126,13 @@ open class WorldViewer(game: Game) : Screen(game) {
 
 	override fun dispose() {
 		super.dispose();
-		world?.dispose();
+		projectingWorld?.dispose();
 	}
 
 	companion object {
 		// 생성된 모든 인스턴스를 관리하는 목록이다. 생성자에서 자동으로 추가한다. 누가 설마 자바 unsafe의 allocateInstance를 쓰진 않겠지
 		private val instances = mutableListOf<WorldViewer>();
 
-		fun getViewerByWorld(world: World): WorldViewer? = instances.firstOrNull { it.getProjectingWorld() === world };
+		fun getViewerByWorld(world: World): WorldViewer? = instances.firstOrNull { it.projectingWorld === world };
 	}
 }
