@@ -21,6 +21,7 @@ object Window {
 		private set;
 	var height = 0f
 		private set;
+	private var titleBarBase: String? by Delegates.observable("Game") { _, _, _ -> updateTitle() };
 	var titleBarInfo: String? by Delegates.observable(null) { _, _, _ -> updateTitle() };
 	var titleBarStats: String? by Delegates.observable(null) { _, _, _ -> updateTitle() };
 
@@ -35,10 +36,14 @@ object Window {
 		Gdx.graphics.setTitle(title);
 	}
 
+	fun setBaseTitle(value: String) {
+		titleBarBase = value;
+	}
+
 	private fun updateTitle() {
 		val titleBarInfo = this.titleBarInfo?.let { " - $it" } ?: "";
 		val titleBarStats = this.titleBarStats?.let { " / $it" } ?: "";
-		setTitle("${Constants.GAME_TITLE}${titleBarInfo}${titleBarStats}");
+		setTitle("${titleBarBase}${titleBarInfo}${titleBarStats}");
 	}
 
 	/**

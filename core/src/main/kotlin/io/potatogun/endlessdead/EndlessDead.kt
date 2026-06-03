@@ -60,7 +60,7 @@ class EndlessDead : Game() {
      */
     override fun create() {
         setScreen(titleScreen);  // 부모 Game이 제공하는 메서드
-		Window.setTitle(Constants.GAME_TITLE);
+		Window.setBaseTitle(Constants.GAME_TITLE);
     }
 
 	/**

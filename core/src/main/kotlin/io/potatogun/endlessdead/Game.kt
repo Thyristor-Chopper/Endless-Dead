@@ -28,11 +28,19 @@ abstract class Game : GdxGame() {
 		return viewer;
 	}
 
-	// List#filterIsInstance<T>()같은 거 어떻게 하는지 잘 모르겠어서 검색해봄
+	// List#filterIsInstance<T>()같은 형태 어떻게 하는지 잘 모르겠어서 검색해봄
+	/**
+	 * 지정한 종류의 월드 뷰어를 반환하거나 없으면 새로 생성한다. 아래 함수와
+	 * 기능은 같고 사용법만 다르다.
+	 * getWorldViewer<원하는 뷰어 형>()
+	 */
 	inline fun <reified T : WorldViewer> getWorldViewer(): T = getWorldViewer(T::class);
 
 	/**
 	 * 지정한 종류의 월드 뷰어를 반환하거나 없으면 새로 생성한다.
+	 * getWorldViewer(원하는 뷰어 형::class)
+	 *
+	 * @param viewerClass 원하는 뷰어 클래스
 	 */
 	fun <T : WorldViewer> getWorldViewer(viewerClass: KClass<T>): T {
 		val viewer: WorldViewer? = worldViewers[viewerClass];
