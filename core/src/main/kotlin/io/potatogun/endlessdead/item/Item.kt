@@ -2,7 +2,7 @@ package io.potatogun.endlessdead.item;
 
 import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.entity.container.Container;
-import io.potatogun.endlessdead.world.World;
+import io.potatogun.gdxhelper.world.World;
 
 /**
  * 아이템 추상 클래스

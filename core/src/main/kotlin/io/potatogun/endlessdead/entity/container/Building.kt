@@ -2,8 +2,8 @@ package io.potatogun.endlessdead.entity.container;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.item.Item;
-import io.potatogun.endlessdead.position.Position;
-import io.potatogun.endlessdead.world.World;
+import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.world.World;
 
 /**
  * 건물

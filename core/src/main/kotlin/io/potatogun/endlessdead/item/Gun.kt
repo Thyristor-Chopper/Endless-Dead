@@ -4,13 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Timer.Task;
 
-import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.entity.Bullet;
-import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.position.Position;
-import io.potatogun.endlessdead.world.World;
+import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.world.World;
 
 import java.lang.Math.toRadians;
 

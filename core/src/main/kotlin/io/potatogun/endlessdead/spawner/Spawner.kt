@@ -1,6 +1,6 @@
 package io.potatogun.endlessdead.spawner;
 
-import io.potatogun.endlessdead.world.World;
+import io.potatogun.gdxhelper.world.World;
 
 /**
  * 개체 소환기

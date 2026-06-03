@@ -3,7 +3,7 @@ package io.potatogun.endlessdead.item;
 import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.world.World;
+import io.potatogun.gdxhelper.world.World;
 
 /**
  * 붕대 - 회복 아이템

@@ -1,6 +1,6 @@
-package io.potatogun.endlessdead.position;
+package io.potatogun.gdxhelper.position;
 
-import io.potatogun.endlessdead.entity.Entity;
+import io.potatogun.gdxhelper.entity.Entity;
 
 import kotlin.math.sqrt;
 

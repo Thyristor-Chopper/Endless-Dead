@@ -9,23 +9,25 @@ import com.badlogic.gdx.utils.Align;
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
-import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Textures;
-import io.potatogun.endlessdead.Timer;
-import io.potatogun.endlessdead.TimerManager;
-import io.potatogun.endlessdead.Utils;
-import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
-import io.potatogun.endlessdead.world.World;
 import io.potatogun.endlessdead.world.ZombieWorld;
-import io.potatogun.endlessdead.widget.Button;
-import io.potatogun.endlessdead.widget.ProgressBar;
-import io.potatogun.endlessdead.widget.Widget;
-import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
+import io.potatogun.gdxhelper.Input;
+import io.potatogun.gdxhelper.TextureManager;
+import io.potatogun.gdxhelper.Timer;
+import io.potatogun.gdxhelper.TimerManager;
+import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.screen.WorldViewer;
+import io.potatogun.gdxhelper.widget.Button;
+import io.potatogun.gdxhelper.widget.ProgressBar;
+import io.potatogun.gdxhelper.widget.Widget;
+import io.potatogun.gdxhelper.widget.style.ProgressBarStyle;
+import io.potatogun.gdxhelper.world.World;
 
 /**
  * WorldViewer 자체는 정말 월드 자체만을 보여주는 기본적인 뷰어이다.
@@ -52,7 +54,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 	private val titleButton: Button;
 	private val quitButton: Button;
 	// 로드된 월드가 없을 때 보일 placeholder 배경
-	private val lazyStillCut = lazy { Textures.loadTexture("title/still_cut.bmp") };
+	private val lazyStillCut = lazy { TextureManager.loadTexture("title/still_cut.bmp") };
 	// 타이머
 	private val timerManager = TimerManager();
 

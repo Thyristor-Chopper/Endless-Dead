@@ -1,4 +1,4 @@
-package io.potatogun.endlessdead;
+package io.potatogun.gdxhelper;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

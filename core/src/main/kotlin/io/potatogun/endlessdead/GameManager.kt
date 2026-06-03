@@ -2,6 +2,8 @@ package io.potatogun.endlessdead;
 
 import com.badlogic.gdx.Gdx;
 
+import io.potatogun.gdxhelper.Window;
+
 import kotlin.properties.Delegates;
 
 /**

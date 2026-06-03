@@ -3,10 +3,10 @@ package io.potatogun.endlessdead.item;
 import com.badlogic.gdx.graphics.Color;
 
 import io.potatogun.endlessdead.entity.Bullet;
-import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.position.Position;
-import io.potatogun.endlessdead.world.World;
+import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.atan2;
 import kotlin.math.cos;

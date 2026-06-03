@@ -2,8 +2,8 @@ package io.potatogun.endlessdead.item
 
 import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.world.Freezable;
-import io.potatogun.endlessdead.world.World;
+import io.potatogun.gdxhelper.world.Freezable;
+import io.potatogun.gdxhelper.world.World;
 
 /**
  * 시간 정지기

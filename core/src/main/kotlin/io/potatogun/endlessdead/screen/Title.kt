@@ -7,19 +7,21 @@ import com.badlogic.gdx.utils.Align;
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
-import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.Textures;
-import io.potatogun.endlessdead.Window;
-import io.potatogun.endlessdead.widget.Button;
 import io.potatogun.endlessdead.world.ZombieWorld;
+import io.potatogun.gdxhelper.Input;
+import io.potatogun.gdxhelper.TextureManager;
+import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.screen.Screen;
+import io.potatogun.gdxhelper.widget.Button;
 
 /**
  * 타이틀 화면
  */
 class Title(game: EndlessDead) : Screen(game) {
 	private val endlessDead = game;  // 아 코틀린 왜 필드 섀도우(override 없이 같은 이름으로 덮어쓰기) 없어!
-	private val title = Textures.loadTexture("title/title.bmp");
-	private val stillCut = Textures.loadTexture("title/still_cut.bmp");
+	private val title = TextureManager.loadTexture("title/title.bmp");
+	private val stillCut = TextureManager.loadTexture("title/still_cut.bmp");
 	private var titleBlinkTimer = 0f;
 
 	init {

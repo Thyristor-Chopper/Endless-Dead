@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.Textures;
-import io.potatogun.endlessdead.Utils;
-import io.potatogun.endlessdead.position.Position;
-import io.potatogun.endlessdead.world.World;
+import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.sqrt;
 

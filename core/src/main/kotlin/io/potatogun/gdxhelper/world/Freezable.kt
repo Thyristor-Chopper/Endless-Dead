@@ -1,4 +1,4 @@
-package io.potatogun.endlessdead.world;
+package io.potatogun.gdxhelper.world;
 
 /**
  * 시간 멈춤이 가능한 월드

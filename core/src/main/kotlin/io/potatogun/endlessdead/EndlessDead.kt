@@ -2,8 +2,9 @@ package io.potatogun.endlessdead;
 
 import com.badlogic.gdx.Gdx;
 
-import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.screen.Title;
+import io.potatogun.gdxhelper.Game;
+import io.potatogun.gdxhelper.Window;
 
 // 일부 최적화 관련 참고 사항
 //

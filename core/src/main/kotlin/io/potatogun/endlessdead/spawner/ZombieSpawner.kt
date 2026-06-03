@@ -2,9 +2,9 @@ package io.potatogun.endlessdead.spawner;
 
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
-import io.potatogun.endlessdead.position.Position;
-import io.potatogun.endlessdead.position.distanceTo;
-import io.potatogun.endlessdead.world.World;
+import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.position.distanceTo;
+import io.potatogun.gdxhelper.world.World;
 
 import kotlin.random.Random;
 
