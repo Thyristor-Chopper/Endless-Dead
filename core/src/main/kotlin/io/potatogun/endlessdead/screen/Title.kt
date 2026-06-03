@@ -22,7 +22,7 @@ class Title(game: EndlessDead) : Screen(game) {
 	private val endlessDead = game;  // 아 코틀린 왜 필드 섀도우(override 없이 같은 이름으로 덮어쓰기) 없어!
 	private val title = TextureManager.loadTexture("title/title.bmp");
 	private val stillCut = TextureManager.loadTexture("title/still_cut.bmp");
-	private var titleBlinkTimer = 0f;
+	private var titleBlinkTimer = 0f
 
 	init {
 		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, 120f, caption = "Play", onClick = { startGame() }));
@@ -51,6 +51,10 @@ class Title(game: EndlessDead) : Screen(game) {
 		batch.draw(stillCut, 0f, 0f, Window.width, Window.height);
 	}
 
+	/**
+	 * 아무 키나 누르시오. 구현,
+	 * BlinkTimer로 깜박이는 간격 구현
+	 */
 	override fun drawElements() {
 		val titleWidth = Window.width * 0.75f;
 		val titleHeight = titleWidth / 6f;
