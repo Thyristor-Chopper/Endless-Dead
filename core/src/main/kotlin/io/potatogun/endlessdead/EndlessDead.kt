@@ -7,7 +7,8 @@ import io.potatogun.endlessdead.screen.Title;
 
 // 일부 최적화 관련 참고 사항
 //
-// - public/protected이고 null이 아니거나 val인 것들은 약간의 getter 함수 호출 오버헤드 감소를 위해 @JvmField를 붙였다. 
+// - protected로 내부에서만 쓰이거나 public이지만 자바 개발자 입장에서 필드로 직접 접근하는 게
+//   자연스러워 보이고 null이 아니거나 val인 것들은 약간의 getter 함수 호출 오버헤드 감소를 위해 @JvmField를 붙였다. 
 //   확실히 코틀린만의 보호장치를 우회할 위험이 없다고 생각되는 곳에만 붙였으며 int, float는 
 //   직접 빌드 후 디컴파일러로 Java로 디컴파일하여 랩퍼 Integer나 Float가 아닌 null 불가 원시 int, float임을 확인하고
 //   객체의 경우에도 Intrinsics.checkNotNullParameter 콜이 있는 것까지 확인했다.
