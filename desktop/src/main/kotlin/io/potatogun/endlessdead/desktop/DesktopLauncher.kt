@@ -26,29 +26,30 @@ fun main() {
     // ─────────────────────────────────────────
     // 1) 게임 객체 만들기
     // ─────────────────────────────────────────
-    //   EndlessDead은 LibGDX 의 Game 을 상속한 클래스 (EndlessDead.kt 참고).
+    //   EndlessDead은 LibGDX의 Game을 상속한 클래스 (EndlessDead.kt 참고).
     //   이 시점에는 단순히 설계도만 들고 있을 뿐, 실제 화면은 아직 안 만들어진다.
-    //   화면 생성은 LibGDX 가 나중에 game.create() 를 호출할 때 일어난다.
+    //   화면 생성은 LibGDX가 나중에 game.create()를 호출할 때 일어난다.
     val game = EndlessDead();
 
     // ─────────────────────────────────────────
     // 2) 창(Window) 설정
     // ─────────────────────────────────────────
     //   창 제목, 크기, FPS 등을 Lwjgl3ApplicationConfiguration 객체에 담는다.
-    //   ('Lwjgl3' = Lightweight Java Game Library 3 — LibGDX 의 데스크톱 백엔드)
+    //   ('Lwjgl3' = Lightweight Java Game Library 3 — LibGDX의 데스크톱 백엔드)
     //
-    // TODO (10주차 이후): 영역함수 'apply' 를 배우면
+    // TODO (10주차 이후): 영역함수 'apply'를 배우면
     //   Lwjgl3ApplicationConfiguration().apply { setTitle(...); setWindowedMode(...); ... }
     //   처럼 더 간결하게 쓸 수 있다.
-    val config = Lwjgl3ApplicationConfiguration();
-    config.setTitle("${Constants.GAME_TITLE} - Loading...");		// 창 제목
-    config.setWindowedMode(800, 600);								// 창 크기
-    config.setResizable(true);										// 크기 조절 가능
-	config.setWindowSizeLimits(320, 240, Constants.ZOMBIE_WORLD_WIDTH.toInt(), Constants.ZOMBIE_WORLD_HEIGHT.toInt());
-    config.useVsync(false);										// 수직동기화를 꺼야 랙이 줄어듦
-    config.setForegroundFPS(Constants.PASSIVE_FPS);					// 타이틀 화면에서는 낮은 fps로
-	config.setIdleFPS(Constants.PASSIVE_FPS);	
-	config.setWindowIcon(FileType.Internal, "assets/icon_16.png", "assets/icon_32.png", "assets/icon_128.png");
+    val config = Lwjgl3ApplicationConfiguration().apply {
+		setTitle("${Constants.GAME_TITLE} - Loading...");		// 창 제목
+		setWindowedMode(800, 600);								// 창 크기
+		setResizable(true);									// 크기 조절 가능
+		setWindowSizeLimits(320, 240, Constants.ZOMBIE_WORLD_WIDTH.toInt(), Constants.ZOMBIE_WORLD_HEIGHT.toInt());
+		useVsync(false);										// 수직동기화를 꺼야 랙이 줄어듦
+		setForegroundFPS(Constants.PASSIVE_FPS);				// 타이틀 화면에서는 낮은 fps로
+		setIdleFPS(Constants.PASSIVE_FPS);	
+		setWindowIcon(FileType.Internal, "assets/icon_16.png", "assets/icon_32.png", "assets/icon_128.png");
+	};
 
     // ─────────────────────────────────────────
     // 3) 실행
