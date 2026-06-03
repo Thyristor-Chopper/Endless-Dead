@@ -1,4 +1,4 @@
-package io.potatogun.endlessdead;
+package io.potatogun.gdxhelper;
 
 import com.badlogic.gdx.Gdx;
 

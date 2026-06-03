@@ -1,10 +1,10 @@
-package io.potatogun.endlessdead;
+package io.potatogun.gdxhelper;
 
 import com.badlogic.gdx.Game as GdxGame;
 import com.badlogic.gdx.Gdx;
 
-import io.potatogun.endlessdead.Window;
-import io.potatogun.endlessdead.screen.WorldViewer;
+import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.screen.WorldViewer;
 
 import kotlin.reflect.KClass;
 
@@ -61,13 +61,5 @@ abstract class Game : GdxGame() {
 	override fun resize(width: Int, height: Int) {
 		Window.updateWindowDimensions();
 		super.resize(width, height);
-	}
-
-	/**
-	 * 자원을 정리한다.
-	 */
-	override fun dispose() {
-		super.dispose();
-		Textures.disposeShared();  // 공유 자원 정리
 	}
 }

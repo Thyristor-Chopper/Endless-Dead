@@ -1,4 +1,4 @@
-package io.potatogun.endlessdead;
+package io.potatogun.gdxhelper;
 
 /**
  * 타이머 객체들을 관리한다.

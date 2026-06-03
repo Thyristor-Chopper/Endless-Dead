@@ -2,8 +2,6 @@ package io.potatogun.endlessdead;
 
 import com.badlogic.gdx.Gdx;
 
-import java.util.WeakHashMap;
-
 import kotlin.properties.Delegates;
 
 /**
@@ -27,14 +25,6 @@ object GameManager {
 	 */
 	var round: Int by Delegates.observable(0) { _, _, new -> Window.titleBarInfo = (if(new > 0) "Round $new" else null) }
 		private set;
-	/**
-	 * 현재 점수
-	 */
-	var score: Int = 0
-		private set(value) {
-			if(value < 0) field = 0;
-			else field = value;
-		};
 	/**
 	 * 현재 게임이 진행 중인지의 여부
 	 */
