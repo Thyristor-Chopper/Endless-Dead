@@ -1,3 +1,3 @@
 rootProject.name = "endless-dead"
 
-include("core", "desktop")
+include("gdxhelper", "core", "desktop")
