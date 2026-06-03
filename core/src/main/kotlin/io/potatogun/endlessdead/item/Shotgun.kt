@@ -16,35 +16,38 @@ import kotlin.math.sin;
  * 샷건
  */
 class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true, 1f, 10, 10) {
-    private val spreadAngles = listOf(-0.2f, -0.1f, 0f, 0.1f, 0.2f);
+    private val spreadAngles = listOf(-0.2f, -0.1f, 0f, 0.1f, 0.2f) //방향 기준 퍼짐 좌표
 
     override fun fire(target: Position, shooter: Entity): Int {
         if(!canFire) return 0;
 
-        val centerX = shooter.x;
-        val centerY = shooter.y;
+        val centerX = shooter.x //shooter, 즉 발사를 하는 주체인 플레이어의 위치를 중심으로 두는 객체
+        val centerY = shooter.y
 
-        val angle = atan2(target.y - centerY, target.x - centerX);  // 360 돌리는 거 구글링
+        val angle = atan2(target.y - centerY, target.x - centerX);  // atan2()으로 사분면(방향)을 확인, -180°부터 +180°까지 정확한 방향 반환
 
         for(spread in spreadAngles) {
-            val finalAngle = angle + spread;
+            val finalAngle = angle + spread //atan2로 반환한 방향에 list로 저장한 다섯가지 방향으로 퍼짐 구현
             val pelletTarget = Position(
                 centerX + cos(finalAngle) * 100f,
-                centerY + sin(finalAngle) * 100f  // 구글링했음
+                centerY + sin(finalAngle) * 100f  // angle 객체로 각도(방향)을 지정했으니, 그곳의 cos,sin을 이용한 위치 좌표를 구하는 식
             );
 
-            world.addEntity(Bullet(world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetreble, bulletHP));
+            world.addEntity(Bullet(world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetreble, bulletHP))
         }
 
-        startFireCooldown();
-        if(remainingBullets > 0) remainingBullets -= spreadAngles.size;
+        startFireCooldown() //발사간격 함수
+        if(remainingBullets > 0) remainingBullets -= spreadAngles.size //탄약 수 차감
 
+        /*
+        * 남은 탄약이 0이 됐을 떄, 무기가 파괴(destroy())되는 효과
+         */
         if(remainingBullets == 0) {
             if(shooter is Player)
                 world.viewer?.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON);
-            destroy();
+            destroy()
         }
 
-        return spreadAngles.size;
+        return spreadAngles.size
     }
 }
