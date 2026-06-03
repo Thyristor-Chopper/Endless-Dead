@@ -91,7 +91,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 
 		// 아이템 사용
 		selectedItem?.let {
-			if(it is Usable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.allowContinuousUse && Input.isButtonPressed(Input.LEFT_MOUSE))))
+			if(it is Usable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.isContinuousUseAllowed && Input.isButtonPressed(Input.LEFT_MOUSE))))
 				useItem(it);
 		};
 

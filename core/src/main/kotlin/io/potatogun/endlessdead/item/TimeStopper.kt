@@ -11,7 +11,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param world	아이템이 있는 세계
  */
 class TimeStopper(world: World) : Item(world, "time_stopper", "Time Stopper"), Usable {
-    override val allowContinuousUse = false;
+    override val isContinuousUseAllowed = false;
 
     /**
      * 타이머를 사용해서 시간을 3초 멈춘다

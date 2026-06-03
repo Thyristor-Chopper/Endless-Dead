@@ -36,7 +36,7 @@ import kotlin.math.sin;
  * @param maxBullets			최대 총알 개수
  */
 abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHP: Int, @JvmField val isBulletPenetreble: Boolean, val fireInterval: Float, initialBullets: Int, @JvmField val maxBullets: Int = initialBullets) : Item(world, id, name), Fireable, Usable {
-	override val allowContinuousUse = false;
+	override val isContinuousUseAllowed = false;
 	private var fireCooldown = 0f
 		set(value) {
 			if(value < 0f) field = 0f;
