@@ -13,6 +13,7 @@ import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Timer;
+import io.potatogun.endlessdead.TimerManager;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.entity.Zombie;
@@ -49,6 +50,8 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 	private val quitButton: Button;
 	// 로드된 월드가 없을 때 보일 placeholder 배경
 	private val lazyStillCut = lazy { Textures.loadTexture("title/still_cut.bmp") };
+	// 타이머
+	private val timerManager = TimerManager();
 
 	init {
 		// 단색용 텍스처 생성
@@ -80,9 +83,24 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 
 		// 제목 표시줄 정보 전환
 		timerManager.registerTimer(Timer(3f) {
-			if(GameManager.isPlaying || GameManager.isPaused)
-				currentTitleInfo++;
+			currentTitleInfo++;
 		});
+	}
+
+	/**
+	 * 매 프레임 게임 로직 — 모든 '입력 처리·상태 변경'은 이 안에서.
+	 *
+	 * 상태별로 해야 할 일이 완전히 다르므로 when으로 분기한다.
+	 * (입력 처리가 render()가 아닌 update() 에 있는 이유:
+	 *  '로직과 그리기의 분리' — render는 매 프레임 그리는 일에만 집중하고,
+	 *  상태 변화·입력은 update가 책임진다.)
+	 */
+	override fun update(delta: Float) {
+		when {
+            GameManager.isPlaying	-> updateInPlay(delta);
+            GameManager.isPaused	-> updatePaused(delta);
+            GameManager.isGameOver	-> updateGameOver();
+        }
 	}
 
     /**
@@ -90,11 +108,13 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 	 *
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-    override fun updateInPlay(delta: Float) {
+    private inline fun updateInPlay(delta: Float) {
+		timerManager.tick(delta);
+
 		// 제목 표시줄에 통계 표시
 		updateTitleBarInfo();
 
-		super.updateInPlay(delta);
+		super.update(delta);
 
 		// 미터기 정보 갱신
 		updateProgressBars();
@@ -182,7 +202,9 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 	 *
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-	override fun updatePaused() {
+	private inline fun updatePaused(delta: Float) {
+		timerManager.tick(delta);
+
 		// 제목 표시줄에 통계 표시
 		updateTitleBarInfo();
 		
@@ -195,7 +217,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 	 *
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-    override fun updateGameOver() {
+    private inline fun updateGameOver() {
         // ESC 키가 '막 눌린 순간' 앱 종료.
         //   isKeyJustPressed로 한 이유: 누르고 있는 동안 매 프레임 exit이 호출되지 않게.
         if(Input.isKeyJustPressed(Input.ESCAPE))
@@ -452,6 +474,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 		solidColor.dispose();
 		if(lazyStillCut.isInitialized())
 			lazyStillCut.value.dispose();
+		timerManager.clearTimers();
 	}
 
 	/**

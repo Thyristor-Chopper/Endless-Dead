@@ -75,49 +75,16 @@ open class WorldViewer(game: Game) : Screen(game) {
 	}
 
 	/**
-	 * 매 프레임 게임 로직 — 모든 '입력 처리·상태 변경'은 이 안에서.
-	 *
-	 * 상태별로 해야 할 일이 완전히 다르므로 when으로 분기한다.
-	 * (입력 처리가 render()가 아닌 update() 에 있는 이유:
-	 *  '로직과 그리기의 분리' — render는 매 프레임 그리는 일에만 집중하고,
-	 *  상태 변화·입력은 update가 책임진다.)
+	 * 월드와 자막 만료 타이머 갱신
 	 */
 	override fun update(delta: Float) {
-		super.update(delta);
-
-		when {
-            GameManager.isPlaying	-> updateInPlay(delta);
-            GameManager.isPaused	-> updatePaused();
-            GameManager.isGameOver	-> updateGameOver();
-        }
-	}
-
-    /**
-	 * PLAYING 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
-	 *
-	 * update에서만 한 번 쓰이기 때문에 inline이다.
-	 */
-    open fun updateInPlay(delta: Float) {
 		// 월드 갱신
 		world?.update(delta);
 
 		// 자막 만료 타이머 갱신
 		if(subtitlesTimer > 0f)
 			subtitlesTimer -= delta;
-    }
-
-	/**
-	 * 일시 정지 상태에서 매 프레임 로직
-	 *
-	 * 객체 업데이트(super.update)나 타이머(spawner.tick)를 호출하지 않음.
-	 *   세상이 그대로 멈춰있는 상태가 됨
-	 */
-	open fun updatePaused() {}
-
-    /**
-	 * 게임 오버 상태에서 매 프레임 처리
-	 */
-    open fun updateGameOver() {}
+	}
 
 	/**
 	 * 일반적으로 월드가 아닌 뷰어 자체의 배경은 없다(그려봤자 월드의 배경이 반투명하지 않는 이상 가려질 것이다).

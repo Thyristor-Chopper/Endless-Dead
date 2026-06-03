@@ -8,6 +8,7 @@ import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Timer;
+import io.potatogun.endlessdead.TimerManager;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.container.Container;
@@ -44,6 +45,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
     private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
+	private val timerManager = TimerManager();
 	private val healTimer: Timer;
 	// 통계
 	var survivedDuration = 0
@@ -75,6 +77,8 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 	// ---- 매 프레임 로직 ----
 
     override fun update(delta: Float) {
+		timerManager.tick(delta);
+
 		super.update(delta);
 
 		// 반디 위치에 따라 플레이어 회전
@@ -243,5 +247,6 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 	override fun dispose() {
 		super.dispose();
 		textureWithGun.dispose();
+		timerManager.clearTimers();
 	}
 }

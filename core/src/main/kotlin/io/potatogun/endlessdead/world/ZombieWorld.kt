@@ -12,6 +12,7 @@ import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.Timer;
+import io.potatogun.endlessdead.TimerManager;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.entity.Entity;
@@ -88,6 +89,8 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
     private val tileSize = 64f;
 	override var isFrozen: Boolean = false  // world의 시간이 정지되었는지 확인하는 변수
 		private set;
+	// 타이머
+	private val timerManager = TimerManager();
 	private var unfreezer: Task? = null;
 
     /**
@@ -161,6 +164,8 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 	 * PLAYING 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
 	 */
     override fun update(delta: Float) {
+		timerManager.tick(delta);
+
         // ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
 		super.update(delta);  // updateAllObjects과 removeDead
 		// 스포너 갱신
@@ -238,6 +243,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
         super.dispose();
         tileTexture.dispose();
 		spawners.clear();
+		timerManager.clearTimers();
 		unfreezer?.let {
 			Utils.clearTimeout(it);
 			unfreezer = null;

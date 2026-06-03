@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.Game;
-import io.potatogun.endlessdead.TimerManager;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.entity.Entity;
@@ -67,8 +66,6 @@ abstract class World(@JvmField val game: Game, @JvmField val width: Float, @JvmF
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. addEntity(), removeEntity()라는 공식 창구만 허용.
     //   (캡슐화의 실제 사례)
     private val entities = mutableListOf<Entity>();
-	// 타이머
-	@JvmField protected val timerManager = TimerManager();
 
     init {
         setCameraCenter();
@@ -175,7 +172,6 @@ abstract class World(@JvmField val game: Game, @JvmField val width: Float, @JvmF
      *   ② removeDead()            — isAlive=false인 개체 제거
      */
     internal open fun update(delta: Float) {
-		timerManager.tick(delta);
 		updateEntities(delta);
 		removeDead();
 	}
@@ -296,6 +292,5 @@ abstract class World(@JvmField val game: Game, @JvmField val width: Float, @JvmF
             entity.dispose();
 		}
 		entities.clear();
-		timerManager.clearTimers();
     }
 }

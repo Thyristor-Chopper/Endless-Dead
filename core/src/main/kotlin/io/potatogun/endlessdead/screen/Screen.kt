@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.Game;
-import io.potatogun.endlessdead.TimerManager;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.widget.Widget;
 
@@ -44,8 +43,6 @@ abstract class Screen(@JvmField val game: Game) : ScreenAdapter() {
     @JvmField protected val font = BitmapFont();
 	// 등록된 위젯들
     private val widgets = mutableMapOf<String, Widget>();
-	// 타이머
-	@JvmField protected val timerManager = TimerManager();  // 단순히 성능을 위해서 @JvmField이 있는 건 아니고 다른 클래스가 아닌 자기 자신의 타이머 매니저에 접근하는데 'get'TimerManager'()'는 살짝 어색할 것 같기도 해서.
 
     // ────────────────────────────────────────────────────────
     //  위젯 객체 관리
@@ -101,9 +98,7 @@ abstract class Screen(@JvmField val game: Game) : ScreenAdapter() {
 	/**
      * 매 프레임 화면 로직 — 서브클래스가 override해서 화면 로직을 넣는 곳.
      */
-	protected open fun update(delta: Float) {
-		timerManager.tick(delta);
-	}
+	protected open fun update(delta: Float) {}
 
 	// ────────────────────────────────────────────────────────
     //  매 프레임 그리기
@@ -209,6 +204,5 @@ abstract class Screen(@JvmField val game: Game) : ScreenAdapter() {
         for(widget in widgets.values)
             widget.dispose();
 		widgets.clear();
-		timerManager.clearTimers();
 	}
 }
