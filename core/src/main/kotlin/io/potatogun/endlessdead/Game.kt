@@ -45,8 +45,6 @@ abstract class Game : GdxGame() {
 		return try {
 			viewerClass.java.constructors.firstOrNull({ it.parameterTypes.size == 1 && Game::class.java.isAssignableFrom(it.parameterTypes[0]) })!!.newInstance(this) as T;
 		} catch(e: Exception) {
-			if(e is InvocationTargetException)
-				throw IllegalArgumentException("the specified world viewer does not belong to this game instance");
 			if(e is IllegalArgumentException || e is NullPointerException)
 				throw IllegalArgumentException("the specified world viewer class does not use the standard constructor format");
 			else
