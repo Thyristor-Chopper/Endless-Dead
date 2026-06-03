@@ -5,11 +5,11 @@ package io.potatogun.gdxhelper.widget.style;
  */
 enum class ProgressBarStyle {
 	/**
-	 * 윈도우 XP처럼 조각난 스타일
-	 */
-	CHUNKED,
-	/**
 	 * 윈도우 7처럼 연속적인 스타일
 	 */
-	SMOOTH;
+	SMOOTH,
+	/**
+	 * 윈도우 XP처럼 조각난 스타일
+	 */
+	CHUNKED;
 }

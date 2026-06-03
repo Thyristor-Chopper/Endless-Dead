@@ -10,13 +10,10 @@ import com.badlogic.gdx.utils.Align;
 import io.potatogun.gdxhelper.HelperTextures;
 import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.widget.skin.ButtonSkin;
 
-class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, caption: String, accessKey: Char? = null, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
-	private val button: NinePatch = HelperTextures.button;
-	private val buttonHover: NinePatch = HelperTextures.buttonHover;
-	private val buttonPressed: NinePatch = HelperTextures.buttonPressed;
-	private val buttonDisabled: NinePatch = HelperTextures.buttonDisabled;
-    private val font = BitmapFont();
+class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, caption: String, accessKey: Char? = null, private val color: Color = Utils.rgb(216, 223, 239), private val skin: ButtonSkin = defaultSkin, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
+	private val font = BitmapFont();
 	private val accessKey: Char?;
 	private val caption: String;
 	private var previouslyPressed = false;
@@ -42,22 +39,24 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, 
 			if(!isEnabled) {
 				previouslyPressed = false;
 
-				buttonDisabled
+				skin.disabled
 			} else if(isPressed && isHover) {
 				previouslyPressed = true;
 
-				buttonPressed
+				skin.pressed
 			} else if(isHover) {
 				fireClickEvent();
 
-				buttonHover
+				skin.hover
 			} else {
 				fireClickEvent();
 
-				button
+				skin.normal
 			};
 
+		if(isEnabled) batch.color = color;
 		toDraw.draw(batch, x, y, width, height);
+		batch.color = Color.WHITE;
 		Utils.drawText(batch, font, caption, x, y + height * 0.5f + 6f, fontColor, 1.0f, width, Align.center, true);
 
 		detectAccessKeyPress();
@@ -81,5 +80,9 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, 
 		if(!previouslyPressed) return;
 		onClick();
 		previouslyPressed = false;
+	}
+
+	companion object {
+		private val defaultSkin = ButtonSkin(HelperTextures.button, HelperTextures.buttonHover, HelperTextures.buttonPressed, HelperTextures.buttonDisabled);
 	}
 }

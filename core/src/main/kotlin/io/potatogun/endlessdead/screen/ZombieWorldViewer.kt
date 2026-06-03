@@ -73,18 +73,20 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 		addWidget("gun_cooldown_indicator", ProgressBar({ Window.width - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide() });
 
 		// 일시 중지 및 게임 오버 단추
-		resumeButton = Button({ Window.width * 0.5f - 195f }, { 120f }, 120f, caption = "Resume", onClick = {
+		resumeButton = Button({ Window.width * 0.5f - 195f }, { 120f }, 120f, caption = "Resume", color = Utils.rgb(184, 243, 194)) {
 			GameManager.resume();
-		});
-		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, 120f, caption = "Continue", onClick = {
+		};
+		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, 120f, caption = "Continue", color = Utils.rgb(184, 243, 194)) {
 			restartGame();
-		});
-		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, 120f, caption = "Back to title", onClick = {
+		};
+		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, 120f, caption = "Back to title", color = Utils.rgb(184, 243, 194)) {
 			unloadWorld(true);
 			GameManager.standBy();
 			game.setScreen(endlessDead.titleScreen);
-		});
-		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, 120f, caption = "Quit", onClick = { Gdx.app.exit() });
+		};
+		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, 120f, caption = "Quit", color = Utils.rgb(184, 243, 194)) {
+			Gdx.app.exit();
+		};
 
 		// 제목 표시줄 정보 전환
 		timerManager.registerTimer(Timer(3f) {
