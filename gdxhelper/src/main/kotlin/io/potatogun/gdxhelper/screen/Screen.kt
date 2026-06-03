@@ -31,12 +31,8 @@ import io.potatogun.gdxhelper.widget.Widget;
  *   ▸ drawBackground(batch) — 자기 배경 그리기 (필수, abstract)
  *   ▸ update(delta)         — 자기 게임 로직 (대부분 override 함)
  *   ▸ render(delta)         — 객체 위에 텍스트/HUD 추가 그리기 (선택)
- *
- * @param game	화면이 속한 게임 - @JvmField이 있어서 비-null 안전 장치를 무력화하는 게
- *				아니냐고 할 수도 있지만 붙인 상태로 빌드 후 자바로 디컴파일해서
- *				@NotNull은 물론이고 Intrinsics.checkNotNullParameter(game, "game");이 있는 것을 확인함
  */
-abstract class Screen(@JvmField val game: Game) : ScreenAdapter() {
+abstract class Screen : ScreenAdapter() {
 	// SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
     //   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
     @JvmField protected val batch = SpriteBatch();  // @JvmField가 있지만 protected라 외부 자바 클래스에서 접근하라고 있는 게 아니기 때문에 캠슐화가 많이 깨지지는 않는 것 같아 성능을 위해서 씀.

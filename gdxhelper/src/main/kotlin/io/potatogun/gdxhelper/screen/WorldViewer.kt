@@ -11,16 +11,11 @@ import io.potatogun.gdxhelper.world.World;
 /**
  * 월드를 불러오고 월드를 화면에 프로젝션해주는 스크린이다.
  *
- * 상속받아서 더 확장된 월드 뷰어를 만들어도 되지만
- * 동일한 종류의 월드 뷰어는 한 게임 인스턴스당 하나만 생성할 수 있다.
- *
- * 월드 뷰어는 WorldViewer(Game) 생성자를 직접 호출하여 만들 수 있으며
- *   Game#getWorldViewer를 통해 원하는 뷰어 종류를 전달하여 없으면 자동으로 생성하게 할 수도 있지만
- *   Game 매개변수 하나만을 받는 뷰어만 지원된다.
+ * 상속받아서 hud가 포함된 더 확장된 월드 뷰어를 만들 수 있다.
  *
  * 생성할 경우 자동으로 게임의 worldViewers에 등록된다.
  */
-open class WorldViewer(game: Game) : Screen(game) {
+open class WorldViewer : Screen() {
 	/**
 	 * 현재 보여주고 있는 월드를 반환한다.
 	 */
@@ -42,8 +37,6 @@ open class WorldViewer(game: Game) : Screen(game) {
 	 * @param disposePreviousWorld	기존 월드의 자원을 정리할지의 여부
 	 */
 	fun loadWorld(world: World, disposePreviousWorld: Boolean = false) {
-		if(world.game !== this.game)  // 안전을 위해 동일 게임 인스턴스에 속한 월드만 불러오게 함
-			throw IllegalArgumentException("WorldViewer can only project worlds that belong to the same game instance of this viewer");
 		if(instances.any { it.projectingWorld === world })
 			throw IllegalArgumentException("another viewer is already projecting that world");
 		val previousWorld: World? = projectingWorld;

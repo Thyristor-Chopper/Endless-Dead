@@ -18,8 +18,7 @@ import io.potatogun.gdxhelper.widget.Button;
 /**
  * 타이틀 화면
  */
-class Title(game: EndlessDead) : Screen(game) {
-	private val endlessDead = game;  // 아 코틀린 왜 필드 섀도우(override 없이 같은 이름으로 덮어쓰기) 없어!
+class Title(private val game: EndlessDead) : Screen() {
 	private val title = TextureManager.loadTexture("title/title.bmp");
 	private val stillCut = TextureManager.loadTexture("title/still_cut.bmp");
 	private var titleBlinkTimer = 0f
@@ -31,8 +30,8 @@ class Title(game: EndlessDead) : Screen(game) {
 
 	private fun startGame() {
 		GameManager.setPlaying();
-		val worldViewer = endlessDead.worldViewer;
-		worldViewer.loadWorld(ZombieWorld(endlessDead, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT));
+		val worldViewer = game.worldViewer;
+		worldViewer.loadWorld(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT));
 		game.setScreen(worldViewer);
 		// Gdx.app.postRunnable { dispose() };
 	}

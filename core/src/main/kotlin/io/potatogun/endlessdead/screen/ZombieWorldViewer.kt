@@ -36,8 +36,7 @@ import io.potatogun.gdxhelper.world.World;
  *
  * 이쪽에는 HP 미터기, 일시 정지 처리, 게임 오버 화면 등이 모두 구현되어 있다.
  */
-class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
-	private val endlessDead = game;  // 하 나 코틀린 왜 필드 섀도우(override 없이 같은 이름으로 덮어쓰기) 없어!
+class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer() {
 	private val noWorldOverlay = Utils.rgb(255, 255, 255, 0.5f);
 	private val frozenOverlay = Utils.rgb(0, 0, 0, 0.5f);
     private val solidColor: Texture;
@@ -82,7 +81,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, 120f, caption = "Back to title") {
 			unloadWorld(true);
 			GameManager.standBy();
-			game.setScreen(endlessDead.titleScreen);
+			game.setScreen(game.titleScreen);
 		};
 		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, 120f, caption = "Quit") {
 			Gdx.app.exit();
@@ -238,7 +237,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 
 	private fun restartGame() {
 		GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
-		loadWorld(ZombieWorld(endlessDead, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
+		loadWorld(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
 	}
 
 	/**
