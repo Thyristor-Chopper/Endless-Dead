@@ -41,7 +41,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 			if(value < 0f) field = 0f;
 			else field = value;
 		};
-	@get:JvmName("canFire")
+	@get:JvmName("isFireable")
 	val canFire: Boolean
 		get() = fireCooldown == 0f && remainingBullets > 0;
 	var remainingBullets: Int = initialBullets

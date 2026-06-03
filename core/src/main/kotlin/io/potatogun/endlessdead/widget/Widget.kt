@@ -16,6 +16,7 @@ abstract class Widget(var x: () -> Float, var y: () -> Float, @JvmField val widt
 	/**
 	 * 컨트롤이 화면에 그려지는지의 여부
 	 */
+	@get:JvmName("isVisible")
 	var isVisible = true
 		private set;
 

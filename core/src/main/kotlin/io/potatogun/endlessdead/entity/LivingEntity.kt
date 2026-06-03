@@ -26,6 +26,7 @@ abstract class LivingEntity(world: World, position: Position, width: Float, heig
 	/**
 	 * 개체의 현재 체력
 	 */
+	@get:JvmName("getHP")
 	var hp = initialHP
 		private set(value) {
 			if(value > maxHP) field = maxHP;
@@ -46,7 +47,8 @@ abstract class LivingEntity(world: World, position: Position, width: Float, heig
 	/** 
 	 * 무적 타이머가 가동 중인지의 여부
 	 */
-	val isInvincible: Boolean
+	@get:JvmName("isInvincibilityTimerActive")
+	val isInvincibilityTimerActive: Boolean
 		get() = (invincibilityTimer > 0f);
 	/**
 	 * 가장 최근에 대미지를 입힌 개체
@@ -79,7 +81,7 @@ abstract class LivingEntity(world: World, position: Position, width: Float, heig
 		if(damage < 0) throw IllegalArgumentException("damage must not be negative");
 
 		// 무적 시간이 다 끝났을 때만 피격당함
-		if(!isInvincible) {
+		if(!isInvincibilityTimerActive) {
 			hp -= damage;
 			val killed = (hp == 0);
 			if(killed) {  // 사망

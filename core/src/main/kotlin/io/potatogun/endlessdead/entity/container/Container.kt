@@ -33,11 +33,13 @@ abstract class Container(world: World, position: Position, width: Float, height:
 	/**
 	 * 플레이어가 직접 아이템을 넣었는지의 여부
 	 */
+	@get:JvmName("isPlayerItem")
 	var isPlayerItem = false
 		private set;
 	/**
 	 * 상자가 비어 있는지의 여부
 	 */
+	@get:JvmName("isEmpty")
 	val isEmpty: Boolean
 		get() = (containedItem == null);
 

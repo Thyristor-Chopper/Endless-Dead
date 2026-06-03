@@ -38,7 +38,7 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 	protected open val attackingTexture = Textures.getShared("attacking_zombie");
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
-	val target: LivingEntity = world.player;  // 자바에서도 getTarget()같은 거 많음
+	val target: LivingEntity = world.player;  // 자바에서도 getTarget()같은 거 많아서 어느 정도의 캡슐화는 유지하기 위해 @JvmField 없음
 	private var attackTextureTimer = 0f;
 
 	override fun update(delta: Float) {

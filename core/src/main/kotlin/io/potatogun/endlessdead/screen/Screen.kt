@@ -39,13 +39,13 @@ import io.potatogun.endlessdead.widget.Widget;
 abstract class Screen(@JvmField val game: Game) : ScreenAdapter() {
 	// SpriteBatch: 이미지(Texture) 와 글자를 화면에 찍어주는 도구.
     //   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
-    @JvmField protected val batch = SpriteBatch();
+    @JvmField protected val batch = SpriteBatch();  // @JvmField가 있지만 protected라 외부 자바 클래스에서 접근하라고 있는 게 아니기 때문에 캠슐화가 많이 깨지지는 않는 것 같아 성능을 위해서 씀.
 	// 기본 글꼴
     @JvmField protected val font = BitmapFont();
 	// 등록된 위젯들
     private val widgets = mutableMapOf<String, Widget>();
 	// 타이머
-	@JvmField protected val timerManager = TimerManager();
+	@JvmField protected val timerManager = TimerManager();  // 단순히 성능을 위해서 @JvmField이 있는 건 아니고 다른 클래스가 아닌 자기 자신의 타이머 매니저에 접근하는데 'get'TimerManager'()'는 살짝 어색할 것 같기도 해서.
 
     // ────────────────────────────────────────────────────────
     //  위젯 객체 관리

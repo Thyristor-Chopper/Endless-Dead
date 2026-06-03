@@ -43,7 +43,7 @@ import io.potatogun.endlessdead.screen.WorldViewer;
 abstract class World(@JvmField val game: Game, @JvmField val width: Float, @JvmField val height: Float) {
 	// OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
     private val camera = OrthographicCamera();
-	@JvmField protected val batch = SpriteBatch();
+	@JvmField protected val batch = SpriteBatch();  // @JvmField가 있지만 protected라 외부 자바 클래스에서 접근하라고 있는 게 아니기 때문에 캠슐화가 많이 깨지지는 않는 것 같아 성능을 위해서 씀.
     @JvmField protected val font = BitmapFont();
 	// 월드를 보여주는 스크린. 만약 뷰어가 다른 월드를 띄우고 있으면 null일 수도 있음에 주의
 	val viewer: WorldViewer?

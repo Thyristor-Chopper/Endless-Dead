@@ -28,16 +28,19 @@ object GameManager {
 	/**
 	 * 현재 게임이 진행 중인지의 여부
 	 */
+	@get:JvmName("isPlaying")
 	val isPlaying: Boolean
 		get() = (state == GameState.PLAYING);
 	/**
 	 * 현재 게임이 끝났는지의 여부
 	 */
+	@get:JvmName("isGameOver")
 	val isGameOver: Boolean
 		get() = (state == GameState.GAME_OVER);
 	/**
 	 * 현재 게임이 일지 중지된 상태인지의 여부
 	 */
+	@get:JvmName("isPaused")
 	val isPaused: Boolean
 		get() = (state == GameState.PAUSED);
 
