@@ -18,7 +18,7 @@ object GameManager {
 		if(new == GameState.PLAYING)
 			Gdx.graphics.setForegroundFPS(Constants.FPS);
 		else
-			Gdx.graphics.setForegroundFPS(Constants.PASSIVE_FPS);  // 20fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
+			Gdx.graphics.setForegroundFPS(Constants.PASSIVE_FPS);  // 15fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
 	};
 	/**
 	 * 현재 라운드 (0이면 아직 게임이 시작되지 않은 것)

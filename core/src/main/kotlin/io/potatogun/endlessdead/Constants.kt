@@ -7,11 +7,11 @@ object Constants {
 	/**
 	 * 목표로 표시할 최대 FPS
 	 */
-	const val FPS = 60;
+	const val FPS = 55;
 	/**
 	 * 중지 상태일 때 FPS
 	 */
-	const val PASSIVE_FPS = 20;
+	const val PASSIVE_FPS = 15;
 	/**
 	 * 월드의 너비
 	 */
