@@ -41,6 +41,8 @@ abstract class Game : GdxGame() {
 
 		// 인자로 받은 클래스로 인스턴스를 생성하는 건 잘 모르겠어서 검색함... (오류 처리는 당연히 직접 했고)
 		return try {
+			// ?. 안 쓰고 !!. 하고 NullPointerException을 핸들링한 이유는
+			//   아래의 IllegalArgumentException과 처리 방식이 어차피 같기 때문이다.
 			viewerClass.java.constructors.firstOrNull({ it.parameterTypes.size == 1 && Game::class.java.isAssignableFrom(it.parameterTypes[0]) })!!.newInstance(this) as T;
 		} catch(e: Exception) {
 			if(e is IllegalArgumentException || e is NullPointerException)
