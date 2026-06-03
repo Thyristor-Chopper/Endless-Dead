@@ -237,7 +237,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer() {
 
 	private fun restartGame() {
 		GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
-		loadWorld(ZombieWorld(game, Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
+		loadWorld(ZombieWorld(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
 	}
 
 	/**

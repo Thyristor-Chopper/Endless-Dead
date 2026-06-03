@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import io.potatogun.endlessdead.Constants;
-import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.entity.InventoryEntity;
@@ -77,7 +76,7 @@ import kotlin.random.Random;
  * @param width   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
  * @param height  월드 전체 높이
  */
-class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, width, height), Freezable {
+class ZombieWorld(width: Float, height: Float) : World(width, height), Freezable {
     // 플레이어 — 월드 중앙에서 시작.
     private val player = Player(this, Position(width * 0.5f, width * 0.5f));
 	private val spawners = mutableListOf<Spawner>();

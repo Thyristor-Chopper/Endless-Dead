@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
-import io.potatogun.gdxhelper.Game;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.screen.Screen;
 import io.potatogun.gdxhelper.widget.Widget;
