@@ -32,7 +32,7 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
                 spawnRandomZombie()
         }
 
-        /**
+        /*
         좀비의 스폰 수 증가
         spawnIncreaseInterval = 30f
         찾아보니, delta는 1초 맞아 떨어지는게 아니라 30초에 맞아 떨어지지 않는다여 하여
