@@ -30,6 +30,8 @@ import io.potatogun.endlessdead.widget.style.ProgressBarStyle;
  * WorldViewer 자체는 정말 월드 자체만을 보여주는 기본적인 뷰어이다.
  *
  * 이를 확장하여 HUD나 다채로운 화면을 구현해보자.
+ *
+ * 이쪽에는 HP 미터기, 일시 정지 처리, 게임 오버 화면 등이 모두 구현되어 있다.
  */
 class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 	private val endlessDead = game;  // 하 나 코틀린 왜 필드 섀도우(override 없이 같은 이름으로 덮어쓰기) 없어!
