@@ -134,7 +134,14 @@ open class WorldViewer : Screen() {
 
 		fun getViewerByWorld(world: World): WorldViewer? {
 			purgeNullInstances();
-			return instances.firstOrNull { it.get()?.projectingWorld === world }?.get();
+			// return instances.firstOrNull { it.get()?.projectingWorld === world }?.get();
+			// 어차피 선형 탐색으로 동작하니 WeakReference#get을 두 번이나 호출하는 오버헤드를 감소하기 위해 직접 함.
+			for(viewerRef in instances) {
+				val viewer: WorldViewer? = viewerRef.get();
+				if(viewer != null && viewer.projectingWorld === world)
+					return viewer;
+			}
+			return null;
 		}
 
 		private inline fun purgeNullInstances() {
