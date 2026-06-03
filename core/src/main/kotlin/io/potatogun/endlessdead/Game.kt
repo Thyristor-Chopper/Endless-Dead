@@ -1,7 +1,6 @@
 package io.potatogun.endlessdead;
 
 import com.badlogic.gdx.Game as GdxGame;
-import com.badlogic.gdx.Gdx;
 
 import io.potatogun.endlessdead.Window;
 import io.potatogun.endlessdead.screen.WorldViewer;

@@ -12,14 +12,11 @@ import io.potatogun.endlessdead.Game;
 import io.potatogun.endlessdead.TimerManager;
 import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.Window;
-import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.container.Container;
-import io.potatogun.endlessdead.item.Item;
-import io.potatogun.endlessdead.screen.Screen;
 import io.potatogun.endlessdead.screen.WorldViewer;
 
 /**
