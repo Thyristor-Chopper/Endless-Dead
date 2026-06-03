@@ -153,7 +153,7 @@ class ZombieWorldViewer(game: EndlessDead) : WorldViewer(game) {
 		if(holding != null && holding is Gun) {
 			// 총의 ammo를 미터기로 표시
 			ammoIndicator.apply {
-				value = holding.ammo.toFloat() / holding.maxAmmo;
+				value = holding.remainingBullets.toFloat() / holding.maxBullets;
 				show();
 			};
 

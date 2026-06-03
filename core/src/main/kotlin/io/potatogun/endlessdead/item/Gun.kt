@@ -23,30 +23,31 @@ import kotlin.math.sin;
  *
  * @JvmField가 있는 곳은 빌드 후 직접 디컴파일하여 null이 불가능한 원시 int, float로 바뀜을 확인했다.
  *
- * @param world			아이템이 있는 세계
- * @param id			총 식별자
- * @param name			총 이름
- * @param bulletDamage	총알 피해량
- * @param bulletSpeed	총알 속도
- * @param bulletHP		총알 체력
- * @param penetrable	총알 관통 가능 여부
- * @param fireInterval	공격 속도
- * @param initialAmmo	초기 총알 개수
- * @param maxAmmo		최대 총알 개수
+ * @param world					아이템이 있는 세계
+ * @param id					총 식별자
+ * @param name					총 이름
+ * @param bulletDamage			총알 피해량
+ * @param bulletSpeed			총알 속도
+ * @param bulletHP				총알 체력
+ * @param isBulletPenetreble	총알 관통 가능 여부
+ * @param fireInterval			공격 속도
+ * @param initialBullets		초기 총알 개수
+ * @param maxBullets			최대 총알 개수
  */
-abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHP: Int, @get:JvmName("isBulletPenetreble") val penetrable: Boolean, @JvmField val fireInterval: Float, initialAmmo: Int, @JvmField val maxAmmo: Int = initialAmmo) : Item(world, id, name), Fireable, Usable {
+abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHP: Int, @JvmField val isBulletPenetreble: Boolean, val fireInterval: Float, initialBullets: Int, @JvmField val maxBullets: Int = initialBullets) : Item(world, id, name), Fireable, Usable {
 	override val allowContinuousUse = false;
 	private var fireCooldown = 0f
 		set(value) {
 			if(value < 0f) field = 0f;
 			else field = value;
 		};
+	@get:JvmName("canFire")
 	val canFire: Boolean
-		get() = fireCooldown == 0f && ammo > 0;
-	var ammo: Int = initialAmmo
+		get() = fireCooldown == 0f && remainingBullets > 0;
+	var remainingBullets: Int = initialBullets
 		protected set(value) {
 			if(value < 0) field = 0;
-			else if(value > maxAmmo) field = maxAmmo;
+			else if(value > maxBullets) field = maxBullets;
 			else field = value;
 		};  // 샷건이라는 하위클래스에서도 사용해야할 것 같아 private를 protected로 변경
 	private var cooldownTimer: Task? = null;
@@ -57,8 +58,8 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 		if(bulletSpeed < 0f) throw IllegalArgumentException("invalid bullet speed");
 		if(bulletHP < 0f) throw IllegalArgumentException("invalid bullet HP");
 		if(initialAmmo < 0f) throw IllegalArgumentException("invalid ammo");
-		if(maxAmmo < 0f) throw IllegalArgumentException("invalid max ammo");
-		if(initialAmmo > maxAmmo) throw IllegalArgumentException("ammo count can't be greater than max ammo");
+		if(maxBullets < 0f) throw IllegalArgumentException("invalid max ammo");
+		if(initialAmmo > maxBullets) throw IllegalArgumentException("ammo count can't be greater than max ammo");
 	}
 
 	/**
@@ -97,13 +98,13 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 	override fun fire(target: Position, shooter: Entity): Int {
 		if(!canFire) return 0;
 
-		val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, penetrable, bulletHP);
+		val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetreble, bulletHP);
 		world.addEntity(bullet);
 		startFireCooldown();
-		ammo--;
+		remainingBullets--;
 
 		// ammo가 다 떨어진 총은 파괴
-		if(ammo == 0) {
+		if(remainingBullets == 0) {
 			if(holder === world.player)
 				world.viewer?.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
 			destroy();

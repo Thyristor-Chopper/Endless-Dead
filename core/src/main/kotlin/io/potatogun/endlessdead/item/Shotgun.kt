@@ -36,9 +36,9 @@ class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true,
         }
 
         startFireCooldown();
-        if(ammo > 0) ammo -= spreadAngles.size;
+        if(remainingBullets > 0) remainingBullets -= spreadAngles.size;
 
-        if(ammo == 0) {
+        if(remainingBullets == 0) {
             if(shooter === world.player)
                 world.viewer?.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON);
             destroy();

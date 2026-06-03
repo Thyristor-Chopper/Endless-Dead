@@ -16,8 +16,7 @@ object Window {
 	//   libGDX의 소스코드를 읽어봤지만 잘은 모르겠다 - https://github.com/libgdx/libgdx/blob/f9af1f6273e04da84eaffebbb782d083441634b0/backends/gdx-backend-lwjgl3/src/com/badlogic/gdx/backends/lwjgl3/Lwjgl3Graphics.java#L21
 	//   코틀린 내 Int#toFloat()는 실제 함수 호출으로 구현되지는 않고 자바의 '(float) 정수' 형태로 변환된다.
 	//   그래서 toFloat '함수' 호출 오버헤드는 없다. (이 부분도 빌드 후 디컴파일된 자바 코드로 직접 확인함)
-	//   근데 난 (float) int 캐스팅을 매번 하는 게 성능에 얼마나 영향이 갈지 모르겠다.
-	//   일단 getWidth()로 정수를 받고 실수로 변환하는 과정에서 메모리 할당 오버헤드가 있지 않을까 한다.
+	//   근데 난 (float) int 캐스팅을 매번 하는 게 성능에 얼마나 영향이 갈지 모르겠긴 하지만... 그래도 영향은 있지 않을까
 	var width = 0f  // lateinit이 불가하여 0으로 초기화
 		private set;
 	var height = 0f
