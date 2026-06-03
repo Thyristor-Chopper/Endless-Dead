@@ -57,9 +57,9 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 		if(bulletDamage < 0) throw IllegalArgumentException("invalid bullet damage");
 		if(bulletSpeed < 0f) throw IllegalArgumentException("invalid bullet speed");
 		if(bulletHP < 0f) throw IllegalArgumentException("invalid bullet HP");
-		if(initialAmmo < 0f) throw IllegalArgumentException("invalid ammo");
+		if(initialBullets < 0f) throw IllegalArgumentException("invalid ammo");
 		if(maxBullets < 0f) throw IllegalArgumentException("invalid max ammo");
-		if(initialAmmo > maxBullets) throw IllegalArgumentException("ammo count can't be greater than max ammo");
+		if(initialBullets > maxBullets) throw IllegalArgumentException("ammo count can't be greater than max ammo");
 	}
 
 	/**
