@@ -8,6 +8,8 @@ import io.potatogun.gdxhelper.Game;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.world.World;
 
+import java.lang.ref.WeakReference;
+
 /**
  * 월드를 불러오고 월드를 화면에 프로젝션해주는 스크린이다.
  *
@@ -30,7 +32,7 @@ open class WorldViewer : Screen() {
 	private var subtitlesColor = Color.WHITE;
 
 	init {
-		instances.add(this);
+		instances.add(WeakReference(this));
 	}
 
 	/**
@@ -41,7 +43,7 @@ open class WorldViewer : Screen() {
 	 */
 	fun loadWorld(world: World, disposePreviousWorld: Boolean = false) {
 		if(projectingWorld === world) return;  // 아무 작업도 할 필요 없음
-		if(instances.any { it.projectingWorld === world })
+		if(instances.any { it.get()?.projectingWorld === world })
 			throw IllegalArgumentException("another viewer is already projecting that world");
 		val previousWorld: World? = projectingWorld;
 		projectingWorld = world;
@@ -128,8 +130,8 @@ open class WorldViewer : Screen() {
 
 	companion object {
 		// 생성된 모든 인스턴스를 관리하는 목록이다. 생성자에서 자동으로 추가한다. 누가 설마 자바 unsafe의 allocateInstance를 쓰진 않겠지
-		private val instances = mutableListOf<WorldViewer>();
+		private val instances = mutableListOf<WeakReference<WorldViewer>>();
 
-		fun getViewerByWorld(world: World): WorldViewer? = instances.firstOrNull { it.projectingWorld === world };
+		fun getViewerByWorld(world: World): WorldViewer? = instances.firstOrNull { it.get()?.projectingWorld === world }?.get();
 	}
 }
