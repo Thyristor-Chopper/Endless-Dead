@@ -8,6 +8,7 @@ import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.world.World;
 
 import java.lang.ref.WeakReference;
+import java.util.WeakHashMap;
 
 /**
  * 월드를 불러오고 월드를 화면에 프로젝션해주는 스크린이다.
@@ -31,8 +32,7 @@ open class WorldViewer : Screen() {
 	private var subtitlesColor = Color.WHITE;
 
 	init {
-		purgeNullInstances();
-		instances.add(WeakReference(this));
+		instances[this] = Unit;
 	}
 
 	/**
@@ -43,7 +43,7 @@ open class WorldViewer : Screen() {
 	 */
 	fun loadWorld(world: World, disposePreviousWorld: Boolean = false) {
 		if(projectingWorld === world) return;  // 아무 작업도 할 필요 없음
-		if(instances.any { it.get()?.projectingWorld === world })
+		if(instances.keys.any { it.projectingWorld === world })
 			throw IllegalArgumentException("another viewer is already projecting that world");
 		val previousWorld: World? = projectingWorld;
 		projectingWorld = world;
@@ -130,22 +130,9 @@ open class WorldViewer : Screen() {
 
 	companion object {
 		// 생성된 모든 인스턴스를 관리하는 목록이다. 생성자에서 자동으로 추가한다. 누가 설마 자바 unsafe의 allocateInstance를 쓰진 않겠지
-		private val instances = mutableListOf<WeakReference<WorldViewer>>();
+		private val instances = WeakHashMap<WorldViewer, Unit>();
+		// private val instances = mutableListOf<WeakReference<WorldViewer>>();
 
-		fun getViewerByWorld(world: World): WorldViewer? {
-			purgeNullInstances();
-			// return instances.firstOrNull { it.get()?.projectingWorld === world }?.get();
-			// 어차피 선형 탐색으로 동작하니 WeakReference#get을 두 번이나 호출하는 오버헤드를 감소하기 위해 직접 함.
-			for(viewerRef in instances) {
-				val viewer: WorldViewer? = viewerRef.get();
-				if(viewer != null && viewer.projectingWorld === world)
-					return viewer;
-			}
-			return null;
-		}
-
-		private inline fun purgeNullInstances() {
-			instances.removeAll { it.get() == null };
-		}
+		fun getViewerByWorld(world: World): WorldViewer? = instances.keys.firstOrNull { it.projectingWorld === world };
 	}
 }
