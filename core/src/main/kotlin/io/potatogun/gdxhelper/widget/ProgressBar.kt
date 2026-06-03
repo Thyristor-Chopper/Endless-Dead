@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.potatogun.gdxhelper.Textures;
+import io.potatogun.gdxhelper.HelperTextures;
 import io.potatogun.gdxhelper.widget.style.ProgressBarStyle;
 
 import kotlin.math.ceil;
@@ -30,11 +30,11 @@ private const val CHUNK_MARGIN = 2f;				// 각 청크 사이의 간격
  */
 class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, val color: Color = Color.WHITE, val style: ProgressBarStyle = ProgressBarStyle.SMOOTH) : Widget(x, y, width, height) {
 	// 크기 조절 가능한 미터기 틀
-	private val bar = Textures.progressBar;
+	private val bar = HelperTextures.progressBar;
 	// 크기 조절 가능한 미터기를 채워줄 친구
 	private val fill: NinePatch = when(style) {
-		ProgressBarStyle.CHUNKED	-> Textures.progressChunkedFill
-		ProgressBarStyle.SMOOTH		-> Textures.progressSmoothFill
+		ProgressBarStyle.CHUNKED	-> HelperTextures.progressChunkedFill
+		ProgressBarStyle.SMOOTH		-> HelperTextures.progressSmoothFill
 	};
 
 	init {

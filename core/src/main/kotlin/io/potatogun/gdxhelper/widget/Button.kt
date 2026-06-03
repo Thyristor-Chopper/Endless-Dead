@@ -7,15 +7,15 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
+import io.potatogun.gdxhelper.HelperTextures;
 import io.potatogun.gdxhelper.Input;
-import io.potatogun.gdxhelper.Textures;
 import io.potatogun.gdxhelper.Utils;
 
 class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, caption: String, accessKey: Char? = null, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
-	private val button: NinePatch = Textures.button;
-	private val buttonHover: NinePatch = Textures.buttonHover;
-	private val buttonPressed: NinePatch = Textures.buttonPressed;
-	private val buttonDisabled: NinePatch = Textures.buttonDisabled;
+	private val button: NinePatch = HelperTextures.button;
+	private val buttonHover: NinePatch = HelperTextures.buttonHover;
+	private val buttonPressed: NinePatch = HelperTextures.buttonPressed;
+	private val buttonDisabled: NinePatch = HelperTextures.buttonDisabled;
     private val font = BitmapFont();
 	private val accessKey: Char?;
 	private val caption: String;
