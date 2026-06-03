@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * 여기에서 미리 정의된 텍스처는 Entity#dispose가 아닌 Game#dispose에서 정리된다.
  */
-object Textures : TextureManager() {
+object HelperTextures : TextureManager() {
 	override val shared = mapOf<String, Lazy<Texture>>(
 		"button" to lazy { loadTexture("widget/button.bmp") },
 		"button_hover" to lazy { loadTexture("widget/button_hover.bmp") },

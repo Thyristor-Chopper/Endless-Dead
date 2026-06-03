@@ -70,4 +70,9 @@ abstract class Game : GdxGame() {
 		Window.updateWindowDimensions();
 		super.resize(width, height);
 	}
+
+	override fun dispose() {
+		super.dispose();
+		HelperTextures.disposeShared();
+	}
 }
