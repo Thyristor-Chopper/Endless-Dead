@@ -11,7 +11,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param world	아이템이 있는 세계
  */
 class Bandage(world: World) : Item(world, "bandage", "Bandage"), Usable {
-	override val allowContinuousUse = false;
+	override val isContinuousUseAllowed = false;
 
 	/**
 	 * 붕대를 사용하여 체력을 10만큼 회복한다

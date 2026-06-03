@@ -36,11 +36,11 @@ import kotlin.math.sin;
  * @param maxBullets			최대 총알 개수
  */
 abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHP: Int, @JvmField val isBulletPenetreble: Boolean, val fireInterval: Float, initialBullets: Int, @JvmField val maxBullets: Int = initialBullets) : Item(world, id, name), Fireable, Usable {
-	override val allowContinuousUse = false
+	override val isContinuousUseAllowed = false;
 	private var fireCooldown = 0f
 		set(value) {
-			if(value < 0f) field = 0f
-			else field = value
+			if(value < 0f) field = 0f;
+			else field = value;
 		};
 	@get:JvmName("isFireable")
 	val canFire: Boolean
@@ -69,7 +69,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 	protected fun startFireCooldown() {
 		if(fireInterval == 0f) return;
 
-		fireCooldown = fireInterval
+		fireCooldown = fireInterval;
 
 		// 남은 쿨타임을 갱신한다. update, delta를 쓰지 않은 이유는 이건 게임 프레임과는 독립적이라고 보기 때문.
 		cooldownTimer?.let { Utils.clearInterval(it) };

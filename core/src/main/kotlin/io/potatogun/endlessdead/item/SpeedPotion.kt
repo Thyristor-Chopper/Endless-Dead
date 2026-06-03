@@ -10,7 +10,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param world	아이템이 있는 세계
  */
 class SpeedPotion(world: World) : Item(world, "speed_potion", "Speed Potion"), Usable {
-	override val allowContinuousUse = false;
+	override val isContinuousUseAllowed = false;
 
 	/**
 	 * 포션을 사용하여 속도를 1만큼 올린다
