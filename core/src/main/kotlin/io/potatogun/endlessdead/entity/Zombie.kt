@@ -44,8 +44,8 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 	protected fun getTargetOrReset(): LivingEntity? {
 		val target: LivingEntity? = this.target;
 		if(target == null) {
-			this.target = world.getRandom<Player>();  // 다음 프레임에...
-			return null;
+			this.target = world.getRandom<Player>();
+			return null;  // 다음 프레임에...
 		}
 		return target;
 	}
