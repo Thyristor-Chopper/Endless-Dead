@@ -12,6 +12,7 @@ import io.potatogun.endlessdead.screen.Title;
 //   확실히 코틀린만의 보호장치를 우회할 위험이 없다고 생각되는 곳에만 붙였으며 int, float는 
 //   직접 빌드 후 디컴파일러로 Java로 디컴파일하여 랩퍼 Integer나 Float가 아닌 null 불가 원시 int, float임을 확인하고
 //   객체의 경우에도 Intrinsics.checkNotNullParameter 콜이 있는 것까지 확인했다.
+//   protected의 경우 상속받은 클래스까지만 보지 외부에서 접근하는 게 아니기 때문에 이 역시 위험성이 덜하다.
 //   또한 자바로 똑같은 클래스를 짤 때 .getXXX()를 쓰는 것과 .xxx를 쓰는 것 중 자바 개발자의 입장에서는 어느 게 더 자연스러운지도
 //   종합적으로 생각하여 기준을 갖고 조심히 선택적으로 추가하였다.
 //
