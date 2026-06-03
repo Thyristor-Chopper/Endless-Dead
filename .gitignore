@@ -1,5 +1,6 @@
 .idea/
 .gradle/
+gdxhelper/build/
 core/.idea/
 core/build/
 core/src/.idea/

@@ -156,7 +156,7 @@ abstract class World(@JvmField val game: Game, @JvmField val width: Float, @JvmF
      *   ① updateAllObjects(delta) — 각 객체가 자기 위치 갱신
      *   ② removeDead()            — isAlive=false인 개체 제거
      */
-    internal open fun update(delta: Float) {
+    open fun update(delta: Float) {
 		updateEntities(delta);
 	}
 
@@ -255,7 +255,7 @@ abstract class World(@JvmField val game: Game, @JvmField val width: Float, @JvmF
     //  자원 정리
     // ────────────────────────────────────────────────────────
 
-    internal open fun dispose() {
+    open fun dispose() {
 		batch.dispose();
         for(entity in entities)
             entity.dispose();

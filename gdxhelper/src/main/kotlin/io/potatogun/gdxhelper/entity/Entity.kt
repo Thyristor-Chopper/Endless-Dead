@@ -112,7 +112,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	 * 
      * @param batch 이미지(Texture)를 화면에 찍어주는 도구. GameWorld가 이미 projectionMatrix 를 세팅하고 begin()/end() 안에서 호출해주므로, 서브클래스는 batch.draw(texture, x, y, w, h) 한 줄만 적으면 된다.
 	 */
-	internal open fun draw(batch: SpriteBatch) {
+	open fun draw(batch: SpriteBatch) {
 		draw(batch, null);
 	}
 
@@ -217,12 +217,12 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
      *              '픽셀/초' 단위의 속도에 delta 를 곱하면 '이번 프레임 이동량' 이 된다.
      *              (프레임 속도가 달라져도 같은 속도로 움직이게 하려는 공식)
      */
-    internal open fun update(delta: Float) {}
+    open fun update(delta: Float) {}
 
 	/**
 	 * 시간이 멈췄어도 canUpdateWhileFrozen에 관계없이 실행할 로직
 	 */
-	internal open fun forceUpdate(delta: Float) {}
+	open fun forceUpdate(delta: Float) {}
 
     /**
      * 이 객체가 갖고 있는 GPU 자원을 정리한다 — 화면이 닫힐 때 한 번 호출된다.
@@ -234,7 +234,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
      * 기본 구현은 빈 함수 — Texture 같은 자원을 안 쓰는 객체는 그대로 두면 된다.
      * 텍스처를 쓰는 객체라면 override 해서 texture.dispose()를 호출.
      */
-    internal open fun dispose() {
+    open fun dispose() {
 		texture?.dispose();
 	}
 }

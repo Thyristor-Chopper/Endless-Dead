@@ -16,7 +16,7 @@ abstract class TextureManager {
 	 *
 	 * Screen이나 World가 아닌 Game에서 호출해야 한다.
 	 */
-	internal fun disposeShared() {
+	fun disposeShared() {
 		for(texture in shared.values)
 			if(texture.isInitialized())
 				texture.value.dispose();
