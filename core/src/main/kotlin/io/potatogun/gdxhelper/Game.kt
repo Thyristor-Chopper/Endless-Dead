@@ -71,6 +71,9 @@ abstract class Game : GdxGame() {
 		super.resize(width, height);
 	}
 
+	/**
+	 * 자원을 정리한다.
+	 */
 	override fun dispose() {
 		super.dispose();
 		HelperTextures.disposeShared();
