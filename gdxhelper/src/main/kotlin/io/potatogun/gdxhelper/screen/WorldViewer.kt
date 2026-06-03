@@ -37,6 +37,7 @@ open class WorldViewer : Screen() {
 	 * @param disposePreviousWorld	기존 월드의 자원을 정리할지의 여부
 	 */
 	fun loadWorld(world: World, disposePreviousWorld: Boolean = false) {
+		if(projectingWorld === world) return;  // 아무 작업도 할 필요 없음
 		if(instances.any { it.projectingWorld === world })
 			throw IllegalArgumentException("another viewer is already projecting that world");
 		val previousWorld: World? = projectingWorld;
