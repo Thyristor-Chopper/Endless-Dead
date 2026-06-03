@@ -69,12 +69,4 @@ abstract class Game : GdxGame() {
 		Window.updateWindowDimensions();
 		super.resize(width, height);
 	}
-
-	/**
-	 * 자원을 정리한다.
-	 */
-	override fun dispose() {
-		super.dispose();
-		Textures.disposeShared();  // 공유 자원 정리
-	}
 }

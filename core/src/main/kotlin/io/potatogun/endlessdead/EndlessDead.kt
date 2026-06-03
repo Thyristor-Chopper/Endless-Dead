@@ -68,6 +68,7 @@ class EndlessDead : Game() {
 	 */
 	override fun dispose() {
 		super.dispose();
+		Textures.disposeShared();  // 공유 자원 정리
 		titleScreen.dispose();  // 이게 로딩이 안 됐을 리가 없다.
 	}
 }
