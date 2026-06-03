@@ -8,14 +8,9 @@ import com.badlogic.gdx.utils.Timer.Task;
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
-import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.ScoreManager;
-import io.potatogun.endlessdead.Textures;
-import io.potatogun.endlessdead.Timer;
-import io.potatogun.endlessdead.TimerManager;
-import io.potatogun.endlessdead.Utils;
-import io.potatogun.endlessdead.Window;
-import io.potatogun.endlessdead.entity.Entity;
+import io.potatogun.endlessdead.entity.InventoryEntity;
+import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.container.Building;
@@ -28,10 +23,19 @@ import io.potatogun.endlessdead.item.MachineGun;
 import io.potatogun.endlessdead.item.Shotgun;
 import io.potatogun.endlessdead.item.SpeedPotion;
 import io.potatogun.endlessdead.item.TimeStopper;
-import io.potatogun.endlessdead.position.Position;
-import io.potatogun.endlessdead.screen.WorldViewer;
 import io.potatogun.endlessdead.spawner.Spawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
+import io.potatogun.gdxhelper.Input;
+import io.potatogun.gdxhelper.TextureManager;
+import io.potatogun.gdxhelper.Timer;
+import io.potatogun.gdxhelper.TimerManager;
+import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.screen.WorldViewer;
+import io.potatogun.gdxhelper.world.Freezable;
+import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.ceil;
 import kotlin.math.floor;
@@ -83,7 +87,7 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
     //
     //   tile.png는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color를
     //   바꿔가며 두 가지 색으로 그리는 트릭(틴트)으로 체스판을 만든다.
-    private val tileTexture = Textures.loadTexture("world/tile.bmp");
+    private val tileTexture = TextureManager.loadTexture("world/tile.bmp");
     private val bgColorDark = Utils.rgb(38, 92, 38);
     private val bgColorLight = Utils.rgb(38, 107, 38);
     private val tileSize = 64f;
@@ -167,7 +171,8 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 		timerManager.tick(delta);
 
         // ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
-		super.update(delta);  // updateAllObjects과 removeDead
+		super.update(delta);  // updateEntities
+		removeDead();
 		// 스포너 갱신
 		if(!isFrozen)
 			for(spawner in spawners)
@@ -177,6 +182,24 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
         if(!player.isAlive) {
             GameManager.setGameOver();
 		}
+    }
+
+    /**
+     * isAlive가 false인 객체들을 한꺼번에 제거한다.
+     *
+     * update()에서 호출 — 상호작용 결과 죽음을 표시한 객체를 정리.
+     *
+     * 순회 도중 삭제 시 인덱스 꼬임을 막으려고 '먼저 모아 두고 → 한꺼번에 삭제' 패턴.
+	 *
+	 * update 내에서만 한 번 쓰이기 때문에 inline이다.
+     */
+    private inline fun removeDead() {
+		val toRemove = mutableListOf<Entity>();
+        for(entity in getEntities())
+            if(entity is LivingEntity && !entity.isAlive)
+                toRemove.add(entity);
+        for(entity in toRemove)
+			removeEntity(entity);
     }
 
     // ────────────────────────────────────────────────────────
@@ -258,6 +281,13 @@ class ZombieWorld(game: EndlessDead, width: Float, height: Float) : World(game, 
 	 * 화면이 닫힐 때 — 부모도 dispose한 뒤 우리만의 자원도 해제.
 	 */
     override fun dispose() {
+		for(entity in getEntities()) {
+			if(entity is InventoryEntity)
+				for(item in entity.getInventory())
+					item.destroy();
+			if(entity is Container)
+				entity.containedItem?.destroy();
+		}
         super.dispose();
         tileTexture.dispose();
 		spawners.clear();

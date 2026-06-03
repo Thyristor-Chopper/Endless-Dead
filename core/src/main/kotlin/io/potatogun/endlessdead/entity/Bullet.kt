@@ -1,10 +1,10 @@
 package io.potatogun.endlessdead.entity;
 
 import io.potatogun.endlessdead.Textures;
-import io.potatogun.endlessdead.entity.Entity;
 import io.potatogun.endlessdead.item.Fireable;
-import io.potatogun.endlessdead.position.Position;
-import io.potatogun.endlessdead.world.World;
+import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.sqrt;
 

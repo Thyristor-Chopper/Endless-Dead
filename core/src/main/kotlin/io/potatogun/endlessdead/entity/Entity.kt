@@ -1,4 +1,4 @@
-package io.potatogun.endlessdead.entity;
+package io.potatogun.gdxhelper.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -6,13 +6,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-import io.potatogun.endlessdead.Utils;
-import io.potatogun.endlessdead.Window;
-import io.potatogun.endlessdead.entity.Entity;
-import io.potatogun.endlessdead.position.MutablePosition;
-import io.potatogun.endlessdead.position.Position;
-import io.potatogun.endlessdead.position.toMutablePosition;
-import io.potatogun.endlessdead.world.World;
+import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.position.MutablePosition;
+import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.position.toMutablePosition;
+import io.potatogun.gdxhelper.world.World;
 
 import java.lang.Math.toDegrees;
 
@@ -152,17 +151,19 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 
 	/**
 	 * 개체가 다른 누군가를 공격했을 때 콜백 함수
+	 * 확장성을 고려하여 LivingEntity가 아닌 그냥 Entity이다. 현재로썬 큰 의미는 없지만.
 	 *
 	 * @param victim	공격 대상
 	 */
-	open fun onAttack(victim: LivingEntity) {}
+	open fun onAttack(victim: Entity) {}
 
 	/**
 	 * 개체가 다른 누군가를 처치했을 때 콜백 함수
+	 * 확장성을 고려하여 LivingEntity가 아닌 그냥 Entity이다. 현재로썬 큰 의미는 없지만.
 	 *
 	 * @param victim	공격 대상
 	 */
-	open fun onKill(victim: LivingEntity) {}
+	open fun onKill(victim: Entity) {}
 
 	/**
 	 * 다른 개체와의 거리 (몸의 중앙을 기준으로 한다)

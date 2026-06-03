@@ -1,4 +1,4 @@
-package io.potatogun.endlessdead.widget;
+package io.potatogun.gdxhelper.widget;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
-import io.potatogun.endlessdead.Input;
-import io.potatogun.endlessdead.Textures;
-import io.potatogun.endlessdead.Utils;
+import io.potatogun.gdxhelper.Input;
+import io.potatogun.gdxhelper.Textures;
+import io.potatogun.gdxhelper.Utils;
 
 class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, caption: String, accessKey: Char? = null, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
 	private val button: NinePatch = Textures.button;

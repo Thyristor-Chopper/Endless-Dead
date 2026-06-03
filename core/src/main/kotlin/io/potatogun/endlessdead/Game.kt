@@ -1,9 +1,9 @@
-package io.potatogun.endlessdead;
+package io.potatogun.gdxhelper;
 
 import com.badlogic.gdx.Game as GdxGame;
 
-import io.potatogun.endlessdead.Window;
-import io.potatogun.endlessdead.screen.WorldViewer;
+import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.screen.WorldViewer;
 
 import kotlin.reflect.KClass;
 

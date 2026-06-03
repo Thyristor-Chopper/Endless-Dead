@@ -2,7 +2,7 @@ package io.potatogun.endlessdead.item;
 
 import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.world.World;
+import io.potatogun.gdxhelper.world.World;
 
 /**
  * 속도 포션 - 속도 증가 아이템

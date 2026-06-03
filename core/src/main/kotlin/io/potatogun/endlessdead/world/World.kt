@@ -1,4 +1,4 @@
-package io.potatogun.endlessdead.world;
+package io.potatogun.gdxhelper.world;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -8,15 +8,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
-import io.potatogun.endlessdead.Game;
-import io.potatogun.endlessdead.Utils;
-import io.potatogun.endlessdead.Window;
-import io.potatogun.endlessdead.entity.Entity;
-import io.potatogun.endlessdead.entity.InventoryEntity;
-import io.potatogun.endlessdead.entity.LivingEntity;
-import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.entity.container.Container;
-import io.potatogun.endlessdead.screen.WorldViewer;
+import io.potatogun.gdxhelper.Game;
+import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.screen.WorldViewer;
+import io.potatogun.gdxhelper.world.Freezable;
 
 /**
  * 게임 내 월드 = '월드 하나' 의 추상 기본 클래스.
@@ -136,24 +133,6 @@ abstract class World(@JvmField val game: Game, @JvmField val width: Float, @JvmF
 		}
     }
 
-    /**
-     * isAlive가 false인 객체들을 한꺼번에 제거한다.
-     *
-     * update()에서 호출 — 상호작용 결과 죽음을 표시한 객체를 정리.
-     *
-     * 순회 도중 삭제 시 인덱스 꼬임을 막으려고 '먼저 모아 두고 → 한꺼번에 삭제' 패턴.
-	 *
-	 * update 내에서만 한 번 쓰이기 때문에 inline이다.
-     */
-    private inline fun removeDead() {
-		val toRemove = mutableListOf<Entity>();
-        for(entity in entities)
-            if(entity is LivingEntity && !entity.isAlive)
-                toRemove.add(entity);
-        for(entity in toRemove)
-			removeEntity(entity);
-    }
-
     // ────────────────────────────────────────────────────────
     //  콜백 함수
     // ────────────────────────────────────────────────────────
@@ -179,7 +158,6 @@ abstract class World(@JvmField val game: Game, @JvmField val width: Float, @JvmF
      */
     internal open fun update(delta: Float) {
 		updateEntities(delta);
-		removeDead();
 	}
 
     // ────────────────────────────────────────────────────────
@@ -279,14 +257,8 @@ abstract class World(@JvmField val game: Game, @JvmField val width: Float, @JvmF
 
     internal open fun dispose() {
 		batch.dispose();
-        for(entity in entities) {
-			if(entity is InventoryEntity)
-				for(item in entity.getInventory())
-					item.destroy();
-			if(entity is Container)
-				entity.containedItem?.destroy();
+        for(entity in entities)
             entity.dispose();
-		}
 		entities.clear();
     }
 }

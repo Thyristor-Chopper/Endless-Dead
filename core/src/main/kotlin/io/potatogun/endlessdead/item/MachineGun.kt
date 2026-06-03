@@ -1,6 +1,6 @@
 package io.potatogun.endlessdead.item;
 
-import io.potatogun.endlessdead.world.World;
+import io.potatogun.gdxhelper.world.World;
 
 /**
  * 기관총

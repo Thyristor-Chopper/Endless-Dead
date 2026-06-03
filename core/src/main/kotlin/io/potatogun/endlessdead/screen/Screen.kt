@@ -1,4 +1,4 @@
-package io.potatogun.endlessdead.screen;
+package io.potatogun.gdxhelper.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
@@ -8,9 +8,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
-import io.potatogun.endlessdead.Game;
-import io.potatogun.endlessdead.Utils;
-import io.potatogun.endlessdead.widget.Widget;
+import io.potatogun.gdxhelper.Game;
+import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.screen.Screen;
+import io.potatogun.gdxhelper.widget.Widget;
 
 /**
  * 게임 내 화면을 구현한다.

@@ -4,21 +4,22 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.potatogun.endlessdead.Input;
 import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Textures;
-import io.potatogun.endlessdead.Timer;
-import io.potatogun.endlessdead.TimerManager;
-import io.potatogun.endlessdead.Utils;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.item.Fireable;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Usable;
-import io.potatogun.endlessdead.position.Position;
-import io.potatogun.endlessdead.world.World;
-import io.potatogun.endlessdead.world.ZombieWorld;
+import io.potatogun.gdxhelper.Input;
+import io.potatogun.gdxhelper.Timer;
+import io.potatogun.gdxhelper.TimerManager;
+import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.TextureManager;
+import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.world.World;
 
 import java.lang.Math.toDegrees;
 
@@ -39,9 +40,9 @@ import kotlin.math.atan2;
  *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 Entity#dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, position: Position) : LivingEntity(world, position, 24f, 57f, Textures.loadTexture("entity/player.bmp"), 50), InventoryEntity by InventoryEntityImpl() {
+class Player(world: World, position: Position) : LivingEntity(world, position, 24f, 57f, TextureManager.loadTexture("entity/player.bmp"), 50), InventoryEntity by InventoryEntityImpl() {
 	override val canUpdateWhileFrozen = true;
-	private val textureWithGun = Textures.loadTexture("entity/player_holding_gun.bmp");
+	private val textureWithGun = TextureManager.loadTexture("entity/player_holding_gun.bmp");
     private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
@@ -194,7 +195,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 	/**
 	 * 처치한 좀비 수를 갱신한다.
 	 */
-	override fun onKill(victim: LivingEntity) {
+	override fun onKill(victim: Entity) {
 		if(victim is Zombie) {
 			ScoreManager.addScore(10);
 			killedZombieCount++;

@@ -1,12 +1,12 @@
-package io.potatogun.endlessdead.screen;
+package io.potatogun.gdxhelper.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 
-import io.potatogun.endlessdead.Game;
-import io.potatogun.endlessdead.Window;
-import io.potatogun.endlessdead.world.World;
+import io.potatogun.gdxhelper.Game;
+import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.world.World;
 
 /**
  * 월드를 불러오고 월드를 화면에 프로젝션해주는 스크린이다.

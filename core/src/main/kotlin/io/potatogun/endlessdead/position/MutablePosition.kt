@@ -1,4 +1,4 @@
-package io.potatogun.endlessdead.position;
+package io.potatogun.gdxhelper.position;
 
 /**
  * 위치(평면좌표)를 저장하는 수정 가능한 레코드이다.

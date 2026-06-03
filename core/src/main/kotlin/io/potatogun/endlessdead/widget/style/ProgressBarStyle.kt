@@ -1,4 +1,4 @@
-package io.potatogun.endlessdead.widget.style;
+package io.potatogun.gdxhelper.widget.style;
 
 /**
  * 진행률 표시기(미터기) 스타일
