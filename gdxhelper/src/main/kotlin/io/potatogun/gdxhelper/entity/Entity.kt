@@ -86,9 +86,6 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	open val penetrationDamage = 0;
 	// 텍스처 회전 각도
 	private var rotation = 0f;
-	// 부동소수점 나눗셈 오버헤드를 줄이기 위해 캐시
-	private var isRotated90 = false;
-	private var isRotated180 = false;
 	// 개체 오버레이 색 (color는 mutable 객체이므로 val)
 	protected open val color = Color.WHITE;
 	// 개체 투명도
