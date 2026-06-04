@@ -73,7 +73,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	/**
 	 * TimeStopper 아이템의 영향을 받는지의 여부
 	 */
-	open val canUpdateWhileFrozen = false;
+	open val isUpdatableWhileFrozen = false;
 	/**
 	 * 다른 개체에 닿았을 때 몸 대미지(아직 활용하는 개체 없음)
 	 */

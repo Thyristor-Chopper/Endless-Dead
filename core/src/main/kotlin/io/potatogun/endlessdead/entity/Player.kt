@@ -37,12 +37,12 @@ import kotlin.math.atan2;
  *  update() 에 발사 로직·특수 능력 등을 추가하면 된다.
  *
  *  핵심 포인트:
- *   ▸ Texture 는 객체가 살아있는 동안 한 번만 만들고 재사용 (생성 비용이 큼).
- *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 Entity#dispose()를 override.
+ *   ▸ Texture는 객체가 살아있는 동안 한 번만 만들고 재사용 (생성 비용이 큼).
+ *   ▸ 객체가 사라질 때 dispose()로 GPU 자원 해제 — 기본 Entity#dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
 class Player(world: World, position: Position) : LivingEntity(world, position, 52f, 63f, TextureManager.loadTexture("entity/player.bmp"), 50), InventoryEntity by InventoryEntityImpl() {
-	override val canUpdateWhileFrozen = true;
+	override val isUpdatableWhileFrozen = true;
 	private val textureShotgun = TextureManager.loadTexture("entity/player_shotgun.bmp");
 	private val textureMachineGun = TextureManager.loadTexture("entity/player_machinegun.bmp");
     private var speed = 200f

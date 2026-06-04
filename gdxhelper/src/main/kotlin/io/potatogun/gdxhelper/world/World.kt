@@ -123,7 +123,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
     private inline fun updateEntities(delta: Float) {
 		// 매번 순서를 섞어서 먼저 등록된 개체가 먼저 처리되는 것을 방지
 		for(entity in entities.shuffled()) {
-			if(this !is Freezable || !this.isFrozen || entity.canUpdateWhileFrozen)
+			if(this !is Freezable || !this.isFrozen || entity.isUpdatableWhileFrozen)
 				entity.update(delta);
 			entity.forceUpdate(delta);
 		}
