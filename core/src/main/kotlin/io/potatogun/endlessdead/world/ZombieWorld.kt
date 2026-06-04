@@ -221,16 +221,17 @@ class ZombieWorld(width: Float, height: Float) : World(width, height), Freezable
      *   끝에 다시 흰색으로 되돌려두지 않으면 그 다음 그리는 것까지 영향을 받으니 주의.
      */
     override fun drawBackground() {
-		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생한다.
-		//   이 함수 콜 오버헤드와 부동 소수점 나눗셈 연산 중 후자가 더 성능에 영향이 있다고 하여
-		//   필드 접근 콜을 두 번 하는 건 그냥 넘어가자.
+		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생하여
+		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
+		val screenWidth = Window.width;
+		val screenHeight = Window.height;
 
 		// 현재 카메라 시작점이 속한 타일 인덱스
-		val startCol = floor((offsetX - Window.width * 0.5f) / tileSize).toInt();
-		val startRow = floor((offsetY - Window.height * 0.5f) / tileSize).toInt();
+		val startCol = floor((offsetX - screenWidth * 0.5f) / tileSize).toInt();
+		val startRow = floor((offsetY - screenHeight * 0.5f) / tileSize).toInt();
         // 화면을 채우는 데 필요한 타일 개수 (여유분으로 1)
-        val cols = ceil(Window.width / tileSize).toInt() + 1;
-        val rows = ceil(Window.height / tileSize).toInt() + 1;
+        val cols = ceil(screenWidth / tileSize).toInt() + 1;
+        val rows = ceil(screenHeight / tileSize).toInt() + 1;
 
         for(row in startRow until startRow + rows)
             for(col in startCol until startCol + cols) {

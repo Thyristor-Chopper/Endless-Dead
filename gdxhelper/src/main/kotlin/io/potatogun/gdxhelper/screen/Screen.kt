@@ -14,7 +14,7 @@ import io.potatogun.gdxhelper.widget.Widget;
 
 /**
  * 게임 내 화면을 구현한다.
- * 안에는 배경과 위젯(컨트롤)을 추가할 수 있다
+ * 안에는 배경과 위젯(컨트롤)을 추가할 수 있다.
  *
  * ────────────────────────────────────────────────────────────
  *  매 프레임의 표준 흐름 (render 안에서)
@@ -101,11 +101,11 @@ abstract class Screen : ScreenAdapter() {
     // ────────────────────────────────────────────────────────
 
     /**
-     * LibGDX 가 매 프레임 자동으로 호출.
+     * LibGDX가 매 프레임 자동으로 호출.
      *   기본 흐름: 화면 지우기 → 로직 업데이트 → 배경 → 객체.
      *
-     * 서브클래스는 보통 update(delta) 만 override 한다.
-     * HUD/텍스트를 그리려면 render(delta) 도 override 해서 super 호출 뒤에 그린다.
+     * 서브클래스는 보통 update(delta)만 override 한다.
+     * HUD/텍스트를 그리려면 render(delta)도 override해서 super 호출 뒤에 그린다.
      */
 	override fun render(delta: Float) {
 		// 1) 이전 프레임의 잔상 지우기 (검은색으로 채움)
@@ -115,7 +115,7 @@ abstract class Screen : ScreenAdapter() {
         // 2) 화면 로직 업데이트
         update(delta);
 
-		// 3) 그리기 — SpriteBatch 는 begin()/end() 사이에서만 동작한다.
+		// 3) 그리기 — SpriteBatch는 begin()/end() 사이에서만 동작한다.
 		batch.begin();
 		drawBackground();
 		drawElements();
