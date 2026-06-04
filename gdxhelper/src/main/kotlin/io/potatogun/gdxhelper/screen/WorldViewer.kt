@@ -136,6 +136,10 @@ open class WorldViewer : Screen() {
 		private val instances = instanceMap.keys;
 		// private val instances = mutableListOf<WeakReference<WorldViewer>>();
 
+		/**
+		 * 지정한 월드를 보여주고 있는 뷰어를 찾는다.
+		 *   그런 뷰어가 없으면 null이다.
+		 */
 		fun getViewerByWorld(world: World): WorldViewer? = instances.firstOrNull { it.projectingWorld === world };
 
 		private inline fun addInstance(instance: WorldViewer) {

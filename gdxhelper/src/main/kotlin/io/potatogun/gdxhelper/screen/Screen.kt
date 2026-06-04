@@ -191,7 +191,7 @@ abstract class Screen : ScreenAdapter() {
     // ────────────────────────────────────────────────────────
 
     /**
-     * LibGDX 가 화면을 바꾸거나 앱을 종료할 때 자원을 해제한다.
+     * LibGDX가 화면을 바꾸거나 앱을 종료할 때 자원을 해제한다.
      * GPU 메모리에 올라간 것들은 수동으로 dispose 해줘야 한다.
      */
 	override fun dispose() {

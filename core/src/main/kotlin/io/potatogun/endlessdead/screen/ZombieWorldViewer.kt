@@ -255,7 +255,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer() {
 	}
 
     /**
-     * 매 프레임 그리기 — 부모가 배경·객체까지 그려준 뒤, 텍스트 UI 를 얹는다.
+     * 매 프레임 그리기 — 부모가 배경·객체까지 그려준 뒤, 텍스트 UI를 얹는다.
      *
      * 이 함수에서는 '그리기'만 한다. 입력 처리·상태 변경은 update()의 책임.
      *
