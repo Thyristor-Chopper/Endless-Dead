@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead.entity;
 
 import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.item.Fireable;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
@@ -21,7 +22,7 @@ import kotlin.math.sqrt;
  * @param hp			총알 체력 (관통 시 감소)
  */
 class Bullet(world: World, val gun: Fireable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.position, 16f, 16f, Textures.getShared("bullet"), hp) {
-	override val isUpdatableWhileFrozen = true;
+	override val isUpdatableWhileFrozen = (shooter is Player);
 	override val defaultInvincibleDuration = 0f;
 	override val showDamagedIndicator = false;
 	private val amountX: Float;
