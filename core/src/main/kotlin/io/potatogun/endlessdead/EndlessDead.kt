@@ -55,7 +55,7 @@ class EndlessDead : Game() {
 	internal val worldViewer: ZombieWorldViewer by lazy { ZombieWorldViewer(this) };
 
     /**
-     * LibGDX 가 게임 시작 시 한 번 호출하는 라이프사이클 메서드.
+     * LibGDX가 게임 시작 시 한 번 호출하는 라이프사이클 메서드.
      *
      * 이 함수는 'Gdx.graphics / Gdx.gl / Gdx.files 같은 전역이 모두 준비된 뒤'
      * 호출되므로, Screen 안에서 SpriteBatch / BitmapFont / Texture 같은 LibGDX 자원을

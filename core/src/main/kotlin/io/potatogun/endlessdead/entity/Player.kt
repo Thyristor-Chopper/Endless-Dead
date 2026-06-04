@@ -9,8 +9,9 @@ import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.item.Fireable;
-import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
+import io.potatogun.endlessdead.item.MachineGun;
+import io.potatogun.endlessdead.item.Shotgun;
 import io.potatogun.endlessdead.item.Usable;
 import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Timer;
@@ -40,9 +41,10 @@ import kotlin.math.atan2;
  *   ▸ 객체가 사라질 때 dispose() 로 GPU 자원 해제 — 기본 Entity#dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, position: Position) : LivingEntity(world, position, 24f, 57f, TextureManager.loadTexture("entity/player.bmp"), 50), InventoryEntity by InventoryEntityImpl() {
+class Player(world: World, position: Position) : LivingEntity(world, position, 52f, 63f, TextureManager.loadTexture("entity/player.bmp"), 50), InventoryEntity by InventoryEntityImpl() {
 	override val canUpdateWhileFrozen = true;
-	private val textureWithGun = TextureManager.loadTexture("entity/player_holding_gun.bmp");
+	private val textureShotgun = TextureManager.loadTexture("entity/player_shotgun.bmp");
+	private val textureMachineGun = TextureManager.loadTexture("entity/player_machinegun.bmp");
     private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
@@ -238,7 +240,11 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 	 * 플레이어를 들고 있는 아이템에 맞게 그린다.
 	 */
 	override fun draw(batch: SpriteBatch) {
-		val texture = if(selectedItem is Gun) textureWithGun else this.texture;
+		val texture = when(selectedItem) {
+			is Shotgun		-> textureShotgun
+			is MachineGun	-> textureMachineGun
+			else			-> this.texture
+		};
 		super.draw(batch, texture);
 	}
 
@@ -247,7 +253,8 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 2
 	 */
 	override fun dispose() {
 		super.dispose();
-		textureWithGun.dispose();
+		textureShotgun.dispose();
+		textureMachineGun.dispose();
 		timerManager.clearTimers();
 	}
 }

@@ -120,7 +120,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
     protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
 		val texture: Texture? = alternateTexture ?: this.texture;
 		texture?.let {
-			if(batch.color == Color.WHITE) batch.color = color;  // 대미지 시 붉게가 작동하게 하기 위해.]
+			if(batch.color == Color.WHITE) batch.color = color;  // 대미지 시 붉게가 작동하게 하기 위해.
 
 			val halfWidth = width * 0.5f;
 			val halfHeight = height * 0.5f;
