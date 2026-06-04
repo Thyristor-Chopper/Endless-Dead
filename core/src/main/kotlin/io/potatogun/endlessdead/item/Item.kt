@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.item;
 
 import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.entity.container.Container;
+import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -20,7 +21,7 @@ abstract class Item(val world: World, @get:JvmName("getID") val id: String, val 
 	/**
 	 * 아이템을 들고 있는 개체
 	 */
-	val holder: InventoryEntity?
+	val holder: Entity?
 		get() {
 			for(entity in world.getEntities()) {
 				if(entity is InventoryEntity && entity.hasItem(this))
@@ -47,7 +48,16 @@ abstract class Item(val world: World, @get:JvmName("getID") val id: String, val 
 	 * @return 아이템 존재 여부
 	 */
 	fun destroy(): Boolean {
-		val first = holder?.let { it.removeItemFromInventory(this); it.onItemDestoryed(this); true } ?: false;
+		val first = holder?.let {
+			if(it is InventoryEntity) {
+				it.removeItemFromInventory(this);
+				it.onItemDestoryed(this);
+
+				true
+			} else {
+				false
+			}
+		} ?: false;
 		val second = container?.let { it.removeItem(); true } ?: false;
 
 		cleanUp();

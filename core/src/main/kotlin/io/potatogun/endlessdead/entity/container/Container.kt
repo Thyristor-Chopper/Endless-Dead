@@ -75,7 +75,9 @@ abstract class Container(world: World, position: Position, width: Float, height:
 	fun putItem(item: Item, isPlayerItem: Boolean = false) {
 		if(!isEmpty) throw IllegalStateException("container is not empty");
 		containedItem = item;
-		item.holder?.removeItemFromInventory(item);
+		val holder: Entity? = item.holder;
+		if(holder is InventoryEntity)
+			holder.removeItemFromInventory(item);
 		if(isPlayerItem) this.isPlayerItem = true;
 	}
 

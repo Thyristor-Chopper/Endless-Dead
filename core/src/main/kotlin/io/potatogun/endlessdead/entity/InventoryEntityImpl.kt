@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead.entity;
 
 import io.potatogun.endlessdead.item.Item;
+import io.potatogun.gdxhelper.entity.Entity;
 
 /**
  * 인벤토리를 가진 개체의 기본적인 구현체.
@@ -28,7 +29,9 @@ class InventoryEntityImpl : InventoryEntity {
 
 	override fun addItemToInventory(item: Item, select: Boolean): Boolean {
 		if(hasItem(item)) return false;
-		item.holder?.removeItemFromInventory(item);
+		val holder: Entity? = item.holder;
+		if(holder is InventoryEntity)
+			holder.removeItemFromInventory(item);
 		item.container?.removeItem();
 		inventory.add(item);
 		if(select) selectedItemIndex = inventory.size - 1;

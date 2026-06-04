@@ -120,9 +120,8 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 	 * @return 성공 여부
 	 */
 	override fun use(): Boolean {
-		val holder: InventoryEntity? = this.holder;
+		val holder: Entity? = this.holder;
 		if(holder == null) return false;
-		if(holder !is Entity) return false;  // 말이 안 되는 상황
 
 		// 개체 회전 각도에 맞는 임의의 위치를 생성한다.
 		val radians = toRadians(holder.getRotationAngle() + 90.0);
