@@ -7,7 +7,7 @@ object Constants {
 	/**
 	 * 목표로 표시할 최대 FPS
 	 */
-	const val FPS = 55;
+	const val FPS = 60;
 	/**
 	 * 중지 상태일 때 FPS
 	 */

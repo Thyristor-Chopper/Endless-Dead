@@ -9,7 +9,7 @@ import io.potatogun.gdxhelper.world.World;
  * 아이템 추상 클래스
  *
  * @param world	아이템이 있는 세계
- * @param id	아이템 식별자 - camelCase에서 두문자어는 모두 대문자라고 해서 getID 게터로 했다. 당장 DesktopLauncher의 config에서도 setForegroundFps가 아닌 setForegroundFPS이다.
+ * @param id	아이템 식별자
  * @param name	아이템 이름
  *
  * 자바로 만들어진 게임들도 아이템에 대해 필드를 직접 노출하지 않고 getName() 등을 쓰는 경우가 많아서 @JvmField는 안 붙임
