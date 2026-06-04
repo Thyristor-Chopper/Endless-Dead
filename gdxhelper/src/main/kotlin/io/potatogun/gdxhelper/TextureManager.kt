@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 abstract class TextureManager {
-	protected open val shared = mapOf<String, Lazy<Texture>>();
+	protected abstract val shared: Map<String, Lazy<Texture>>;
 
 	/**
 	 * 지정한 이름의 공유 텍스처를 가져온다.
