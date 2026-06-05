@@ -17,8 +17,6 @@ import java.util.WeakHashMap;
  *   가급적이면 같은 종류의 뷰어는 하나만 생성하는 것을 권한다.
  *   (기존엔 두 개 이상의 인스턴스를 생성하면 오류가 나게 했지만 굳이 오류를
  *    낼 정도는 아닌 것 같다.)
- *
- * 생성할 경우 자동으로 게임의 worldViewers에 등록된다.
  */
 open class WorldViewer : Screen() {
 	/**
