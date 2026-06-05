@@ -93,6 +93,12 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer() {
 		});
 	}
 
+	// 창 최소화(아이콘 표시) 시 자동 일시 중지
+	override fun pause() {
+		if(GameManager.isPlaying)
+			GameManager.pause();
+	}
+
 	/**
 	 * 매 프레임 게임 로직 — 모든 '입력 처리·상태 변경'은 이 안에서.
 	 *
