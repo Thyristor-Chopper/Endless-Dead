@@ -63,7 +63,7 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, 
 	}
 
 	// 바로 가기 키 처리
-	fun detectAccessKeyPress() {
+	private fun detectAccessKeyPress() {
 		if(accessKey != null && Input.isKeyJustPressed(accessKey.code - 36))
 			onClick();
 	}

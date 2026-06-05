@@ -51,7 +51,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 		get() = camera.position.y
 		protected set(value) { camera.position.y = value };
     // 등록된 객체들만 update/draw 된다.
-    // private 으로 감춘 이유: 외부가 직접 add/remove 하면
+    // private으로 감춘 이유: 외부가 직접 add/remove 하면
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. addEntity(), removeEntity()라는 공식 창구만 허용.
     //   (캡슐화의 실제 사례)
     private val entities = mutableListOf<Entity>();
