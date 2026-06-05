@@ -7,9 +7,12 @@ import io.potatogun.endlessdead.item.Item;
  */
 interface InventoryEntity {
 	val selectedItem: Item?;
-	val selectedItemIndex: Int?;
+	val selectedItemIndex: Int?;  // 이건 아마 Integer로 컴파일될 것 같은데
 	val inventoryItemCount: Int;
 	val isInventoryEmpty: Boolean;
+
+	// @JvmOverloads이 불가능해서 수동으로
+	fun addItemToInventory(item: Item): Boolean = addItemToInventory(item, false);
 
 	/**
 	 * 인벤토리에 아이템 넣기
@@ -17,7 +20,7 @@ interface InventoryEntity {
 	 * @param item	추가할 아이템
 	 * @return 	성공 여부 (이미 있으면 실패)
 	 */
-	fun addItemToInventory(item: Item, select: Boolean = false): Boolean;
+	fun addItemToInventory(item: Item, select: Boolean): Boolean;
 
 	/**
 	 * 인벤토리에서 아이템 빼기
