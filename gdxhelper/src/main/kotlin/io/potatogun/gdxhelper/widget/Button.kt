@@ -33,7 +33,7 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, 
 		val mouseY = Gdx.graphics.height - Input.mouseY;
 		val isHover = isEnabled && mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
 		val isPressed = isEnabled && Input.isButtonPressed(Input.LEFT_MOUSE);
-		val fontColor = if(!isEnabled) Color.LIGHT_GRAY else Color.WHITE;
+		val fontColor = if(!isEnabled) skin.disabledCaptionColor else skin.captionColor;
 
 		val toDraw: NinePatch =
 			if(!isEnabled) {
@@ -83,6 +83,6 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, 
 	}
 
 	companion object {
-		private val defaultSkin = ButtonSkin(HelperTextures.button, HelperTextures.buttonHover, HelperTextures.buttonPressed, HelperTextures.buttonDisabled);
+		private val defaultSkin = ButtonSkin(HelperTextures.button, HelperTextures.buttonHover, HelperTextures.buttonPressed, HelperTextures.buttonDisabled, Color.WHITE, Color.LIGHT_GRAY);
 	}
 }

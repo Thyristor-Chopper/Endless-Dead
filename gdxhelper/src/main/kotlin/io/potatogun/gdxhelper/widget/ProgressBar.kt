@@ -11,11 +11,6 @@ import io.potatogun.gdxhelper.widget.style.ProgressBarStyle;
 
 import kotlin.math.ceil;
 
-private const val BAR_VERTICAL_PADDING = 3f;		// 미터기 틀 안쪽 세로 여백
-private const val BAR_HORIZONTAL_PADDING = 3f;	// 미터기 틀 안쪽 가로 여백
-private const val CHUNK_WIDTH = 6f;				// 청크의 너비
-private const val CHUNK_MARGIN = 2f;				// 각 청크 사이의 간격
-
 /**
  * 진행률 표시기(미터기)
  *
@@ -69,6 +64,11 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 	}
 
 	companion object {
+		private const val BAR_VERTICAL_PADDING = 3f;		// 미터기 틀 안쪽 세로 여백
+		private const val BAR_HORIZONTAL_PADDING = 3f;	// 미터기 틀 안쪽 가로 여백
+		private const val CHUNK_WIDTH = 6f;				// 청크의 너비
+		private const val CHUNK_MARGIN = 2f;				// 각 청크 사이의 간격
+
 		private val defaultSkin = ProgressBarSkin(HelperTextures.progressBar, HelperTextures.progressSmoothFill, HelperTextures.progressChunkedFill);
 	}
 }
