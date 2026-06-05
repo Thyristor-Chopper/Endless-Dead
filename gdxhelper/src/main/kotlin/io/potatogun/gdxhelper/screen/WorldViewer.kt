@@ -39,7 +39,7 @@ open class WorldViewer : Screen() {
 	 * @param world					불러올 월드
 	 * @param disposePreviousWorld	기존 월드의 자원을 정리할지의 여부
 	 */
-	fun loadWorld(world: World, disposePreviousWorld: Boolean = false) {
+	@JvmOverloads fun loadWorld(world: World, disposePreviousWorld: Boolean = false) {
 		if(projectingWorld === world) return;  // 아무 작업도 할 필요 없음
 		if(instances.any { it.projectingWorld === world })
 			throw IllegalArgumentException("another viewer is already projecting that world");
@@ -55,7 +55,7 @@ open class WorldViewer : Screen() {
 	 * @param 	dispose	월드의 자원을 정리할지의 여부
 	 * @return	성공 여부
 	 */
-	fun unloadWorld(dispose: Boolean = false): Boolean {
+	@JvmOverloads fun unloadWorld(dispose: Boolean = false): Boolean {
 		val currentWorld: World? = projectingWorld;
 		if(currentWorld == null) return false;
 		projectingWorld = null;
@@ -138,7 +138,7 @@ open class WorldViewer : Screen() {
 		 * 지정한 월드를 보여주고 있는 뷰어를 찾는다.
 		 *   그런 뷰어가 없으면 null이다.
 		 */
-		fun getViewerByWorld(world: World): WorldViewer? = instances.firstOrNull { it.projectingWorld === world };
+		@JvmStatic fun getViewerByWorld(world: World): WorldViewer? = instances.firstOrNull { it.projectingWorld === world };
 
 		private inline fun addInstance(instance: WorldViewer) {
 			instanceMap[instance] = Unit;

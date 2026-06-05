@@ -76,7 +76,7 @@ abstract class LivingEntity(world: World, position: Position, width: Float, heig
 	 * @param invincibleDuration	무적 타이머
 	 * @param attacker				공격자
 	 */
-	open fun takeDamage(damage: Int, invincibleDuration: Float = defaultInvincibleDuration, attacker: Entity? = null) {
+	@JvmOverloads open fun takeDamage(damage: Int, invincibleDuration: Float = defaultInvincibleDuration, attacker: Entity? = null) {
 		if(damage < 0) throw IllegalArgumentException("damage must not be negative");
 
 		// 무적 시간이 다 끝났을 때만 피격당함
@@ -114,7 +114,7 @@ abstract class LivingEntity(world: World, position: Position, width: Float, heig
 	 *
 	 * @param attacker	공격자
 	 */
-	fun kill(attacker: Entity? = null) {
+	@JvmOverloads fun kill(attacker: Entity? = null) {
 		hp = 0;
 		onDeath(attacker);
 		if(attacker != null) attacker.onKill(this);

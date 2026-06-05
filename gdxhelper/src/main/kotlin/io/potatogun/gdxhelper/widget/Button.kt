@@ -12,7 +12,7 @@ import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.widget.skin.ButtonSkin;
 
-class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, caption: String, accessKey: Char? = null, private val color: Color = Utils.rgb(216, 223, 239), private val skin: ButtonSkin = defaultSkin, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
+class Button @JvmOverloads constructor(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, caption: String, accessKey: Char? = null, private val color: Color = Utils.rgb(216, 223, 239), private val skin: ButtonSkin = defaultSkin, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
 	private val font = BitmapFont();
 	private val accessKey: Char?;
 	private val caption: String;

@@ -59,7 +59,7 @@ abstract class Container(world: World, position: Position, width: Float, height:
 	 * @param	select	아이템을 가져간 후 자동으로 선택할지 여부
 	 * @return 	성공하면 들어있는 아이템, 실패하면 null
 	 */
-	fun takeItem(taker: InventoryEntity, select: Boolean = false): Item? {
+	@JvmOverloads fun takeItem(taker: InventoryEntity, select: Boolean = false): Item? {
 		val target = containedItem;  // https://stackoverflow.com/questions/44595529/smart-cast-to-type-is-impossible-because-variable-is-a-mutable-property-tha
 		if(target == null) return null;
 		taker.addItemToInventory(target, select);
@@ -72,7 +72,7 @@ abstract class Container(world: World, position: Position, width: Float, height:
 	 *
 	 * @param item	넣을 아이템
 	 */
-	fun putItem(item: Item, isPlayerItem: Boolean = false) {
+	@JvmOverloads fun putItem(item: Item, isPlayerItem: Boolean = false) {
 		if(!isEmpty) throw IllegalStateException("container is not empty");
 		containedItem = item;
 		val holder: Entity? = item.holder;

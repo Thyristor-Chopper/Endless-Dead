@@ -24,7 +24,7 @@ import kotlin.math.ceil;
  * @param color		미터기의 색
  * @param style		미터기의 스타일
  */
-class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, private val color: Color = Color.WHITE, private val skin: ProgressBarSkin = defaultSkin, private val style: ProgressBarStyle = ProgressBarStyle.SMOOTH) : Widget(x, y, width, height) {
+class ProgressBar @JvmOverloads constructor(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, private val color: Color = Color.WHITE, private val skin: ProgressBarSkin = defaultSkin, private val style: ProgressBarStyle = ProgressBarStyle.SMOOTH) : Widget(x, y, width, height) {
 	init {
 		if(value < 0f || value > 1f)
 			throw IllegalArgumentException("invalid progress bar value");

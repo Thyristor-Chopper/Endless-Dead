@@ -28,6 +28,6 @@ abstract class TextureManager {
 		 *
 		 * @param path 화일 이름
 		 */
-		inline fun loadTexture(path: String): Texture = Texture(Gdx.files.internal("assets/textures/$path"));
+		@JvmStatic inline fun loadTexture(path: String): Texture = Texture(Gdx.files.internal("assets/textures/$path"));
 	}
 }

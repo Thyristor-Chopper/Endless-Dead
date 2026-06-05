@@ -18,7 +18,7 @@ object Utils {
 	 *
 	 * @param seconds	초
 	 */
-	fun parseSeconds(seconds: Int, minutesSuffix: String = " minute(s)", secondsSuffix: String = " second(s)"): String {
+	@JvmOverloads fun parseSeconds(seconds: Int, minutesSuffix: String = " minute(s)", secondsSuffix: String = " second(s)"): String {
 		if(seconds < 60) return "${seconds}$secondsSuffix";
 		return "${seconds / 60}$minutesSuffix ${seconds % 60}$secondsSuffix";
 	}
@@ -32,7 +32,7 @@ object Utils {
 	 * @param	a	알파 (0.0~1.0)
 	 * @return	변환된 색 객체
 	 */
-	inline fun rgb(r: Int, g: Int, b: Int, a: Float = 1.0f): Color {
+	@JvmOverloads inline fun rgb(r: Int, g: Int, b: Int, a: Float = 1.0f): Color {
 		if(r > 255 || g > 255 || b > 255 || r < 0 || g < 0 || b < 0 || a > 1f || a < 0f)
 			throw IllegalArgumentException("invalid color value");
 		return Color(r / 255f, g / 255f, b / 255f, a);
@@ -100,7 +100,7 @@ object Utils {
 	 * @param align				글자 정렬(없으면 왼쪽 정렬)
 	 * @param skipBatch			batch.begin()/end() 사이에서 사용할 경우 true
      */
-	fun drawText(batch: SpriteBatch, font: BitmapFont, text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, skipBatch: Boolean = false) {
+	@JvmOverloads fun drawText(batch: SpriteBatch, font: BitmapFont, text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, skipBatch: Boolean = false) {
         font.color = color;
         font.data.setScale(scale);
         if(!skipBatch) batch.begin();
