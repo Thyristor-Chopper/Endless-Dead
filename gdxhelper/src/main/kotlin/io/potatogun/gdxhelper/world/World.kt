@@ -136,7 +136,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	/**
 	 * 크기 조절 시 호출된다.
 	 */
-	internal fun onResize(width: Int, height: Int) {
+	open fun onResize(width: Int, height: Int) {
 		setCameraCenter();
 		updateCamera();
 	}
@@ -160,6 +160,8 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
     //  매 프레임 그리기
     // ────────────────────────────────────────────────────────
 
+	// 상속받은 자식 월드에서 추가적으로 그려야 할 것이 있다면 이 메쏘드 대신
+	//   drawElements를 override할 것.
 	internal fun render() {
 		batch.begin();
 		drawBackground();
