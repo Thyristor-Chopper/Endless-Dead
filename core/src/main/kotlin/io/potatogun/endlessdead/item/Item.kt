@@ -75,5 +75,5 @@ abstract class Item(val world: World, @get:JvmName("getID") val id: String, val 
 	/**
 	 * 자원 정리
 	 */
-	internal open fun cleanUp() {}
+	open fun cleanUp() {}
 }

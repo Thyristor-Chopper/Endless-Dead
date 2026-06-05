@@ -50,7 +50,7 @@ import io.potatogun.gdxhelper.Window;
  *   ▸ create() 안에서 setScreen에 넘기는 Screen을 자기 Screen으로 교체
  */
 class EndlessDead : Game() {
-	// 미리 등록된 스크린
+	// 미리 등록된 스크린. val은 lateinit이 불가하여 lazy 위임 사용.
 	internal val titleScreen: Title by lazy { Title(this) };
 	internal val worldViewer: ZombieWorldViewer by lazy { ZombieWorldViewer(this) };
 
