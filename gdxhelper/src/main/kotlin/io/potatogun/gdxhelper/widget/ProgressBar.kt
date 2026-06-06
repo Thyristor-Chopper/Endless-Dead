@@ -22,6 +22,7 @@ import kotlin.math.ceil;
  * @param height	미터기 높이
  * @param value		미터기의 값(진행률) (0.0~1.0)
  * @param color		미터기의 색
+ * @param skin		미터기의 스킨(텍스처 묶음)
  * @param style		미터기의 스타일
  */
 class ProgressBar @JvmOverloads constructor(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, private val color: Color = Color.WHITE, private val skin: ProgressBarSkin = defaultSkin, private val style: ProgressBarStyle = ProgressBarStyle.SMOOTH) : Widget(x, y, width, height) {

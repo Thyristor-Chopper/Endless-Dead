@@ -12,6 +12,21 @@ import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.widget.skin.ButtonSkin;
 
+/**
+ * 단추
+ *
+ * x과 y 위치는 screenWidth 등이 포함될 경우 창 크기가 바뀔 때마다 값이 달라지므로 람다로 받는다.
+ *
+ * @param x			X 좌표 계산 함수
+ * @param y			Y 좌표 계산 함수
+ * @param width		단추 너비
+ * @param height	단추 높이
+ * @param caption	단추 라벨
+ * @param accessKey	단추 바로 가기 ('니모닉')
+ * @param color		단추의 색
+ * @param skin		단추의 스킨(텍스처 묶음)
+ * @param onClick	단추를 눌렀을 때 실행할 서브루틴
+ */
 class Button @JvmOverloads constructor(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, caption: String, accessKey: Char? = null, private val color: Color = Utils.rgb(216, 223, 239), private val skin: ButtonSkin = defaultSkin, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
 	private val font = BitmapFont();
 	private val accessKey: Char?;
