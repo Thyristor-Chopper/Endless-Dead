@@ -34,7 +34,7 @@ import io.potatogun.gdxhelper.world.World;
  *
  * 이를 확장하여 HUD나 다채로운 화면을 구현해보자.
  *
- * 이쪽에는 HP 미터기, 일시 정지 처리, 게임 오버 화면 등이 모두 구현되어 있다.
+ * 이쪽에는 우리 게임의 목적에 맞게 HP 미터기, 일시 정지 처리, 게임 오버 화면 등이 모두 구현되어 있다.
  */
 class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer() {
 	private val noWorldOverlay = Utils.rgb(255, 255, 255, 0.5f);
@@ -109,7 +109,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer() {
 	 */
 	override fun update(delta: Float) {
 		when {
-            GameManager.isPlaying	-> updateInPlay(delta);
+            GameManager.isPlaying	-> updatePlaying(delta);
             GameManager.isPaused	-> updatePaused(delta);
             GameManager.isGameOver	-> updateGameOver();
         }
@@ -120,7 +120,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer() {
 	 *
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-    private inline fun updateInPlay(delta: Float) {
+    private inline fun updatePlaying(delta: Float) {
 		timerManager.tick(delta);
 
 		// 제목 표시줄에 통계 표시
@@ -165,7 +165,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer() {
 		val hpIndicator = getWidget("hp_indicator") as ProgressBar;
 		val ammoIndicator = getWidget("gun_ammo_indicator") as ProgressBar;
 		val cooldownIndicator = getWidget("gun_cooldown_indicator") as ProgressBar;
-		
+
 		val world: World? = projectingWorld;
 		val player: Player? = world?.get<Player>();
 		if(world == null || player == null) {

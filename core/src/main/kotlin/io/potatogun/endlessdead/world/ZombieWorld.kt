@@ -34,7 +34,6 @@ import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.screen.WorldViewer;
 import io.potatogun.gdxhelper.world.Freezable;
-import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.ceil;
 import kotlin.math.floor;
@@ -73,10 +72,10 @@ import kotlin.random.Random;
  *   카메라 이동을 눈으로 보여주기 위함이다.
  *   GameWorld.drawBackground(batch)를 override 해서 그린다.
  *
- * @param width   월드 전체 너비 (화면보다 크면 WASD 로 탐험 가능)
+ * @param width   월드 전체 너비 (화면보다 크면 WASD로 탐험 가능)
  * @param height  월드 전체 높이
  */
-class ZombieWorld(width: Float, height: Float) : World(width, height), Freezable {
+class ZombieWorld(width: Float, height: Float) : EndlessDeadWorld(width, height), Freezable {
     // 플레이어 — 월드 중앙에서 시작.
     private val player = Player(this, Position(width * 0.5f, width * 0.5f));
 	private val spawners = mutableListOf<Spawner>();
@@ -164,41 +163,22 @@ class ZombieWorld(width: Float, height: Float) : World(width, height), Freezable
     // ────────────────────────────────────────────────────────
 
     /**
-	 * PLAYING 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
+	 * PLAYING 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신
 	 */
     override fun update(delta: Float) {
 		timerManager.tick(delta);
 
         // ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
-		super.update(delta);  // updateEntities
-		removeDead();
+		super.update(delta);  // updateEntities와 removeDead
+
 		// 스포너 갱신
 		if(!isFrozen)
 			for(spawner in spawners)
 				spawner.update(delta);
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
-        if(!player.isAlive) {
+        if(!player.isAlive)
             GameManager.setGameOver();
-		}
-    }
-
-    /**
-     * isAlive가 false인 객체들을 한꺼번에 제거한다.
-     *
-     * update()에서 호출 — 상호작용 결과 죽음을 표시한 객체를 정리.
-     *
-     * 순회 도중 삭제 시 인덱스 꼬임을 막으려고 '먼저 모아 두고 → 한꺼번에 삭제' 패턴.
-	 *
-	 * update 내에서만 한 번 쓰이기 때문에 inline이다.
-     */
-    private inline fun removeDead() {
-		val toRemove = mutableListOf<Entity>();
-        for(entity in getEntities())
-            if(entity is LivingEntity && !entity.isAlive)
-                toRemove.add(entity);
-        for(entity in toRemove)
-			removeEntity(entity);
     }
 
     // ────────────────────────────────────────────────────────
@@ -212,8 +192,6 @@ class ZombieWorld(width: Float, height: Float) : World(width, height), Freezable
      * 여기선 batch.draw() 호출만 하면 된다. (begin/end를 또 부르면 안 된다)
      *
      * 카메라(offset)에 따라 타일 위치가 바뀌어 이동감을 준다.
-     *   타일 인덱스 자체는 월드 좌표 격자에서 변하지 않지만,
-     *   각 타일을 그릴 때 offset만큼 빼서 화면 좌표로 변환한다.
      *
      * 색을 입히는 방법:
      *   batch.color를 바꾼 뒤 batch.draw 하면 텍스처가 그 색으로 곱해져 그려진다.
@@ -264,10 +242,10 @@ class ZombieWorld(width: Float, height: Float) : World(width, height), Freezable
 	 */
 	override fun updateCamera() {
         // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
-        //   보여주는 영역이 [offset, offset+screen] 이어야 하므로
-        //   offset 은 0 ~ (world - screen) 범위여야 한다.
+        //   보여주는 영역이 [offset, offset+screen]이어야 하므로
+        //   offset은 0 ~ (world - screen) 범위여야 한다.
 
-		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생하여
+		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 getter 호출이 발생하여
 		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
 		val halfScreenWidth = Window.width * 0.5f;
 		val halfScreenHeight = Window.height * 0.5f;
@@ -281,13 +259,6 @@ class ZombieWorld(width: Float, height: Float) : World(width, height), Freezable
 	 * 화면이 닫힐 때 — 부모도 dispose한 뒤 우리만의 자원도 해제.
 	 */
     override fun dispose() {
-		for(entity in getEntities()) {
-			if(entity is InventoryEntity)
-				for(item in entity.getInventory())
-					item.destroy();
-			if(entity is Container)
-				entity.containedItem?.destroy();
-		}
         super.dispose();
         tileTexture.dispose();
 		spawners.clear();

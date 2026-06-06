@@ -201,7 +201,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 * drawElements에서만 한 번 쓰이기 때문에 인라인 함수이다.
      */
     private inline fun drawEntities() {
-		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생하여
+		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 getter 호출이 발생하여
 		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
 		val halfScreenWidth = Window.width * 0.5f;
 		val halfScreenHeight = Window.height * 0.5f;
