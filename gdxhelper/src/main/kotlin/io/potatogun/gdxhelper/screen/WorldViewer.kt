@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 
-import io.potatogun.gdxhelper.WeakMutableSet;
 import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.util.WeakMutableSet;
 import io.potatogun.gdxhelper.world.World;
 
 /**

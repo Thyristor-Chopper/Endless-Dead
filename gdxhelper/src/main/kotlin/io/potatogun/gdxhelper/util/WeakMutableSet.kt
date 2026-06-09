@@ -1,4 +1,4 @@
-package io.potatogun.gdxhelper;
+package io.potatogun.gdxhelper.util;
 
 import java.util.WeakHashMap;
 
@@ -19,6 +19,9 @@ class WeakMutableSet<T> : MutableSet<T> {
 	override val size: Int
 		get() = map.size;
 
+	/**
+	 * 집합이 비어 있는지의 여부
+	 */
 	override fun isEmpty(): Boolean = map.isEmpty();
 
 	/**
@@ -34,7 +37,7 @@ class WeakMutableSet<T> : MutableSet<T> {
 	/**
 	 * 지정한 요소를 추가한다.
 	 *
-	 * @return 이미 있으면 false, 그 외에는 true
+	 * @return 이미 있으면 false, 아니면 true
 	 */
 	override fun add(element: T): Boolean = (map.put(element, Unit) == null);
 
@@ -84,7 +87,13 @@ class WeakMutableSet<T> : MutableSet<T> {
 	}
 
 	/**
-	 * 순회기
+	 * 순회기를 반환한다.
 	 */
 	override fun iterator(): MutableIterator<T> = keys.iterator();
+}
+
+fun <T> weakMutableSetOf(vararg items: T): WeakMutableSet<T> {
+	val mutableSet = WeakMutableSet<T>();
+	mutableSet.addAll(items);
+	return mutableSet;
 }
