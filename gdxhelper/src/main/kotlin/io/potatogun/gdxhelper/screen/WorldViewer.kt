@@ -4,11 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 
+import io.potatogun.gdxhelper.WeakMutableSet;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.world.World;
-
-import java.lang.ref.WeakReference;
-import java.util.WeakHashMap;
 
 /**
  * 월드를 불러오고 월드를 화면에 프로젝션해주는 스크린이다.
@@ -30,7 +28,7 @@ open class WorldViewer : Screen() {
 	private var subtitlesColor = Color.WHITE;
 
 	init {
-		addInstance(this);
+		instances.add(this);
 	}
 
 	/**
@@ -128,21 +126,12 @@ open class WorldViewer : Screen() {
 
 	companion object {
 		// 생성된 모든 인스턴스를 관리하는 목록이다. 생성자에서 자동으로 추가한다. 누가 설마 자바 unsafe의 allocateInstance를 쓰진 않겠지
-		//   WeakArrayList같은 게 없으니 이런 꼼수를 쓴다. mutableListOf<WeakReference<WorldViewer>>로 하면
-		//   직접 null 참조들을 지워줘야 한다...
-		private val instanceMap = WeakHashMap<WorldViewer, Unit>();  // 키만 사용
-		private val instances = instanceMap.keys;
-		// private val instances = mutableListOf<WeakReference<WorldViewer>>();
+		private val instances = WeakMutableSet<WorldViewer>();
 
 		/**
 		 * 지정한 월드를 보여주고 있는 뷰어를 찾는다.
 		 *   그런 뷰어가 없으면 null이다.
 		 */
 		@JvmStatic fun getViewerByWorld(world: World): WorldViewer? = instances.firstOrNull { it.projectingWorld === world };
-
-		private inline fun addInstance(instance: WorldViewer) {
-			instanceMap[instance] = Unit;
-			// instances.add(instance);  (List 썼을 때)
-		}
 	}
 }
