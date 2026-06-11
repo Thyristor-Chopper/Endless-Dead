@@ -18,7 +18,9 @@ object Utils {
 	 *
 	 * @param seconds	초
 	 */
-	@JvmOverloads fun parseSeconds(seconds: Int, minutesSuffix: String = " minute(s)", secondsSuffix: String = " second(s)"): String {
+	@JvmStatic
+	@JvmOverloads
+	fun parseSeconds(seconds: Int, minutesSuffix: String = " minute(s)", secondsSuffix: String = " second(s)"): String {
 		if(seconds < 60) return "${seconds}$secondsSuffix";
 		return "${seconds / 60}$minutesSuffix ${seconds % 60}$secondsSuffix";
 	}
@@ -32,7 +34,9 @@ object Utils {
 	 * @param	a	알파 (0.0~1.0)
 	 * @return	변환된 색 객체
 	 */
-	@JvmOverloads inline fun rgb(r: Int, g: Int, b: Int, a: Float = 1.0f): Color {
+	@JvmStatic
+	@JvmOverloads
+	inline fun rgb(r: Int, g: Int, b: Int, a: Float = 1.0f): Color {
 		if(r > 255 || g > 255 || b > 255 || r < 0 || g < 0 || b < 0 || a > 1f || a < 0f)
 			throw IllegalArgumentException("invalid color value");
 		return Color(r / 255f, g / 255f, b / 255f, a);
@@ -46,7 +50,7 @@ object Utils {
 	 * @param delay		지연 시간(초)
 	 * @param operation	실행할 서브루틴
 	 */
-	inline fun setTimeout(delay: Float, crossinline operation: () -> Unit): Task {
+	@JvmStatic inline fun setTimeout(delay: Float, crossinline operation: () -> Unit): Task {
 		return object : Task() {
 			override fun run() {
 				operation();
@@ -57,7 +61,7 @@ object Utils {
 	/**
 	 * setTimeout으로 생성한 일회용 타이머를 취소한다.
 	 */
-	inline fun clearTimeout(timeout: Task) {
+	@JvmStatic inline fun clearTimeout(timeout: Task) {
 		timeout.cancel();
 	}
 
@@ -69,7 +73,7 @@ object Utils {
 	 * @param interval	실행 간격(초)
 	 * @param operation	실행할 서브루틴
 	 */
-	inline fun setInterval(interval: Float, crossinline operation: () -> Unit): Task {
+	@JvmStatic inline fun setInterval(interval: Float, crossinline operation: () -> Unit): Task {
 		return object : Task() {
 			override fun run() {
 				operation();
@@ -80,7 +84,7 @@ object Utils {
 	/**
 	 * setInterval으로 생성한 타이머를 취소한다.
 	 */
-	inline fun clearInterval(interval: Task) {
+	@JvmStatic inline fun clearInterval(interval: Task) {
 		interval.cancel();
 	}
 	
@@ -100,7 +104,9 @@ object Utils {
 	 * @param align				글자 정렬(없으면 왼쪽 정렬)
 	 * @param skipBatch			batch.begin()/end() 사이에서 사용할 경우 true
      */
-	@JvmOverloads fun drawText(batch: SpriteBatch, font: BitmapFont, text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, skipBatch: Boolean = false) {
+	@JvmStatic
+	@JvmOverloads
+	fun drawText(batch: SpriteBatch, font: BitmapFont, text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, skipBatch: Boolean = false) {
         font.color = color;
         font.data.setScale(scale);
         if(!skipBatch) batch.begin();
@@ -112,7 +118,7 @@ object Utils {
         if(!skipBatch) batch.end();
     }
 
-	inline fun max(x: Float, y: Float) = if(x > y) x else y;
+	@JvmStatic inline fun max(x: Float, y: Float) = if(x > y) x else y;
 
-	inline fun abs(n: Float) = if(n < 0) -n else n;
+	@JvmStatic inline fun abs(n: Float) = if(n < 0) -n else n;
 }

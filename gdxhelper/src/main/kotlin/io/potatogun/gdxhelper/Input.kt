@@ -130,19 +130,19 @@ object Input {
     // 자주 쓰는 키 상수를 짧은 이름으로 재노출.
     //   원본은 Input.Keys.LEFT 처럼 길어서 자주 쓸수록 번거롭다.
     //   필요하면 Input.Keys.XXX 에서 다른 키를 직접 import 해서 써도 된다.
-    @JvmStatic const val LEFT = GdxInput.Keys.LEFT;
-    @JvmStatic const val RIGHT = GdxInput.Keys.RIGHT;
-    @JvmStatic const val UP = GdxInput.Keys.UP;
-    @JvmStatic const val DOWN = GdxInput.Keys.DOWN;
-    @JvmStatic const val SPACE = GdxInput.Keys.SPACE;
-    @JvmStatic const val ESCAPE = GdxInput.Keys.ESCAPE;
-    @JvmStatic const val W = GdxInput.Keys.W;
-    @JvmStatic const val A = GdxInput.Keys.A;
-    @JvmStatic const val S = GdxInput.Keys.S;
-    @JvmStatic const val D = GdxInput.Keys.D;
-    @JvmStatic const val P = GdxInput.Keys.P;
-    @JvmStatic const val R = GdxInput.Keys.R;
-    @JvmStatic const val DELETE = GdxInput.Keys.FORWARD_DEL;
-    @JvmStatic const val LEFT_MOUSE = GdxInput.Buttons.LEFT;
-    @JvmStatic const val RIGHT_MOUSE = GdxInput.Buttons.RIGHT;
+    const val LEFT = GdxInput.Keys.LEFT;
+    const val RIGHT = GdxInput.Keys.RIGHT;
+    const val UP = GdxInput.Keys.UP;
+    const val DOWN = GdxInput.Keys.DOWN;
+    const val SPACE = GdxInput.Keys.SPACE;
+    const val ESCAPE = GdxInput.Keys.ESCAPE;
+    const val W = GdxInput.Keys.W;
+    const val A = GdxInput.Keys.A;
+    const val S = GdxInput.Keys.S;
+    const val D = GdxInput.Keys.D;
+    const val P = GdxInput.Keys.P;
+    const val R = GdxInput.Keys.R;
+    const val DELETE = GdxInput.Keys.FORWARD_DEL;
+    const val LEFT_MOUSE = GdxInput.Buttons.LEFT;
+    const val RIGHT_MOUSE = GdxInput.Buttons.RIGHT;
 }
