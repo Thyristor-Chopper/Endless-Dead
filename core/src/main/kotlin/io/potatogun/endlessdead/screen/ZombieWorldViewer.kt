@@ -505,9 +505,9 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer() {
 
 		companion object {
 			private val enumEntries = TitleInfoType.entries;
-			@JvmStatic val size = enumEntries.size;
+			val size = enumEntries.size;
 
-			@JvmStatic fun byIndex(index: Int) = enumEntries[index];
+			fun byIndex(index: Int) = enumEntries[index];
 		}
 	}
 }

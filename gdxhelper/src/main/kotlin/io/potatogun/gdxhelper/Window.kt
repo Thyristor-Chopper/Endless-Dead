@@ -17,13 +17,13 @@ object Window {
 	//   gdx 내부적으로 캐시하지 않고 매번 계산할 가능성도 염두하여 캐시하긴 한다.
 	//   참고로 Int#toFloat()는 실제 함수 호출으로 구현되지는 않고 자바의 '(float) 정수' 형태로 변환된다.
 	//   그래서 toFloat '함수' 호출 오버헤드는 없다. (이 부분도 빌드 후 디컴파일된 자바 코드로 직접 확인함)
-	var width = 0f  // lateinit이 불가하여 0으로 초기화
+	@JvmStatic var width = 0f  // lateinit이 불가하여 0으로 초기화
 		private set;
-	var height = 0f
+	@JvmStatic var height = 0f
 		private set;
 	private var titleBarBase: String? by Delegates.observable("Game") { _, _, _ -> updateTitle() };
-	var titleBarInfo: String? by Delegates.observable(null) { _, _, _ -> updateTitle() };
-	var titleBarStats: String? by Delegates.observable(null) { _, _, _ -> updateTitle() };
+	@JvmStatic var titleBarInfo: String? by Delegates.observable(null) { _, _, _ -> updateTitle() };
+	@JvmStatic var titleBarStats: String? by Delegates.observable(null) { _, _, _ -> updateTitle() };
 
 	init {
 		updateWindowDimensions();
@@ -32,11 +32,11 @@ object Window {
 	/**
 	 * 창 제목을 직접 변경한다.
 	 */
-	inline fun setTitle(title: String) {
+	@JvmStatic inline fun setTitle(title: String) {
 		Gdx.graphics.setTitle(title);
 	}
 
-	fun setBaseTitle(value: String) {
+	@JvmStatic fun setBaseTitle(value: String) {
 		titleBarBase = value;
 	}
 
