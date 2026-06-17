@@ -78,7 +78,7 @@ class Button @JvmOverloads constructor(x: () -> Float, y: () -> Float, width: Fl
 	}
 
 	// 바로 가기 키 처리
-	private fun detectAccessKeyPress() {
+	private inline fun detectAccessKeyPress() {
 		if(accessKey != null && Input.isKeyJustPressed(accessKey.code - 36))
 			onClick();
 	}

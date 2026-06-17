@@ -4,6 +4,7 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.position.distanceTo;
+import io.potatogun.gdxhelper.position.positionOf;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.random.Random;
@@ -60,14 +61,14 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 		do {
 			randomX = Random.nextFloat() * (world.width - 70f);
 			randomY = Random.nextFloat() * (world.height - 70f);
-		} while(Position(randomX, randomY).distanceTo(attackTarget) < 64f);
+		} while(positionOf(randomX, randomY).distanceTo(attackTarget) < 64f);
 
         // 주사위를 굴려서 확률로 좀비 종류 뽑기
         val rand = Random.nextInt(10);
         val newZombie = when {
-            rand < 6	-> Zombie.Weak(world, Position(randomX, randomY))		// 60% 확률
-            rand < 9	-> Zombie.Normal(world, Position(randomX, randomY))	// 30% 확률
-            else		-> Zombie.Strong(world, Position(randomX, randomY))	// 10% 확률
+            rand < 6	-> Zombie.Weak(world, positionOf(randomX, randomY))		// 60% 확률
+            rand < 9	-> Zombie.Normal(world, positionOf(randomX, randomY))	// 30% 확률
+            else		-> Zombie.Strong(world, positionOf(randomX, randomY))	// 10% 확률
         }.apply {
 			target = attackTarget;
 		};

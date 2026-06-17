@@ -6,6 +6,7 @@ import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.position.positionOf;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.atan2;
@@ -28,7 +29,7 @@ class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true,
 
         for(spread in spreadAngles) {
             val finalAngle = angle + spread //atan2로 반환한 방향에 list로 저장한 다섯가지 방향으로 퍼짐 구현
-            val pelletTarget = Position(
+            val pelletTarget = positionOf(
                 centerX + cos(finalAngle) * 100f,
                 centerY + sin(finalAngle) * 100f  // angle 객체로 각도(방향)을 지정했으니, 그곳의 cos,sin을 이용한 위치 좌표를 구하는 식
             );

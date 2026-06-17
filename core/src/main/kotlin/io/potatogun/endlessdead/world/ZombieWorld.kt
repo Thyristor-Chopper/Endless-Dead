@@ -32,6 +32,7 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.position.positionOf;
 import io.potatogun.gdxhelper.screen.WorldViewer;
 import io.potatogun.gdxhelper.world.Freezable;
 
@@ -77,7 +78,7 @@ import kotlin.random.Random;
  */
 class ZombieWorld(width: Float, height: Float) : EndlessDeadWorld(width, height), Freezable {
     // 플레이어 — 월드 중앙에서 시작.
-    private val player = Player(this, Position(width * 0.5f, width * 0.5f));
+    private val player = Player(this, positionOf(width * 0.5f, width * 0.5f));
 	private val spawners = mutableListOf<Spawner>();
     // ── 체스판 배경 설정 (drawBackground()에서 사용) ──
     //   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
@@ -107,7 +108,7 @@ class ZombieWorld(width: Float, height: Float) : EndlessDeadWorld(width, height)
 		for(i in 0 until Random.nextInt(50) + 50) {
 			val x = Random.nextInt(this.width.toInt()).toFloat();
 			val y = Random.nextInt(this.height.toInt()).toFloat();
-			val position = Position(x, y);
+			val position = positionOf(x, y);
 			val item: Item = generateRandomItem();  // 들어있을 아이템
 			addEntity(when(Random.nextInt(2)) {
 				0		-> Building(this, position, item);
@@ -214,7 +215,7 @@ class ZombieWorld(width: Float, height: Float) : EndlessDeadWorld(width, height)
         for(row in startRow until startRow + rows)
             for(col in startCol until startCol + cols) {
                 // 행+열이 짝수면 어둡게, 홀수면 밝게 → 체스판 패턴
-                batch.color = if ((row + col) % 2 == 0) bgColorDark else bgColorLight;
+                batch.color = if((row + col) % 2 == 0) bgColorDark else bgColorLight;
 
                 // 월드 좌표의 타일 위치에서 offset 만큼 빼면 화면 좌표
                 val drawX = col * tileSize;

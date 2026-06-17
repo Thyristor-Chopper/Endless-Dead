@@ -20,6 +20,7 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.TextureManager;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.position.positionOf;
 import io.potatogun.gdxhelper.world.World;
 
 import java.lang.Math.toDegrees;
@@ -85,7 +86,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 5
 		super.update(delta);
 
 		// 반디 위치에 따라 플레이어 회전
-		rotateTo(Position(Input.mouseX.toFloat(), Input.mouseY.toFloat()));
+		rotateTo(positionOf(Input.mouseX.toFloat(), Input.mouseY.toFloat()));
 
 		// 아이템 가져가기 & 넣기
 		if(Input.isKeyJustPressed(Input.SPACE) || Input.isButtonJustPressed(Input.RIGHT_MOUSE))
