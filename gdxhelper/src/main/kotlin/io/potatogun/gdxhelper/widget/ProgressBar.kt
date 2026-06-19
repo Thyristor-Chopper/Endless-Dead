@@ -23,18 +23,26 @@ import kotlin.math.ceil;
  * @param skin		미터기의 스킨(텍스처 묶음)
  * @param style		미터기의 스타일
  */
-class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, private val color: Color = Color.WHITE, private val skin: Skin = defaultSkin, private val style: Style = Style.SMOOTH) : Widget(x, y, width, height) {
+class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, private val color: Color = Color.WHITE, skin: Skin? = null, private val style: Style = Style.SMOOTH) : Widget(x, y, width, height) {
 	companion object {
 		private const val BAR_VERTICAL_PADDING = 3f;		// 미터기 틀 안쪽 세로 여백
 		private const val BAR_HORIZONTAL_PADDING = 3f;	// 미터기 틀 안쪽 가로 여백
 		private const val CHUNK_WIDTH = 6f;				// 청크의 너비
 		private const val CHUNK_MARGIN = 2f;				// 각 청크 사이의 간격
-		@JvmStatic val defaultSkin = Skin(HelperTextures.progressBar, HelperTextures.progressSmoothFill, HelperTextures.progressChunkedFill);
+		@JvmStatic val defaultSmoothSkin = Skin(HelperTextures.progressBar, HelperTextures.progressSmoothFill);
+		@JvmStatic val defaultChunkedSkin = Skin(HelperTextures.progressBar, HelperTextures.progressChunkedFill);
 	}
+
+	private val skin: Skin;
 
 	init {
 		if(value < 0f || value > 1f)
 			throw IllegalArgumentException("invalid progress bar value");
+
+		if(skin == null)
+			this.skin = if(style == Style.CHUNKED) defaultChunkedSkin else defaultSmoothSkin;
+		else
+			this.skin = skin;
 	}
 
 	override fun draw(batch: SpriteBatch) {
@@ -59,11 +67,11 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 								CHUNK_WIDTH - (accumulatedWidth - maxFillWidth)
 							else
 								CHUNK_WIDTH;
-						skin.chunkedFill.draw(batch, chunkX, fillY, chunkWidth, fillHeight);
+						skin.fill.draw(batch, chunkX, fillY, chunkWidth, fillHeight);
 					}
 				}
-				Style.SMOOTH		-> {
-					skin.smoothFill.draw(batch, fillX, fillY, fillWidth, fillHeight);
+				Style.SMOOTH	-> {
+					skin.fill.draw(batch, fillX, fillY, fillWidth, fillHeight);
 				}
 			}
 			batch.color = Color.WHITE;
@@ -73,11 +81,10 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 	/**
 	 * 미터기(진행률 표시기)의 스킨이다.
 	 *
-	 * @param bar			미터기 틀의 9-patch 텍스처
-	 * @param smoothFill	smooth 스타일의 채움 9-patch 텍스처
-	 * @param chunkedFill	chunked 스타일의 채움 9-patch 텍스처
+	 * @param bar	미터기 틀의 9-patch 텍스처
+	 * @param fill	채움 9-patch 텍스처
 	 */
-	data class Skin(@JvmField val bar: NinePatch, @JvmField val smoothFill: NinePatch, @JvmField val chunkedFill: NinePatch = smoothFill);
+	data class Skin(@JvmField val bar: NinePatch, @JvmField val fill: NinePatch);
 
 	/**
 	 * 진행률 표시기(미터기) 스타일
