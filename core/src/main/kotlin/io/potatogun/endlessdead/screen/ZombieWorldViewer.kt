@@ -251,7 +251,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 
 	private fun restartGame() {
 		GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
-		loadWorld(ZombieWorld(), true);  // 월드를 아예 새로 파서 화면을 덮어씌움
+		loadWorld(ZombieWorld(), disposePreviousWorld = true);  // 월드를 아예 새로 파서 화면을 덮어씌움
 	}
 
 	/**
@@ -287,7 +287,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 
         // ── 상태별로 그리는 것이 다름 ──
         when {
-              // 플레이 중에는 추가로 그릴 것 없음
+            // 플레이 중에는 추가로 그릴 것 없음
             GameManager.isPaused	-> drawPausedMessage();  // 일시정지 화면 그리기
             GameManager.isGameOver	-> drawGameOverMessage();
         }
@@ -435,8 +435,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		batch.color = noWorldOverlay;
 		batch.draw(lazyStillCut.value, 0f, 0f, Window.width, Window.height);
 		batch.color = Color.WHITE;
-		// 월드가 없다는 메시지 없이 그냥 placeholder 배경 그림만 넣는 게 나으려나.
-		// drawText("No world loaded!", 0f, Window.height * 0.5f, Color.SCARLET, 2.0f, Window.width, Align.center, true);
+		drawText("No world loaded!", 0f, Window.height * 0.5f, Color.SCARLET, 2.0f, Window.width, Align.center, true);
 	}
 
 	override fun drawElements() {
