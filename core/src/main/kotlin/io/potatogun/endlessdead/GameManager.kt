@@ -25,28 +25,28 @@ object GameManager {
 	/**
 	 * 현재 라운드 (0이면 아직 게임이 시작되지 않은 것)
 	 */
-	var round: Int by Delegates.observable(0) { _, _, new -> Window.titleBarInfo = (if(new > 0) "Round $new" else null) }
+	@JvmStatic var round: Int by Delegates.observable(0) { _, _, new -> Window.titleBarInfo = (if(new > 0) "Round $new" else null) }
 		private set;
 	/**
 	 * 현재 게임이 진행 중인지의 여부
 	 */
-	val isPlaying: Boolean
+	@JvmStatic val isPlaying: Boolean
 		get() = (state == GameState.PLAYING);
 	/**
 	 * 현재 게임이 끝났는지의 여부
 	 */
-	val isGameOver: Boolean
+	@JvmStatic val isGameOver: Boolean
 		get() = (state == GameState.GAME_OVER);
 	/**
 	 * 현재 게임이 일지 중지된 상태인지의 여부
 	 */
-	val isPaused: Boolean
+	@JvmStatic val isPaused: Boolean
 		get() = (state == GameState.PAUSED);
 
 	/**
 	 * 준비 상태(타이틀 화면)로 전환한다.
 	 */
-	fun standBy() {
+	@JvmStatic fun standBy() {
 		round = 0;
 		Window.titleBarStats = null;
 		state = GameState.STANDBY;
@@ -55,7 +55,7 @@ object GameManager {
 	/**
 	 * 게임 진행 상태로 전환한다.
 	 */
-	fun setPlaying() {
+	@JvmStatic fun setPlaying() {
 		if(state != GameState.PAUSED) round++;
 		state = GameState.PLAYING;
 	}
@@ -63,7 +63,7 @@ object GameManager {
 	/**
 	 * 게임을 종료 상태로 전환한다.
 	 */
-	fun setGameOver() {
+	@JvmStatic fun setGameOver() {
 		Window.titleBarStats = null;
 		state = GameState.GAME_OVER;
 	}
@@ -71,14 +71,14 @@ object GameManager {
 	/**
 	 * 게임을 일시 중지한다.
 	 */
-	fun pause() {
+	@JvmStatic fun pause() {
 		state = GameState.PAUSED;
 	}
 
 	/**
 	 * 점수 및 통계 초기화
 	 */
-	fun resetAll() {
+	@JvmStatic fun resetAll() {
 		ScoreManager.resetScore();
 		Statistics.survivedDuration = 0;
 		Statistics.openedContainerCount = 0;
@@ -90,7 +90,7 @@ object GameManager {
 	/**
 	 * 일시 중지된 게임을 계속한다.
 	 */
-	inline fun resume() {
+	@JvmStatic inline fun resume() {
 		setPlaying();
 	}
 
