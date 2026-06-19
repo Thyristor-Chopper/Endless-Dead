@@ -2,17 +2,17 @@ package io.potatogun.endlessdead.entity.container;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.item.Item;
-import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.world.World;
 
 /**
  * 상자
  *
  * @param world			개체가 속한 세계
- * @param position		개체의 처음 위치
+ * @param x				개체의 처음 X 위치
+ * @param y				개체의 처음 Y 위치
  * @param initialItem	처음 들어있는 아이템
  */
-class Chest(world: World, position: Position, initialItem: Item? = null): Container(world, position, 24f, 25f, Textures.getShared("chest"), Textures.getShared("empty_chest"), initialItem) {
+class Chest(world: World, x: Float, y: Float, initialItem: Item? = null): Container(world, x, y, 24f, 25f, Textures.getShared("chest"), Textures.getShared("empty_chest"), initialItem) {
 	override val playerItemTexture = Textures.getShared("chest_player_item");
 
 	/**

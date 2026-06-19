@@ -12,13 +12,14 @@ import io.potatogun.gdxhelper.world.World;
  * 살아있다는 개념이 있는 개체
  *
  * @param world		개체가 속한 세계
- * @param position	개체의 처음 위치
+ * @param x			개체의 처음 X 위치
+ * @param y			개체의 처음 Y 위치
  * @param width		가로 크기 (픽셀)
  * @param height	세로 크기 (픽셀)
  * @param texture	개체 텍스처(없을 수도 있음)
  * @param initialHP	초기(최대) 체력
  */
-abstract class LivingEntity(world: World, position: Position, width: Float, height: Float, texture: Texture? = null, initialHP: Int) : Entity(world, position, width, height, texture) {
+abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture? = null, initialHP: Int) : Entity(world, x, y, width, height, texture) {
 	/**
 	 * 개체의 최대 체력.
 	 */

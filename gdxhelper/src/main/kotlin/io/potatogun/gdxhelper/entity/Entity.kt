@@ -10,7 +10,6 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.position.MutablePosition;
 import io.potatogun.gdxhelper.position.Position;
-import io.potatogun.gdxhelper.position.toMutablePosition;
 import io.potatogun.gdxhelper.world.World;
 
 import java.lang.Math.toDegrees;
@@ -43,12 +42,13 @@ import kotlin.math.sqrt;
  *    }
  *
  * @param world		개체가 속한 세계 - 자바로 만든 게임에서도 이런 때는 getWorld()를 쓰는 경우가 많아 @JvmField는 안 붙임
- * @param position	개체의 처음 위치
+ * @param x			개체의 처음 X 위치
+ * @param y			개체의 처음 Y 위치
  * @param width		가로 크기 (픽셀)
  * @param height	세로 크기 (픽셀)
  * @param texture	개체 텍스처(없을 수도 있음) - @JvmField가 있지만 protected라 외부 자바 클래스에서 접근하라고 있는 게 아니기 때문에 캠슐화가 많이 깨지지는 않는 것 같아 성능을 위해서 씀.
  */
-abstract class Entity(val world: World, position: Position, @JvmField val width: Float, @JvmField val height: Float, @JvmField protected val texture: Texture? = null) {
+abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width: Float, @JvmField val height: Float, @JvmField protected val texture: Texture? = null) {
 	/**
 	 * 개체의 평면좌표 위치
 	 *
@@ -58,7 +58,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	 * 어차피 val(final)이고 클래스 생성 시 바로 Position 객체가 할당되니까 null 위험성도 없지.
 	 * 그리고 set이 아닌 get을 하더라도 entity.getPosition().getX()보다는 entity.position.getX()가 더 깔끔하지 않을까
 	 */
-	@JvmField val position = position.toMutablePosition { _, _ -> isCachedRectValid = false };
+	@JvmField val position = MutablePosition(x, y) { _, _ -> isCachedRectValid = false };
 	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)
 	//   기존에는 x과 y가 backing field가 있는 실제 var였고 
 	//   val position get() = Position(x, y)가 있었다.

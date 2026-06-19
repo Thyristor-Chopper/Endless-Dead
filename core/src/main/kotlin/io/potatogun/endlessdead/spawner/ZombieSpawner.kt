@@ -66,9 +66,9 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
         // 주사위를 굴려서 확률로 좀비 종류 뽑기
         val rand = Random.nextInt(10);
         val newZombie = when {
-            rand < 6	-> Zombie.Weak(world, Position(randomX, randomY))		// 60% 확률
-            rand < 9	-> Zombie.Normal(world, Position(randomX, randomY))	// 30% 확률
-            else		-> Zombie.Strong(world, Position(randomX, randomY))	// 10% 확률
+            rand < 6	-> Zombie.Weak(world, randomX, randomY)	// 60% 확률
+            rand < 9	-> Zombie.Normal(world, randomX, randomY)	// 30% 확률
+            else		-> Zombie.Strong(world, randomX, randomY)	// 10% 확률
         }.apply {
 			target = attackTarget;
 		};

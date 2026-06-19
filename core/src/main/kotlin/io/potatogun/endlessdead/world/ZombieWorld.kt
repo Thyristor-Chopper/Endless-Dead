@@ -78,7 +78,7 @@ import kotlin.random.Random;
  */
 class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), Freezable {
     // 플레이어 — 월드 중앙에서 시작.
-    private val player = Player(this, Position(width * 0.5f, width * 0.5f));
+    private val player = Player(this, width * 0.5f, height * 0.5f);
 	private val spawners = mutableListOf<Spawner>();
     // ── 체스판 배경 설정 (drawBackground()에서 사용) ──
     //   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
@@ -102,14 +102,15 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
      */
     init {
 		// 50~100개의 건물과 상자를 무작위로 배치
-		for(i in 0 until Random.nextInt(50) + 50) {
-			val x = Random.nextInt(this.width.toInt()).toFloat();
-			val y = Random.nextInt(this.height.toInt()).toFloat();
-			val position = Position(x, y);
+		val intWidth = this.width.toInt();
+		val intHeight = this.height.toInt();
+		for(i in 0 until Random.nextInt(51) + 50) {
+			val x = Random.nextInt(intWidth).toFloat();
+			val y = Random.nextInt(intHeight).toFloat();
 			val item: Item = generateRandomItem();  // 들어있을 아이템
 			addEntity(when(Random.nextInt(2)) {
-				0		-> Building(this, position, item);
-				else	-> Chest(this, position, item);
+				0		-> Building(this, x, y, item);
+				else	-> Chest(this, x, y, item);
 			});
 		}
 

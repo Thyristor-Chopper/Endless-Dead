@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.gdxhelper.Utils;
-import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.sqrt;
@@ -26,7 +25,8 @@ import kotlin.math.sqrt;
  *   ▸ 이동 패턴을 사인파, 원운동 등으로 바꾸기
  *
  * @param world			개체가 속한 세계
- * @param position		개체의 처음 위치
+ * @param x				개체의 처음 X 위치
+ * @param y				개체의 처음 Y 위치
  * @param width			가로 크기 (픽셀)
  * @param height		세로 크기 (픽셀)
  * @param hp			최대 체력
@@ -34,7 +34,7 @@ import kotlin.math.sqrt;
  * @param speed			이동 속도
  * @param texture		개체 텍스처
  */
-open class Zombie(world: World, position: Position, width: Float, height: Float, hp: Int, protected open val attackDamage: Int, protected open val speed: Float, texture: Texture = Textures.getShared("zombie")) : LivingEntity(world, position, width, height, texture, hp), PenetratorDamagable {
+open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, protected open val attackDamage: Int, protected open val speed: Float, texture: Texture = Textures.getShared("zombie")) : LivingEntity(world, x, y, width, height, texture, hp), PenetratorDamagable {
 	protected open val attackingTexture = Textures.getShared("attacking_zombie");
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
@@ -89,11 +89,11 @@ open class Zombie(world: World, position: Position, width: Float, height: Float,
 	 */
 	override fun dispose() {}
 
-	class Weak(world: World, position: Position) : Zombie(world, position, width=21f, height=30f, hp=3, speed=150f, attackDamage=1);
+	class Weak(world: World, x: Float, y: Float) : Zombie(world, x, y, width=21f, height=30f, hp=3, speed=150f, attackDamage=1);
 
-	class Normal(world: World, position: Position) : Zombie(world, position, width=32f, height=45f, hp=5, speed=100f, attackDamage=3);
+	class Normal(world: World, x: Float, y: Float) : Zombie(world, x, y, width=32f, height=45f, hp=5, speed=100f, attackDamage=3);
 
-	class Strong(world: World, position: Position) : Zombie(world, position, width=49f, height=70f, hp=15, speed=50f, attackDamage=5) {
+	class Strong(world: World, x: Float, y: Float) : Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, attackDamage=5) {
         // 평상시 스피드, 대미지
         private val originalSpeed = super.speed;
         private val originalDamage = super.attackDamage;

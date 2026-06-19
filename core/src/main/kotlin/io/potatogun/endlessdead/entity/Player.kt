@@ -42,7 +42,7 @@ import kotlin.math.atan2;
  *   ▸ 객체가 사라질 때 dispose()로 GPU 자원 해제 — 기본 Entity#dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, position: Position) : LivingEntity(world, position, 52f, 63f, Utils.loadTexture("entity/player.bmp"), 50), InventoryEntity by InventoryEntityImpl() {
+class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 63f, Utils.loadTexture("entity/player.bmp"), 50), InventoryEntity by InventoryEntityImpl() {
 	override val isUpdatableWhileFrozen = true;
 	private val textureShotgun = Utils.loadTexture("entity/player_shotgun.bmp");
 	private val textureMachineGun = Utils.loadTexture("entity/player_machinegun.bmp");

@@ -8,21 +8,21 @@ import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.world.World;
 
 /**
  * 아이템 상자 역할을 하는 추상 클래스
  *
  * @param world			개체가 속한 세계
- * @param position		개체의 처음 위치
+ * @param x				개체의 처음 X 위치
+ * @param y				개체의 처음 Y 위치
  * @param width			개체 너비
  * @param height		개체 높이
  * @param texture		개체 텍스처
  * @param emptyTexture	상자가 비어 있을 때 사용할 텍스처
  * @param initialItem	처음 들어있는 아이템
  */
-abstract class Container(world: World, position: Position, width: Float, height: Float, texture: Texture?, private val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, position, width, height, texture) {
+abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture?, private val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture) {
 	// 플레이어가 직접 아이템을 넣었을 때의 텍스처
 	open protected val playerItemTexture: Texture? = null;
 	/**
