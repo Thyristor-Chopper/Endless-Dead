@@ -42,7 +42,7 @@ import kotlin.math.atan2;
  *   ▸ 객체가 사라질 때 dispose()로 GPU 자원 해제 — 기본 Entity#dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 63f, Utils.loadTexture("entity/player.bmp"), 50), InventoryEntity by InventoryEntityImpl() {
+class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 63f, Utils.loadTexture("entity/player.bmp"), 50), InventoryEntity by InventoryEntityImpl(-1) {
 	override val isUpdatableWhileFrozen = true;
 	private val textureShotgun = Utils.loadTexture("entity/player_shotgun.bmp");
 	private val textureMachineGun = Utils.loadTexture("entity/player_machinegun.bmp");
@@ -141,11 +141,11 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 		for(entity in world.getEntities()) {
 			if(entity !is Container) continue;
 			if(collidesWith(entity))
-				if(entity.isEmpty) {
+				if(entity.isInventoryEmpty) {
 					var putItem = false;
 					selectedItem?.let {
 						(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Put ${it.name} into the container");
-						entity.putItem(it, true);
+						entity.addItem(it);
 						putItem = true;  // 하나씩만
 					} ?: (world.viewer as? SubtitlesDrawable)?.drawSubtitles("Can't take any item; container is empty");
 					if(putItem) break;

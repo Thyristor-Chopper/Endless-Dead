@@ -8,11 +8,14 @@ import io.potatogun.endlessdead.item.Item;
 interface InventoryEntity {
 	val selectedItem: Item?;
 	val selectedItemIndex: Int?;  // 이건 nullable이라 아마 Integer로 컴파일될 것 같은데
-	val inventoryItemCount: Int;
+	val itemCount: Int;
 	val isInventoryEmpty: Boolean;
+	val maxSize: Int;
+	val firstItem: Item?;
+	val lastItem: Item?;
 
 	// @JvmOverloads이 불가능해서 수동으로
-	fun addItemToInventory(item: Item): Boolean = addItemToInventory(item, false);
+	fun addItem(item: Item): Boolean = addItem(item, false);
 
 	/**
 	 * 인벤토리에 아이템 넣기
@@ -20,15 +23,14 @@ interface InventoryEntity {
 	 * @param item	추가할 아이템
 	 * @return 	성공 여부 (이미 있으면 실패)
 	 */
-	fun addItemToInventory(item: Item, select: Boolean): Boolean;
+	fun addItem(item: Item, select: Boolean): Boolean;
 
 	/**
 	 * 인벤토리에서 아이템 빼기
 	 *
 	 * @param	index	아이템 위치
-	 * @return 	성공 여부
 	 */
-	fun removeItemFromInventory(index: Int);
+	fun removeItem(index: Int);
 
 	/**
 	 * 인벤토리에서 아이템 빼기
@@ -36,7 +38,14 @@ interface InventoryEntity {
 	 * @param 	item	제거할 아이템
 	 * @return 	성공 여부
 	 */
-	fun removeItemFromInventory(item: Item): Boolean;
+	fun removeItem(item: Item): Boolean;
+
+	/**
+	 * 지정한 아이템 가져오기
+	 *
+	 * @param index 아이템 인벤토리 인덱스
+	 */
+	fun getItem(index: Int): Item;
 
 	/**
 	 * 인벤토리의 다음 아이템 선택
@@ -79,5 +88,8 @@ interface InventoryEntity {
 	 */
 	fun onItemDestoryed(item: Item) {}
 
+	/**
+	 * 인벤토리 비우기
+	 */
 	fun clearInventory();
 }

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.sqrt;
@@ -34,11 +35,12 @@ import kotlin.math.sqrt;
  * @param speed			이동 속도
  * @param texture		개체 텍스처
  */
-open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, protected open val attackDamage: Int, protected open val speed: Float, texture: Texture = Textures.getShared("zombie")) : LivingEntity(world, x, y, width, height, texture, hp), PenetratorDamagable {
+open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, protected open val attackDamage: Int, protected open val speed: Float, texture: Texture = Textures.getShared("zombie"), initialTarget: LivingEntity? = null) : LivingEntity(world, x, y, width, height, texture, hp), PenetratorDamagable {
 	protected open val attackingTexture = Textures.getShared("attacking_zombie");
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
-	var target: LivingEntity? = null;  // 자바에서도 getTarget()같은 거 많아서 어느 정도의 캡슐화는 유지하기 위해 @JvmField 없음
+	var target: LivingEntity? = initialTarget  // 자바에서도 getTarget()같은 거 많아서 어느 정도의 캡슐화는 유지하기 위해 @JvmField 없음
+		private set;
 	private var attackTextureTimer = 0f;
 
 	protected fun getTargetOrReset(): LivingEntity? {
@@ -84,16 +86,21 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 			super.draw(batch);
 	}
 
+	override fun onDamage(damage: Int, attacker: Entity?) {
+		if(attacker is LivingEntity)
+			target = attacker;
+	}
+
 	/**
 	 * 공유 자원이기 때문에 여기서 정리하지 않고 다른 인스턴스에서 재활용한다.
 	 */
 	override fun dispose() {}
 
-	class Weak(world: World, x: Float, y: Float) : Zombie(world, x, y, width=21f, height=30f, hp=3, speed=150f, attackDamage=1);
+	class Weak(world: World, x: Float, y: Float, initialTarget: LivingEntity? = null) : Zombie(world, x, y, width=21f, height=30f, hp=3, speed=150f, attackDamage=1, initialTarget = initialTarget);
 
-	class Normal(world: World, x: Float, y: Float) : Zombie(world, x, y, width=32f, height=45f, hp=5, speed=100f, attackDamage=3);
+	class Normal(world: World, x: Float, y: Float, initialTarget: LivingEntity? = null) : Zombie(world, x, y, width=32f, height=45f, hp=5, speed=100f, attackDamage=3, initialTarget = initialTarget);
 
-	class Strong(world: World, x: Float, y: Float) : Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, attackDamage=5) {
+	class Strong(world: World, x: Float, y: Float, initialTarget: LivingEntity? = null) : Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, attackDamage=5, initialTarget = initialTarget) {
         // 평상시 스피드, 대미지
         private val originalSpeed = super.speed;
         private val originalDamage = super.attackDamage;

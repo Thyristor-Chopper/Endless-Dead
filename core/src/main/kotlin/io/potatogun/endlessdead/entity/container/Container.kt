@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.entity.InventoryEntity;
+import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
@@ -22,8 +23,22 @@ import io.potatogun.gdxhelper.world.World;
  * @param emptyTexture	상자가 비어 있을 때 사용할 텍스처
  * @param initialItem	처음 들어있는 아이템
  */
-abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture?, private val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture) {
-	// 플레이어가 직접 아이템을 넣었을 때의 텍스처
+abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture?, private val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture), InventoryEntity {
+	// 상자는 아이템을 '선택'할 수 없기 때문에 이들은 null이다.
+	override val selectedItem: Item? = null;
+	override val selectedItemIndex: Int? = null;
+	override val itemCount: Int
+		get() = if(containedItem != null) 1 else 0;
+	override val isInventoryEmpty: Boolean
+		get() = (containedItem == null);
+	override val maxSize = 1;
+	override val firstItem: Item?
+		get() = containedItem;
+	override val lastItem: Item?
+		get() = containedItem;
+	/**
+	 * 플레이어가 직접 아이템을 넣었을 때의 텍스처
+	 */
 	open protected val playerItemTexture: Texture? = null;
 	/**
 	 * 들어있는 아이템
@@ -35,18 +50,13 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	 */
 	var isPlayerItem = false
 		private set;
-	/**
-	 * 상자가 비어 있는지의 여부
-	 */
-	val isEmpty: Boolean
-		get() = (containedItem == null);
 
 	/**
 	 * 상자를 화면에 그린다. 비어 있을 때와 아닐 때 텍스처가 다르기 때문에 override해서 처리한다.
 	 */
 	override fun draw(batch: SpriteBatch) {
 		val texture: Texture? = 
-			if(isEmpty) emptyTexture
+			if(isInventoryEmpty) emptyTexture
 			else if(isPlayerItem) playerItemTexture
 			else this.texture;
 		super.draw(batch, texture);
@@ -60,36 +70,18 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	 * @return 	성공하면 들어있는 아이템, 실패하면 null
 	 */
 	@JvmOverloads fun takeItem(taker: InventoryEntity, select: Boolean = false): Item? {
-		val target = containedItem;  // https://stackoverflow.com/questions/44595529/smart-cast-to-type-is-impossible-because-variable-is-a-mutable-property-tha
-		if(target == null) return null;
-		taker.addItemToInventory(target, select);
-		if(isPlayerItem) isPlayerItem = false;
-		return target;
+		if(taker === this) throw IllegalArgumentException("taker is the container itself");
+		val item = containedItem;  // https://stackoverflow.com/questions/44595529/smart-cast-to-type-is-impossible-because-variable-is-a-mutable-property-tha
+		if(item == null) return null;
+		if(!taker.addItem(item, select)) return null;
+		isPlayerItem = false;
+		return item;
 	}
 
-	/**
-	 * 아이템 넣기
-	 *
-	 * @param item	넣을 아이템
-	 */
-	@JvmOverloads fun putItem(item: Item, isPlayerItem: Boolean = false) {
-		if(!isEmpty) throw IllegalStateException("container is not empty");
-		containedItem = item;
-		val holder: Entity? = item.holder;
-		if(holder is InventoryEntity)
-			holder.removeItemFromInventory(item);
-		if(isPlayerItem) this.isPlayerItem = true;
-	}
-
-	/**
-	 * 안에 들어 있는 아이템을 제거한다.
-	 *
-	 * @return 성공 여부
-	 */
-	fun removeItem(): Boolean {
+	private inline fun removeItem(): Boolean {
 		if(containedItem == null) return false;
 		containedItem = null;
-		if(isPlayerItem) isPlayerItem = false;
+		isPlayerItem = false;
 		return true;
 	}
 
@@ -100,6 +92,54 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		super.dispose();
 		playerItemTexture?.dispose();
 		emptyTexture?.dispose();
+		containedItem?.destroy();
+	}
+
+	override fun addItem(item: Item, select: Boolean): Boolean {
+		if(select) throw IllegalArgumentException("containers cannot select an item");
+		if(containedItem != null) return false;
+		val holder: Entity? = item.holder;
+		if(holder === this) return false;
+		containedItem = item;
+		if(holder is InventoryEntity) {
+			holder.removeItem(item);
+			if(holder is Player) isPlayerItem = true;
+		}
+		return true;
+	}
+
+	override fun removeItem(index: Int) {
+		if(index != 0 || !removeItem())
+			throw IllegalArgumentException("index out of bounds");
+	}
+
+	override fun removeItem(item: Item): Boolean {
+		if(containedItem !== item) return false;
+		return removeItem();
+	}
+
+	override fun getItem(index: Int): Item {
+		val item: Item? = containedItem;
+		if(index != 0 || item == null) throw IllegalArgumentException("index out of bounds");
+		return item;
+	}
+
+	// 상자는 아이템을 '선택'할 수 없다.
+	override fun selectNextItem(): Boolean = false;
+
+	override fun selectPreviousItem(): Boolean = false;
+
+	override fun selectItem(item: Item): Boolean = false;
+
+	override fun selectItem(index: Int) {
+		throw UnsupportedOperationException("containers cannot select an item");
+	}
+
+	override fun hasItem(item: Item): Boolean = (containedItem === item);
+
+	override fun getInventory(): List<Item> = containedItem?.let { listOf<Item>(it) } ?: listOf<Item>();
+
+	override fun clearInventory() {
 		containedItem?.destroy();
 	}
 }

@@ -6,8 +6,10 @@ import io.potatogun.gdxhelper.entity.Entity;
 /**
  * 인벤토리를 가진 개체의 기본적인 구현체.
  * 단독으로 사용하지 않고 위임으로만 사용된다.
+ *
+ * @param maxSize 최대 아이템 개수(-1: 무제한)
  */
-class InventoryEntityImpl : InventoryEntity {
+class InventoryEntityImpl(override val maxSize: Int = -1) : InventoryEntity {
 	private val inventory = mutableListOf<Item>();
 	override val selectedItem: Item?
 		get() = selectedItemIndex?.let { inventory[it] };
@@ -22,23 +24,32 @@ class InventoryEntityImpl : InventoryEntity {
 				else field = value;
 			}
 		};
-	override val inventoryItemCount: Int
+	override val itemCount: Int
 		get() = inventory.size;
 	override val isInventoryEmpty: Boolean
 		get() = inventory.isEmpty();
+	override val firstItem: Item?
+		get() = inventory.getOrNull(0);
+	override val lastItem: Item?
+		get() = inventory.getOrNull(inventory.size - 1);
 
-	override fun addItemToInventory(item: Item, select: Boolean): Boolean {
+	init {
+		if(maxSize < -1)
+			throw IllegalArgumentException("maxSize must be positive, zero or -1");
+	}
+
+	override fun addItem(item: Item, select: Boolean): Boolean {
+		if(maxSize != -1 && inventory.size >= maxSize) return false;
 		if(hasItem(item)) return false;
 		val holder: Entity? = item.holder;
 		if(holder is InventoryEntity)
-			holder.removeItemFromInventory(item);
-		item.container?.removeItem();
+			holder.removeItem(item);
 		inventory.add(item);
 		if(select) selectedItemIndex = inventory.size - 1;
 		return true;
 	}
 
-	override fun removeItemFromInventory(index: Int) {
+	override fun removeItem(index: Int) {
 		if(index < 0 || index >= inventory.size) throw IllegalArgumentException("index out of bounds");
 		val currentIndex: Int? = selectedItemIndex;
 		inventory.removeAt(index);
@@ -48,7 +59,7 @@ class InventoryEntityImpl : InventoryEntity {
 			selectPreviousItem();
 	}
 
-	override fun removeItemFromInventory(item: Item): Boolean {
+	override fun removeItem(item: Item): Boolean {
 		var found = false;
 		if(!inventory.isEmpty())
 			for(i in 0 until inventory.size)
@@ -61,6 +72,8 @@ class InventoryEntityImpl : InventoryEntity {
 				}
 		return found;
 	}
+
+	override fun getItem(index: Int): Item = inventory.getOrNull(index) ?: throw IllegalArgumentException("index out of bounds");
 
 	override fun selectNextItem(): Boolean {
 		val index: Int? = selectedItemIndex;

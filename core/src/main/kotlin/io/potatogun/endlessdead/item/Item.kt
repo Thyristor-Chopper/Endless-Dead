@@ -29,18 +29,6 @@ abstract class Item(val world: World, @get:JvmName("getID") val id: String, val 
 			}
 			return null;
 		};
-	/**
-	 * 아이템이 들어 있는 상자
-	 * 정상적인 상황이라면 holder와 container 중 반드시 하나는 null이어야 한다.
-	 */
-	val container: Container?
-		get() {
-			for(entity in world.getEntities()) {
-				if(entity is Container && entity.containedItem === this)
-					return entity;
-			}
-			return null;
-		};
 
 	/**
 	 * 아이템을 파괴한다.
@@ -48,9 +36,9 @@ abstract class Item(val world: World, @get:JvmName("getID") val id: String, val 
 	 * @return 아이템 존재 여부
 	 */
 	fun destroy(): Boolean {
-		val first = holder?.let {
+		val removed = holder?.let {
 			if(it is InventoryEntity) {
-				it.removeItemFromInventory(this);
+				it.removeItem(this);
 				it.onItemDestoryed(this);
 
 				true
@@ -58,11 +46,10 @@ abstract class Item(val world: World, @get:JvmName("getID") val id: String, val 
 				false
 			}
 		} ?: false;
-		val second = container?.let { it.removeItem(); true } ?: false;
 
 		cleanUp();
 
-		return first || second;
+		return removed;
 
 		// 나머지는 jvm이나 달빅이 알아서 gc 해주겠지.
 	}

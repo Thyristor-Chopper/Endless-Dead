@@ -487,7 +487,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		// 현재 플레이어가 들고 있는 아이템
 		player.selectedItem?.let {
 			drawText(
-				text = "${it.name} [${player.selectedItemIndex!! + 1}/${player.inventoryItemCount}]",
+				text = "${it.name} [${player.selectedItemIndex!! + 1}/${player.itemCount}]",
 				x = 10f,
 				y = 20f,
 				color = Utils.rgb(255, 255, 192),
