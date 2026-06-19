@@ -237,6 +237,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 		textureShotgun.dispose();
 		textureMachineGun.dispose();
 		timerManager.clearTimers();
-		Gdx.app.postRunnable { clearInventory() };
+		clearInventory();
 	}
 }
