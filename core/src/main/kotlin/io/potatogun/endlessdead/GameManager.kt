@@ -76,6 +76,18 @@ object GameManager {
 	}
 
 	/**
+	 * 점수 및 통계 초기화
+	 */
+	fun resetAll() {
+		ScoreManager.resetScore();
+		Statistics.survivedDuration = 0;
+		Statistics.openedContainerCount = 0;
+		Statistics.killedZombieCount = 0;
+		Statistics.fireCount = 0;
+		Statistics.totalDamage = 0;
+	}
+
+	/**
 	 * 일시 중지된 게임을 계속한다.
 	 */
 	inline fun resume() {

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.ScoreManager;
+import io.potatogun.endlessdead.Statistics;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.container.Container;
@@ -51,24 +52,13 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 5
 	// 타이머
 	private val timerManager = TimerManager();
 	private val healTimer: Timer;
-	// 통계
-	var survivedDuration = 0
-		private set;
-	var openedContainerCount = 0
-		private set;
-	var killedZombieCount = 0
-		private set;
-	var fireCount = 0
-		private set;
-	var totalDamage = 0
-		private set;
 
 	init {
 		// 타이머
 
 		// 1. 생존 시간 기록 & 생존 시간 보너스
 		timerManager.registerTimer(Timer(1f) {
-			survivedDuration++;
+			Statistics.survivedDuration++;
 			ScoreManager.addScore(1);
 		});
 
@@ -177,7 +167,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 5
 					} else {
 						(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Took ${item.name} from the container");
 						if(!isPlayerItem)
-							openedContainerCount++;
+							Statistics.openedContainerCount++;
 						break;  // 하나씩만
 					}
 				}
@@ -192,7 +182,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 5
 	override fun onDamage(damage: Int, attacker: Entity?) {
 		healTimer.reset();
 		ScoreManager.subtractScore(5);
-		totalDamage += damage;
+		Statistics.totalDamage += damage;
 	}
 
 	/**
@@ -201,7 +191,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 5
 	override fun onKill(victim: Entity) {
 		if(victim is Zombie) {
 			ScoreManager.addScore(10);
-			killedZombieCount++;
+			Statistics.killedZombieCount++;
 		}
 	}
 
@@ -220,7 +210,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 5
 		val succeeded = item.use();
 		if(succeeded)
 			if(item is Fireable)
-				fireCount++;
+				Statistics.fireCount++;
 		return succeeded;
 	}
 

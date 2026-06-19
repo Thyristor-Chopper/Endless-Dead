@@ -102,9 +102,6 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
      *   이렇게 등록해야 update / draw 루프에 포함된다.
      */
     init {
-		// 점수 초기화
-		ScoreManager.resetScore();
-
 		// 50~100개의 건물과 상자를 무작위로 배치
 		for(i in 0 until Random.nextInt(50) + 50) {
 			val x = Random.nextInt(this.width.toInt()).toFloat();

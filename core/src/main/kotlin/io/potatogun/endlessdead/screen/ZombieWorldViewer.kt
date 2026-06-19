@@ -10,6 +10,7 @@ import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.ScoreManager;
+import io.potatogun.endlessdead.Statistics;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
@@ -84,6 +85,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		};
 		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, 120f, caption = "Back to title", color = Color.WHITE) {
 			unloadWorld(dispose = true);
+			GameManager.resetAll();
 			GameManager.standBy();
 			game.setScreen(game.titleScreen);
 		};
@@ -155,11 +157,11 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		}
 		
 		Window.titleBarStats = when(TitleInfoType.byIndex(currentTitleInfo)) {
-			TitleInfoType.OPENED	-> "Opened chests: ${player.openedContainerCount}"
-			TitleInfoType.KILLED	-> "Killed zombies: ${player.killedZombieCount}"
-			TitleInfoType.FIRED		-> "Fired: ${player.fireCount}"
-			TitleInfoType.SURVIVED	-> "Survived duration: ${Utils.parseSeconds(player.survivedDuration, "m", "s")}"
-			TitleInfoType.DAMAGE	-> "Total damage: ${player.totalDamage}"
+			TitleInfoType.OPENED	-> "Opened chests: ${Statistics.openedContainerCount}"
+			TitleInfoType.KILLED	-> "Killed zombies: ${Statistics.killedZombieCount}"
+			TitleInfoType.FIRED		-> "Fired: ${Statistics.fireCount}"
+			TitleInfoType.SURVIVED	-> "Survived duration: ${Utils.parseSeconds(Statistics.survivedDuration, "m", "s")}"
+			TitleInfoType.DAMAGE	-> "Total damage: ${Statistics.totalDamage}"
 			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.getEntities().filterIsInstance<Zombie>().size}"
 		};
 	}
@@ -250,6 +252,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
     }
 
 	private fun restartGame() {
+		GameManager.resetAll();
 		GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
 		loadWorld(ZombieWorld(), disposePreviousWorld = true);  // 월드를 아예 새로 파서 화면을 덮어씌움
 	}
@@ -366,58 +369,54 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
         );
 
 		// 통계
-		val world: World? = projectingWorld;
-		val player: Player? = world?.get<Player>();
-		if(world != null && player != null) {
-			drawText(
-				text = "Opened containers: ${player.openedContainerCount}",
-				x = Window.width * 0.5f - 70f,
-				y = Window.height * 0.5f - 20f,
-				color = Color.LIGHT_GRAY,
-				scale = 1.0f,
-				skipBatch = true
-			);
-			drawText(
-				text = "Killed zombies: ${player.killedZombieCount}",
-				x = Window.width * 0.5f - 70f,
-				y = Window.height * 0.5f - 35f,
-				color = Color.LIGHT_GRAY,
-				scale = 1.0f,
-				skipBatch = true
-			);
-			drawText(
-				text = "Fired: ${player.fireCount}",
-				x = Window.width * 0.5f - 70f,
-				y = Window.height * 0.5f - 50f,
-				color = Color.LIGHT_GRAY,
-				scale = 1.0f,
-				skipBatch = true
-			);
-			drawText(
-				text = "Survived duration: ${Utils.parseSeconds(player.survivedDuration, "m", "s")}",
-				x = Window.width * 0.5f - 70f,
-				y = Window.height * 0.5f - 65f,
-				color = Color.LIGHT_GRAY,
-				scale = 1.0f,
-				skipBatch = true
-			);
-			drawText(
-				text = "Total damage: ${player.totalDamage}",
-				x = Window.width * 0.5f - 70f,
-				y = Window.height * 0.5f - 80f,
-				color = Color.LIGHT_GRAY,
-				scale = 1.0f,
-				skipBatch = true
-			);
-			drawText(
-				text = "Score: ${ScoreManager.score}",
-				x = Window.width * 0.5f - 70f,
-				y = Window.height * 0.5f - 95f,
-				color = Color.LIGHT_GRAY,
-				scale = 1.0f,
-				skipBatch = true
-			);
-		}
+		drawText(
+			text = "Opened containers: ${Statistics.openedContainerCount}",
+			x = Window.width * 0.5f - 70f,
+			y = Window.height * 0.5f - 20f,
+			color = Color.LIGHT_GRAY,
+			scale = 1.0f,
+			skipBatch = true
+		);
+		drawText(
+			text = "Killed zombies: ${Statistics.killedZombieCount}",
+			x = Window.width * 0.5f - 70f,
+			y = Window.height * 0.5f - 35f,
+			color = Color.LIGHT_GRAY,
+			scale = 1.0f,
+			skipBatch = true
+		);
+		drawText(
+			text = "Fired: ${Statistics.fireCount}",
+			x = Window.width * 0.5f - 70f,
+			y = Window.height * 0.5f - 50f,
+			color = Color.LIGHT_GRAY,
+			scale = 1.0f,
+			skipBatch = true
+		);
+		drawText(
+			text = "Survived duration: ${Utils.parseSeconds(Statistics.survivedDuration, "m", "s")}",
+			x = Window.width * 0.5f - 70f,
+			y = Window.height * 0.5f - 65f,
+			color = Color.LIGHT_GRAY,
+			scale = 1.0f,
+			skipBatch = true
+		);
+		drawText(
+			text = "Total damage: ${Statistics.totalDamage}",
+			x = Window.width * 0.5f - 70f,
+			y = Window.height * 0.5f - 80f,
+			color = Color.LIGHT_GRAY,
+			scale = 1.0f,
+			skipBatch = true
+		);
+		drawText(
+			text = "Final score: ${ScoreManager.score}",
+			x = Window.width * 0.5f - 70f,
+			y = Window.height * 0.5f - 95f,
+			color = Color.LIGHT_GRAY,
+			scale = 1.0f,
+			skipBatch = true
+		);
 
 		// 게임 오버 관련 단추 그리기(게임 오버 화면에서만 보임)
 		drawWidget(replayButton);

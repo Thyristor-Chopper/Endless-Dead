@@ -13,14 +13,15 @@ import com.badlogic.gdx.utils.Timer.Task;
  * 유용한 함수 모음
  */
 object Utils {
+	// 수동 오버로딩
+	@JvmStatic inline fun parseSeconds(seconds: Int): String = parseSeconds(seconds, " minute(s)", " second(s)");
+
 	/**
 	 * 초를 X분 X초로 변환한다
 	 *
 	 * @param seconds	초
 	 */
-	@JvmStatic
-	@JvmOverloads
-	fun parseSeconds(seconds: Int, minutesSuffix: String = " minute(s)", secondsSuffix: String = " second(s)"): String {
+	@JvmStatic fun parseSeconds(seconds: Int, minutesSuffix: String, secondsSuffix: String): String {
 		if(seconds < 60) return "${seconds}$secondsSuffix";
 		return "${seconds / 60}$minutesSuffix ${seconds % 60}$secondsSuffix";
 	}
