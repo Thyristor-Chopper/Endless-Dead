@@ -25,7 +25,6 @@ import io.potatogun.endlessdead.item.TimeStopper;
 import io.potatogun.endlessdead.spawner.Spawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
 import io.potatogun.gdxhelper.Input;
-import io.potatogun.gdxhelper.TextureManager;
 import io.potatogun.gdxhelper.Timer;
 import io.potatogun.gdxhelper.TimerManager;
 import io.potatogun.gdxhelper.Utils;
@@ -87,7 +86,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
     //
     //   tile.png는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color를
     //   바꿔가며 두 가지 색으로 그리는 트릭(틴트)으로 체스판을 만든다.
-    private val tileTexture = TextureManager.loadTexture("world/tile.bmp");
+    private val tileTexture = Utils.loadTexture("world/tile.bmp");
     private val bgColorDark = Utils.rgb(38, 92, 38);
     private val bgColorLight = Utils.rgb(38, 107, 38);
     private val tileSize = 64f;

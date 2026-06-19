@@ -18,7 +18,6 @@ import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.world.ZombieWorld;
 import io.potatogun.gdxhelper.Input;
-import io.potatogun.gdxhelper.TextureManager;
 import io.potatogun.gdxhelper.Timer;
 import io.potatogun.gdxhelper.TimerManager;
 import io.potatogun.gdxhelper.Utils;
@@ -54,7 +53,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	private val titleButton: Button;
 	private val quitButton: Button;
 	// 로드된 월드가 없을 때 보일 placeholder 배경
-	private val lazyStillCut = lazy { TextureManager.loadTexture("title/still_cut.bmp") };
+	private val lazyStillCut = lazy { Utils.loadTexture("title/still_cut.bmp") };
 	// 타이머
 	private val timerManager = TimerManager();
 	// 자막 타이머 관련 필드들. 우리가 만든 Timer 객체와 달리 일정 시간 간격으로 '계속' 실행하는 그런 게 아니기 때문에 따로 관리.

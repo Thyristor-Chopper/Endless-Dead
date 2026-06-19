@@ -12,14 +12,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  *
  * 여기에서 미리 정의된 텍스처는 Entity#dispose가 아닌 Game#dispose에서 정리된다.
  */
-internal object HelperTextures : TextureManager() {
+internal object HelperTextures : SharedTextureManager() {
 	override val shared = mapOf<String, Lazy<Texture>>(
-		"button" to lazy { loadTexture("widget/button.bmp") },
-		"button_hover" to lazy { loadTexture("widget/button_hover.bmp") },
-		"button_pressed" to lazy { loadTexture("widget/button_pressed.bmp") },
-		"button_disabled" to lazy { loadTexture("widget/button_disabled.bmp") },
-		"progress_bar" to lazy { loadTexture("widget/progress_bar.bmp") },
-		"progress_fill" to lazy { loadTexture("widget/progress_chunk.bmp") },
+		"button" to lazy { Utils.loadTexture("widget/button.bmp") },
+		"button_hover" to lazy { Utils.loadTexture("widget/button_hover.bmp") },
+		"button_pressed" to lazy { Utils.loadTexture("widget/button_pressed.bmp") },
+		"button_disabled" to lazy { Utils.loadTexture("widget/button_disabled.bmp") },
+		"progress_bar" to lazy { Utils.loadTexture("widget/progress_bar.bmp") },
+		"progress_fill" to lazy { Utils.loadTexture("widget/progress_chunk.bmp") },
 	);
 	val button: NinePatch by lazy { NinePatch(shared["button"]!!.value, 12, 12, 7, 6) };
 	val buttonHover: NinePatch by lazy { NinePatch(shared["button_hover"]!!.value, 12, 12, 7, 6) };

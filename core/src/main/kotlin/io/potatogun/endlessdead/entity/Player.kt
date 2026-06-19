@@ -18,7 +18,6 @@ import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Timer;
 import io.potatogun.gdxhelper.TimerManager;
 import io.potatogun.gdxhelper.Utils;
-import io.potatogun.gdxhelper.TextureManager;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
@@ -43,10 +42,10 @@ import kotlin.math.atan2;
  *   ▸ 객체가 사라질 때 dispose()로 GPU 자원 해제 — 기본 Entity#dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  */
-class Player(world: World, position: Position) : LivingEntity(world, position, 52f, 63f, TextureManager.loadTexture("entity/player.bmp"), 50), InventoryEntity by InventoryEntityImpl() {
+class Player(world: World, position: Position) : LivingEntity(world, position, 52f, 63f, Utils.loadTexture("entity/player.bmp"), 50), InventoryEntity by InventoryEntityImpl() {
 	override val isUpdatableWhileFrozen = true;
-	private val textureShotgun = TextureManager.loadTexture("entity/player_shotgun.bmp");
-	private val textureMachineGun = TextureManager.loadTexture("entity/player_machinegun.bmp");
+	private val textureShotgun = Utils.loadTexture("entity/player_shotgun.bmp");
+	private val textureMachineGun = Utils.loadTexture("entity/player_machinegun.bmp");
     private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머

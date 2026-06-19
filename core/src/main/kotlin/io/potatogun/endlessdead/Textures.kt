@@ -3,7 +3,8 @@ package io.potatogun.endlessdead;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
-import io.potatogun.gdxhelper.TextureManager;
+import io.potatogun.gdxhelper.SharedTextureManager;
+import io.potatogun.gdxhelper.Utils;
 
 /**
  * 텍스처 관련 도우미
@@ -12,16 +13,16 @@ import io.potatogun.gdxhelper.TextureManager;
  *
  * 여기에서 미리 정의된 텍스처는 Entity#dispose가 아닌 Game#dispose에서 정리된다.
  */
-object Textures : TextureManager() {
+object Textures : SharedTextureManager() {
 	override val shared = mapOf<String, Lazy<Texture>>(
-		"attacking_zombie" to lazy { loadTexture("entity/zombie_attacking.bmp") },
-		"building" to lazy { loadTexture("entity/building.bmp") },
-		"building_player_item" to lazy { loadTexture("entity/building_player_added.bmp") },
-		"bullet" to lazy { loadTexture("entity/bullet.bmp") },
-		"chest" to lazy { loadTexture("entity/chest.bmp") },
-		"chest_player_item" to lazy { loadTexture("entity/chest_player_added.bmp") },
-		"empty_building" to lazy { loadTexture("entity/building_empty.bmp") },
-		"empty_chest" to lazy { loadTexture("entity/chest_empty.bmp") },
-		"zombie" to lazy { loadTexture("entity/zombie.bmp") },
+		"attacking_zombie" to lazy { Utils.loadTexture("entity/zombie_attacking.bmp") },
+		"building" to lazy { Utils.loadTexture("entity/building.bmp") },
+		"building_player_item" to lazy { Utils.loadTexture("entity/building_player_added.bmp") },
+		"bullet" to lazy { Utils.loadTexture("entity/bullet.bmp") },
+		"chest" to lazy { Utils.loadTexture("entity/chest.bmp") },
+		"chest_player_item" to lazy { Utils.loadTexture("entity/chest_player_added.bmp") },
+		"empty_building" to lazy { Utils.loadTexture("entity/building_empty.bmp") },
+		"empty_chest" to lazy { Utils.loadTexture("entity/chest_empty.bmp") },
+		"zombie" to lazy { Utils.loadTexture("entity/zombie.bmp") },
 	);
 }

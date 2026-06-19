@@ -122,4 +122,11 @@ object Utils {
 	@JvmStatic inline fun max(x: Float, y: Float) = if(x > y) x else y;
 
 	@JvmStatic inline fun abs(n: Float) = if(n < 0) -n else n;
+
+	/**
+	 * 지정한 화일 이름의 텍스처를 가져온다.
+	 *
+	 * @param path 화일 이름
+	 */
+	@JvmStatic inline fun loadTexture(path: String): Texture = Texture(Gdx.files.internal("assets/textures/$path"));
 }
