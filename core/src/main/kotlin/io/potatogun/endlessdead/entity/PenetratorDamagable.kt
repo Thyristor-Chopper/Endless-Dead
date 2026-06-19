@@ -5,7 +5,7 @@ package io.potatogun.endlessdead.entity;
  */
 interface PenetratorDamagable {
 	/**
-	 * 관통할 때 관통기에게 주는 대미지
+	 * 관통할 때 관통자에게 주는 대미지
 	 */
 	open val penetrationDamage: Int;
 }
