@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import io.potatogun.gdxhelper.util.SharedTextureManager;
+
 /**
  * 텍스처 관련 도우미
  *

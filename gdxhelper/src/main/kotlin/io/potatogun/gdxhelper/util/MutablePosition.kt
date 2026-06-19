@@ -1,4 +1,4 @@
-package io.potatogun.gdxhelper.position;
+package io.potatogun.gdxhelper.util;
 
 import kotlin.properties.Delegates;
 

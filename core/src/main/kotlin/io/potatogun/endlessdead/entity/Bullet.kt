@@ -4,7 +4,7 @@ import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.item.Fireable;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.sqrt;

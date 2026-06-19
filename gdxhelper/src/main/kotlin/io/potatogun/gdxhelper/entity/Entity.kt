@@ -8,8 +8,8 @@ import com.badlogic.gdx.math.Rectangle;
 
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
-import io.potatogun.gdxhelper.position.MutablePosition;
-import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.util.MutablePosition;
+import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.world.World;
 
 import java.lang.Math.toDegrees;

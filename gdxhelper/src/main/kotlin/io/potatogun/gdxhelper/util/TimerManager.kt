@@ -1,4 +1,4 @@
-package io.potatogun.gdxhelper;
+package io.potatogun.gdxhelper.util;
 
 /**
  * 타이머 객체들을 관리한다.

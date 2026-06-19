@@ -1,11 +1,5 @@
 package io.potatogun.endlessdead;
 
-import com.badlogic.gdx.Gdx;
-
-import java.util.WeakHashMap;
-
-import kotlin.properties.Delegates;
-
 /**
  * 점수를 관리하는 싱글톤
  *

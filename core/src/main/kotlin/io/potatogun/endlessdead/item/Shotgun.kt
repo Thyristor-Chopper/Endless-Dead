@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
+import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.atan2;

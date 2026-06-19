@@ -9,8 +9,8 @@ import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
+import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.world.World;
 
 import java.lang.Math.toRadians;
@@ -34,14 +34,14 @@ import kotlin.math.sin;
  * @param initialBullets		초기 총알 개수
  * @param maxBullets			최대 총알 개수
  */
-abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, val bulletHP: Int, @JvmField val isBulletPenetreble: Boolean, val fireInterval: Float, initialBullets: Int, @JvmField val maxBullets: Int = initialBullets) : Item(world, id, name), Fireable, Usable {
+abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, @get:JvmName("getBulletHP") val bulletHP: Int, @JvmField val isBulletPenetreble: Boolean, val fireInterval: Float, initialBullets: Int, @JvmField val maxBullets: Int = initialBullets) : Item(world, id, name), Fireable, Usable {
 	override val isContinuousUseAllowed = false;
 	private var fireCooldown = 0f
 		set(value) {
 			if(value < 0f) field = 0f;
 			else field = value;
 		};
-	@get:JvmName("isFireable")
+	@get:JvmName("canFire")
 	val canFire: Boolean
 		get() = fireCooldown == 0f && remainingBullets > 0;
 	var remainingBullets: Int = initialBullets
