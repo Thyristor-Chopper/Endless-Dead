@@ -26,7 +26,7 @@ import io.potatogun.gdxhelper.Utils;
  * @param skin		단추의 스킨(텍스처 묶음)
  * @param onClick	단추를 눌렀을 때 실행할 서브루틴
  */
-class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, caption: String, accessKey: Char? = null, private val color: Color = Utils.rgb(216, 223, 239), private val skin: Skin = defaultSkin, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
+class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, caption: String, accessKey: Char? = null, private val color: Color = Color.WHITE, private val skin: Skin = defaultSkin, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
 	companion object {
 		@JvmStatic val defaultSkin = Skin(HelperTextures.button, HelperTextures.buttonHover, HelperTextures.buttonPressed, HelperTextures.buttonDisabled, Color.WHITE, Color.LIGHT_GRAY);
 	}

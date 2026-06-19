@@ -21,15 +21,11 @@ import io.potatogun.gdxhelper.widget.Button;
 class Title(private val game: EndlessDead) : Screen() {
 	private val title = Utils.loadTexture("title/title.bmp");
 	private val stillCut = Utils.loadTexture("title/still_cut.bmp");
-	private var titleBlinkTimer = 0f
+	private var titleBlinkTimer = 0f;
 
 	init {
-		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, 120f, caption = "Play", color = Color.WHITE) {
-			startGame();
-		});
-		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, 120f, caption = "Quit", color = Color.WHITE) {
-			Gdx.app.exit();
-		});
+		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, 120f, caption = "Play") { startGame() });
+		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, 120f, caption = "Quit") { Gdx.app.exit() });
 	}
 
 	private fun startGame() {
