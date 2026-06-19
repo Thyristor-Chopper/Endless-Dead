@@ -113,32 +113,23 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 5
 	 * @return 조금이라도 이동했는지 여부
 	 */
 	private inline fun updatePosition(delta: Float): Boolean {
-		var moved = false;
-		if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A)) {
-			x -= speed * delta;
-			moved = true;
-		}
-		if(Input.isKeyPressed(Input.RIGHT) || Input.isKeyPressed(Input.D)) {
-			x += speed * delta;
-			moved = true;
-        }
-		if(Input.isKeyPressed(Input.UP) || Input.isKeyPressed(Input.W)) {
-			y += speed * delta;
-			moved = true;
-        }
-		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S)) {
-			y -= speed * delta;
-			moved = true;
-		}
-
-        // 월드 경계 안쪽으로 가두기.
 		val originalX = x;
 		val originalY = y;
+
+		if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A))
+			x -= speed * delta;
+		if(Input.isKeyPressed(Input.RIGHT) || Input.isKeyPressed(Input.D))
+			x += speed * delta;
+		if(Input.isKeyPressed(Input.UP) || Input.isKeyPressed(Input.W))
+			y += speed * delta;
+		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S))
+			y -= speed * delta;
+
+        // 월드 경계 안쪽으로 가두기.
         x = x.coerceIn(0f, world.width);
         y = y.coerceIn(0f, world.height);
-		moved = moved || x != originalX || y != originalY;
 
-		return moved;
+		return x != originalX || y != originalY;
 	}
 
 	/**
