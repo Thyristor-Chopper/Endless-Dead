@@ -8,7 +8,7 @@ import kotlin.properties.Delegates;
  * @param x	X좌표
  * @param y	Y좌표
  */
-class MutablePosition(initialX: Float, initialY: Float, private val onChange: (x: Float, y: Float) -> Unit = { _, _ -> }) : Position(initialX, initialY) {
-	override var x: Float by Delegates.observable(initialX) { _, _, _ -> onChange(this.x, this.y) };
-	override var y: Float by Delegates.observable(initialY) { _, _, _ -> onChange(this.x, this.y) };
+class MutablePosition(initialX: Float, initialY: Float, private val onChange: ((x: Float, y: Float) -> Unit)? = null) : Position(initialX, initialY) {
+	override var x: Float by Delegates.observable(initialX) { _, _, _ -> onChange?.invoke(this.x, this.y) };
+	override var y: Float by Delegates.observable(initialY) { _, _, _ -> onChange?.invoke(this.x, this.y) };
 }

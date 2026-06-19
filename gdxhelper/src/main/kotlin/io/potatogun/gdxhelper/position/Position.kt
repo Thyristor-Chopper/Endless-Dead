@@ -26,9 +26,7 @@ open class Position(open val x: Float, open val y: Float) {
 
 	override fun equals(other: Any?) = other is Position && other.x == x && other.y == y;
 
-	override fun hashCode(): Int {
-		return Objects.hash(x, y);
-	}
+	override fun hashCode(): Int = Objects.hash(x, y);
 }
 
 // 확장 함수
@@ -43,4 +41,4 @@ inline fun Position.distanceTo(other: Entity): Float = distanceTo(other.position
 /**
  * 수정 가능한 복사본 레코드를 반환한다.
  */
-inline fun Position.toMutablePosition(noinline onChange: (Float, Float) -> Unit = { _, _ -> }): MutablePosition = MutablePosition(x, y, onChange);
+inline fun Position.toMutablePosition(noinline onChange: ((Float, Float) -> Unit)? = null): MutablePosition = MutablePosition(x, y, onChange);
