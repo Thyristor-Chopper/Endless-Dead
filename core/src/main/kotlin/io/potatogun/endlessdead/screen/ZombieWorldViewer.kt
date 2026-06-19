@@ -83,7 +83,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			restartGame();
 		};
 		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, 120f, caption = "Back to title", color = Color.WHITE) {
-			unloadWorld(true);
+			unloadWorld(dispose = true);
 			GameManager.standBy();
 			game.setScreen(game.titleScreen);
 		};
