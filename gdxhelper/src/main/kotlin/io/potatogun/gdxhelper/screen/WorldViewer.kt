@@ -38,7 +38,7 @@ open class WorldViewer : Screen() {
 		val previousWorld: World? = projectingWorld;
 		projectingWorld = world;
 		world.updateCamera();
-		if(disposePreviousWorld) Gdx.app.postRunnable { previousWorld?.dispose() };
+		if(disposePreviousWorld && previousWorld != null) Gdx.app.postRunnable { previousWorld.dispose() };
 	}
 
 	/**
