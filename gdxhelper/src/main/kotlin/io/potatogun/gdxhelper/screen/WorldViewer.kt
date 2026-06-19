@@ -69,17 +69,19 @@ open class WorldViewer : Screen() {
 	}
 
 	/**
-	 * 일반적으로 월드가 아닌 뷰어 자체의 배경은 없다(그려봤자 월드의 배경이 반투명하지 않는 이상 가려질 것이다).
+	 * 일반적으로 월드가 아닌 뷰어 자체의 배경은 없다(그려봤자 월드의 배경이 반투명하지 않는 이상 월드의 배경에 가려질 것이다).
 	 */
 	override fun drawBackground() {}
 
 	override fun drawElements() {
 		// 월드 관련 처리...
-		batch.end();  // 월드의 그리기 배치를 처리하기 전에 화면 자체의 배치를 잠시 중지.
-		// 왜 World#render를 Screen#render가 아닌 drawElements에서 하냐고 묻는다면
-		//   월드 뷰어 스크린 입장에서 월드는 이 스크린의 요소 중 하나일 뿐이기 때문이다.
-		projectingWorld?.render();
-		batch.begin();  // 월드의 그리기가 끝나면 화면의 그리기 배치를 다시 시작
+		projectingWorld?.let {
+			batch.end();  // 월드의 그리기 배치를 처리하기 전에 화면 자체의 배치를 잠시 중지.
+			// 왜 World#render를 Screen#render가 아닌 drawElements에서 하냐고 묻는다면
+			//   월드 뷰어 스크린 입장에서 월드는 이 스크린의 요소 중 하나일 뿐이기 때문이다.
+			it.render();
+			batch.begin();  // 월드의 그리기가 끝나면 화면의 그리기 배치를 다시 시작
+		};
 	}
 
 	override fun dispose() {
