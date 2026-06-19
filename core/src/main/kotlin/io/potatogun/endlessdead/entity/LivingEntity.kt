@@ -72,59 +72,63 @@ abstract class LivingEntity(world: World, position: Position, width: Float, heig
 	/**
 	 * 체력 감소(대미지를 입는다.)
 	 *
-	 * @param damage				피해량
-	 * @param invincibleDuration	무적 타이머
-	 * @param attacker				공격자
+	 * @param	damage				피해량
+	 * @param	invincibleDuration	무적 타이머
+	 * @param	attacker				공격자
+	 * @return	성공 여부
 	 */
-	@JvmOverloads open fun takeDamage(damage: Int, invincibleDuration: Float = defaultInvincibleDuration, attacker: Entity? = null) {
+	@JvmOverloads open fun takeDamage(damage: Int, invincibleDuration: Float = defaultInvincibleDuration, attacker: Entity? = null): Boolean {
 		if(damage < 0) throw IllegalArgumentException("damage must not be negative");
-		if(!isAlive) throw IllegalStateException("entity is already dead");
+		if(!isAlive) return false;
 
 		// 무적 시간이 다 끝났을 때만 피격당함
-		if(!isInvincibilityTimerActive) {
-			hp -= damage;
-			val killed = (hp == 0);
-			if(killed) {  // 사망
-				onDeath(attacker);  // 콜백 호출
-				if(attacker != null) attacker.onKill(this);
-				remove();
-			} else {
-				invincibilityTimer = invincibleDuration;  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
-				onDamage(damage, attacker);
-				// 타격 시 붉게 표시 타이머
-				if(showDamagedIndicator)
-					damagedIndicatorTimer = damagedIndicatorDuration;
-			}
-			if(attacker != null) {
-				if(!killed) attacker.onAttack(this);
-				latestAttacker = attacker;
-			}
+		if(isInvincibilityTimerActive) return false;
+
+		hp -= damage;
+		val killed = (hp == 0);
+		if(killed) {  // 사망
+			onDeath(attacker);  // 콜백 호출
+			if(attacker != null) attacker.onKill(this);
+			remove();
+		} else {
+			invincibilityTimer = invincibleDuration;  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
+			onDamage(damage, attacker);
+			// 타격 시 붉게 표시 타이머
+			if(showDamagedIndicator)
+				damagedIndicatorTimer = damagedIndicatorDuration;
 		}
+		if(attacker != null) {
+			if(!killed) attacker.onAttack(this);
+			latestAttacker = attacker;
+		}
+		return true;
 	}
 	
 	/**
 	 * 체력을 회복한다.
 	 *
-	 * @param amount	회복할 양
+	 * @param	amount	회복할 양
+	 * @return	성공 여부
 	 */
-	open fun heal(amount: Int) {
-		if(!isAlive)
-			throw IllegalStateException("cannot heal a dead entity");
+	open fun heal(amount: Int): Boolean {
+		if(!isAlive) return false;
 		hp += amount;
+		return true;
 	}
 
 	/**
 	 * 개체를 즉시 죽인다.
 	 *
-	 * @param attacker	공격자
+	 * @param 	attacker	공격자
+	 * @return	성공 여부
 	 */
-	@JvmOverloads fun kill(attacker: Entity? = null) {
-		if(!isAlive)
-			throw IllegalStateException("entity is already dead");
+	@JvmOverloads fun kill(attacker: Entity? = null): Boolean {
+		if(!isAlive) return false;
 		hp = 0;
 		onDeath(attacker);
 		if(attacker != null) attacker.onKill(this);
 		remove();
+		return true;
 	}
 
 	/**
@@ -155,7 +159,7 @@ abstract class LivingEntity(world: World, position: Position, width: Float, heig
 
 		// 몸 대미지 처리
 		for(entity in world.getEntities())
-			if(entity !== this && collidesWith(entity) && distanceTo(entity) < 8f && entity.bodyDamage > 0 && (!ignoreFriendBodyDamage || (ignoreFriendBodyDamage && this::class != entity::class))) {
+			if(entity is BodyDamagable && entity !== this && collidesWith(entity) && distanceTo(entity) < 8f && entity.bodyDamage > 0 && (this !is BodyDamagable || !ignoreFriendBodyDamage || (this is BodyDamagable && ignoreFriendBodyDamage && this::class != entity::class))) {
 				val attacker = if(entity is Bullet) entity.shooter else entity;  // 일단 총알은 Bullet 클래스에서 자체적으로 처리하고 bodyDamage는 0이기 때문에 의미는 없지만...
 				takeDamage(entity.bodyDamage, attacker=attacker);
 			}

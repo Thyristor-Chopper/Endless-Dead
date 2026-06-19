@@ -61,10 +61,12 @@ class Bullet(world: World, val gun: Fireable, val shooter: Entity, private val t
 		for(entity in world.getEntities())
 			if(entity !== this && entity !== shooter && entity is LivingEntity && (entity !is Bullet || entity.gun !== this.gun) && collidesWith(entity)) {
 				entity.takeDamage(damage, attacker=shooter);  // 무적 시간이 필요하면 추가...
-				if(penetrable)
-					this.takeDamage(entity.penetrationDamage, attacker=entity);
-				else
+				if(penetrable) {
+					val penetrationDamage = if(entity is PenetratorDamagable) entity.penetrationDamage else 0;
+					this.takeDamage(penetrationDamage, attacker = entity);
+				} else {
 					this.kill();
+				}
 			}
 	}
 

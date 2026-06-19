@@ -61,7 +61,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	@JvmField val position = position.toMutablePosition { _, _ -> isCachedRectValid = false };
 	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)
 	//   기존에는 x과 y가 backing field가 있는 실제 var였고 
-	//   val position / get() = Position(x, y)가 있었다.
+	//   val position get() = Position(x, y)가 있었다.
 	//   하지만 매번 Position 객체를 새로 생성하는 것은 오버헤드가 상당할 것 같아서
 	//   이렇게 바꾸었다.
 	var x: Float
@@ -74,16 +74,6 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	 * TimeStopper 아이템의 영향을 받는지의 여부
 	 */
 	open val isUpdatableWhileFrozen = false;
-	/**
-	 * 다른 개체에 닿았을 때 몸 대미지 (프레임워크 레벨에서는 구현되지 않으며 구현은 게임 구현체의 책임임)
-	 */
-	open val bodyDamage = 0;
-	// 동일 개체에 대해 몸 대미지 무시 여부
-	protected open val ignoreFriendBodyDamage = false;
-	/**
-	 * 관통할 때 관통자에게 주는 대미지 (프레임워크 레벨에서는 구현되지 않으며 구현은 게임 구현체의 책임임)
-	 */
-	open val penetrationDamage = 0;
 	// 텍스처 회전 각도
 	private var rotation = 0f;
 	// 개체 오버레이 색 (color는 mutable 객체이므로 val)
@@ -104,7 +94,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	private var isCachedRectValid = true;
 
 	// 사각형 영역 캐시 갱신
-	inline fun calculateRect(): Rectangle = Rectangle(x - width * 0.5f, y - height * 0.5f, width, height);
+	private inline fun calculateRect(): Rectangle = Rectangle(x - width * 0.5f, y - height * 0.5f, width, height);
 
 	/**
      * 매 프레임 호출되어 자신을 그린다.

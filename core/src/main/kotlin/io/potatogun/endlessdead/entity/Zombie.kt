@@ -34,7 +34,7 @@ import kotlin.math.sqrt;
  * @param speed			이동 속도
  * @param texture		개체 텍스처
  */
-open class Zombie(world: World, position: Position, width: Float, height: Float, hp: Int, protected open val attackDamage: Int, protected open val speed: Float, texture: Texture = Textures.getShared("zombie")) : LivingEntity(world, position, width, height, texture, hp) {
+open class Zombie(world: World, position: Position, width: Float, height: Float, hp: Int, protected open val attackDamage: Int, protected open val speed: Float, texture: Texture = Textures.getShared("zombie")) : LivingEntity(world, position, width, height, texture, hp), PenetratorDamagable {
 	protected open val attackingTexture = Textures.getShared("attacking_zombie");
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
