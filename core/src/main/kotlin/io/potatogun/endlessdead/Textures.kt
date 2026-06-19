@@ -14,15 +14,15 @@ import io.potatogun.gdxhelper.Utils;
  * 여기에서 미리 정의된 텍스처는 Entity#dispose가 아닌 Game#dispose에서 정리된다.
  */
 object Textures : SharedTextureManager() {
-	override val shared = mapOf<String, Lazy<Texture>>(
-		"attacking_zombie" to lazy { Utils.loadTexture("entity/zombie_attacking.bmp") },
-		"building" to lazy { Utils.loadTexture("entity/building.bmp") },
-		"building_player_item" to lazy { Utils.loadTexture("entity/building_player_added.bmp") },
-		"bullet" to lazy { Utils.loadTexture("entity/bullet.bmp") },
-		"chest" to lazy { Utils.loadTexture("entity/chest.bmp") },
-		"chest_player_item" to lazy { Utils.loadTexture("entity/chest_player_added.bmp") },
-		"empty_building" to lazy { Utils.loadTexture("entity/building_empty.bmp") },
-		"empty_chest" to lazy { Utils.loadTexture("entity/chest_empty.bmp") },
-		"zombie" to lazy { Utils.loadTexture("entity/zombie.bmp") },
-	);
+	init {
+		register("attacking_zombie", "entity/zombie_attacking.bmp");
+		register("building", "entity/building.bmp");
+		register("building_player_item", "entity/building_player_added.bmp");
+		register("bullet", "entity/bullet.bmp");
+		register("chest", "entity/chest.bmp");
+		register("chest_player_item", "entity/chest_player_added.bmp");
+		register("empty_building", "entity/building_empty.bmp");
+		register("empty_chest", "entity/chest_empty.bmp");
+		register("zombie", "entity/zombie.bmp");
+	}
 }

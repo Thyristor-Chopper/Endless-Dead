@@ -4,7 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 abstract class SharedTextureManager {
-	protected abstract val shared: Map<String, Lazy<Texture>>;
+	private val shared = mutableMapOf<String, Lazy<Texture>>();
+
+	/**
+	 * 텍스처를 등록한다(생성자에서만 사용할 것)
+	 */
+	protected fun register(id: String, path: String) {
+		shared[id] = lazy { Utils.loadTexture(path) };
+	}
 
 	/**
 	 * 지정한 이름의 공유 텍스처를 가져온다.
