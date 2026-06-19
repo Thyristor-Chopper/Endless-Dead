@@ -58,7 +58,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	 * 어차피 val(final)이고 클래스 생성 시 바로 Position 객체가 할당되니까 null 위험성도 없지.
 	 * 그리고 entity.getPosition().getX()보다는 entity.position.getX()가 더 깔끔하지 않을까
 	 */
-	@JvmField val position = position.toMutablePosition();
+	@JvmField val position = position.toMutablePosition { _, _ -> isCachedRectValid = false };
 	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)
 	//   기존에는 x과 y가 backing field가 있는 실제 var였고 
 	//   val position / get() = Position(x, y)가 있었다.
@@ -75,13 +75,13 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	 */
 	open val isUpdatableWhileFrozen = false;
 	/**
-	 * 다른 개체에 닿았을 때 몸 대미지(아직 활용하는 개체 없음)
+	 * 다른 개체에 닿았을 때 몸 대미지 (프레임워크 레벨에서는 구현되지 않으며 구현은 게임 구현체의 책임임)
 	 */
 	open val bodyDamage = 0;
 	// 동일 개체에 대해 몸 대미지 무시 여부
 	protected open val ignoreFriendBodyDamage = false;
 	/**
-	 * 총알이 관통할 때 총알에게 주는 대미지
+	 * 관통할 때 관통자에게 주는 대미지 (프레임워크 레벨에서는 구현되지 않으며 구현은 게임 구현체의 책임임)
 	 */
 	open val penetrationDamage = 0;
 	// 텍스처 회전 각도
@@ -97,10 +97,14 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 			color.a = value;
 		};
 	// 매번 계산하면 오버헤드가 상당하므로 회전 시에만 계산해서 캐시
-	var collideCheckWidth = width
-		private set;
-	var collideCheckHeight = height
-		private set;
+	private var collideCheckWidth = width;
+	private var collideCheckHeight = height;
+	// 사각형 영역 캐시
+	private var cachedRect = calculateRectCache();
+	private var isCachedRectValid = true;
+
+	// 사각형 영역 캐시 갱신
+	inline fun calculateRectCache(): Rectangle = Rectangle(x - width * 0.5f, y - height * 0.5f, width, height);
 
 	/**
      * 매 프레임 호출되어 자신을 그린다.
@@ -127,6 +131,15 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	}
 
     /**
+     * 이 객체가 차지하는 사각형 영역
+     */
+    fun getBounds(): Rectangle {
+		if(!isCachedRectValid)
+			cachedRect = calculateRectCache();
+		return cachedRect;
+	}
+
+    /**
      * 다른 객체와 충돌했는지 검사 — AABB(축 정렬 경계 상자) 방식.
      *
      * 두 사각형이 한 픽셀이라도 겹치면 true.
@@ -138,9 +151,9 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
      *   그래서 player.collidesWith(enemy), bullet.collidesWith(wall) 처럼
      *   어떤 조합이든 똑같은 문법으로 쓸 수 있다.
      */
-    inline fun collidesWith(other: Entity): Boolean {
+    fun collidesWith(other: Entity): Boolean {
 		// 원본 코드: getBounds().overlaps(other.getBounds()); 한 줄
-		//   매번 새 사각형 객체를 만들어서 확인하여 오버헤드도 상당하고
+		//   좀비처럼 게속 움직이는 개체는 매번 새 사각형 객체를 만들어서 확인하여 오버헤드도 상당하고
 		//   update() 내에서 collidesWith하는 경우도 많아 GC할 거리도 매 프레임 엄청나게 불어난다.
 
 		return Utils.abs(x - other.x) < (collideCheckWidth + other.collideCheckWidth) * 0.5f && Utils.abs(y - other.y) < (collideCheckHeight + other.collideCheckHeight) * 0.5f;
@@ -233,5 +246,9 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
      */
     open fun dispose() {
 		texture?.dispose();
+	}
+
+	fun remove() {
+		world.removeEntity(this);
 	}
 }

@@ -7,7 +7,7 @@ import io.potatogun.endlessdead.item.Item;
  */
 interface InventoryEntity {
 	val selectedItem: Item?;
-	val selectedItemIndex: Int?;  // 이건 아마 Integer로 컴파일될 것 같은데
+	val selectedItemIndex: Int?;  // 이건 nullable이라 아마 Integer로 컴파일될 것 같은데
 	val inventoryItemCount: Int;
 	val isInventoryEmpty: Boolean;
 
@@ -78,4 +78,6 @@ interface InventoryEntity {
 	 * 아이템이 파괴될 때 호출되는 콜백 함수
 	 */
 	fun onItemDestoryed(item: Item) {}
+
+	fun clearInventory();
 }

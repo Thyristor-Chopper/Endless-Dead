@@ -32,9 +32,10 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
-import io.potatogun.gdxhelper.position.positionOf;
+import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.screen.WorldViewer;
 import io.potatogun.gdxhelper.world.Freezable;
+import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.ceil;
 import kotlin.math.floor;
@@ -76,9 +77,9 @@ import kotlin.random.Random;
  * @param width   월드 전체 너비 (화면보다 크면 WASD로 탐험 가능)
  * @param height  월드 전체 높이
  */
-class ZombieWorld(width: Float, height: Float) : EndlessDeadWorld(width, height), Freezable {
+class ZombieWorld(width: Float, height: Float) : World(width, height), Freezable {
     // 플레이어 — 월드 중앙에서 시작.
-    private val player = Player(this, positionOf(width * 0.5f, width * 0.5f));
+    private val player = Player(this, Position(width * 0.5f, width * 0.5f));
 	private val spawners = mutableListOf<Spawner>();
     // ── 체스판 배경 설정 (drawBackground()에서 사용) ──
     //   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
@@ -108,7 +109,7 @@ class ZombieWorld(width: Float, height: Float) : EndlessDeadWorld(width, height)
 		for(i in 0 until Random.nextInt(50) + 50) {
 			val x = Random.nextInt(this.width.toInt()).toFloat();
 			val y = Random.nextInt(this.height.toInt()).toFloat();
-			val position = positionOf(x, y);
+			val position = Position(x, y);
 			val item: Item = generateRandomItem();  // 들어있을 아이템
 			addEntity(when(Random.nextInt(2)) {
 				0		-> Building(this, position, item);
@@ -156,7 +157,7 @@ class ZombieWorld(width: Float, height: Float) : EndlessDeadWorld(width, height)
 
 	override fun unfreeze() {
 		isFrozen = false;
-		viewer?.drawSubtitles("Time moves again");
+		(viewer as? SubtitlesDrawable)?.drawSubtitles("Time moves again");
 	}
 
     // ────────────────────────────────────────────────────────

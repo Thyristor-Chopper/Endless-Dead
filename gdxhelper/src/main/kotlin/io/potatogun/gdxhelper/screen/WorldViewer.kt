@@ -1,8 +1,6 @@
 package io.potatogun.gdxhelper.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.util.WeakMutableSet;
@@ -22,10 +20,6 @@ open class WorldViewer : Screen() {
 	 */
 	var projectingWorld: World? = null
 		private set;
-	// 자막 타이머 관련 필드들. 우리가 만든 Timer 객체와 달리 일정 시간 간격으로 '계속' 실행하는 그런 게 아니기 때문에 따로 관리.
-	private var subtitlesTimer = 0f;
-	private var subtitlesMessage: String? = null;
-	private var subtitlesColor = Color.WHITE;
 
 	init {
 		instances.add(this);
@@ -67,15 +61,11 @@ open class WorldViewer : Screen() {
 	}
 
 	/**
-	 * 월드와 자막 만료 타이머 갱신
+	 * 월드 갱신
 	 */
 	override fun update(delta: Float) {
 		// 월드 갱신
 		projectingWorld?.update(delta);
-
-		// 자막 만료 타이머 갱신
-		if(subtitlesTimer > 0f)
-			subtitlesTimer -= delta;
 	}
 
 	/**
@@ -90,33 +80,6 @@ open class WorldViewer : Screen() {
 		//   월드 뷰어 스크린 입장에서 월드는 이 스크린의 요소 중 하나일 뿐이기 때문이다.
 		projectingWorld?.render();
 		batch.begin();  // 월드의 그리기가 끝나면 화면의 그리기 배치를 다시 시작
-
-		// 자막이 있으면 표시
-		if(subtitlesTimer > 0f) subtitlesMessage?.let {
-			drawText(
-				text = it,
-				x = 0f,
-				y = 20f,
-				color = subtitlesColor,
-				scale = 1.0f,
-				width = Window.width,
-				align = Align.center,
-				skipBatch = true
-			);
-		};
-	}
-
-	/**
-	 * 화면 하단에 자막을 표시한다.
-	 *
-	 * @param message	표시할 내용
-	 * @param duration	표시 시간(초)
-	 * @param color		글자 색
-	 */
-	fun drawSubtitles(message: String, duration: Int = 3, color: Color = Color.WHITE) {
-		subtitlesTimer = duration.toFloat();
-		subtitlesMessage = message;
-		subtitlesColor = color;
 	}
 
 	override fun dispose() {

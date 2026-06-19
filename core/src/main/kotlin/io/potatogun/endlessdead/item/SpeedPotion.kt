@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.item;
 
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -19,7 +20,7 @@ class SpeedPotion(world: World) : Item(world, "speed_potion", "Speed Potion"), U
 		val holder: Entity? = this.holder;
 		if(holder is Player) {
 			holder.speedUp(20f, 30f);
-			world.viewer?.drawSubtitles("SPEED UP");
+			(world.viewer as? SubtitlesDrawable)?.drawSubtitles("SPEED UP");
 			destroy();
 			return true;
 		}

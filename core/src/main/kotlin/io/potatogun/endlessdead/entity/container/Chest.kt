@@ -18,5 +18,7 @@ class Chest(world: World, position: Position, initialItem: Item? = null): Contai
 	/**
 	 * 공유 자원이기 때문에 여기서 정리하지 않고 다른 인스턴스에서 재활용한다.
 	 */
-	override fun dispose() {}
+	override fun dispose() {
+		containedItem?.destroy();
+	}
 }

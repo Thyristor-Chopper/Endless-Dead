@@ -25,7 +25,7 @@ import kotlin.math.ceil;
  * @param skin		미터기의 스킨(텍스처 묶음)
  * @param style		미터기의 스타일
  */
-class ProgressBar @JvmOverloads constructor(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, private val color: Color = Color.WHITE, private val skin: ProgressBarSkin = defaultSkin, private val style: ProgressBarStyle = ProgressBarStyle.SMOOTH) : Widget(x, y, width, height) {
+class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, private val color: Color = Color.WHITE, private val skin: ProgressBarSkin = defaultSkin, private val style: ProgressBarStyle = ProgressBarStyle.SMOOTH) : Widget(x, y, width, height) {
 	init {
 		if(value < 0f || value > 1f)
 			throw IllegalArgumentException("invalid progress bar value");
@@ -70,6 +70,6 @@ class ProgressBar @JvmOverloads constructor(x: () -> Float, y: () -> Float, widt
 		private const val CHUNK_WIDTH = 6f;				// 청크의 너비
 		private const val CHUNK_MARGIN = 2f;				// 각 청크 사이의 간격
 
-		private val defaultSkin = ProgressBarSkin(HelperTextures.progressBar, HelperTextures.progressSmoothFill, HelperTextures.progressChunkedFill);
+		val defaultSkin = ProgressBarSkin(HelperTextures.progressBar, HelperTextures.progressSmoothFill, HelperTextures.progressChunkedFill);
 	}
 }

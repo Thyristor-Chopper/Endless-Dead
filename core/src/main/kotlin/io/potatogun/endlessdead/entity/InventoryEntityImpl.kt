@@ -103,4 +103,10 @@ class InventoryEntityImpl : InventoryEntity {
 	override fun hasItem(item: Item): Boolean = inventory.any { it === item };
 
 	override fun getInventory(): List<Item> = inventory.toList();
+
+	override fun clearInventory() {
+		for(item in inventory)
+			item.destroy();
+		inventory.clear();
+	}
 }

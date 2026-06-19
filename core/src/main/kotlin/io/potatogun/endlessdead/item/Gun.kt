@@ -10,7 +10,7 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
-import io.potatogun.gdxhelper.position.positionOf;
+import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.world.World;
 
 import java.lang.Math.toRadians;
@@ -106,7 +106,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 		// ammo가 다 떨어진 총은 파괴
 		if(remainingBullets == 0) {
 			if(holder is Player)
-				world.viewer?.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
+				(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
 			destroy();
 		}
 
@@ -127,7 +127,7 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 		val distance = Utils.max(world.width, world.height);  // 그냥 100f 이상 가능한 한 큰 수면 된다.
 		val targetX = cos(radians) * distance + holder.x;
 		val targetY = sin(radians) * distance + holder.y;
-		return fire(positionOf(targetX.toFloat(), targetY.toFloat()), holder) > 0;
+		return fire(Position(targetX.toFloat(), targetY.toFloat()), holder) > 0;
 	}
 
 	/**

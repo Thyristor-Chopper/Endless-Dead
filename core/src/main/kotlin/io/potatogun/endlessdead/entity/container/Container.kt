@@ -100,5 +100,6 @@ abstract class Container(world: World, position: Position, width: Float, height:
 		super.dispose();
 		playerItemTexture?.dispose();
 		emptyTexture?.dispose();
+		containedItem?.destroy();
 	}
 }

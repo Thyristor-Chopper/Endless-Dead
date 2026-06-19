@@ -20,7 +20,7 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.TextureManager;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
-import io.potatogun.gdxhelper.position.positionOf;
+import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.world.World;
 
 import java.lang.Math.toDegrees;
@@ -86,7 +86,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 5
 		super.update(delta);
 
 		// 반디 위치에 따라 플레이어 회전
-		rotateTo(positionOf(Input.mouseX.toFloat(), Input.mouseY.toFloat()));
+		rotateTo(Position(Input.mouseX.toFloat(), Input.mouseY.toFloat()));
 
 		// 아이템 가져가기 & 넣기
 		if(Input.isKeyJustPressed(Input.SPACE) || Input.isButtonJustPressed(Input.RIGHT_MOUSE))
@@ -102,7 +102,7 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 5
 		if(Input.isKeyJustPressed(Input.DELETE))
 			selectedItem?.let {
 				if(it.destroy())
-					world.viewer?.drawSubtitles("${it.name} destroyed");
+					(world.viewer as? SubtitlesDrawable)?.drawSubtitles("${it.name} destroyed");
 			};
 
 		// 휠로 아이템 선택
@@ -164,18 +164,18 @@ class Player(world: World, position: Position) : LivingEntity(world, position, 5
 				if(entity.isEmpty) {
 					var putItem = false;
 					selectedItem?.let {
-						world.viewer?.drawSubtitles("Put ${it.name} into the container");
+						(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Put ${it.name} into the container");
 						entity.putItem(it, true);
 						putItem = true;  // 하나씩만
-					} ?: world.viewer?.drawSubtitles("Can't take any item; container is empty");
+					} ?: (world.viewer as? SubtitlesDrawable)?.drawSubtitles("Can't take any item; container is empty");
 					if(putItem) break;
 				} else {
 					val isPlayerItem = entity.isPlayerItem;
 					val item: Item? = entity.takeItem(this, true);
 					if(item == null) {
-						world.viewer?.drawSubtitles("Failed to take the item in the container");
+						(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Failed to take the item in the container");
 					} else {
-						world.viewer?.drawSubtitles("Took ${item.name} from the container");
+						(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Took ${item.name} from the container");
 						if(!isPlayerItem)
 							openedContainerCount++;
 						break;  // 하나씩만

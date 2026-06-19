@@ -12,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * @param width		컨트롤 너비
  * @param height	컨트롤 높이
  */
-abstract class Widget(var x: () -> Float, var y: () -> Float, @JvmField val width: Float, @JvmField val height: Float) {
+abstract class Widget(protected var x: () -> Float, protected var y: () -> Float, @JvmField val width: Float, @JvmField val height: Float) {
 	/**
 	 * 컨트롤이 화면에 그려지는지의 여부
 	 */
@@ -42,4 +42,8 @@ abstract class Widget(var x: () -> Float, var y: () -> Float, @JvmField val widt
 	fun hide() {
 		isVisible = false;
 	}
+
+	fun getX(): Float = x();
+
+	fun getY(): Float = y();
 }

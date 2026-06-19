@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.item
 
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
 
@@ -20,11 +21,11 @@ class TimeStopper(world: World) : Item(world, "time_stopper", "Time Stopper"), U
 		val holder: Entity? = this.holder;
 		if(holder is Player) {
 			if(world !is Freezable) {
-				world.viewer?.drawSubtitles("Can't use this item here");
+				(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Can't use this item here");
 				return false;
 			}
 			world.freeze(3f);
-			world.viewer?.drawSubtitles("Time stop!");
+			(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Time stop!");
 			destroy();
 			return true;
 		}

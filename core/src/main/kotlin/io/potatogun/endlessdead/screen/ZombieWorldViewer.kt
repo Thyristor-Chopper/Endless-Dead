@@ -22,6 +22,7 @@ import io.potatogun.gdxhelper.Timer;
 import io.potatogun.gdxhelper.TimerManager;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.screen.WorldViewer;
 import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
@@ -36,7 +37,7 @@ import io.potatogun.gdxhelper.world.World;
  *
  * 이쪽에는 우리 게임의 목적에 맞게 HP 미터기, 일시 정지 처리, 게임 오버 화면 등이 모두 구현되어 있다.
  */
-class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer() {
+class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), SubtitlesDrawable {
 	private val noWorldOverlay = Utils.rgb(255, 255, 255, 0.5f);
 	private val frozenOverlay = Utils.rgb(0, 0, 0, 0.5f);
     private val solidColor: Texture;
@@ -56,6 +57,10 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer() {
 	private val lazyStillCut = lazy { TextureManager.loadTexture("title/still_cut.bmp") };
 	// 타이머
 	private val timerManager = TimerManager();
+	// 자막 타이머 관련 필드들. 우리가 만든 Timer 객체와 달리 일정 시간 간격으로 '계속' 실행하는 그런 게 아니기 때문에 따로 관리.
+	private var subtitlesTimer = 0f;
+	private var subtitlesMessage: String? = null;
+	private var subtitlesColor = Color.WHITE;
 
 	init {
 		// 단색용 텍스처 생성
@@ -127,6 +132,10 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer() {
 		updateTitleBarInfo();
 
 		super.update(delta);
+
+		// 자막 만료 타이머 갱신
+		if(subtitlesTimer > 0f)
+			subtitlesTimer -= delta;
 
 		// 미터기 정보 갱신
 		updateProgressBars();
@@ -435,8 +444,28 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer() {
 		// 월드 및 자막 그리기
 		super.drawElements();
 
+		// 자막이 있으면 표시
+		if(subtitlesTimer > 0f) subtitlesMessage?.let {
+			drawText(
+				text = it,
+				x = 0f,
+				y = 20f,
+				color = subtitlesColor,
+				scale = 1.0f,
+				width = Window.width,
+				align = Align.center,
+				skipBatch = true
+			);
+		};
+
         // ── 항상 보이는 UI ──
         drawHud();
+	}
+
+	override fun drawSubtitles(message: String, duration: Int, color: Color) {
+		subtitlesTimer = duration.toFloat();
+		subtitlesMessage = message;
+		subtitlesColor = color;
 	}
 
     /**

@@ -78,6 +78,7 @@ abstract class LivingEntity(world: World, position: Position, width: Float, heig
 	 */
 	@JvmOverloads open fun takeDamage(damage: Int, invincibleDuration: Float = defaultInvincibleDuration, attacker: Entity? = null) {
 		if(damage < 0) throw IllegalArgumentException("damage must not be negative");
+		if(!isAlive) throw IllegalStateException("entity is already dead");
 
 		// 무적 시간이 다 끝났을 때만 피격당함
 		if(!isInvincibilityTimerActive) {
@@ -86,6 +87,7 @@ abstract class LivingEntity(world: World, position: Position, width: Float, heig
 			if(killed) {  // 사망
 				onDeath(attacker);  // 콜백 호출
 				if(attacker != null) attacker.onKill(this);
+				remove();
 			} else {
 				invincibilityTimer = invincibleDuration;  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
 				onDamage(damage, attacker);
@@ -106,6 +108,8 @@ abstract class LivingEntity(world: World, position: Position, width: Float, heig
 	 * @param amount	회복할 양
 	 */
 	open fun heal(amount: Int) {
+		if(!isAlive)
+			throw IllegalStateException("cannot heal a dead entity");
 		hp += amount;
 	}
 
@@ -115,9 +119,12 @@ abstract class LivingEntity(world: World, position: Position, width: Float, heig
 	 * @param attacker	공격자
 	 */
 	@JvmOverloads fun kill(attacker: Entity? = null) {
+		if(!isAlive)
+			throw IllegalStateException("entity is already dead");
 		hp = 0;
 		onDeath(attacker);
 		if(attacker != null) attacker.onKill(this);
+		remove();
 	}
 
 	/**
