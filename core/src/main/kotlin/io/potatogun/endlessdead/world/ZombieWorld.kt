@@ -77,7 +77,7 @@ import kotlin.random.Random;
  * @param width   월드 전체 너비 (화면보다 크면 WASD로 탐험 가능)
  * @param height  월드 전체 높이
  */
-class ZombieWorld(width: Float, height: Float) : World(width, height), Freezable {
+class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), Freezable {
     // 플레이어 — 월드 중앙에서 시작.
     private val player = Player(this, Position(width * 0.5f, width * 0.5f));
 	private val spawners = mutableListOf<Spawner>();
