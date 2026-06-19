@@ -118,7 +118,7 @@ class BasicInventory(override val maxSlots: Int = -1) : InventoryEntity {
 	override fun getInventory(): List<Item> = inventory.toList();
 
 	override fun clearInventory() {
-		inventory.forEach { it.destroy() };
+		inventory.toList().forEach { it.destroy() };
 		inventory.clear();
 	}
 }
