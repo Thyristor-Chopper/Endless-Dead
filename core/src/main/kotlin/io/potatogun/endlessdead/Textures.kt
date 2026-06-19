@@ -1,10 +1,13 @@
 package io.potatogun.endlessdead;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 
 import io.potatogun.gdxhelper.SharedTextureManager;
 import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.widget.Button;
 
 /**
  * 텍스처 관련 도우미
@@ -14,6 +17,8 @@ import io.potatogun.gdxhelper.Utils;
  * 여기에서 미리 정의된 텍스처는 Entity#dispose가 아닌 Game#dispose에서 정리된다.
  */
 object Textures : SharedTextureManager() {
+	val greenButton: Button.Skin by lazy { Button.Skin(NinePatch(getShared("green_button"), 12, 12, 7, 6), NinePatch(getShared("green_button_hover"), 12, 12, 7, 6), NinePatch(getShared("green_button_pressed"), 12, 12, 7, 6), NinePatch(getShared("green_button_disabled"), 12, 12, 7, 6), Color.WHITE, Color.LIGHT_GRAY) };
+
 	init {
 		register("attacking_zombie", "entity/zombie_attacking.bmp");
 		register("building", "entity/building.bmp");
@@ -24,5 +29,10 @@ object Textures : SharedTextureManager() {
 		register("empty_building", "entity/building_empty.bmp");
 		register("empty_chest", "entity/chest_empty.bmp");
 		register("zombie", "entity/zombie.bmp");
+
+		register("green_button", "widget/green_button.bmp");
+		register("green_button_hover", "widget/green_button_hover.bmp");
+		register("green_button_pressed", "widget/green_button_pressed.bmp");
+		register("green_button_disabled", "widget/green_button_disabled.bmp");
 	}
 }
