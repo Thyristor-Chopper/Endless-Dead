@@ -81,7 +81,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	/**
 	 * 아이템 제거
 	 */
-	fun removeItem(): Boolean {
+	private inline fun removeItem(): Boolean {
 		if(containedItem == null) return false;
 		containedItem = null;
 		isPlayerItem = false;
