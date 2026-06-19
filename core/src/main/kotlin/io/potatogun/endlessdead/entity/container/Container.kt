@@ -78,16 +78,6 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		return item;
 	}
 
-	/**
-	 * 아이템 제거
-	 */
-	private inline fun removeItem(): Boolean {
-		if(containedItem == null) return false;
-		containedItem = null;
-		isPlayerItem = false;
-		return true;
-	}
-
 	// InventoryEntity 구현
 
 	override fun addItem(item: Item, select: Boolean): Boolean {
@@ -100,6 +90,16 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 			holder.removeItem(item);
 			if(holder is Player) isPlayerItem = true;
 		}
+		return true;
+	}
+
+	/**
+	 * 아이템 제거
+	 */
+	private fun removeItem(): Boolean {
+		if(containedItem == null) return false;
+		containedItem = null;
+		isPlayerItem = false;
 		return true;
 	}
 
