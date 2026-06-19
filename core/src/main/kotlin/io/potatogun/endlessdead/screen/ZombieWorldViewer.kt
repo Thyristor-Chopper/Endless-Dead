@@ -27,7 +27,6 @@ import io.potatogun.gdxhelper.screen.WorldViewer;
 import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
 import io.potatogun.gdxhelper.widget.Widget;
-import io.potatogun.gdxhelper.widget.style.ProgressBarStyle;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -73,7 +72,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 
 		// 미터기 추가
 		addWidget("hp_indicator", ProgressBar({ 80f }, { Window.height - 24f }, 220f, color = Utils.rgb(234, 197, 21)));
-		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, 130f, color = Utils.rgb(15, 116, 240), style = ProgressBarStyle.CHUNKED).apply { hide() });
+		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, 130f, color = Utils.rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() });
 		addWidget("gun_cooldown_indicator", ProgressBar({ Window.width - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide() });
 
 		// 일시 중지 및 게임 오버 단추

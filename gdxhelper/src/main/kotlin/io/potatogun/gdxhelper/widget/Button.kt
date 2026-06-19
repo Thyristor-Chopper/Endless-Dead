@@ -10,7 +10,6 @@ import com.badlogic.gdx.utils.Align;
 import io.potatogun.gdxhelper.HelperTextures;
 import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Utils;
-import io.potatogun.gdxhelper.widget.skin.ButtonSkin;
 
 /**
  * 단추
@@ -27,7 +26,11 @@ import io.potatogun.gdxhelper.widget.skin.ButtonSkin;
  * @param skin		단추의 스킨(텍스처 묶음)
  * @param onClick	단추를 눌렀을 때 실행할 서브루틴
  */
-class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, caption: String, accessKey: Char? = null, private val color: Color = Utils.rgb(216, 223, 239), private val skin: ButtonSkin = defaultSkin, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
+class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, caption: String, accessKey: Char? = null, private val color: Color = Utils.rgb(216, 223, 239), private val skin: Skin = defaultSkin, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
+	companion object {
+		@JvmStatic val defaultSkin = Skin(HelperTextures.button, HelperTextures.buttonHover, HelperTextures.buttonPressed, HelperTextures.buttonDisabled, Color.WHITE, Color.LIGHT_GRAY);
+	}
+
 	private val font = BitmapFont();
 	private val accessKey: Char?;
 	private val caption: String;
@@ -97,7 +100,15 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, 
 		previouslyPressed = false;
 	}
 
-	companion object {
-		val defaultSkin = ButtonSkin(HelperTextures.button, HelperTextures.buttonHover, HelperTextures.buttonPressed, HelperTextures.buttonDisabled, Color.WHITE, Color.LIGHT_GRAY);
-	}
+	/**
+	 * 버튼의 스킨이다.
+	 *
+	 * @param normal				기본 상태에서의 9-patch 텍스처
+	 * @param hover					마우스를 올렸을 때의 9-patch 텍스처
+	 * @param pressed				누르고 있는 동안의 9-patch 텍스처
+	 * @param disabled				비활성화된 단추의 9-patch 텍스처
+	 * @param captionColor			단추 글자 색
+	 * @param disabledCaptionColor	비활성화된 단추 글자 색
+	 */
+	data class Skin(@JvmField val normal: NinePatch, @JvmField val hover: NinePatch = normal, @JvmField val pressed: NinePatch = normal, @JvmField val disabled: NinePatch = normal, @JvmField val captionColor: Color = Color.BLACK, @JvmField val disabledCaptionColor: Color = Color.GRAY);
 }

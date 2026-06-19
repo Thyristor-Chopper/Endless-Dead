@@ -24,10 +24,10 @@ class Title(private val game: EndlessDead) : Screen() {
 	private var titleBlinkTimer = 0f
 
 	init {
-		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, 120f, caption = "Play") {
+		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, 120f, caption = "Play", color = Color.WHITE) {
 			startGame();
 		});
-		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, 120f, caption = "Quit") {
+		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, 120f, caption = "Quit", color = Color.WHITE) {
 			Gdx.app.exit();
 		});
 	}

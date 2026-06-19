@@ -6,8 +6,6 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.gdxhelper.HelperTextures;
-import io.potatogun.gdxhelper.widget.skin.ProgressBarSkin;
-import io.potatogun.gdxhelper.widget.style.ProgressBarStyle;
 
 import kotlin.math.ceil;
 
@@ -25,7 +23,15 @@ import kotlin.math.ceil;
  * @param skin		미터기의 스킨(텍스처 묶음)
  * @param style		미터기의 스타일
  */
-class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, private val color: Color = Color.WHITE, private val skin: ProgressBarSkin = defaultSkin, private val style: ProgressBarStyle = ProgressBarStyle.SMOOTH) : Widget(x, y, width, height) {
+class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, private val color: Color = Color.WHITE, private val skin: Skin = defaultSkin, private val style: Style = Style.SMOOTH) : Widget(x, y, width, height) {
+	companion object {
+		private const val BAR_VERTICAL_PADDING = 3f;		// 미터기 틀 안쪽 세로 여백
+		private const val BAR_HORIZONTAL_PADDING = 3f;	// 미터기 틀 안쪽 가로 여백
+		private const val CHUNK_WIDTH = 6f;				// 청크의 너비
+		private const val CHUNK_MARGIN = 2f;				// 각 청크 사이의 간격
+		@JvmStatic val defaultSkin = Skin(HelperTextures.progressBar, HelperTextures.progressSmoothFill, HelperTextures.progressChunkedFill);
+	}
+
 	init {
 		if(value < 0f || value > 1f)
 			throw IllegalArgumentException("invalid progress bar value");
@@ -43,7 +49,7 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 			val fillX = barX + BAR_HORIZONTAL_PADDING;
 			val fillY = barY + BAR_VERTICAL_PADDING;
 			when(style) {
-				ProgressBarStyle.CHUNKED	-> {
+				Style.CHUNKED	-> {
 					val chunkCount = ceil(fillWidth / (CHUNK_WIDTH + CHUNK_MARGIN)).toInt();
 					for(i in 1..chunkCount) {
 						val chunkX = fillX + (CHUNK_WIDTH + CHUNK_MARGIN) * (i - 1);  // 현재 청크의 X 위치
@@ -56,7 +62,7 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 						skin.chunkedFill.draw(batch, chunkX, fillY, chunkWidth, fillHeight);
 					}
 				}
-				ProgressBarStyle.SMOOTH		-> {
+				Style.SMOOTH		-> {
 					skin.smoothFill.draw(batch, fillX, fillY, fillWidth, fillHeight);
 				}
 			}
@@ -64,12 +70,26 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 		}
 	}
 
-	companion object {
-		private const val BAR_VERTICAL_PADDING = 3f;		// 미터기 틀 안쪽 세로 여백
-		private const val BAR_HORIZONTAL_PADDING = 3f;	// 미터기 틀 안쪽 가로 여백
-		private const val CHUNK_WIDTH = 6f;				// 청크의 너비
-		private const val CHUNK_MARGIN = 2f;				// 각 청크 사이의 간격
+	/**
+	 * 미터기(진행률 표시기)의 스킨이다.
+	 *
+	 * @param bar			미터기 틀의 9-patch 텍스처
+	 * @param smoothFill	smooth 스타일의 채움 9-patch 텍스처
+	 * @param chunkedFill	chunked 스타일의 채움 9-patch 텍스처
+	 */
+	data class Skin(@JvmField val bar: NinePatch, @JvmField val smoothFill: NinePatch, @JvmField val chunkedFill: NinePatch = smoothFill);
 
-		val defaultSkin = ProgressBarSkin(HelperTextures.progressBar, HelperTextures.progressSmoothFill, HelperTextures.progressChunkedFill);
+	/**
+	 * 진행률 표시기(미터기) 스타일
+	 */
+	enum class Style {
+		/**
+		 * 윈도우 7처럼 연속적인 스타일
+		 */
+		SMOOTH,
+		/**
+		 * 윈도우 XP처럼 조각난 스타일
+		 */
+		CHUNKED;
 	}
 }
