@@ -9,7 +9,7 @@ import io.potatogun.gdxhelper.entity.Entity;
  *
  * @param maxSlots 최대 아이템 개수(-1: 무제한)
  */
-class BasicInventoryEntity(override val maxSlots: Int = -1) : InventoryEntity {
+class BasicInventory(override val maxSlots: Int = -1) : InventoryEntity {
 	private val inventory = mutableListOf<Item>();
 	override val selectedItem: Item?
 		get() = selectedItemIndex?.let { inventory[it] };
