@@ -31,7 +31,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		get() = if(containedItem != null) 1 else 0;
 	override val isInventoryEmpty: Boolean
 		get() = (containedItem == null);
-	override val maxSize = 1;
+	override val maxSlots = 1;
 	override val firstItem: Item?
 		get() = containedItem;
 	override val lastItem: Item?

@@ -6,12 +6,33 @@ import io.potatogun.endlessdead.item.Item;
  * 인벤토리를 가진 개체에 대한 인터페이스
  */
 interface InventoryEntity {
+	/**
+	 * 선택한 아이템
+	 */
 	val selectedItem: Item?;
+	/**
+	 * 선택한 아이템의 인덱스
+	 */
 	val selectedItemIndex: Int?;  // 이건 nullable이라 아마 Integer로 컴파일될 것 같은데
+	/**
+	 * 인벤토리 내 아이템 개수
+	 */
 	val itemCount: Int;
+	/**
+	 * 인벤토리가 비어 있는지의 여부
+	 */
 	val isInventoryEmpty: Boolean;
-	val maxSize: Int;
+	/**
+	 * 인벤토리 아이템 최대 개수
+	 */
+	val maxSlots: Int;
+	/**
+	 * 처음으로 추가된 아이템
+	 */
 	val firstItem: Item?;
+	/**
+	 * 마지막으로 추가된 아이템
+	 */
 	val lastItem: Item?;
 
 	// @JvmOverloads이 불가능해서 수동으로

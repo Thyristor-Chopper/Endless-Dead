@@ -7,9 +7,9 @@ import io.potatogun.gdxhelper.entity.Entity;
  * 인벤토리를 가진 개체의 기본적인 구현체.
  * 단독으로 사용하지 않고 위임으로만 사용된다.
  *
- * @param maxSize 최대 아이템 개수(-1: 무제한)
+ * @param maxSlots 최대 아이템 개수(-1: 무제한)
  */
-class InventoryEntityImpl(override val maxSize: Int = -1) : InventoryEntity {
+class BasicInventoryEntity(override val maxSlots: Int = -1) : InventoryEntity {
 	private val inventory = mutableListOf<Item>();
 	override val selectedItem: Item?
 		get() = selectedItemIndex?.let { inventory[it] };
@@ -34,12 +34,12 @@ class InventoryEntityImpl(override val maxSize: Int = -1) : InventoryEntity {
 		get() = inventory.getOrNull(inventory.size - 1);
 
 	init {
-		if(maxSize < -1)
-			throw IllegalArgumentException("maxSize must be positive, zero or -1");
+		if(maxSlots < -1)
+			throw IllegalArgumentException("maxSlots must be positive, zero or -1");
 	}
 
 	override fun addItem(item: Item, select: Boolean): Boolean {
-		if(maxSize != -1 && inventory.size >= maxSize) return false;
+		if(maxSlots != -1 && inventory.size >= maxSlots) return false;
 		if(hasItem(item)) return false;
 		val holder: Entity? = item.holder;
 		if(holder is InventoryEntity)
