@@ -78,22 +78,17 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		return item;
 	}
 
-	private inline fun removeItem(): Boolean {
+	/**
+	 * 아이템 제거
+	 */
+	fun removeItem(): Boolean {
 		if(containedItem == null) return false;
 		containedItem = null;
 		isPlayerItem = false;
 		return true;
 	}
 
-	/**
-	 * 추가적인 두 텍스처도 비운다.
-	 */
-	override fun dispose() {
-		super.dispose();
-		playerItemTexture?.dispose();
-		emptyTexture?.dispose();
-		containedItem?.destroy();
-	}
+	// InventoryEntity 구현
 
 	override fun addItem(item: Item, select: Boolean): Boolean {
 		if(select) throw IllegalArgumentException("containers cannot select an item");
@@ -140,6 +135,16 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	override fun getInventory(): List<Item> = containedItem?.let { listOf<Item>(it) } ?: listOf<Item>();
 
 	override fun clearInventory() {
+		containedItem?.destroy();
+	}
+
+	/**
+	 * 추가적인 두 텍스처도 비운다.
+	 */
+	override fun dispose() {
+		super.dispose();
+		playerItemTexture?.dispose();
+		emptyTexture?.dispose();
 		containedItem?.destroy();
 	}
 }

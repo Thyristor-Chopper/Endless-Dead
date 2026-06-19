@@ -41,9 +41,8 @@ class BasicInventory(override val maxSlots: Int = -1) : InventoryEntity {
 	override fun addItem(item: Item, select: Boolean): Boolean {
 		if(maxSlots != -1 && inventory.size >= maxSlots) return false;
 		if(hasItem(item)) return false;
-		val holder: Entity? = item.holder;
-		if(holder is InventoryEntity)
-			holder.removeItem(item);
+		val holder: InventoryEntity? = item.holder as? InventoryEntity;
+		holder?.removeItem(item);
 		inventory.add(item);
 		if(select) selectedItemIndex = inventory.size - 1;
 		return true;
