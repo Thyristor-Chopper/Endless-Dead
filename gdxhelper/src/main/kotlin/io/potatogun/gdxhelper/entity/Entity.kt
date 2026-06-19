@@ -56,7 +56,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	 * 이게 없으면 entity.getPosition()이 될텐데 위치를 바꾼다고 생각해보자.
 	 * 그럼 entity.getPosition().setX(3);같이 될텐데 'get'을 해 놓고 set을 하는 게 좀 어색하지 않을까.
 	 * 어차피 val(final)이고 클래스 생성 시 바로 Position 객체가 할당되니까 null 위험성도 없지.
-	 * 그리고 entity.getPosition().getX()보다는 entity.position.getX()가 더 깔끔하지 않을까
+	 * 그리고 set이 아닌 get을 하더라도 entity.getPosition().getX()보다는 entity.position.getX()가 더 깔끔하지 않을까
 	 */
 	@JvmField val position = position.toMutablePosition { _, _ -> isCachedRectValid = false };
 	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)
@@ -100,11 +100,11 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
 	private var collideCheckWidth = width;
 	private var collideCheckHeight = height;
 	// 사각형 영역 캐시
-	private var cachedRect = calculateRectCache();
+	private var cachedRect = calculateRect();
 	private var isCachedRectValid = true;
 
 	// 사각형 영역 캐시 갱신
-	inline fun calculateRectCache(): Rectangle = Rectangle(x - width * 0.5f, y - height * 0.5f, width, height);
+	inline fun calculateRect(): Rectangle = Rectangle(x - width * 0.5f, y - height * 0.5f, width, height);
 
 	/**
      * 매 프레임 호출되어 자신을 그린다.
@@ -135,7 +135,7 @@ abstract class Entity(val world: World, position: Position, @JvmField val width:
      */
     fun getBounds(): Rectangle {
 		if(!isCachedRectValid)
-			cachedRect = calculateRectCache();
+			cachedRect = calculateRect();
 		return cachedRect;
 	}
 
