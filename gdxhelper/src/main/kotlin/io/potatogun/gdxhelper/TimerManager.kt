@@ -30,8 +30,7 @@ class TimerManager {
 	 * @param delta 델타값
 	 */
 	fun tick(delta: Float) {
-		for(timer in timers)
-			timer.tick(delta);
+		timers.forEach { it.tick(delta) };
 	}
 
 	/**

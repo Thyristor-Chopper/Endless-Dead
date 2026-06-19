@@ -105,8 +105,7 @@ class InventoryEntityImpl : InventoryEntity {
 	override fun getInventory(): List<Item> = inventory.toList();
 
 	override fun clearInventory() {
-		for(item in inventory)
-			item.destroy();
+		inventory.forEach { it.destroy() };
 		inventory.clear();
 	}
 }
