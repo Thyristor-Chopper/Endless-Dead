@@ -1,6 +1,5 @@
 package io.potatogun.gdxhelper.util;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 import io.potatogun.gdxhelper.Utils;
