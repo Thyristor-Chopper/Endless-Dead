@@ -66,9 +66,9 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	// 대미지를 입었을 때 붉게 표시되는 기간
 	protected open val damagedIndicatorDuration = 0.5f;
 	/**
-	 * 기본 무적 타이머
+	 * 기본값 무적 타이머는 없음
 	 */
-	protected abstract val defaultInvincibleDuration: Float;
+	protected open val defaultInvincibleDuration = 0f;
 
 	/**
 	 * 체력 감소(대미지를 입는다.)

@@ -23,7 +23,6 @@ import kotlin.math.sqrt;
  */
 class Bullet(world: World, val gun: Fireable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.position.x, shooter.position.y, 16f, 16f, Textures.getShared("bullet"), hp) {
 	override val isUpdatableWhileFrozen = (shooter is Player);
-	override val defaultInvincibleDuration = 0f;
 	override val showDamagedIndicator = false;
 	private val amountX: Float;
 	private val amountY: Float;
