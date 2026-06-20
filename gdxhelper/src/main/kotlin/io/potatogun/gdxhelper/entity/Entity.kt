@@ -58,7 +58,9 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	 * 어차피 val(final)이고 클래스 생성 시 바로 Position 객체가 할당되니까 null 위험성도 없지.
 	 * 그리고 set이 아닌 get을 하더라도 entity.getPosition().getX()보다는 entity.position.getX()가 더 깔끔하지 않을까
 	 */
-	@JvmField val position = MutablePosition(x, y) { _, _ -> isCachedRectValid = false };
+	@JvmField val position = MutablePosition(x, y).apply {
+		setObserver { _, _ -> isCachedRectValid = false };
+	};
 	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)
 	//   기존에는 x과 y가 backing field가 있는 실제 var였고 
 	//   val position get() = Position(x, y)가 있었다.

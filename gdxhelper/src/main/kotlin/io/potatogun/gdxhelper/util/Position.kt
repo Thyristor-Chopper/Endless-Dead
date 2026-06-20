@@ -37,7 +37,7 @@ open class Position(open val x: Float, open val y: Float) {
 
 	override fun toString(): String = "($x, $y)";
 
-	fun copy(x: Float = this.x, y: Float = this.y): Position = Position(x, y);
+	open fun copy(x: Float = this.x, y: Float = this.y): Position = Position(x, y);
 
 	fun component1(): Float = x;
 
@@ -56,4 +56,4 @@ inline fun Position.distanceTo(other: Entity): Float = distanceTo(other.position
 /**
  * 수정 가능한 복사본 레코드를 반환한다.
  */
-inline fun Position.toMutablePosition(noinline onChange: ((Float, Float) -> Unit)? = null): MutablePosition = MutablePosition(x, y, onChange);
+inline fun Position.toMutablePosition(): MutablePosition = MutablePosition(x, y);

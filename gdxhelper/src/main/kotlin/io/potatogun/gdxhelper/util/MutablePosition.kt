@@ -26,17 +26,22 @@ import kotlin.properties.Delegates;
  *
  * @param x			X좌표
  * @param y			Y좌표
- * @param onChange	값이 바뀔 때 콜백 함수
  */
-class MutablePosition(initialX: Float, initialY: Float, private val onChange: ((x: Float, y: Float) -> Unit)? = null) : Position(initialX, initialY) {
+class MutablePosition(initialX: Float, initialY: Float) : Position(initialX, initialY) {
+	private var onChange: ((x: Float, y: Float) -> Unit)? = null
 	override var x: Float by Delegates.observable(initialX) { _, _, _ -> onChange?.invoke(this.x, this.y) };
 	override var y: Float by Delegates.observable(initialY) { _, _, _ -> onChange?.invoke(this.x, this.y) };
+
+	/**
+	 * 값이 바뀔 때 콜백 함수를 지정한다.
+	 */
+	fun setObserver(cb: ((x: Float, y: Float) -> Unit)?) {
+		onChange = cb;
+	}
 
 	// MutablePosition은 의도적으로 메모리 주소 기반으로 동작
 	//   x, y가 같아도 서로 다른 객체면 해시맵에서 다른 것으로 취급한다.
 	override fun hashCode(): Int = System.identityHashCode(this);
 
-	fun copy(x: Float = this.x, y: Float = this.y, onChange: ((x: Float, y: Float) -> Unit)? = this.onChange): MutablePosition = MutablePosition(x, y, onChange);
-
-	fun component3(): ((x: Float, y: Float) -> Unit)? = onChange;
+	override fun copy(x: Float, y: Float): MutablePosition = MutablePosition(x, y);
 }
