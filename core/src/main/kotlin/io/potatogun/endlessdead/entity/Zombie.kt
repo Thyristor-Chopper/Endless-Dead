@@ -65,16 +65,16 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 		val target: LivingEntity? = getTargetOrReset();
 		if(target == null) return;
 
-        val dx = target.x - x;
-        val dy = target.y - y;
-        val distance = distanceTo(target);
+		val dx = target.x - x;
+		val dy = target.y - y;
+		val distance = distanceTo(target);
 
 		// 플레이어의 중심으로 정확히 모이면 어색하니까 살짝은 거리를 두게 하자.
-        if(distance > target.width * (3f / 4f)) {
+		if(distance > target.width * (3f / 4f)) {
 			attackTextureTimer = 0f;
-            x += dx / distance * speed * delta;
-            y += dy / distance * speed * delta;
-        } else {
+			x += dx / distance * speed * delta;
+			y += dy / distance * speed * delta;
+		} else {
 			// 플레이어에게 대미지 주기
 			// 처음 템플릿(예제) 코드에서는 모든 상호작용을 월드에서 처리했으나
 			//   난 좀비'가' 누군가에게 직접 대미지를 주는 게 맞는 것 같아서 여기서 처리함.
@@ -84,7 +84,7 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 
 			target.takeDamage(attackDamage, attacker = this);
 		}
-    }
+	}
 
 	override fun draw(batch: SpriteBatch) {
 		if(attackTextureTimer % 0.75f > 0.5f)
@@ -107,92 +107,92 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 	class Normal(world: World, x: Float, y: Float, initialTarget: LivingEntity? = null) : Zombie(world, x, y, width=32f, height=45f, hp=5, speed=100f, attackDamage=3, initialTarget = initialTarget);
 
 	class Strong(world: World, x: Float, y: Float, initialTarget: LivingEntity? = null) : Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, attackDamage=5, initialTarget = initialTarget) {
-        // 평상시 스피드, 대미지
-        private val originalSpeed = super.speed;
-        private val originalDamage = super.attackDamage;
+		// 평상시 스피드, 대미지
+		private val originalSpeed = super.speed;
+		private val originalDamage = super.attackDamage;
 		override var speed = originalSpeed;
 		override var attackDamage = originalDamage;
-        private var dashState = DashState.WALKING;
-        private var stateTimer = 0f;
-        // 돌진할 '방향(벡터)'을 기억해 둘 변수
-        private var dashDirX = 0f;
-        private var dashDirY = 0f;
+		private var dashState = DashState.WALKING;
+		private var stateTimer = 0f;
+		// 돌진할 '방향(벡터)'을 기억해 둘 변수
+		private var dashDirX = 0f;
+		private var dashDirY = 0f;
 		// 강한 좀비는 살짝 붉게
 		override val color = Utils.rgb(255, 192, 192);
 
-        override fun update(delta: Float) {
+		override fun update(delta: Float) {
 			val target: LivingEntity? = getTargetOrReset();
 			if(target == null) return;
 
-            when(dashState) {
-                DashState.WALKING -> {
-                    val distance = distanceTo(target);
-                    if(distance < 250f) {
-                        dashState = DashState.PREPARING;
-                        stateTimer = 0.5f;
+			when(dashState) {
+				DashState.WALKING -> {
+					val distance = distanceTo(target);
+					if(distance < 250f) {
+						dashState = DashState.PREPARING;
+						stateTimer = 0.5f;
 
-                        // 대기 상태에 들어가는 첫 프레임, 이때 플레이어를 조준해서 방향을 기억해둔다
-                        val dx = target.x - x;
-                        val dy = target.y - y;
-                        if(distance > 0) {
-                            dashDirX = dx / distance;
-                            dashDirY = dy / distance;
-                        }
-                    }
-                }
-                DashState.PREPARING -> {
-                    speed = 0f;
-                    stateTimer -= delta;
-                    if(stateTimer <= 0f) {
-                        dashState = DashState.DASHING;
-                        stateTimer = 0.4f;
-                    }
-                }
-                DashState.DASHING -> {
-                    // speed 0으로 해서 super 업데이트 로직 때 따로 안 움직이게 함
-                    speed = 0f;
-                    attackDamage = 20;
+						// 대기 상태에 들어가는 첫 프레임, 이때 플레이어를 조준해서 방향을 기억해둔다
+						val dx = target.x - x;
+						val dy = target.y - y;
+						if(distance > 0) {
+							dashDirX = dx / distance;
+							dashDirY = dy / distance;
+						}
+					}
+				}
+				DashState.PREPARING -> {
+					speed = 0f;
+					stateTimer -= delta;
+					if(stateTimer <= 0f) {
+						dashState = DashState.DASHING;
+						stateTimer = 0.4f;
+					}
+				}
+				DashState.DASHING -> {
+					// speed 0으로 해서 super 업데이트 로직 때 따로 안 움직이게 함
+					speed = 0f;
+					attackDamage = 20;
 
-                    x += dashDirX * 800f * delta;
-                    y += dashDirY * 800f * delta;
+					x += dashDirX * 800f * delta;
+					y += dashDirY * 800f * delta;
 
-                    // 돌진 중에 플레이어랑 부딪히면, 대미지 주고 즉시 쿨타임으로 넘어감
-                    if(collidesWith(target)) {
-                        target.takeDamage(attackDamage, attacker = this);
-                        dashState = DashState.COOLDOWN;
-                        speed = originalSpeed;
-                        attackDamage = originalDamage;
-                        stateTimer = 5.0f;
-                    } else {
-                        stateTimer -= delta;
+					// 돌진 중에 플레이어랑 부딪히면, 대미지 주고 즉시 쿨타임으로 넘어감
+					if(collidesWith(target)) {
+						target.takeDamage(attackDamage, attacker = this);
+						dashState = DashState.COOLDOWN;
+						speed = originalSpeed;
+						attackDamage = originalDamage;
+						stateTimer = 5.0f;
+					} else {
+						stateTimer -= delta;
 
-                        if(stateTimer <= 0f) {
-                            dashState = DashState.COOLDOWN;
-                            speed = originalSpeed;
-                            attackDamage = originalDamage;
-                            stateTimer = 5.0f;
-                        }
-                    }
-                }
-                DashState.COOLDOWN -> {
-                    stateTimer -= delta;
-                    if(stateTimer <= 0f)
-                        dashState = DashState.WALKING;
-                }
-            }
+						if(stateTimer <= 0f) {
+							dashState = DashState.COOLDOWN;
+							speed = originalSpeed;
+							attackDamage = originalDamage;
+							stateTimer = 5.0f;
+						}
+					}
+				}
+				DashState.COOLDOWN -> {
+					stateTimer -= delta;
+					if(stateTimer <= 0f)
+						dashState = DashState.WALKING;
+				}
+			}
 
-            // 속도 세팅이 완벽히 끝난 후, 마지막에 부모를 호출해서 이동시킴
-            super.update(delta);
-        }
+			// 속도 세팅이 완벽히 끝난 후, 마지막에 부모를 호출해서 이동시킴
+			super.update(delta);
+		}
 
 		/**
 		 * 평상시, 돌진하려고 잠깐 멈춰있음, 돌진, 돌진 쿨
 		 */
-        private enum class DashState {
-            WALKING,
+		private enum class DashState {
+			WALKING,
 			PREPARING,
 			DASHING,
 			COOLDOWN;
-        }
-    }
+		}
+	}
 }

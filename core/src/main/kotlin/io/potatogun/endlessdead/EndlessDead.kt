@@ -54,23 +54,23 @@ class EndlessDead : Game() {
 	internal val titleScreen: Title by lazy { Title(this) };
 	internal val worldViewer: ZombieWorldViewer by lazy { ZombieWorldViewer(this) };
 
-    /**
-     * LibGDX가 게임 시작 시 한 번 호출하는 라이프사이클 메서드.
-     *
-     * 이 함수는 'Gdx.graphics / Gdx.gl / Gdx.files 같은 전역이 모두 준비된 뒤'
-     * 호출되므로, Screen 안에서 SpriteBatch / BitmapFont / Texture 같은 LibGDX 자원을
-     * 만들어도 안전하다. (생성자에서 미리 Screen을 만들면 크래시 난다.)
-     *
-     * 보통 여기서 할 일:
-     *   1. 첫 화면이나 월드(Screen 또는 World의 자식)를 만들고
-     *   2. setScreen(...)으로 등록 → 이후 LibGDX 가 매 프레임 그 월드를 렌더
-     *
-     *  World가 LibGDX의 Screen 인터페이스를 상속하므로 setScreen 인자로 넘길 수 있다.
-     */
-    override fun create() {
-        setScreen(titleScreen);  // 부모 Game이 제공하는 메서드
+	/**
+	 * LibGDX가 게임 시작 시 한 번 호출하는 라이프사이클 메서드.
+	 *
+	 * 이 함수는 'Gdx.graphics / Gdx.gl / Gdx.files 같은 전역이 모두 준비된 뒤'
+	 * 호출되므로, Screen 안에서 SpriteBatch / BitmapFont / Texture 같은 LibGDX 자원을
+	 * 만들어도 안전하다. (생성자에서 미리 Screen을 만들면 크래시 난다.)
+	 *
+	 * 보통 여기서 할 일:
+	 *   1. 첫 화면이나 월드(Screen 또는 World의 자식)를 만들고
+	 *   2. setScreen(...)으로 등록 → 이후 LibGDX 가 매 프레임 그 월드를 렌더
+	 *
+	 *  World가 LibGDX의 Screen 인터페이스를 상속하므로 setScreen 인자로 넘길 수 있다.
+	 */
+	override fun create() {
+		setScreen(titleScreen);  // 부모 Game이 제공하는 메서드
 		Window.setBaseTitle(Constants.GAME_TITLE);
-    }
+	}
 
 	/**
 	 * 자원을 정리한다.

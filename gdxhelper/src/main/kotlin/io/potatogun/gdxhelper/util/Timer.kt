@@ -16,8 +16,8 @@ class Timer(val interval: Float, private val operation: () -> Unit) {
 
 	/**
 	 * 타이머를 갱신한다.
-     *
-     * @param delta 직전 프레임과의 시간 간격(초)
+	 *
+	 * @param delta 직전 프레임과의 시간 간격(초)
 	 */
 	internal fun tick(delta: Float) {
 		timer -= delta;

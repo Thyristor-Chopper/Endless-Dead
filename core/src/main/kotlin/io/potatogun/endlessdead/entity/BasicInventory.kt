@@ -8,11 +8,19 @@ import io.potatogun.gdxhelper.entity.Entity;
  * 단독으로 사용하지 않고 위임으로만 사용된다.
  *
  * @property maxSlots 최대 아이템 개수(-1: 무제한)
+ * @throws IllegalArgumentException 최대 아이템 개수가 잘못된 경우
  */
 class BasicInventory(override val maxSlots: Int = -1) : InventoryEntity {
 	private val inventory = mutableListOf<Item>();
 	override val selectedItem: Item?
-		get() = selectedItemIndex?.let { inventory[it] };
+		get() {
+			try {
+				return selectedItemIndex?.let { inventory[it] };
+			} catch(e: IndexOutOfBoundsException) {
+				selectedItemIndex = null;
+				return null;
+			}
+		}
 	override var selectedItemIndex: Int? = null
 		private set(value) {
 			if(value == null) {
@@ -49,7 +57,7 @@ class BasicInventory(override val maxSlots: Int = -1) : InventoryEntity {
 	}
 
 	override fun removeItem(index: Int) {
-		if(index < 0 || index >= inventory.size) throw IllegalArgumentException("index out of bounds");
+		if(index < 0 || index >= inventory.size) throw IndexOutOfBoundsException("index out of bounds");
 		val currentIndex: Int? = selectedItemIndex;
 		inventory.removeAt(index);
 		if(inventory.isEmpty())
@@ -72,7 +80,7 @@ class BasicInventory(override val maxSlots: Int = -1) : InventoryEntity {
 		return found;
 	}
 
-	override fun getItem(index: Int): Item = inventory.getOrNull(index) ?: throw IllegalArgumentException("index out of bounds");
+	override fun getItem(index: Int): Item = inventory.getOrNull(index) ?: throw IndexOutOfBoundsException("index out of bounds");
 
 	override fun selectNextItem(): Boolean {
 		val index: Int? = selectedItemIndex;
@@ -108,7 +116,7 @@ class BasicInventory(override val maxSlots: Int = -1) : InventoryEntity {
 	}
 
 	override fun selectItem(index: Int) {
-		if(index < 0 || index >= inventory.size) throw IllegalArgumentException("index out of bounds");
+		if(index < 0 || index >= inventory.size) throw IndexOutOfBoundsException("index out of bounds");
 		selectedItemIndex = index;
 	}
 

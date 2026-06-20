@@ -74,30 +74,38 @@ import kotlin.random.Random;
  *   GameWorld.drawBackground(batch)를 override 해서 그린다.
  */
 class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), Freezable {
-    // 플레이어 — 월드 중앙에서 시작.
-    private val player = Player(this, width * 0.5f, height * 0.5f);
+	/**
+	 * 플레이어 — 월드 중앙에서 시작.
+	 */
+	private val player = Player(this, width * 0.5f, height * 0.5f);
+	/**
+	 * 등록된 스포너
+	 */
 	private val spawners = mutableListOf<Spawner>();
-    // ── 체스판 배경 설정 (drawBackground()에서 사용) ──
-    //   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
-    //   자기 게임에선 다른 배경을 그리거나, 그냥 두면 검은 배경이다.
-    //
-    //   tile.png는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color를
-    //   바꿔가며 두 가지 색으로 그리는 트릭(틴트)으로 체스판을 만든다.
-    private val tileTexture = Utils.loadTexture("world/tile.bmp");
-    private val bgColorDark = Utils.rgb(38, 92, 38);
-    private val bgColorLight = Utils.rgb(38, 107, 38);
-    private val tileSize = 64f;
-	override var isFrozen: Boolean = false  // world의 시간이 정지되었는지 확인하는 변수
+	// ── 체스판 배경 설정 (drawBackground()에서 사용) ──
+	//   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
+	//   자기 게임에선 다른 배경을 그리거나, 그냥 두면 검은 배경이다.
+	//
+	//   tile.png는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color를
+	//   바꿔가며 두 가지 색으로 그리는 트릭(틴트)으로 체스판을 만든다.
+	private val tileTexture = Utils.loadTexture("world/tile.bmp");
+	private val bgColorDark = Utils.rgb(38, 92, 38);
+	private val bgColorLight = Utils.rgb(38, 107, 38);
+	private val tileSize = 64f;
+	/**
+	 * world의 시간이 정지되었는지 확인하는 변수
+	 */
+	override var isFrozen: Boolean = false
 		private set;
 	// 타이머
 	private val timerManager = TimerManager();
 	private var unfreezer: Task? = null;
 
-    /**
-     * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
-     *   이렇게 등록해야 update / draw 루프에 포함된다.
-     */
-    init {
+	/**
+	 * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
+	 *   이렇게 등록해야 update / draw 루프에 포함된다.
+	 */
+	init {
 		// 50~100개의 건물과 상자를 무작위로 배치
 		val intWidth = this.width.toInt();
 		val intHeight = this.height.toInt();
@@ -112,7 +120,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		}
 
 		// 플레이어 등록
-        addEntity(player);
+		addEntity(player);
 
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this, 3f));
@@ -122,7 +130,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 			val emptyContainers = getEntities().filterIsInstance<Container>().filter { it.isInventoryEmpty };
 			emptyContainers.randomOrNull()?.addItem(generateRandomItem());
 		});
-    }
+	}
 
 	/**
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다.
@@ -154,17 +162,17 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		(viewer as? SubtitlesDrawable)?.drawSubtitles("Time moves again");
 	}
 
-    // ────────────────────────────────────────────────────────
-    //  매 프레임 로직
-    // ────────────────────────────────────────────────────────
+	// ────────────────────────────────────────────────────────
+	//  매 프레임 로직
+	// ────────────────────────────────────────────────────────
 
-    /**
+	/**
 	 * PLAYING 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신
 	 */
-    override fun update(delta: Float) {
+	override fun update(delta: Float) {
 		timerManager.tick(delta);
 
-        // ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
+		// ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
 		super.update(delta);  // updateEntities와 removeDead
 
 		// 스포너 갱신
@@ -172,28 +180,28 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 			spawners.forEach { it.update(delta) };
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
-        if(!player.isAlive)
-            GameManager.setGameOver();
-    }
+		if(!player.isAlive)
+			GameManager.setGameOver();
+	}
 
-    // ────────────────────────────────────────────────────────
-    //  매 프레임 그리기
-    // ────────────────────────────────────────────────────────
+	// ────────────────────────────────────────────────────────
+	//  매 프레임 그리기
+	// ────────────────────────────────────────────────────────
 
-    /**
-     * 배경 그리기
-     *
-     * 부모가 이미 batch.begin()을 호출한 상태에서 이 함수를 부르므로,
-     * 여기선 batch.draw() 호출만 하면 된다. (begin/end를 또 부르면 안 된다)
-     *
-     * 카메라(offset)에 따라 타일 위치가 바뀌어 이동감을 준다.
-     *
-     * 색을 입히는 방법:
-     *   batch.color를 바꾼 뒤 batch.draw 하면 텍스처가 그 색으로 곱해져 그려진다.
-     *   tile.png가 흰색이라 어떤 색이든 그대로 적용된다.
-     *   끝에 다시 흰색으로 되돌려두지 않으면 그 다음 그리는 것까지 영향을 받으니 주의.
-     */
-    override fun drawBackground() {
+	/**
+	 * 배경 그리기
+	 *
+	 * 부모가 이미 batch.begin()을 호출한 상태에서 이 함수를 부르므로,
+	 * 여기선 batch.draw() 호출만 하면 된다. (begin/end를 또 부르면 안 된다)
+	 *
+	 * 카메라(offset)에 따라 타일 위치가 바뀌어 이동감을 준다.
+	 *
+	 * 색을 입히는 방법:
+	 *   batch.color를 바꾼 뒤 batch.draw 하면 텍스처가 그 색으로 곱해져 그려진다.
+	 *   tile.png가 흰색이라 어떤 색이든 그대로 적용된다.
+	 *   끝에 다시 흰색으로 되돌려두지 않으면 그 다음 그리는 것까지 영향을 받으니 주의.
+	 */
+	override fun drawBackground() {
 		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생하여
 		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
 		val screenWidth = Window.width;
@@ -202,65 +210,65 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		// 현재 카메라 시작점이 속한 타일 인덱스
 		val startCol = floor((offsetX - screenWidth * 0.5f) / tileSize).toInt();
 		val startRow = floor((offsetY - screenHeight * 0.5f) / tileSize).toInt();
-        // 화면을 채우는 데 필요한 타일 개수 (여유분으로 1)
-        val cols = ceil(screenWidth / tileSize).toInt() + 1;
-        val rows = ceil(screenHeight / tileSize).toInt() + 1;
+		// 화면을 채우는 데 필요한 타일 개수 (여유분으로 1)
+		val cols = ceil(screenWidth / tileSize).toInt() + 1;
+		val rows = ceil(screenHeight / tileSize).toInt() + 1;
 
-        for(row in startRow until startRow + rows)
-            for(col in startCol until startCol + cols) {
-                // 행+열이 짝수면 어둡게, 홀수면 밝게 → 체스판 패턴
-                batch.color = if((row + col) % 2 == 0) bgColorDark else bgColorLight;
+		for(row in startRow until startRow + rows)
+			for(col in startCol until startCol + cols) {
+				// 행+열이 짝수면 어둡게, 홀수면 밝게 → 체스판 패턴
+				batch.color = if((row + col) % 2 == 0) bgColorDark else bgColorLight;
 
-                // 월드 좌표의 타일 위치에서 offset 만큼 빼면 화면 좌표
-                val drawX = col * tileSize;
-                val drawY = row * tileSize;
-                batch.draw(tileTexture, drawX, drawY, tileSize, tileSize);
-            }
+				// 월드 좌표의 타일 위치에서 offset 만큼 빼면 화면 좌표
+				val drawX = col * tileSize;
+				val drawY = row * tileSize;
+				batch.draw(tileTexture, drawX, drawY, tileSize, tileSize);
+			}
 
-        // 배경에 입힌 색이 다음 그리기(게임 객체)에 영향을 주지 않도록 흰색으로 복원.
-        batch.color = Color.WHITE;
+		// 배경에 입힌 색이 다음 그리기(게임 객체)에 영향을 주지 않도록 흰색으로 복원.
+		batch.color = Color.WHITE;
 
 		// 월드 텍스트 (월드 좌표) — 월드 정중앙에 표시
-        //    WASD로 카메라를 움직이면 이 글자도 화면에서 움직인다.
-        drawText(
-            text = "*",
-            x = width * 0.5f - 24f,
-            y = height * 0.5f + 20f,
-            color = Color.FOREST,
-            scale = 8.0f,
+		//    WASD로 카메라를 움직이면 이 글자도 화면에서 움직인다.
+		drawText(
+			text = "*",
+			x = width * 0.5f - 24f,
+			y = height * 0.5f + 20f,
+			color = Color.FOREST,
+			scale = 8.0f,
 			skipBatch = true
-        );
-    }
+		);
+	}
 
 	/**
 	 * 플레이어 위치에 따라 카메라 위치 변경
 	 */
 	override fun updateCamera() {
-        // 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
-        //   보여주는 영역이 [offset, offset+screen]이어야 하므로
-        //   offset은 0 ~ (world - screen) 범위여야 한다.
+		// 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
+		//   보여주는 영역이 [offset, offset+screen]이어야 하므로
+		//   offset은 0 ~ (world - screen) 범위여야 한다.
 
 		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 getter 호출이 발생하여
 		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
 		val halfScreenWidth = Window.width * 0.5f;
 		val halfScreenHeight = Window.height * 0.5f;
-        offsetX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);
-        offsetY = player.y.coerceIn(halfScreenHeight, height - halfScreenHeight);
+		offsetX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);
+		offsetY = player.y.coerceIn(halfScreenHeight, height - halfScreenHeight);
 
 		super.updateCamera();
 	}
 
-    /**
+	/**
 	 * 화면이 닫힐 때 — 부모도 dispose한 뒤 우리만의 자원도 해제.
 	 */
-    override fun dispose() {
-        super.dispose();
-        tileTexture.dispose();
+	override fun dispose() {
+		super.dispose();
+		tileTexture.dispose();
 		spawners.clear();
 		timerManager.clearTimers();
 		unfreezer?.let {
 			Utils.clearTimeout(it);
 			unfreezer = null;
 		};
-    }
+	}
 }

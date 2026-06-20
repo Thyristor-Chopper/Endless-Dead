@@ -129,25 +129,25 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	private inline fun calculateRect(): Rectangle = Rectangle(x - collideCheckWidth * 0.5f, y - collideCheckHeight * 0.5f, collideCheckWidth, collideCheckHeight);
 
 	/**
-     * 매 프레임 호출되어 자신을 그린다.
+	 * 매 프레임 호출되어 자신을 그린다.
 	 *
 	 * 하위 클래스는 이 함수를 override하여 상황에 따라 텍스처를 달리하여 super.draw(SpriteBatch, Texture)를 호출할 수 있다.
 	 * 
-     * @param batch 이미지(Texture)를 화면에 찍어주는 도구. GameWorld가 이미 projectionMatrix 를 세팅하고 begin()/end() 안에서 호출해주므로, 서브클래스는 batch.draw(texture, x, y, w, h) 한 줄만 적으면 된다.
+	 * @param batch 이미지(Texture)를 화면에 찍어주는 도구. GameWorld가 이미 projectionMatrix 를 세팅하고 begin()/end() 안에서 호출해주므로, 서브클래스는 batch.draw(texture, x, y, w, h) 한 줄만 적으면 된다.
 	 */
 	open fun draw(batch: SpriteBatch) {
 		draw(batch, null);
 	}
 
-    /**
+	/**
 	 * 매 프레임 호출되어 자신을 그린다.
 	 *   자식 클래스에서 draw(SpriteBatch)를 override하여 상황에 맞는 텍스처를 지정하여
 	 *   개체에 등록된 기본 텍스처 대신에 쓸 텍스처를 alternateTexture로 넘길 수 있다.
 	 *
-     * @param batch            이미지(Texture)를 화면에 찍어주는 도구
+	 * @param batch            이미지(Texture)를 화면에 찍어주는 도구
 	 * @param alternateTexture 대신 사용할 텍스처
 	 */
-    protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
+	protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
 		val texture: Texture? = alternateTexture ?: this.texture;
 		texture?.let {
 			if(batch.color == Color.WHITE) batch.color = color;  // 대미지 시 붉게가 작동하게 하기 위해.
@@ -159,12 +159,12 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 		};
 	}
 
-    /**
-     * 이 객체가 차지하는 사각형 영역
+	/**
+	 * 이 객체가 차지하는 사각형 영역
 	 *
 	 * @return 사각형
-     */
-    fun getBounds(): Rectangle {
+	 */
+	fun getBounds(): Rectangle {
 		if(!isCachedRectValid) {
 			cachedRect = calculateRect();
 			isCachedRectValid = true;
@@ -172,22 +172,22 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 		return cachedRect;
 	}
 
-    /**
-     * 다른 객체와 충돌했는지 검사 — AABB(축 정렬 경계 상자) 방식.
-     *
-     * 두 사각형이 한 픽셀이라도 겹치면 true.
-     *   더 정밀한 판정(원, 다각형, 픽셀 단위)이 필요하면 서브클래스에서
-     *   별도 메서드를 만들거나 이 메서드를 override 해서 바꿀 수 있다.
-     *
-     * 왜 Entity에 둘까?
-     *   모든 게임 객체가 '충돌할 수 있다' 는 공통 능력을 가지기 때문.
-     *   그래서 player.collidesWith(enemy), bullet.collidesWith(wall) 처럼
-     *   어떤 조합이든 똑같은 문법으로 쓸 수 있다.
+	/**
+	 * 다른 객체와 충돌했는지 검사 — AABB(축 정렬 경계 상자) 방식.
+	 *
+	 * 두 사각형이 한 픽셀이라도 겹치면 true.
+	 *   더 정밀한 판정(원, 다각형, 픽셀 단위)이 필요하면 서브클래스에서
+	 *   별도 메서드를 만들거나 이 메서드를 override 해서 바꿀 수 있다.
+	 *
+	 * 왜 Entity에 둘까?
+	 *   모든 게임 객체가 '충돌할 수 있다' 는 공통 능력을 가지기 때문.
+	 *   그래서 player.collidesWith(enemy), bullet.collidesWith(wall) 처럼
+	 *   어떤 조합이든 똑같은 문법으로 쓸 수 있다.
 	 *
 	 * @param other 비교 대상
 	 * @return      충돌하면 true
-     */
-    fun collidesWith(other: Entity): Boolean {
+	 */
+	fun collidesWith(other: Entity): Boolean {
 		// 원본 코드: getBounds().overlaps(other.getBounds()); 한 줄
 		//   좀비처럼 게속 움직이는 개체는 매번 새 사각형 객체를 만들어서 확인하여 오버헤드도 상당하고
 		//   update() 내에서 collidesWith하는 경우도 많아 GC할 거리도 매 프레임 엄청나게 불어난다.
@@ -262,31 +262,31 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	}
 
 	/**
-     * 매 프레임 호출되어 상태를 갱신한다.
-     *
-     * 상자나 물체처럼 로직이 없는 개체일 수도 있으니 기본은 빈 함수
-     *
-     * @param delta 직전 프레임과의 시간 간격(초). 60fps 면 약 0.0167.
-     *              '픽셀/초' 단위의 속도에 delta 를 곱하면 '이번 프레임 이동량' 이 된다.
-     *              (프레임 속도가 달라져도 같은 속도로 움직이게 하려는 공식)
-     */
-    open fun update(delta: Float) {}
+	 * 매 프레임 호출되어 상태를 갱신한다.
+	 *
+	 * 상자나 물체처럼 로직이 없는 개체일 수도 있으니 기본은 빈 함수
+	 *
+	 * @param delta 직전 프레임과의 시간 간격(초). 60fps 면 약 0.0167.
+	 *              '픽셀/초' 단위의 속도에 delta 를 곱하면 '이번 프레임 이동량' 이 된다.
+	 *              (프레임 속도가 달라져도 같은 속도로 움직이게 하려는 공식)
+	 */
+	open fun update(delta: Float) {}
 
 	/**
 	 * 시간이 멈췄어도 isUpdatableWhileFrozen에 관계없이 실행할 로직
-     *
-     * @param delta 직전 프레임과의 시간 간격(초)
+	 *
+	 * @param delta 직전 프레임과의 시간 간격(초)
 	 */
 	open fun forceUpdate(delta: Float) {}
 
-    /**
-     * 이 객체가 갖고 있는 GPU 자원을 정리한다 — 화면이 닫힐 때 한 번 호출된다.
-     *
-     * 왜 필요한가?
-     *   Texture, Sound 같은 LibGDX 자원은 GPU/네이티브 메모리를 점유한다.
-     *   garbage collector는 이 메모리를 해제해 주지 못한다 - dispose() 명시적 호출 필요.
-     */
-    open fun dispose() {
+	/**
+	 * 이 객체가 갖고 있는 GPU 자원을 정리한다 — 화면이 닫힐 때 한 번 호출된다.
+	 *
+	 * 왜 필요한가?
+	 *   Texture, Sound 같은 LibGDX 자원은 GPU/네이티브 메모리를 점유한다.
+	 *   garbage collector는 이 메모리를 해제해 주지 못한다 - dispose() 명시적 호출 필요.
+	 */
+	open fun dispose() {
 		texture?.dispose();
 	}
 

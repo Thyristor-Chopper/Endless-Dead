@@ -50,7 +50,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 	override val isUpdatableWhileFrozen = true;
 	private val textureShotgun = Utils.loadTexture("entity/player_shotgun.bmp");
 	private val textureMachineGun = Utils.loadTexture("entity/player_machinegun.bmp");
-    private var speed = 200f
+	private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
 	private val timerManager = TimerManager();
@@ -73,7 +73,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 
 	// ---- 매 프레임 로직 ----
 
-    override fun update(delta: Float) {
+	override fun update(delta: Float) {
 		timerManager.tick(delta);
 
 		super.update(delta);
@@ -107,14 +107,14 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 		// 이동
 		val moved = updatePosition(delta);
 		if(moved) world.updateCamera();
-    }
+	}
 
 	/**
 	 * 자판 방향 글쇠 눌림 상태에 따라 위치 변경
 	 *
 	 * update()에서만 한 번 쓰이기 때문에 inline이다.
 	 *
-     * @param delta 직전 프레임과의 시간 간격(초)
+	 * @param delta 직전 프레임과의 시간 간격(초)
 	 * @return      조금이라도 이동했는지 여부
 	 */
 	private inline fun updatePosition(delta: Float): Boolean {
@@ -130,9 +130,9 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S))
 			y -= speed * delta;
 
-        // 월드 경계 안쪽으로 가두기.
-        x = x.coerceIn(0f, world.width);
-        y = y.coerceIn(0f, world.height);
+		// 월드 경계 안쪽으로 가두기.
+		x = x.coerceIn(0f, world.width);
+		y = y.coerceIn(0f, world.height);
 
 		return x != originalX || y != originalY;
 	}
@@ -234,6 +234,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 		textureShotgun.dispose();
 		textureMachineGun.dispose();
 		timerManager.clearTimers();
-		clearInventory();
+		Gdx.app.postRunnable { clearInventory() };
 	}
 }

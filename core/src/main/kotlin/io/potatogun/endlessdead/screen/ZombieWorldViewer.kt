@@ -39,7 +39,7 @@ import io.potatogun.gdxhelper.world.World;
 class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), SubtitlesDrawable {
 	private val noWorldOverlay = Utils.rgb(255, 255, 255, 0.5f);
 	private val frozenOverlay = Utils.rgb(0, 0, 0, 0.5f);
-    private val solidColor: Texture;
+	private val solidColor: Texture;
 	// 제목 표시줄에 표시할 정보의 인덱스
 	private var currentTitleInfo = 0
 		set(value) {
@@ -114,18 +114,18 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	 */
 	override fun update(delta: Float) {
 		when {
-            GameManager.isPlaying	-> updatePlaying(delta);
-            GameManager.isPaused	-> updatePaused(delta);
-            GameManager.isGameOver	-> updateGameOver();
-        }
+			GameManager.isPlaying	-> updatePlaying(delta);
+			GameManager.isPaused	-> updatePaused(delta);
+			GameManager.isGameOver	-> updateGameOver();
+		}
 	}
 
-    /**
+	/**
 	 * PLAYING 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
 	 *
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-    private inline fun updatePlaying(delta: Float) {
+	private inline fun updatePlaying(delta: Float) {
 		timerManager.tick(delta);
 
 		// 제목 표시줄에 통계 표시
@@ -142,7 +142,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 
 		// 일시 정지
 		detectPauseKey();
-    }
+	}
 
 	/**
 	 * 창 제목에 정보를 표시한다.
@@ -232,23 +232,23 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		
 		// 일시 정지 키 누름 감지
 		detectPauseKey();
-    }
+	}
 
-    /**
+	/**
 	 * 게임 오버 상태에서 매 프레임 처리
 	 *
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-    private inline fun updateGameOver() {
-        // ESC 키가 '막 눌린 순간' 앱 종료.
-        //   isKeyJustPressed로 한 이유: 누르고 있는 동안 매 프레임 exit이 호출되지 않게.
-        if(Input.isKeyJustPressed(Input.ESCAPE))
-            Gdx.app.exit();
+	private inline fun updateGameOver() {
+		// ESC 키가 '막 눌린 순간' 앱 종료.
+		//   isKeyJustPressed로 한 이유: 누르고 있는 동안 매 프레임 exit이 호출되지 않게.
+		if(Input.isKeyJustPressed(Input.ESCAPE))
+			Gdx.app.exit();
 
-        // R 키나 사이띄개를 누르면 다시 시작
-        if(Input.isKeyJustPressed(Input.R) || Input.isKeyJustPressed(Input.SPACE))
+		// R 키나 사이띄개를 누르면 다시 시작
+		if(Input.isKeyJustPressed(Input.R) || Input.isKeyJustPressed(Input.SPACE))
 			restartGame();
-    }
+	}
 
 	private fun restartGame() {
 		GameManager.resetAll();
@@ -262,22 +262,22 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	private fun detectPauseKey() {
 		// P키를 누르면 일시 정지 <-> 게임 진행 중 상태 토글!
 		val resumeKeyPressed = Input.isKeyJustPressed(Input.SPACE);
-        if(Input.isKeyJustPressed(Input.P) || Input.isKeyJustPressed(Input.ESCAPE) || resumeKeyPressed) {
-            if(GameManager.isPlaying && !resumeKeyPressed)
+		if(Input.isKeyJustPressed(Input.P) || Input.isKeyJustPressed(Input.ESCAPE) || resumeKeyPressed) {
+			if(GameManager.isPlaying && !resumeKeyPressed)
 				GameManager.pause();
 			else if(GameManager.isPaused)
 				GameManager.resume();
-        }
+		}
 	}
 
-    /**
-     * 매 프레임 그리기 — 부모가 배경·객체까지 그려준 뒤, 텍스트 UI를 얹는다.
-     *
-     * 이 함수에서는 '그리기'만 한다. 입력 처리·상태 변경은 update()의 책임.
-     *
-     * 주의: super.render(delta) 가 화면 clear + 배경 + 객체까지 그리므로,
-     *       텍스트는 반드시 super 호출 '이후' 그려야 가려지지 않는다.
-     */
+	/**
+	 * 매 프레임 그리기 — 부모가 배경·객체까지 그려준 뒤, 텍스트 UI를 얹는다.
+	 *
+	 * 이 함수에서는 '그리기'만 한다. 입력 처리·상태 변경은 update()의 책임.
+	 *
+	 * 주의: super.render(delta) 가 화면 clear + 배경 + 객체까지 그리므로,
+	 *       텍스트는 반드시 super 호출 '이후' 그려야 가려지지 않는다.
+	 */
 	override fun render(delta: Float) {
 		super.render(delta);
 
@@ -287,12 +287,12 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		if(!GameManager.isPlaying)
 			drawFrozenOverlay();
 
-        // ── 상태별로 그리는 것이 다름 ──
-        when {
-            // 플레이 중에는 추가로 그릴 것 없음
-            GameManager.isPaused	-> drawPausedMessage();  // 일시정지 화면 그리기
-            GameManager.isGameOver	-> drawGameOverMessage();
-        }
+		// ── 상태별로 그리는 것이 다름 ──
+		when {
+			// 플레이 중에는 추가로 그릴 것 없음
+			GameManager.isPaused	-> drawPausedMessage();  // 일시정지 화면 그리기
+			GameManager.isGameOver	-> drawGameOverMessage();
+		}
 
 		batch.end();
 	}
@@ -313,59 +313,59 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	 *
 	 * render에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-    private inline fun drawPausedMessage() {
-        drawText(
-            text = "PAUSED",
-            x = 0f,
-            y = Window.height * 0.5f + 20f,
-            color = Color.YELLOW,
-            scale = 2.0f,
+	private inline fun drawPausedMessage() {
+		drawText(
+			text = "PAUSED",
+			x = 0f,
+			y = Window.height * 0.5f + 20f,
+			color = Color.YELLOW,
+			scale = 2.0f,
 			width = Window.width,
 			align = Align.center,
 			skipBatch = true
-        );
-        drawText(
-            text = "Press <P> or <Esc> or <Space> to resume",
-            x = 0f,
-            y = Window.height * 0.5f - 20f,
-            color = Color.WHITE,
-            scale = 1.0f,
+		);
+		drawText(
+			text = "Press <P> or <Esc> or <Space> to resume",
+			x = 0f,
+			y = Window.height * 0.5f - 20f,
+			color = Color.WHITE,
+			scale = 1.0f,
 			width = Window.width,
 			align = Align.center,
 			skipBatch = true
-        );
+		);
 
 		drawWidget(resumeButton);
 		drawWidget(titleButton);
 		drawWidget(quitButton);
-    }
+	}
 
-    /**
+	/**
 	 * 게임 오버 시 화면 중앙에 띄우는 안내 메시지
 	 *
 	 * render에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-    private inline fun drawGameOverMessage() {
-        drawText(
-            text = "YOU DIED!",
-            x = 0f,
-            y = Window.height * 0.5f + 40f,
-            color = Color.RED,
-            scale = 2.0f,
+	private inline fun drawGameOverMessage() {
+		drawText(
+			text = "YOU DIED!",
+			x = 0f,
+			y = Window.height * 0.5f + 40f,
+			color = Color.RED,
+			scale = 2.0f,
 			width = Window.width,
 			align = Align.center,
 			skipBatch = true
-        );
-        drawText(
-            text = "Press <Esc> to exit or press <R> or <Space> to continue",
-            x = 0f,
-            y = Window.height * 0.5f + 10f,
-            color = Color.WHITE,
-            scale = 1.0f,
+		);
+		drawText(
+			text = "Press <Esc> to exit or press <R> or <Space> to continue",
+			x = 0f,
+			y = Window.height * 0.5f + 10f,
+			color = Color.WHITE,
+			scale = 1.0f,
 			width = Window.width,
 			align = Align.center,
 			skipBatch = true
-        );
+		);
 
 		// 통계
 		drawText(
@@ -421,7 +421,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		drawWidget(replayButton);
 		drawWidget(titleButton);
 		drawWidget(quitButton);
-    }
+	}
 
 	// 로딩된 월드가 없을 때 placeholder 배경
 	override fun drawBackground() {
@@ -452,8 +452,8 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			);
 		};
 
-        // ── 항상 보이는 UI ──
-        drawHud();
+		// ── 항상 보이는 UI ──
+		drawHud();
 	}
 
 	override fun drawSubtitles(message: String, duration: Int, color: Color) {
@@ -462,25 +462,25 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		subtitlesColor = color;
 	}
 
-    /**
+	/**
 	 * 항상 화면에 표시되는 정보 — HP 표시와 월드 중앙 표지.
 	 * drawElements에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-    private inline fun drawHud() {
+	private inline fun drawHud() {
 		val world: World? = projectingWorld;
 		val player: Player? = world?.get<Player>();
 		if(world == null || player == null) return;
 
-        // 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
-        //    카메라가 움직여도 항상 이 위치에 있다.
-        drawText(
-            text = "HP: ${player.hp}",
-            x = 10f,
-            y = Window.height - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
-            color = Utils.rgb(255, 240, 128),
-            scale = 1.2f,
+		// 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
+		//    카메라가 움직여도 항상 이 위치에 있다.
+		drawText(
+			text = "HP: ${player.hp}",
+			x = 10f,
+			y = Window.height - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
+			color = Utils.rgb(255, 240, 128),
+			scale = 1.2f,
 			skipBatch = true
-        );
+		);
 
 		// 현재 플레이어가 들고 있는 아이템
 		player.selectedItem?.let {
@@ -496,17 +496,17 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 
 		// 점수
 		drawText(
-            text = "Score: ${ScoreManager.score}",
-            x = Window.width - 130f,
-            y = Window.height - 10f,
-            color = Utils.rgb(203, 241, 194),
-            scale = 1.2f,
+			text = "Score: ${ScoreManager.score}",
+			x = Window.width - 130f,
+			y = Window.height - 10f,
+			color = Utils.rgb(203, 241, 194),
+			scale = 1.2f,
 			width = 120f,
 			align = Align.right,
 			skipBatch = true
-        );
-    }
-	
+		);
+	}
+
 	override fun dispose() {
 		super.dispose();
 		solidColor.dispose();

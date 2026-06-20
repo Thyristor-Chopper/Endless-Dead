@@ -50,7 +50,7 @@ interface InventoryEntity {
 	 * 인벤토리에서 아이템 빼기
 	 *
 	 * @param index 아이템 위치
-	 * @throws IllegalArgumentException 인덱스가 범위를 벗어난 경우
+	 * @throws IndexOutOfBoundsException 인덱스가 범위를 벗어난 경우
 	 */
 	fun removeItem(index: Int);
 
@@ -67,7 +67,7 @@ interface InventoryEntity {
 	 *
 	 * @param index 아이템 인벤토리 인덱스
 	 * @return      해당하는 아이템
-	 * @throws IllegalArgumentException 인덱스가 범위를 벗어난 경우
+	 * @throws IndexOutOfBoundsException 인덱스가 범위를 벗어난 경우
 	 */
 	fun getItem(index: Int): Item;
 
@@ -98,7 +98,7 @@ interface InventoryEntity {
 	 *
 	 * @param index 아이템 인벤토리 인덱스
 	 * @return      아이템의 인덱스
-	 * @throws IllegalArgumentException 인덱스가 범위를 벗어난 경우
+	 * @throws IndexOutOfBoundsException 인덱스가 범위를 벗어난 경우
 	 */
 	fun selectItem(index: Int);
 
