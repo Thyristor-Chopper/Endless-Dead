@@ -17,7 +17,8 @@ open class Position(open val x: Float, open val y: Float) {
 	/**
 	 * 두 위치 사이의 거리를 구한다.
 	 *
-	 * @return 거리
+	 * @param	다른 위치
+	 * @return	거리
 	 */
 	fun distanceTo(other: Position): Float {
 		val dx = x - other.x;
@@ -49,11 +50,14 @@ open class Position(open val x: Float, open val y: Float) {
 /**
  * 이 위치와 지정한 개체 사이의 거리를 구한다.
  *
- * @return 거리
+ * @param	비교할 개체
+ * @return	거리
  */
 inline fun Position.distanceTo(other: Entity): Float = distanceTo(other.position);
 
 /**
  * 수정 가능한 복사본 레코드를 반환한다.
+ *
+ * @return 수정 가능한 위치
  */
 inline fun Position.toMutablePosition(): MutablePosition = MutablePosition(x, y);

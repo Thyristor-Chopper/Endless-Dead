@@ -33,8 +33,14 @@ object Input {
 	private var scrolledDown = false;
 	private var keyDown = false;
 	private var keyJustDown = false;
+	/**
+	 * 현재 반디의 X 좌표
+	 */
 	@JvmStatic val mouseX: Int
 		inline get() = Gdx.input.getX();
+	/**
+	 * 현재 반디의 Y 좌표
+	 */
 	@JvmStatic val mouseY: Int
 		inline get() = Gdx.input.getY();
 
@@ -84,46 +90,62 @@ object Input {
     /**
      * 키가 현재 '눌려 있는 중' 인지 — 꾹 누르고 있으면 매 프레임 true.
      *   이동(← → ↑ ↓) 처럼 '누르는 동안 계속' 일어나야 할 동작에 사용.
+	 *
+	 * @param	key	글쇠 번호
+	 * @return	눌렸으면 true
      */
     @JvmStatic inline fun isKeyPressed(key: Int): Boolean = Gdx.input.isKeyPressed(key);
 
     /**
      * 키가 '이번 프레임에 막 눌렸는지' — 꾹 눌러도 첫 프레임에만 true.
      *   총알 발사, 메뉴 선택처럼 '한 번만' 실행되어야 할 동작에 사용.
+	 *
+	 * @param	key	글쇠 번호
+	 * @return	눌렸으면 true
      */
     @JvmStatic inline fun isKeyJustPressed(key: Int): Boolean = Gdx.input.isKeyJustPressed(key);
 
     /**
      * 아무 키라도 눌려 있는지의 여부
+	 *
+	 * @return	눌렸으면 true
      */
 	@JvmStatic fun isAnyKeyPressed(): Boolean = keyDown;
 
     /**
      * 아무 키를 방금 눌렀는지의 여부
+	 *
+	 * @return	눌렸으면 true
      */
 	@JvmStatic fun isAnyKeyJustPressed(): Boolean = keyJustDown;
 
 	/**
      * 지정한 마우스 단추가 눌려 있는지의 여부
 	 *
-	 * @param button	단추의 종류
+	 * @param	button	단추의 종류
+	 * @return	눌렸으면 true
      */
     @JvmStatic inline fun isButtonPressed(button: Int): Boolean = Gdx.input.isButtonPressed(button);
 
 	/**
      * 지정한 마우스 단추를 막 눌렀는지의 여부
 	 *
-	 * @param button	단추의 종류
+	 * @param	button	단추의 종류
+	 * @return	눌렸으면 true
      */
     @JvmStatic inline fun isButtonJustPressed(button: Int): Boolean = Gdx.input.isButtonJustPressed(button);
 
 	/**
      * 방금 아래로 스크롤됐는지의 여부
+	 *
+	 * @return	이동했으면 true
      */
     @JvmStatic fun isScrolledDown(): Boolean = scrolledDown;
 
 	/**
      * 방금 위로 스크롤됐는지의 여부
+	 *
+	 * @return	이동했으면 true
      */
     @JvmStatic fun isScrolledUp(): Boolean = scrolledUp;
 

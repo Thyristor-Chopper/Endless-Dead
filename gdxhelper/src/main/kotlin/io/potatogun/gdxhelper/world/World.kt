@@ -33,27 +33,44 @@ import io.potatogun.gdxhelper.world.Freezable;
  * @param height	월드 전체 높이 (위와 동일)
  */
 abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
-	// OrthographicCamera: 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라.
+	/**
+	 * 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라
+	 */
     private val camera = OrthographicCamera();
+	/**
+	 * 이미지(Texture)와 글자를 화면에 찍어주는 도구
+	 */
 	@JvmField protected val batch = SpriteBatch();  // @JvmField가 있지만 protected라 외부 자바 클래스에서 접근하라고 있는 게 아니기 때문에 캠슐화가 많이 깨지지는 않는 것 같아 성능을 위해서 씀.
-    @JvmField protected val font = BitmapFont();
-	// 월드를 보여주는 스크린. 만약 이 월드를 띄우는 뷰어가 없으면 null일 수도 있음에 주의
+	/**
+	 * 월드의 기본 글꼴
+	 *   월드 구현체에서 다른 글꼴을 사용할 수도 있으므로 open이다.
+	 */
+    @JvmField protected open val font = BitmapFont();
+	/**
+	 * 월드를 보여주는 스크린. 만약 이 월드를 띄우는 뷰어가 없으면 null일 수도 있음에 주의
+	 */
 	val viewer: WorldViewer?
 		inline get() = WorldViewer.getViewerByWorld(this);
+	// 카메라 오프셋 — 월드의 어느 지점이 화면 중앙에 오는지.
+    //   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
 	/**
-	 * 카메라 오프셋 — 월드의 어느 지점이 화면 중앙에 오는지.
-     *   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
+	 * 카메라의 X 오프셋
 	 */
     var offsetX: Float
 		get() = camera.position.x
 		protected set(value) { camera.position.x = value };
+	/**
+	 * 카메라의 Y 오프셋
+	 */
     var offsetY: Float
 		get() = camera.position.y
 		protected set(value) { camera.position.y = value };
-    // 등록된 객체들만 update/draw 된다.
-    // private으로 감춘 이유: 외부가 직접 add/remove 하면
+    // 등록된 객체들만 update/draw된다.
+    //   private으로 감춘 이유: 외부가 직접 add/remove하면
     //   '순회 중 삭제' 같은 버그가 나기 쉽다. addEntity(), removeEntity()라는 공식 창구만 허용.
-    //   (캡슐화의 실제 사례)
+	/**
+	 * 등록된 개체 목록
+	 */
     private val entities = mutableListOf<Entity>();
 
     init {
@@ -84,8 +101,8 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
     /**
 	 * 특정 개체를 수동 제거. 보통은 isAlive=false 후 removeDead() 로 정리.
 	 *
-	 * @param entity 제거할 개체
-	 * @return 성공 여부
+	 * @param	entity 제거할 개체
+	 * @return	성공 여부
 	 */
     fun removeEntity(entity: Entity): Boolean {
 		entity.let {
@@ -107,18 +124,23 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 
     /**
      * 지정한 종류의 개체 중 처음으로 등록된 것을 반환한다.
+	 *
+	 * @return 개체 (없으면 null)
      */
     inline fun <reified T : Entity> get(): T? = getEntities().firstOrNull { it::class == T::class } as T?;
 
     /**
      * 지정한 종류의 개체를 아무거나 반환한다.
+	 *
+	 * @return 개체 (없으면 null)
      */
     inline fun <reified T : Entity> getRandom(): T? = getEntities().shuffled().firstOrNull { it::class == T::class } as T?;
 
     /**
      * 등록된 모든 개체에게 'update(delta) 한 프레임 진행'을 시킨다.
-	 *
-	 * update 내에서만 한 번 쓰이기 때문에 inline이다.
+	 *   update 내에서만 한 번 쓰이기 때문에 inline이다.
+     *
+     * @param delta 직전 프레임과의 시간 간격(초)
      */
     private inline fun updateEntities(delta: Float) {
 		// 매번 순서를 섞어서 먼저 등록된 개체가 먼저 처리되는 것을 방지
@@ -134,7 +156,10 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
     // ────────────────────────────────────────────────────────
 
 	/**
-	 * 크기 조절 시 호출된다.
+	 * 창 크기 조절 시 호출된다.
+	 *
+	 * @param width		새 창 너비
+	 * @param height	새 창 높이
 	 */
 	open fun onResize(width: Int, height: Int) {
 		setCameraCenter();
@@ -151,6 +176,8 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
      * 기본 구현은 가장 단순한 '갱신 → 정리' 시나리오를 보여준다:
      *   ① updateAllObjects(delta) — 각 객체가 자기 위치 갱신
      *   ② removeDead()            — isAlive=false인 개체 제거
+     *
+     * @param delta 직전 프레임과의 시간 간격(초)
      */
     open fun update(delta: Float) {
 		updateEntities(delta);
@@ -179,9 +206,6 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 *
 	 *   참고: update()는 abstract가 아닌 open이다 — 거기엔 쓸 만한 default가
 	 *   존재하기 때문. 'default가 의미 있는가?' 가 abstract / open을 가르는 기준.
-	 *
-	 * @param batch 이미 begin()된 SpriteBatch — 여기에 batch.draw(texture, ...)로 그린다.
-	 *              begin/end를 또 호출하면 안 된다.
 	 */
 	protected abstract fun drawBackground();
 
@@ -210,7 +234,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 
         for(entity in entities) {
 			// 보이는 개체만 그리기 (자원 낭비 감소)
-			val maxEntityLength = Utils.max(entity.width, entity.height);
+			val maxEntityLength = Utils.max2(entity.width, entity.height);
 			val entityX = entity.x;
 			val entityY = entity.y;
 			if(entityX >= offsetX - halfScreenWidth - maxEntityLength && entityX <= offsetX + halfScreenWidth + maxEntityLength && entityY >= offsetY - halfScreenHeight - maxEntityLength && entityY <= offsetY + halfScreenHeight + maxEntityLength)
@@ -219,7 +243,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
     }
 
 	/**
-	 * 카메라 갱신
+	 * 카메라를 갱신한다.
 	 */
 	open fun updateCamera() {
 		camera.update();

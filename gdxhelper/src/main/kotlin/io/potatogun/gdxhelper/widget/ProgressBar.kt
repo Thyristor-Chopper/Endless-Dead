@@ -29,7 +29,13 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 		private const val BAR_HORIZONTAL_PADDING = 3f;	// 미터기 틀 안쪽 가로 여백
 		private const val CHUNK_WIDTH = 6f;				// 청크의 너비
 		private const val CHUNK_MARGIN = 2f;				// 각 청크 사이의 간격
+		/**
+		 * 프레임워크에서 제공하는 기본 스킨 (smooth)
+		 */
 		@JvmStatic val defaultSmoothSkin = Skin(HelperTextures.progressBar, HelperTextures.progressSmoothFill);
+		/**
+		 * 프레임워크에서 제공하는 기본 스킨 (chunked)
+		 */
 		@JvmStatic val defaultChunkedSkin = Skin(HelperTextures.progressBar, HelperTextures.progressChunkedFill);
 	}
 

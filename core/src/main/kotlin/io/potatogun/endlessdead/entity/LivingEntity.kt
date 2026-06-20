@@ -39,7 +39,9 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 */
 	val isAlive: Boolean
 		inline get() = hp > 0;
-	// 피격 시 잠깐 동안 대미지를 안 받게 해주는 무적 타이머.
+	/**
+	 * 피격 시 잠깐 동안 대미지를 안 받게 해주는 무적 타이머
+	 */
 	private var invincibilityTimer: Float = 0f
 		set(value) {
 			if(value < 0f) field = 0f;
@@ -55,15 +57,21 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 */
 	var latestAttacker: Entity? = null
 		private set;
-	// 대미지를 입으면 0.5초 동안 붉게 표시할 때 사용되는 타이머
+	/**
+	 * 대미지를 입으면 0.5초 동안 붉게 표시할 때 사용되는 타이머
+	 */
 	private var damagedIndicatorTimer: Float = 0f
 		set(value) {
 			if(value < 0f) field = 0f;
 			else field = value;
 		};
-	// 대미지를 입었을 때 붉게 표시할지의 여부
+	/**
+	 * 대미지를 입었을 때 붉게 표시할지의 여부
+	 */
 	protected open val showDamagedIndicator = true;
-	// 대미지를 입었을 때 붉게 표시되는 기간
+	/**
+	 * 대미지를 입었을 때 붉게 표시되는 기간
+	 */
 	protected open val damagedIndicatorDuration = 0.5f;
 	/**
 	 * 기본값 무적 타이머는 없음
@@ -77,6 +85,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 * @param	invincibleDuration	무적 타이머
 	 * @param	attacker				공격자
 	 * @return	성공 여부
+	 * @throws	IllegalArgumentException	피해량이 잘못된 경우
 	 */
 	@JvmOverloads open fun takeDamage(damage: Int, invincibleDuration: Float = defaultInvincibleDuration, attacker: Entity? = null): Boolean {
 		if(damage < 0) throw IllegalArgumentException("damage must not be negative");

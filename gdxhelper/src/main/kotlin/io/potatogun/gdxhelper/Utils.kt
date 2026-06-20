@@ -19,7 +19,8 @@ object Utils {
 	/**
 	 * 초를 X분 X초로 변환한다
 	 *
-	 * @param seconds	초
+	 * @param	seconds	초
+	 * @return	변환된 문자열
 	 */
 	@JvmStatic fun parseSeconds(seconds: Int, minutesSuffix: String, secondsSuffix: String): String {
 		if(seconds < 60) return "${seconds}$secondsSuffix";
@@ -48,8 +49,9 @@ object Utils {
 	 *
 	 * 우리가 만든 Timer 클래스는 우리 게임의 상태 등에 종속적이지만 이쪽은 게임과는 독립적이기 때문에 libGDX의 Timer 클래스를 직접 사용한다.
 	 * 
-	 * @param delay		지연 시간(초)
-	 * @param operation	실행할 서브루틴
+	 * @param	delay		지연 시간(초)
+	 * @param	operation	실행할 서브루틴
+	 * @return	실행 작업 객체
 	 */
 	@JvmStatic inline fun setTimeout(delay: Float, crossinline operation: () -> Unit): Task {
 		return object : Task() {
@@ -61,6 +63,8 @@ object Utils {
 
 	/**
 	 * setTimeout으로 생성한 일회용 타이머를 취소한다.
+	 *
+	 * @param timeout 취소할 작업 객체
 	 */
 	@JvmStatic inline fun clearTimeout(timeout: Task) {
 		timeout.cancel();
@@ -71,8 +75,9 @@ object Utils {
 	 *
 	 * 우리가 만든 Timer 클래스는 우리 게임의 상태 등에 종속적이지만 이쪽은 게임과는 독립적이기 때문에 libGDX의 Timer 클래스를 직접 사용한다.
 	 * 
-	 * @param interval	실행 간격(초)
-	 * @param operation	실행할 서브루틴
+	 * @param	interval	실행 간격(초)
+	 * @param	operation	실행할 서브루틴
+	 * @return	실행 작업 객체
 	 */
 	@JvmStatic inline fun setInterval(interval: Float, crossinline operation: () -> Unit): Task {
 		return object : Task() {
@@ -84,6 +89,8 @@ object Utils {
 
 	/**
 	 * setInterval으로 생성한 타이머를 취소한다.
+	 *
+	 * @param timeout 취소할 작업 객체
 	 */
 	@JvmStatic inline fun clearInterval(interval: Task) {
 		interval.cancel();
@@ -95,7 +102,7 @@ object Utils {
      * 주의: y 축은 위쪽이 크다. '위쪽'에 글자를 쓰려면 y = screenHeight-10 처럼.
 	 *
 	 * @param batch				그리기 도구
-	 * @param fpnt				글꼴
+	 * @param font				글꼴
 	 * @param text				출력할 메시지
 	 * @param x					X 위치
 	 * @param y					Y 위치
@@ -119,14 +126,28 @@ object Utils {
         if(!skipBatch) batch.end();
     }
 
-	@JvmStatic inline fun max(x: Float, y: Float) = if(x > y) x else y;
+	/**
+	 * 두 수 중 최댓값을 반환한다.
+	 *
+	 * @param	x	첫째 수
+	 * @param	y	둘째 수
+	 * @return	최댓값
+	 */
+	@JvmStatic inline fun max2(x: Float, y: Float) = if(x > y) x else y;
 
+	/**
+	 * 지정한 수의 절댓값을 반환한다.
+	 *
+	 * @param	처리할 수
+	 * @return	절댓값
+	 */
 	@JvmStatic inline fun abs(n: Float) = if(n < 0) -n else n;
 
 	/**
 	 * 지정한 화일 이름의 텍스처를 가져온다.
 	 *
-	 * @param path 화일 이름
+	 * @param	path	화일 이름
+	 * @return	불러온 텍스처 객체
 	 */
 	@JvmStatic inline fun loadTexture(path: String): Texture = Texture(Gdx.files.internal("assets/textures/$path"));
 }

@@ -28,6 +28,9 @@ import io.potatogun.gdxhelper.Utils;
  */
 class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, caption: String, accessKey: Char? = null, private val color: Color = Color.WHITE, private val skin: Skin = defaultSkin, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
 	companion object {
+		/**
+		 * 프레임워크에서 제공하는 단추의 기본 스킨
+		 */
 		@JvmStatic val defaultSkin = Skin(HelperTextures.button, HelperTextures.buttonHover, HelperTextures.buttonPressed, HelperTextures.buttonDisabled, Color.WHITE, Color.LIGHT_GRAY);
 	}
 
@@ -80,20 +83,31 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, 
 		detectAccessKeyPress();
 	}
 
-	// 바로 가기 키 처리
+	/**
+	 * 현재 프레임에서 바로 가기 키 처리
+	 */
 	private inline fun detectAccessKeyPress() {
 		if(accessKey != null && Input.isKeyJustPressed(accessKey.code - 36))
 			onClick();
 	}
 
+	/**
+	 * 단추를 누를 수 있게 한다.
+	 */
 	fun enable() {
 		isEnabled = true;
 	}
 
+	/**
+	 * 단추를 누를 수 없게 한다.
+	 */
 	fun disable() {
 		isEnabled = false;
 	}
 
+	/**
+	 * 단추 누르기
+	 */
 	private inline fun fireClickEvent() {
 		if(!previouslyPressed) return;
 		onClick();

@@ -3,7 +3,7 @@ package io.potatogun.gdxhelper.screen;
 import com.badlogic.gdx.Gdx;
 
 import io.potatogun.gdxhelper.Window;
-import io.potatogun.gdxhelper.util.WeakMutableSet;
+import io.potatogun.gdxhelper.util.weakMutableSetOf;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -60,17 +60,13 @@ open class WorldViewer : Screen() {
 		projectingWorld?.onResize(width, height);
 	}
 
-	/**
-	 * 월드 갱신
-	 */
+	// 월드 갱신
 	override fun update(delta: Float) {
 		// 월드 갱신
 		projectingWorld?.update(delta);
 	}
 
-	/**
-	 * 일반적으로 월드가 아닌 뷰어 자체의 배경은 없다(그려봤자 월드의 배경이 반투명하지 않는 이상 월드의 배경에 가려질 것이다).
-	 */
+	// 일반적으로 월드가 아닌 뷰어 자체의 배경은 없다(그려봤자 월드의 배경이 반투명하지 않는 이상 월드의 배경에 가려질 것이다).
 	override fun drawBackground() {}
 
 	override fun drawElements() {
@@ -91,11 +87,14 @@ open class WorldViewer : Screen() {
 
 	companion object {
 		// 생성된 모든 인스턴스를 관리하는 목록이다. 생성자에서 자동으로 추가한다. 누가 설마 자바 unsafe의 allocateInstance를 쓰진 않겠지
-		private val instances = WeakMutableSet<WorldViewer>();
+		private val instances = weakMutableSetOf<WorldViewer>();
 
 		/**
 		 * 지정한 월드를 보여주고 있는 뷰어를 찾는다.
 		 *   그런 뷰어가 없으면 null이다.
+		 *
+		 * @param	world	찾을 대상 월드
+		 * @return	찾은 월드 뷰어 (없으면 null)
 		 */
 		@JvmStatic fun getViewerByWorld(world: World): WorldViewer? = instances.firstOrNull { it.projectingWorld === world };
 	}

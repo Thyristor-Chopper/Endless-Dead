@@ -66,21 +66,34 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	//   val position get() = Position(x, y)가 있었다.
 	//   하지만 매번 Position 객체를 새로 생성하는 것은 오버헤드가 상당할 것 같아서
 	//   이렇게 바꾸었다.
+	/**
+	 * 개체의 현재 X 좌표
+	 */
 	var x: Float
 		inline get() = position.x
 		inline set(value) { position.x = value };
+	/**
+	 * 개체의 현재 Y 좌표
+	 */
 	var y: Float
 		inline get() = position.y
 		inline set(value) { position.y = value };
 	/**
-	 * TimeStopper 아이템의 영향을 받는지의 여부
+	 * Freezable 월드에서 시간 정지 영향을 받는지의 여부
 	 */
 	open val isUpdatableWhileFrozen = false;
-	// 텍스처 회전 각도
+	/**
+	 * 텍스처 회전 각도
+	 */
 	private var rotation = 0f;
-	// 개체 오버레이 색 (color는 mutable 객체이므로 val)
+	/**
+	 * 개체 오버레이 색
+	 *   (color는 mutable 객체이므로 val)
+	 */
 	protected open val color = Color.WHITE;
-	// 개체 투명도
+	/**
+	 * 개체의 투명도
+	 */
 	protected open var opacity: Float
 		get() = color.a
 		set(value) {
@@ -89,14 +102,31 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 			color.a = value;
 		};
 	// 매번 계산하면 오버헤드가 상당하므로 회전 시에만 계산해서 캐시
+	/**
+	 * 충돌 감지용 너비
+	 */
 	private var collideCheckWidth = width;
+	/**
+	 * 충돌 감지용 높이
+	 */
 	private var collideCheckHeight = height;
 	// 사각형 영역 캐시
+	/**
+	 * 개체가 차지하는 사각형 영역
+	 */
 	private var cachedRect = calculateRect();
+	/**
+	 * 개체가 차지하는 사각형 영역의 유효 여부 (캐시용)
+	 */
 	private var isCachedRectValid = true;
 
 	// 사각형 영역 캐시 갱신
-	private inline fun calculateRect(): Rectangle = Rectangle(x - width * 0.5f, y - height * 0.5f, width, height);
+	/**
+	 * 개체가 차지하는 사각형 영역을 새로 계산한다.
+	 *
+	 * @return 사각형
+	 */
+	private inline fun calculateRect(): Rectangle = Rectangle(x - collideCheckWidth * 0.5f, y - collideCheckHeight * 0.5f, collideCheckWidth, collideCheckHeight);
 
 	/**
      * 매 프레임 호출되어 자신을 그린다.
@@ -109,7 +139,14 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 		draw(batch, null);
 	}
 
-    // 개체에 등록된 기본 텍스처 대신에 쓸 텍스처를 alternateTexture로 넘길 수 있다.
+    /**
+	 * 매 프레임 호출되어 자신을 그린다.
+	 *   자식 클래스에서 draw(SpriteBatch)를 override하여 상황에 맞는 텍스처를 지정하여
+	 *   개체에 등록된 기본 텍스처 대신에 쓸 텍스처를 alternateTexture로 넘길 수 있다.
+	 *
+     * @param batch				이미지(Texture)를 화면에 찍어주는 도구
+	 * @param alternateTexture	대신 사용할 텍스처
+	 */
     protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
 		val texture: Texture? = alternateTexture ?: this.texture;
 		texture?.let {
@@ -124,6 +161,8 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 
     /**
      * 이 객체가 차지하는 사각형 영역
+	 *
+	 * @return 사각형
      */
     fun getBounds(): Rectangle {
 		if(!isCachedRectValid) {
@@ -144,6 +183,9 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
      *   모든 게임 객체가 '충돌할 수 있다' 는 공통 능력을 가지기 때문.
      *   그래서 player.collidesWith(enemy), bullet.collidesWith(wall) 처럼
      *   어떤 조합이든 똑같은 문법으로 쓸 수 있다.
+	 *
+	 * @param	other	비교 대상
+	 * @return	충돌하면 true
      */
     fun collidesWith(other: Entity): Boolean {
 		// 원본 코드: getBounds().overlaps(other.getBounds()); 한 줄
@@ -179,8 +221,10 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 
 	/**
 	 * 회전 각도를 구한다.
+	 *
+	 * @return 회전 각도
 	 */
-	fun getRotationAngle() = rotation;
+	fun getRotationAngle(): Float = rotation;
 
 	/**
 	 * 특정 위치를 향해 회전한다.
@@ -198,8 +242,11 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	 * @param degrees 회전 각도
 	 */
 	fun rotate(degrees: Float) {
+		if(rotation == degrees) return;
+
 		rotation = degrees;
 
+		// 충돌 판정 dimension 다시 계산
 		if(rotation % 180f == 0f) {
 			collideCheckWidth = width;
 			collideCheckHeight = height;
@@ -210,10 +257,12 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 			collideCheckWidth = (width + height) * 0.5f;
 			collideCheckHeight = collideCheckWidth;
 		}
+
+		isCachedRectValid = false;
 	}
 
 	/**
-     * 매 프레임 호출되어 **상태를 갱신**한다.
+     * 매 프레임 호출되어 상태를 갱신한다.
      *
      * 상자나 물체처럼 로직이 없는 개체일 수도 있으니 기본은 빈 함수
      *
@@ -224,7 +273,9 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
     open fun update(delta: Float) {}
 
 	/**
-	 * 시간이 멈췄어도 canUpdateWhileFrozen에 관계없이 실행할 로직
+	 * 시간이 멈췄어도 isUpdatableWhileFrozen에 관계없이 실행할 로직
+     *
+     * @param delta 직전 프레임과의 시간 간격(초)
 	 */
 	open fun forceUpdate(delta: Float) {}
 
@@ -242,6 +293,9 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 		texture?.dispose();
 	}
 
+	/**
+	 * 개체를 월드에서 제거하고 등록을 해제한다.
+	 */
 	fun remove() {
 		world.removeEntity(this);
 	}

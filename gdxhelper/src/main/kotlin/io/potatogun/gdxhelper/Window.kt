@@ -17,12 +17,27 @@ object Window {
 	//   gdx 내부적으로 캐시하지 않고 매번 계산할 가능성도 염두하여 캐시하긴 한다.
 	//   참고로 Int#toFloat()는 실제 함수 호출으로 구현되지는 않고 자바의 '(float) 정수' 형태로 변환된다.
 	//   그래서 toFloat '함수' 호출 오버헤드는 없다. (이 부분도 빌드 후 디컴파일된 자바 코드로 직접 확인함)
+	/**
+	 * 현재 창의 너비
+	 */
 	@JvmStatic var width = 0f  // lateinit이 불가하여 0으로 초기화
 		private set;
+	/**
+	 * 현재 창의 높이
+	 */
 	@JvmStatic var height = 0f
 		private set;
+	/**
+	 * 제목 표시줄 제목의 base
+	 */
 	private var titleBarBase: String? by Delegates.observable("Game") { _, _, _ -> updateTitle() };
+	/**
+	 * 제목 표시줄 제목에 표시할 상태 정보
+	 */
 	@JvmStatic var titleBarInfo: String? by Delegates.observable(null) { _, _, _ -> updateTitle() };
+	/**
+	 * 제목 표시줄 제목에 표시할 통계 정보
+	 */
 	@JvmStatic var titleBarStats: String? by Delegates.observable(null) { _, _, _ -> updateTitle() };
 
 	init {
@@ -31,15 +46,24 @@ object Window {
 
 	/**
 	 * 창 제목을 직접 변경한다.
+	 * @param title 전체 제목
 	 */
 	@JvmStatic inline fun setTitle(title: String) {
 		Gdx.graphics.setTitle(title);
 	}
 
+	/**
+	 * 제목 표시줄 제목의 base를 지정한다.
+	 *
+	 * @param value base title
+	 */
 	@JvmStatic fun setBaseTitle(value: String) {
 		titleBarBase = value;
 	}
 
+	/**
+	 * 제목 표시줄 제목을 갱신한다.
+	 */
 	private fun updateTitle() {
 		val titleBarInfo = this.titleBarInfo?.let { " - $it" } ?: "";
 		val titleBarStats = this.titleBarStats?.let { " / $it" } ?: "";

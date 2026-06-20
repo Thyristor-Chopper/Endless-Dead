@@ -21,6 +21,8 @@ abstract class Widget(protected var x: () -> Float, protected var y: () -> Float
 
 	/**
 	 * 컨트롤을 화면에 그리는 로직
+	 *
+     * @param batch	이미지(Texture)를 화면에 찍어주는 도구
 	 */
 	internal abstract fun draw(batch: SpriteBatch);
 
@@ -43,7 +45,17 @@ abstract class Widget(protected var x: () -> Float, protected var y: () -> Float
 		isVisible = false;
 	}
 
+	/**
+	 * 컨트롤의 현재 계산된 X 좌표
+	 * 
+	 * @return X 좌표
+	 */
 	fun getX(): Float = x();
 
+	/**
+	 * 컨트롤의 현재 계산된 Y 좌표
+	 * 
+	 * @return Y 좌표
+	 */
 	fun getY(): Float = y();
 }

@@ -41,6 +41,10 @@ import kotlin.math.atan2;
  *   ▸ Texture는 객체가 살아있는 동안 한 번만 만들고 재사용 (생성 비용이 큼).
  *   ▸ 객체가 사라질 때 dispose()로 GPU 자원 해제 — 기본 Entity#dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
+ *
+ * @param world	플레이어가 속한 월드
+ * @param x		처음 X 좌표
+ * @param y		처음 Y 좌표
  */
 class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 63f, Utils.loadTexture("entity/player.bmp"), 50), InventoryEntity by BasicInventory(-1) {
 	override val isUpdatableWhileFrozen = true;
@@ -110,6 +114,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 	 *
 	 * update()에서만 한 번 쓰이기 때문에 inline이다.
 	 *
+     * @param delta 직전 프레임과의 시간 간격(초)
 	 * @return 조금이라도 이동했는지 여부
 	 */
 	private inline fun updatePosition(delta: Float): Boolean {
@@ -166,18 +171,14 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 
 	// ---- 콜백(이벤트) 처리 ----
 
-	/**
-	 * 대미지를 받았을 때 자연 회복 타이머를 초기화하고 점수를 감점한다
-	 */
+	// 대미지를 받았을 때 자연 회복 타이머를 초기화하고 점수를 감점한다
 	override fun onDamage(damage: Int, attacker: Entity?) {
 		healTimer.reset();
 		ScoreManager.subtractScore(5);
 		Statistics.totalDamage += damage;
 	}
 
-	/**
-	 * 처치한 좀비 수를 갱신한다.
-	 */
+	// 처치한 좀비 수를 갱신한다.
 	override fun onKill(victim: Entity) {
 		if(victim is Zombie) {
 			ScoreManager.addScore(10);
@@ -217,9 +218,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 		};
 	}
 
-	/**
-	 * 플레이어를 들고 있는 아이템에 맞게 그린다.
-	 */
+	// 플레이어를 들고 있는 아이템에 맞게 그린다.
 	override fun draw(batch: SpriteBatch) {
 		val texture = when(selectedItem) {
 			is Shotgun		-> textureShotgun
@@ -229,9 +228,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 		super.draw(batch, texture);
 	}
 
-	/**
-	 * 자원 및 타이머 정리
-	 */
+	// 자원 및 타이머 정리
 	override fun dispose() {
 		super.dispose();
 		textureShotgun.dispose();

@@ -2,6 +2,10 @@ package io.potatogun.gdxhelper.screen;
 
 import com.badlogic.gdx.graphics.Color;
 
+/**
+ * '자막'을 그릴 수 있는 화면.
+ *   자막이 어떤 모습으로 그려지는지는 구현체 나름이다.
+ */
 interface SubtitlesDrawable {
 	// @JvmOverloads이 불가능해서 수동으로
 	fun drawSubtitles(message: String) {

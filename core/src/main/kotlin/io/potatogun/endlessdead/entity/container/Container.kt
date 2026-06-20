@@ -41,7 +41,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	 */
 	open protected val playerItemTexture: Texture? = null;
 	/**
-	 * 들어있는 아이템
+	 * 현재 들어있는 아이템
 	 */
 	var containedItem: Item? = initialItem
 		private set;
@@ -51,9 +51,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	var isPlayerItem = false
 		private set;
 
-	/**
-	 * 상자를 화면에 그린다. 비어 있을 때와 아닐 때 텍스처가 다르기 때문에 override해서 처리한다.
-	 */
+	// 상자를 화면에 그린다. 비어 있을 때와 아닐 때 텍스처가 다르기 때문에 override해서 처리한다.
 	override fun draw(batch: SpriteBatch) {
 		val texture: Texture? = 
 			if(isInventoryEmpty) emptyTexture
@@ -138,9 +136,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		containedItem?.destroy();
 	}
 
-	/**
-	 * 추가적인 두 텍스처도 비운다.
-	 */
+	// 추가적인 두 텍스처도 비운다.
 	override fun dispose() {
 		super.dispose();
 		playerItemTexture?.dispose();

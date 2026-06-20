@@ -9,7 +9,8 @@ class TimerManager {
     /**
 	 * 타이머 등록
 	 *
-	 * @param timer 등록할 타이머
+	 * @param	timer 등록할 타이머
+	 * @return	타이머 자신
 	 */
     fun registerTimer(timer: Timer): Timer {
         timers.add(timer);
@@ -26,8 +27,8 @@ class TimerManager {
 
 	/**
 	 * 타이머를 갱신한다.
-	 *
-	 * @param delta 델타값
+     *
+     * @param delta 직전 프레임과의 시간 간격(초)
 	 */
 	fun tick(delta: Float) {
 		timers.forEach { it.tick(delta) };

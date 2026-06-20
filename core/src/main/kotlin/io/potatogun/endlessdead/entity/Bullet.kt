@@ -24,7 +24,13 @@ import kotlin.math.sqrt;
 class Bullet(world: World, val gun: Fireable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.position.x, shooter.position.y, 16f, 16f, Textures.getShared("bullet"), hp) {
 	override val isUpdatableWhileFrozen = (shooter is Player);
 	override val showDamagedIndicator = false;
+	/**
+	 * 총알 속도에 따른 가로 이동량
+	 */
 	private val amountX: Float;
+	/**
+	 * 총알 속도에 따른 세로 이동량
+	 */
 	private val amountY: Float;
 
 	init {
@@ -69,8 +75,6 @@ class Bullet(world: World, val gun: Fireable, val shooter: Entity, private val t
 			}
 	}
 
-	/**
-	 * 공유 자원이기 때문에 여기서 정리하지 않고 다른 인스턴스에서 재활용한다.
-	 */
+	// 공유 자원이기 때문에 여기서 정리하지 않고 다른 인스턴스에서 재활용한다.
 	override fun dispose() {}
 }
