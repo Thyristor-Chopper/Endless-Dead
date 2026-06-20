@@ -48,8 +48,8 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	/** 
 	 * 무적 타이머가 가동 중인지의 여부
 	 */
-	val isInvincibilityTimerActive: Boolean
-		get() = (invincibilityTimer > 0f);
+	private val isInvincibilityTimerActive: Boolean
+		inline get() = (invincibilityTimer > 0f);
 	/**
 	 * 가장 최근에 대미지를 입힌 개체
 	 */
@@ -68,7 +68,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	/**
 	 * 기본 무적 타이머
 	 */
-	open val defaultInvincibleDuration = 0.0f;
+	protected abstract val defaultInvincibleDuration: Float;
 
 	/**
 	 * 체력 감소(대미지를 입는다.)
