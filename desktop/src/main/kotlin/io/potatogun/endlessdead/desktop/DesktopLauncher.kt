@@ -6,6 +6,8 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
+import io.potatogun.gdxhelper.util.MutablePosition;
+import io.potatogun.gdxhelper.util.Position;
 
 /**
  * ════════════════════════════════════════════════════════════
