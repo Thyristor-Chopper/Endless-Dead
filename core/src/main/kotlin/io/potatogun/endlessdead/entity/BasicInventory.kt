@@ -20,7 +20,7 @@ class BasicInventory(override val maxSlots: Int = -1) : InventoryEntity {
 				selectedItemIndex = null;
 				return null;
 			}
-		}
+		};
 	override var selectedItemIndex: Int? = null
 		private set(value) {
 			if(value == null) {
