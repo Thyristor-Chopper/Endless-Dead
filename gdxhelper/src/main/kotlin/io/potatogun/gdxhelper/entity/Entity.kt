@@ -207,7 +207,7 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 			collideCheckWidth = height;
 			collideCheckHeight = width;
 		} else {  // 사각형의 세밀한 회전을 구하기에는 연산량이 너무 늘어나니까 그냥 평균으로 때우자. 어차피 지금 플레이어 외에 회전하는 개체가 없다.
-			collideCheckWidth = width + height;
+			collideCheckWidth = (width + height) * 0.5f;
 			collideCheckHeight = collideCheckWidth;
 		}
 	}
