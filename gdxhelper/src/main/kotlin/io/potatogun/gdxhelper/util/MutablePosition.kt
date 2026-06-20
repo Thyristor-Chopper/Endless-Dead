@@ -24,8 +24,8 @@ import kotlin.properties.Delegates;
  *   println(mp2[b]);  // 2 - 메모리 상에서 다른 객체이지만 동일한 값에 대해 같은 해시를 생성하기 때문
  *   println(a == b);  // true - equals를 override했기 때문
  *
- * @param x			X좌표
- * @param y			Y좌표
+ * @param x X좌표
+ * @param y Y좌표
  */
 class MutablePosition(initialX: Float, initialY: Float) : Position(initialX, initialY) {
 	private var onChange: ((x: Float, y: Float) -> Unit)? = null;

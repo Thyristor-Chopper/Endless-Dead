@@ -10,8 +10,8 @@ import kotlin.math.sqrt;
 /**
  * 위치(평면좌표)에 대한 객체이다.
  *
- * @param x			X좌표
- * @param y			Y좌표
+ * @param x X좌표
+ * @param y Y좌표
  */
 open class Position(open val x: Float, open val y: Float) {
 	/**
