@@ -126,8 +126,10 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
      * 이 객체가 차지하는 사각형 영역
      */
     fun getBounds(): Rectangle {
-		if(!isCachedRectValid)
+		if(!isCachedRectValid) {
 			cachedRect = calculateRect();
+			isCachedRectValid = true;
+		}
 		return cachedRect;
 	}
 
