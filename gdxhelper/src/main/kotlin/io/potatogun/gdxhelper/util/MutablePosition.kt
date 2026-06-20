@@ -14,14 +14,14 @@ import kotlin.properties.Delegates;
  *   val mp = mutableMapOf<MutablePosition, Int>();
  *   mp[x] = 1;
  *   println(mp[x]);  // 1
- *   println(mp[y]);  // null - 둘이 메모리 상에서 다른 개체이기 때문
+ *   println(mp[y]);  // null - 둘이 메모리 상에서 다른 객체이기 때문
  *   println(x == y);  // true - equals를 override했기 때문
  *   val a = Position(1f, 2f);
  *   val b = Position(1f, 2f);
  *   val mp2 = mutableMapOf<Position, Int>();
  *   mp2[a] = 2;
  *   println(mp2[a]);  // 2
- *   println(mp2[b]);  // 2 - 메모리 상에서 다른 개체이지만 동일한 값에 대해 같은 해시를 생성하기 때문
+ *   println(mp2[b]);  // 2 - 메모리 상에서 다른 객체이지만 동일한 값에 대해 같은 해시를 생성하기 때문
  *   println(a == b);  // true - equals를 override했기 때문
  *
  * @param x			X좌표
