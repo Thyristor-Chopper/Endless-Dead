@@ -19,7 +19,7 @@ object ScoreManager {
 	/**
 	 * 점수를 준다.
 	 *
-	 * @param amount	줄 점수
+	 * @param amount 줄 점수
 	 */
 	@JvmStatic fun addScore(amount: Int) {
 		if(amount < 0) throw IllegalArgumentException("invalid score amount");
@@ -29,7 +29,7 @@ object ScoreManager {
 	/**
 	 * 점수를 감점한다.
 	 *
-	 * @param amount	차감할 점수
+	 * @param amount 차감할 점수
 	 */
 	@JvmStatic fun subtractScore(amount: Int) {
 		if(amount < 0) throw IllegalArgumentException("invalid score amount");

@@ -79,10 +79,7 @@ object Window {
 	 *   지키는 게 나을 수도.
 	 */
 	internal fun updateWindowDimensions() {
-		val floatWidth = Gdx.graphics.width.toFloat();
-		val floatHeight = Gdx.graphics.height.toFloat();
-
-		width = floatWidth;
-		height = floatHeight;
+		width = Gdx.graphics.width.toFloat();
+		height = Gdx.graphics.height.toFloat();
 	}
 }

@@ -14,14 +14,15 @@ import kotlin.math.ceil;
  *
  * x과 y 위치는 screenWidth 등이 포함될 경우 창 크기가 바뀔 때마다 값이 달라지므로 람다로 받는다.
  *
- * @param x			X 좌표 계산 함수
- * @param y			Y 좌표 계산 함수
- * @param width		미터기 너비
- * @param height	미터기 높이
- * @param value		미터기의 값(진행률) (0.0~1.0)
- * @param color		미터기의 색
- * @param skin		미터기의 스킨(텍스처 묶음)
- * @param style		미터기의 스타일
+ * @param    x      X 좌표 계산 함수
+ * @param    y      Y 좌표 계산 함수
+ * @param    width  미터기 너비
+ * @param    height 미터기 높이
+ * @property value  미터기의 값(진행률) (0.0~1.0)
+ * @property color  미터기의 색
+ * @param    skin   미터기의 스킨(텍스처 묶음)
+ * @property style  미터기의 스타일
+ * @throws IllegalArgumentException 미터기 값이 잘못된 경우
  */
 class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, var value: Float = 0f, private val color: Color = Color.WHITE, skin: Skin? = null, private val style: Style = Style.SMOOTH) : Widget(x, y, width, height) {
 	companion object {
@@ -87,8 +88,8 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 	/**
 	 * 미터기(진행률 표시기)의 스킨이다.
 	 *
-	 * @param bar	미터기 틀의 9-patch 텍스처
-	 * @param fill	채움 9-patch 텍스처
+	 * @property bar  미터기 틀의 9-patch 텍스처
+	 * @property fill 채움 9-patch 텍스처
 	 */
 	data class Skin(@JvmField val bar: NinePatch, @JvmField val fill: NinePatch);
 

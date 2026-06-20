@@ -17,6 +17,8 @@ import io.potatogun.gdxhelper.widget.Button;
 
 /**
  * 타이틀 화면
+ *
+ * @property game 게임 인스턴스
  */
 class Title(private val game: EndlessDead) : Screen() {
 	private val title = Utils.loadTexture("title/title.bmp");
@@ -50,10 +52,8 @@ class Title(private val game: EndlessDead) : Screen() {
 		batch.draw(stillCut, 0f, 0f, Window.width, Window.height);
 	}
 
-	/**
-	 * 아무 키나 누르시오. 구현,
-	 * BlinkTimer로 깜박이는 간격 구현
-	 */
+	// 아무 키나 누르시오. 구현,
+	//   titleBlinkTimer로 깜박이는 간격 구현
 	override fun drawElements() {
 		val titleWidth = Window.width * 0.75f;
 		val titleHeight = titleWidth / 6f;

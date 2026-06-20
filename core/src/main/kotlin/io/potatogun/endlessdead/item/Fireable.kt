@@ -10,7 +10,9 @@ interface Fireable {
 	/**
 	 * 프로젝타일 쏘기
 	 *
-	 * @return 쏜 프로젝타일의 개수 (실패하면 0)
+	 * @param target  쏠 위치
+	 * @param shooter 발사한 개체
+	 * @return        쏜 프로젝타일의 개수 (실패하면 0)
 	 */
 	fun fire(target: Position, shooter: Entity): Int;
 }

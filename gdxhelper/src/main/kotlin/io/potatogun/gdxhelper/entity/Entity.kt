@@ -41,22 +41,22 @@ import kotlin.math.sqrt;
  *        override fun update(delta: Float) { y += 400f * delta }
  *    }
  *
- * @param world		개체가 속한 세계 - 자바로 만든 게임에서도 이런 때는 getWorld()를 쓰는 경우가 많아 @JvmField는 안 붙임
- * @param x			개체의 처음 X 위치
- * @param y			개체의 처음 Y 위치
- * @param width		가로 크기 (픽셀)
- * @param height	세로 크기 (픽셀)
- * @param texture	개체 텍스처(없을 수도 있음) - @JvmField가 있지만 protected라 외부 자바 클래스에서 접근하라고 있는 게 아니기 때문에 캠슐화가 많이 깨지지는 않는 것 같아 성능을 위해서 씀.
+ * @property world   개체가 속한 세계 - 자바로 만든 게임에서도 이런 때는 getWorld()를 쓰는 경우가 많아 @JvmField는 안 붙임
+ * @param    x       개체의 처음 X 위치
+ * @param    y       개체의 처음 Y 위치
+ * @property width   가로 크기 (픽셀)
+ * @property height  세로 크기 (픽셀)
+ * @property texture 개체 텍스처(없을 수도 있음) - @JvmField가 있지만 protected라 외부 자바 클래스에서 접근하라고 있는 게 아니기 때문에 캠슐화가 많이 깨지지는 않는 것 같아 성능을 위해서 씀.
  */
 abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width: Float, @JvmField val height: Float, @JvmField protected val texture: Texture? = null) {
 	/**
 	 * 개체의 평면좌표 위치
 	 *
 	 * @JvmField는 성능 때문도 있지만, 외부 자바 클래스에서 이 클래스를 접근한다고 생각해보면
-	 * 이게 없으면 entity.getPosition()이 될텐데 위치를 바꾼다고 생각해보자.
-	 * 그럼 entity.getPosition().setX(3);같이 될텐데 'get'을 해 놓고 set을 하는 게 좀 어색하지 않을까.
-	 * 어차피 val(final)이고 클래스 생성 시 바로 Position 객체가 할당되니까 null 위험성도 없지.
-	 * 그리고 set이 아닌 get을 하더라도 entity.getPosition().getX()보다는 entity.position.getX()가 더 깔끔하지 않을까
+	 *   이게 없으면 entity.getPosition()이 될텐데 위치를 바꾼다고 생각해보자.
+	 *   그럼 entity.getPosition().setX(3);같이 될텐데 'get'을 해 놓고 set을 하는 게 좀 어색하지 않을까.
+	 *   어차피 val(final)이고 클래스 생성 시 바로 Position 객체가 할당되니까 null 위험성도 없지.
+	 *   그리고 set이 아닌 get을 하더라도 entity.getPosition().getX()보다는 entity.position.getX()가 더 깔끔하지 않을까
 	 */
 	@JvmField val position = MutablePosition(x, y).apply {
 		setObserver { _, _ -> isCachedRectValid = false };
@@ -97,9 +97,9 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	protected open var opacity: Float
 		get() = color.a
 		set(value) {
-			if(value < 0f || value > 1f)
-				throw IllegalArgumentException("invalid opacity");
-			color.a = value;
+			if(value < 0f) color.a = 0f;
+			else if(value > 1f) color.a = 1f;
+			else color.a = value;
 		};
 	// 매번 계산하면 오버헤드가 상당하므로 회전 시에만 계산해서 캐시
 	/**
@@ -144,8 +144,8 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	 *   자식 클래스에서 draw(SpriteBatch)를 override하여 상황에 맞는 텍스처를 지정하여
 	 *   개체에 등록된 기본 텍스처 대신에 쓸 텍스처를 alternateTexture로 넘길 수 있다.
 	 *
-     * @param batch				이미지(Texture)를 화면에 찍어주는 도구
-	 * @param alternateTexture	대신 사용할 텍스처
+     * @param batch            이미지(Texture)를 화면에 찍어주는 도구
+	 * @param alternateTexture 대신 사용할 텍스처
 	 */
     protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
 		val texture: Texture? = alternateTexture ?: this.texture;
@@ -184,8 +184,8 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
      *   그래서 player.collidesWith(enemy), bullet.collidesWith(wall) 처럼
      *   어떤 조합이든 똑같은 문법으로 쓸 수 있다.
 	 *
-	 * @param	other	비교 대상
-	 * @return	충돌하면 true
+	 * @param other 비교 대상
+	 * @return      충돌하면 true
      */
     fun collidesWith(other: Entity): Boolean {
 		// 원본 코드: getBounds().overlaps(other.getBounds()); 한 줄
@@ -199,7 +199,7 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	 * 개체가 다른 누군가를 공격했을 때 콜백 함수
 	 * 확장성을 고려하여 LivingEntity가 아닌 그냥 Entity이다. 현재로썬 큰 의미는 없지만.
 	 *
-	 * @param victim	공격 대상
+	 * @param victim 공격 대상
 	 */
 	open fun onAttack(victim: Entity) {}
 
@@ -207,15 +207,15 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	 * 개체가 다른 누군가를 처치했을 때 콜백 함수
 	 * 확장성을 고려하여 LivingEntity가 아닌 그냥 Entity이다. 현재로썬 큰 의미는 없지만.
 	 *
-	 * @param victim	공격 대상
+	 * @param victim 공격 대상
 	 */
 	open fun onKill(victim: Entity) {}
 
 	/**
 	 * 다른 개체와의 거리 (몸의 중앙을 기준으로 한다)
 	 *
-	 * @param	other	대상 개체
-	 * @return	떨어진 거리
+	 * @param other 대상 개체
+	 * @return      떨어진 거리
 	 */
 	fun distanceTo(other: Entity): Float = position.distanceTo(other.position);
 
@@ -284,10 +284,7 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
      *
      * 왜 필요한가?
      *   Texture, Sound 같은 LibGDX 자원은 GPU/네이티브 메모리를 점유한다.
-     *   garbage collector는 이 메모리를 해제해 주지 못한다 → dispose() 명시적 호출 필요.
-     *
-     * 기본 구현은 빈 함수 — Texture 같은 자원을 안 쓰는 객체는 그대로 두면 된다.
-     * 텍스처를 쓰는 객체라면 override 해서 texture.dispose()를 호출.
+     *   garbage collector는 이 메모리를 해제해 주지 못한다 - dispose() 명시적 호출 필요.
      */
     open fun dispose() {
 		texture?.dispose();

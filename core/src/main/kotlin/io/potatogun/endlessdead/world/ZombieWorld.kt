@@ -72,9 +72,6 @@ import kotlin.random.Random;
  *   tile.png(흰 사각형)를 두 가지 색으로 틴트해 체스판처럼 깐다.
  *   카메라 이동을 눈으로 보여주기 위함이다.
  *   GameWorld.drawBackground(batch)를 override 해서 그린다.
- *
- * @param width   월드 전체 너비 (화면보다 크면 WASD로 탐험 가능)
- * @param height  월드 전체 높이
  */
 class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), Freezable {
     // 플레이어 — 월드 중앙에서 시작.

@@ -11,13 +11,13 @@ import io.potatogun.gdxhelper.world.World;
 /**
  * 살아있다는 개념이 있는 개체
  *
- * @param world		개체가 속한 세계
- * @param x			개체의 처음 X 위치
- * @param y			개체의 처음 Y 위치
- * @param width		가로 크기 (픽셀)
- * @param height	세로 크기 (픽셀)
- * @param texture	개체 텍스처(없을 수도 있음)
- * @param initialHP	초기(최대) 체력
+ * @param world     개체가 속한 세계
+ * @param x         개체의 처음 X 위치
+ * @param y         개체의 처음 Y 위치
+ * @param width     가로 크기 (픽셀)
+ * @param height    세로 크기 (픽셀)
+ * @param texture   개체 텍스처(없을 수도 있음)
+ * @param initialHP 초기(최대) 체력
  */
 abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture? = null, initialHP: Int) : Entity(world, x, y, width, height, texture) {
 	/**
@@ -81,11 +81,11 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	/**
 	 * 체력 감소(대미지를 입는다.)
 	 *
-	 * @param	damage				피해량
-	 * @param	invincibleDuration	무적 타이머
-	 * @param	attacker				공격자
-	 * @return	성공 여부
-	 * @throws	IllegalArgumentException	피해량이 잘못된 경우
+	 * @param damage             피해량
+	 * @param invincibleDuration 무적 타이머
+	 * @param attacker           공격자
+	 * @return                   성공 여부
+	 * @throws IllegalArgumentException	피해량이 잘못된 경우
 	 */
 	@JvmOverloads open fun takeDamage(damage: Int, invincibleDuration: Float = defaultInvincibleDuration, attacker: Entity? = null): Boolean {
 		if(damage < 0) throw IllegalArgumentException("damage must not be negative");
@@ -117,8 +117,8 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	/**
 	 * 체력을 회복한다.
 	 *
-	 * @param	amount	회복할 양
-	 * @return	성공 여부
+	 * @param amount 회복할 양
+	 * @return       성공 여부
 	 */
 	open fun heal(amount: Int): Boolean {
 		if(!isAlive) return false;
@@ -129,8 +129,8 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	/**
 	 * 개체를 즉시 죽인다.
 	 *
-	 * @param 	attacker	공격자
-	 * @return	성공 여부
+	 * @param attacker 공격자
+	 * @return         성공 여부
 	 */
 	@JvmOverloads fun kill(attacker: Entity? = null): Boolean {
 		if(!isAlive) return false;
@@ -144,15 +144,15 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	/**
 	 * 대미지를 받았을 때 실행할 콜백 함수
 	 *
-	 * @param damage	받은 피해량
-	 * @param attacker	공격자
+	 * @param damage   받은 피해량
+	 * @param attacker 공격자
 	 */
 	open fun onDamage(damage: Int, attacker: Entity?) {}
 
 	/**
 	 * 죽었을 때 실행할 콜백 함수
 	 *
-	 * @param killer	공격자
+	 * @param killer 공격자
 	 */
 	open fun onDeath(killer: Entity?) {}
 

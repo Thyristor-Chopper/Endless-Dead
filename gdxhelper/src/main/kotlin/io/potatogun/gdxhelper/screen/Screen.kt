@@ -41,7 +41,7 @@ abstract class Screen : ScreenAdapter() {
 	 * 화면의 기본 글꼴
 	 *   화면 구현체에서 다른 글꼴을 사용할 수도 있으므로 open이다.
 	 */
-    @JvmField protected open val font = BitmapFont();
+    protected open val font = BitmapFont();
 	/**
 	 * 등록된 위젯들
 	 */
@@ -54,9 +54,9 @@ abstract class Screen : ScreenAdapter() {
 	/**
 	 * 위젯을 화면에 추가
 	 *
-	 * @param	id		위젯의 식별자
-	 * @param	widget	추가할 위젯 객체
-	 * @return	성공 여부(이미 식별자가 존재하면 실패)
+	 * @param id     위젯의 식별자
+	 * @param widget 추가할 위젯 객체
+	 * @return       성공 여부 (이미 식별자가 존재하면 실패)
 	 */
 	fun addWidget(id: String, widget: Widget): Boolean {
 		if(widgets.containsKey(id)) return false;
@@ -67,8 +67,8 @@ abstract class Screen : ScreenAdapter() {
 	/**
 	 * 위젯을 화면에서 제거
 	 *
-	 * @param 	id	위젯의 식별자
-	 * @return	성공 여부
+	 * @param id 위젯의 식별자
+	 * @return   성공 여부
 	 */
 	fun removeWidget(id: String): Boolean {
 		val widget: Widget? = widgets[id];
@@ -81,8 +81,9 @@ abstract class Screen : ScreenAdapter() {
 	/**
 	 * 위젯을 식별자로 가져오기
 	 *
-	 * @param	id 가져올 위젯의 식별자
-	 * @return	해당 위젯
+	 * @param id 가져올 위젯의 식별자
+	 * @return   해당 위젯
+	 * @throws IllegalArgumentException 지정한 식별자의 위젯이 없는 경우
 	 */
 	fun getWidget(id: String): Widget = widgets[id] ?: throw IllegalArgumentException("invalid widget ID");
 
@@ -172,8 +173,8 @@ abstract class Screen : ScreenAdapter() {
 	/**
 	 * 스크린의 addWidget로 직접 등록하지 않은 위젯(컨트롤)을 수동으로 그린다.
 	 *
-	 * @param	widget	그릴 위젯
-	 * @return	isVisible이 false라 그리지 않았으면 false
+	 * @param widget 그릴 위젯
+	 * @return       isVisible이 false라 그리지 않았으면 false
 	 */
 	fun drawWidget(widget: Widget): Boolean {
 		if(!widget.isVisible) return false;
@@ -193,14 +194,14 @@ abstract class Screen : ScreenAdapter() {
      *
      * 주의: 화면 y 축은 위쪽이 크다. 화면 '위쪽'에 글자를 쓰려면 y = screenHeight-10 처럼.
 	 *
-	 * @param text				출력할 메시지
-	 * @param x					X 위치
-	 * @param y					Y 위치
-	 * @param color				글자 색
-	 * @param scale				글자 크기(배)
-	 * @param width				텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
-	 * @param align				글자 정렬(없으면 왼쪽 정렬)
-	 * @param skipBatch			batch.begin()/end() 사이에서 사용할 경우 true
+	 * @param text      출력할 메시지
+	 * @param x         X 위치
+	 * @param y         Y 위치
+	 * @param color     글자 색
+	 * @param scale     글자 크기(배)
+	 * @param width     텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
+	 * @param align     글자 정렬(없으면 왼쪽 정렬)
+	 * @param skipBatch batch.begin()/end() 사이에서 사용할 경우 true
      */
 	@JvmOverloads fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, skipBatch: Boolean = false) {
 		Utils.drawText(batch, font, text, x, y, color, scale, width, align, skipBatch);
@@ -228,8 +229,8 @@ abstract class Screen : ScreenAdapter() {
 /**
  * 위젯을 식별자로 가져오기 (안전판)
  *
- * @param	id 가져올 위젯의 식별자
- * @return	해당 위젯(없으면 null)
+ * @param id 가져올 위젯의 식별자
+ * @return   해당 위젯(없으면 null)
  */
 inline fun Screen.getWidgetOrNull(id: String): Widget? {
 	try {

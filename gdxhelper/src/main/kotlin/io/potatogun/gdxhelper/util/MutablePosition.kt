@@ -25,8 +25,8 @@ import kotlin.properties.Delegates;
  *   println(mp2[b]);  // 2 - 메모리 상에서 다른 객체이지만 동일한 값에 대해 같은 해시를 생성하기 때문
  *   println(a == b);  // true - equals를 override했기 때문
  *
- * @param x X좌표
- * @param y Y좌표
+ * @param initialX 처음 X 좌표
+ * @param initialY 처음 Y 좌표
  */
 class MutablePosition(initialX: Float, initialY: Float) : Position(initialX, initialY) {
 	private var changeHandler: ((x: Float, y: Float) -> Unit)? = null;
@@ -36,10 +36,10 @@ class MutablePosition(initialX: Float, initialY: Float) : Position(initialX, ini
 	/**
 	 * 값이 바뀔 때 콜백 함수를 지정한다.
 	 *
-	 * @param cb 콜백 (없애려면 null 전달)
+	 * @param handler 콜백 (없애려면 null 전달)
 	 */
-	fun setObserver(cb: ((x: Float, y: Float) -> Unit)?) {
-		changeHandler = cb;
+	fun setObserver(handler: ((x: Float, y: Float) -> Unit)?) {
+		changeHandler = handler;
 	}
 
 	// MutablePosition은 의도적으로 메모리 주소 기반으로 동작

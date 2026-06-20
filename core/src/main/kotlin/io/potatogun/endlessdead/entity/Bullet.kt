@@ -12,14 +12,14 @@ import kotlin.math.sqrt;
 /**
  * 총알 개체
  *
- * @param world			총알이 있는 세계
- * @param gun 			쏜 총
- * @param shooter		쏜 개체
- * @param target		총알이 향할 위치
- * @param speed 		총알 속도
- * @param damage		총알이 주는 피해량
- * @param penetrable	총알 관통 가능 여부
- * @param hp			총알 체력 (관통 시 감소)
+ * @param    world      총알이 있는 세계
+ * @property gun        쏜 총
+ * @property shooter    쏜 개체
+ * @property target     총알이 향할 위치
+ * @property speed      총알 속도
+ * @property damage     총알이 주는 피해량
+ * @property penetrable 총알 관통 가능 여부
+ * @param    hp         총알 체력 (관통 시 감소)
  */
 class Bullet(world: World, val gun: Fireable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.position.x, shooter.position.y, 16f, 16f, Textures.getShared("bullet"), hp) {
 	override val isUpdatableWhileFrozen = (shooter is Player);

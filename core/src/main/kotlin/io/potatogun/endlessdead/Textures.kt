@@ -17,6 +17,9 @@ import io.potatogun.gdxhelper.widget.Button;
  * 여기에서 미리 정의된 텍스처는 Entity#dispose가 아닌 Game#dispose에서 정리된다.
  */
 object Textures : SharedTextureManager() {
+	/**
+	 * 녹색 단추 스킨
+	 */
 	val greenButton: Button.Skin by lazy { Button.Skin(NinePatch(getShared("green_button"), 12, 12, 7, 6), NinePatch(getShared("green_button_hover"), 12, 12, 7, 6), NinePatch(getShared("green_button_pressed"), 12, 12, 7, 6), NinePatch(getShared("green_button_disabled"), 12, 12, 7, 6), Color.WHITE, Color.LIGHT_GRAY) };
 
 	init {

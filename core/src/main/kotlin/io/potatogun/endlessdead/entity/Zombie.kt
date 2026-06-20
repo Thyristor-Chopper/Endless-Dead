@@ -25,15 +25,16 @@ import kotlin.math.sqrt;
  *   ▸ 생성자에서 speed를 받아 FastEnemy, SlowEnemy로 다양화
  *   ▸ 이동 패턴을 사인파, 원운동 등으로 바꾸기
  *
- * @param world			개체가 속한 세계
- * @param x				개체의 처음 X 위치
- * @param y				개체의 처음 Y 위치
- * @param width			가로 크기 (픽셀)
- * @param height		세로 크기 (픽셀)
- * @param hp			최대 체력
- * @param attackDamage	공격력
- * @param speed			이동 속도
- * @param texture		개체 텍스처
+ * @param    world         개체가 속한 세계
+ * @param    x             개체의 처음 X 위치
+ * @param    y             개체의 처음 Y 위치
+ * @param    width         가로 크기 (픽셀)
+ * @param    height        세로 크기 (픽셀)
+ * @param    hp            최대 체력
+ * @property attackDamage  공격력
+ * @property speed         이동 속도
+ * @param    texture       개체 텍스처
+ * @param    initialTarget 처음 공격 대상
  */
 open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, protected open val attackDamage: Int, protected open val speed: Float, texture: Texture = Textures.getShared("zombie"), initialTarget: LivingEntity? = null) : LivingEntity(world, x, y, width, height, texture, hp), PenetratorDamagable {
 	protected open val attackingTexture = Textures.getShared("attacking_zombie");
@@ -43,7 +44,13 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 		private set;
 	private var attackTextureTimer = 0f;
 
-	protected fun getTargetOrReset(): LivingEntity? {
+	/**
+	 * 공격 대상을 가져오거나 대상이 사라지면 초기화한다.
+	 *   기본 공격 대상 선정 방식을 바꿀 수도 있으므로 open이다.
+	 *
+	 * @return 공격 대상
+	 */
+	protected open fun getTargetOrReset(): LivingEntity? {
 		val target: LivingEntity? = this.target;
 		if(target == null || !target.isAlive) {
 			this.target = world.getRandom<Player>();
@@ -86,14 +93,13 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 			super.draw(batch);
 	}
 
+	// 누군가가 자신을 공격하면 처치 대상을 그자로 한다.
 	override fun onDamage(damage: Int, attacker: Entity?) {
 		if(attacker is LivingEntity)
 			target = attacker;
 	}
 
-	/**
-	 * 공유 자원이기 때문에 여기서 정리하지 않고 다른 인스턴스에서 재활용한다.
-	 */
+	// 공유 자원이기 때문에 여기서 정리하지 않고 다른 인스턴스에서 재활용한다.
 	override fun dispose() {}
 
 	class Weak(world: World, x: Float, y: Float, initialTarget: LivingEntity? = null) : Zombie(world, x, y, width=21f, height=30f, hp=3, speed=150f, attackDamage=1, initialTarget = initialTarget);
@@ -179,7 +185,9 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
             super.update(delta);
         }
 
-		// 평상시, 돌진하려고 잠깐 멈춰있음, 돌진, 돌진 쿨
+		/**
+		 * 평상시, 돌진하려고 잠깐 멈춰있음, 돌진, 돌진 쿨
+		 */
         private enum class DashState {
             WALKING,
 			PREPARING,

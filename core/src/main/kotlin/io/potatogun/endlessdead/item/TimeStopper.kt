@@ -9,14 +9,12 @@ import io.potatogun.gdxhelper.world.World;
 /**
  * 시간 정지기
  *
- * @param world	아이템이 있는 세계
+ * @param world 아이템이 있는 세계
  */
 class TimeStopper(world: World) : Item(world, "time_stopper", "Time Stopper"), Usable {
     override val isContinuousUseAllowed = false;
 
-    /**
-     * 타이머를 사용해서 시간을 3초 멈춘다
-     */
+    // 타이머를 사용해서 시간을 3초 멈춘다.
     override fun use(): Boolean {
 		val holder: Entity? = this.holder;
 		if(holder is Player) {

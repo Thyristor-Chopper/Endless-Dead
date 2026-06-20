@@ -25,9 +25,9 @@ interface SubtitlesDrawable {
 	/**
 	 * 화면에 자막을 표시한다.
 	 *
-	 * @param message	표시할 내용
-	 * @param duration	표시 시간(초)
-	 * @param color		글자 색
+	 * @param message  표시할 내용
+	 * @param duration 표시 시간(초)
+	 * @param color    글자 색
 	 */
 	fun drawSubtitles(message: String, duration: Int, color: Color);
 

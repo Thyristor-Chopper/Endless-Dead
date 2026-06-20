@@ -42,9 +42,9 @@ import kotlin.math.atan2;
  *   ▸ 객체가 사라질 때 dispose()로 GPU 자원 해제 — 기본 Entity#dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  *
- * @param world	플레이어가 속한 월드
- * @param x		처음 X 좌표
- * @param y		처음 Y 좌표
+ * @param world 플레이어가 속한 월드
+ * @param x     처음 X 좌표
+ * @param y     처음 Y 좌표
  */
 class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 63f, Utils.loadTexture("entity/player.bmp"), 50), InventoryEntity by BasicInventory(-1) {
 	override val isUpdatableWhileFrozen = true;
@@ -115,7 +115,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 	 * update()에서만 한 번 쓰이기 때문에 inline이다.
 	 *
      * @param delta 직전 프레임과의 시간 간격(초)
-	 * @return 조금이라도 이동했는지 여부
+	 * @return      조금이라도 이동했는지 여부
 	 */
 	private inline fun updatePosition(delta: Float): Boolean {
 		val originalX = x;
@@ -193,8 +193,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 	 *
 	 * 들고 있지 않은 아이템이거나 사용 가능한 아이템이 아니라면 실패한다.
 	 *
-	 * @param	item	사용할 아이템
-	 * @return	성공 여부
+	 * @param item 사용할 아이템
+	 * @return     성공 여부
 	 */
 	fun useItem(item: Item): Boolean {
 		if(!hasItem(item) || item !is Usable) return false;
@@ -208,8 +208,8 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 	/**
 	 * 플레이어의 속도를 임시로 증가한다.
 	 *
-	 * @param amount	증가율
-	 * @param duration	활성 기간
+	 * @param amount   증가율
+	 * @param duration 활성 기간
 	 */
 	fun speedUp(amount: Float, duration: Float) {
 		speed += amount;

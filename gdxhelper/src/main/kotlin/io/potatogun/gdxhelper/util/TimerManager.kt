@@ -9,8 +9,8 @@ class TimerManager {
     /**
 	 * 타이머 등록
 	 *
-	 * @param	timer 등록할 타이머
-	 * @return	타이머 자신
+	 * @param timer 등록할 타이머
+	 * @return      타이머 자신
 	 */
     fun registerTimer(timer: Timer): Timer {
         timers.add(timer);
@@ -21,7 +21,7 @@ class TimerManager {
 	 * 타이머 등록 해제
 	 *
 	 * @param timer 제거할 타이머
-	 * @return 성공 여부
+	 * @return      성공 여부
 	 */
     fun unregisterTimer(timer: Timer): Boolean = timers.remove(timer);
 

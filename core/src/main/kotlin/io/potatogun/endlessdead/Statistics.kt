@@ -1,7 +1,9 @@
 package io.potatogun.endlessdead;
 
+/**
+ * 게임 통계
+ */
 object Statistics {
-	// 통계
 	@JvmStatic var survivedDuration = 0
 		internal set;
 	@JvmStatic var openedContainerCount = 0

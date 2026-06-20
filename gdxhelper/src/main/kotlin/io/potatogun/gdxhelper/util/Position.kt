@@ -10,15 +10,15 @@ import kotlin.math.sqrt;
 /**
  * 위치(평면좌표)에 대한 객체이다.
  *
- * @param x X좌표
- * @param y Y좌표
+ * @property x X 좌표
+ * @property y Y 좌표
  */
 open class Position(open val x: Float, open val y: Float) {
 	/**
 	 * 두 위치 사이의 거리를 구한다.
 	 *
-	 * @param	다른 위치
-	 * @return	거리
+	 * @param other 다른 위치
+	 * @return      거리
 	 */
 	fun distanceTo(other: Position): Float {
 		val dx = x - other.x;
@@ -50,8 +50,8 @@ open class Position(open val x: Float, open val y: Float) {
 /**
  * 이 위치와 지정한 개체 사이의 거리를 구한다.
  *
- * @param	비교할 개체
- * @return	거리
+ * @param other 비교할 개체
+ * @return      거리
  */
 inline fun Position.distanceTo(other: Entity): Float = distanceTo(other.position);
 

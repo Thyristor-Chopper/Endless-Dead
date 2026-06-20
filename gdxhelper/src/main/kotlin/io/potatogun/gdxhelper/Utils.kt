@@ -19,8 +19,8 @@ object Utils {
 	/**
 	 * 초를 X분 X초로 변환한다
 	 *
-	 * @param	seconds	초
-	 * @return	변환된 문자열
+	 * @param seconds 초
+	 * @return        변환된 문자열
 	 */
 	@JvmStatic fun parseSeconds(seconds: Int, minutesSuffix: String, secondsSuffix: String): String {
 		if(seconds < 60) return "${seconds}$secondsSuffix";
@@ -30,11 +30,12 @@ object Utils {
 	/**
 	 * R, G, B 값을 받아 Color 객체로 변환한다.
 	 *
-	 * @param	r	빨강 (0~255)
-	 * @param	g	초록 (0~255)
-	 * @param	b	파랑 (0~255)
-	 * @param	a	알파 (0.0~1.0)
+	 * @param r 빨강 (0~255)
+	 * @param g 초록 (0~255)
+	 * @param b 파랑 (0~255)
+	 * @param a 알파 (0.0~1.0)
 	 * @return	변환된 색 객체
+	 * @throws IllegalArgumentException 색 값이 잘못된 경우
 	 */
 	@JvmStatic
 	@JvmOverloads
@@ -49,9 +50,9 @@ object Utils {
 	 *
 	 * 우리가 만든 Timer 클래스는 우리 게임의 상태 등에 종속적이지만 이쪽은 게임과는 독립적이기 때문에 libGDX의 Timer 클래스를 직접 사용한다.
 	 * 
-	 * @param	delay		지연 시간(초)
-	 * @param	operation	실행할 서브루틴
-	 * @return	실행 작업 객체
+	 * @param delay     지연 시간(초)
+	 * @param operation 실행할 서브루틴
+	 * @return          실행 작업 객체
 	 */
 	@JvmStatic inline fun setTimeout(delay: Float, crossinline operation: () -> Unit): Task {
 		return object : Task() {
@@ -75,9 +76,9 @@ object Utils {
 	 *
 	 * 우리가 만든 Timer 클래스는 우리 게임의 상태 등에 종속적이지만 이쪽은 게임과는 독립적이기 때문에 libGDX의 Timer 클래스를 직접 사용한다.
 	 * 
-	 * @param	interval	실행 간격(초)
-	 * @param	operation	실행할 서브루틴
-	 * @return	실행 작업 객체
+	 * @param interval  실행 간격(초)
+	 * @param operation 실행할 서브루틴
+	 * @return          실행 작업 객체
 	 */
 	@JvmStatic inline fun setInterval(interval: Float, crossinline operation: () -> Unit): Task {
 		return object : Task() {
@@ -101,16 +102,16 @@ object Utils {
      *
      * 주의: y 축은 위쪽이 크다. '위쪽'에 글자를 쓰려면 y = screenHeight-10 처럼.
 	 *
-	 * @param batch				그리기 도구
-	 * @param font				글꼴
-	 * @param text				출력할 메시지
-	 * @param x					X 위치
-	 * @param y					Y 위치
-	 * @param color				글자 색
-	 * @param scale				글자 크기(배)
-	 * @param width				텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
-	 * @param align				글자 정렬(없으면 왼쪽 정렬)
-	 * @param skipBatch			batch.begin()/end() 사이에서 사용할 경우 true
+	 * @param batch     그리기 도구
+	 * @param font      글꼴
+	 * @param text      출력할 메시지
+	 * @param x         X 위치
+	 * @param y         Y 위치
+	 * @param color     글자 색
+	 * @param scale     글자 크기(배)
+	 * @param width     텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
+	 * @param align     글자 정렬(없으면 왼쪽 정렬)
+	 * @param skipBatch batch.begin()/end() 사이에서 사용할 경우 true
      */
 	@JvmStatic
 	@JvmOverloads
@@ -129,25 +130,25 @@ object Utils {
 	/**
 	 * 두 수 중 최댓값을 반환한다.
 	 *
-	 * @param	x	첫째 수
-	 * @param	y	둘째 수
-	 * @return	최댓값
+	 * @param x 첫째 수
+	 * @param y 둘째 수
+	 * @return  최댓값
 	 */
 	@JvmStatic inline fun max2(x: Float, y: Float) = if(x > y) x else y;
 
 	/**
 	 * 지정한 수의 절댓값을 반환한다.
 	 *
-	 * @param	처리할 수
-	 * @return	절댓값
+	 * @param n 처리할 수
+	 * @return  절댓값
 	 */
 	@JvmStatic inline fun abs(n: Float) = if(n < 0) -n else n;
 
 	/**
 	 * 지정한 화일 이름의 텍스처를 가져온다.
 	 *
-	 * @param	path	화일 이름
-	 * @return	불러온 텍스처 객체
+	 * @param path 화일 이름
+	 * @return     불러온 텍스처 객체
 	 */
 	@JvmStatic inline fun loadTexture(path: String): Texture = Texture(Gdx.files.internal("assets/textures/$path"));
 }

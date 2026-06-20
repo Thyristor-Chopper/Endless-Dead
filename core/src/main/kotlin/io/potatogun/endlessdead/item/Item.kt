@@ -8,14 +8,14 @@ import io.potatogun.gdxhelper.world.World;
 /**
  * 아이템 추상 클래스
  *
- * @param world	아이템이 있는 세계
- * @param id	아이템 식별자
- * @param name	아이템 이름
- *
  * 자바로 만들어진 게임들도 아이템에 대해 필드를 직접 노출하지 않고 getName() 등을 쓰는 경우가 많아서 @JvmField는 안 붙임
  *   음... Bukkit.broadcastMessage("This player has " + item.getName() + "!");
  *         Bukkit.broadcastMessage("This player has " + item.name + "!");
  *   자바에서 두 형식 다 쓰일 법할 것 같기도 하고...
+ *
+ * @property world 아이템이 있는 세계
+ * @property id    아이템 식별자
+ * @property name  아이템 이름
  */
 abstract class Item(val world: World, @get:JvmName("getID") val id: String, val name: String) {
 	/**
@@ -56,11 +56,13 @@ abstract class Item(val world: World, @get:JvmName("getID") val id: String, val 
 
 	/**
 	 * 아이템의 문자열 표현
+	 *
+	 * @return 문자열 표현
 	 */
 	override fun toString(): String = name;
 
 	/**
-	 * 자원 정리
+	 * 자원을 정리한다.
 	 */
 	open fun cleanUp() {}
 }

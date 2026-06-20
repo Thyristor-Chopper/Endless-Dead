@@ -15,6 +15,8 @@ import kotlin.math.sin;
 
 /**
  * 샷건
+ *
+ * @param world 아이템이 속한 월드
  */
 class Shotgun(world: World) : Gun(world, "shotgun", "Shotgun", 5, 500f, 5, true, 1f, 10, 10) {
     private val spreadAngles = listOf(-0.2f, -0.1f, 0f, 0.1f, 0.2f) //방향 기준 퍼짐 좌표

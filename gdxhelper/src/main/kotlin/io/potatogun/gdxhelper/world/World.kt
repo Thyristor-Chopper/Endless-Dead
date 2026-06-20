@@ -29,8 +29,8 @@ import io.potatogun.gdxhelper.world.Freezable;
  *
  *  이 클래스를 상속해 자기 게임의 월드를 만든다 (ZombieWorld 참고).
  *
- * @param width		월드 전체 너비 (JvmField이 있지만 빌드 후 Fernflower로 자바로 디컴파일하여 null이 불가능한 원시 float임을 확인함.)
- * @param height	월드 전체 높이 (위와 동일)
+ * @property width  월드 전체 너비 (JvmField이 있지만 빌드 후 Fernflower로 자바로 디컴파일하여 null이 불가능한 원시 float임을 확인함.)
+ * @property height 월드 전체 높이 (위와 동일)
  */
 abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	/**
@@ -45,7 +45,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 * 월드의 기본 글꼴
 	 *   월드 구현체에서 다른 글꼴을 사용할 수도 있으므로 open이다.
 	 */
-    @JvmField protected open val font = BitmapFont();
+    protected open val font = BitmapFont();
 	/**
 	 * 월드를 보여주는 스크린. 만약 이 월드를 띄우는 뷰어가 없으면 null일 수도 있음에 주의
 	 */
@@ -101,8 +101,8 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
     /**
 	 * 특정 개체를 수동 제거. 보통은 isAlive=false 후 removeDead() 로 정리.
 	 *
-	 * @param	entity 제거할 개체
-	 * @return	성공 여부
+	 * @param entity 제거할 개체
+	 * @return       성공 여부
 	 */
     fun removeEntity(entity: Entity): Boolean {
 		entity.let {
@@ -158,8 +158,8 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	/**
 	 * 창 크기 조절 시 호출된다.
 	 *
-	 * @param width		새 창 너비
-	 * @param height	새 창 높이
+	 * @param width  새 창 너비
+	 * @param height 새 창 높이
 	 */
 	open fun onResize(width: Int, height: Int) {
 		setCameraCenter();
@@ -260,14 +260,14 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
      * 월드의 특정 지점에 고정되므로, 카메라를 움직이면 텍스트도 따라 움직인다.
      *   → 지도 표지판, NPC 머리 위 말풍선, 특정 지역 이름 등에 적합.
 	 *
-	 * @param text				출력할 메시지
-	 * @param x					X 위치
-	 * @param y					Y 위치
-	 * @param color				글자 색
-	 * @param scale				글자 크기(배)
-	 * @param width				텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
-	 * @param align				글자 정렬(없으면 왼쪽 정렬)
-	 * @param skipBatch			batch.begin()/end() 사이에서 사용할 경우 true
+	 * @param text      출력할 메시지
+	 * @param x         X 위치
+	 * @param y         Y 위치
+	 * @param color     글자 색
+	 * @param scale     글자 크기(배)
+	 * @param width     텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
+	 * @param align     글자 정렬(없으면 왼쪽 정렬)
+	 * @param skipBatch batch.begin()/end() 사이에서 사용할 경우 true
      */
     fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, skipBatch: Boolean = false) {
 		Utils.drawText(batch, font, text, x, y, color, scale, width, align, skipBatch);

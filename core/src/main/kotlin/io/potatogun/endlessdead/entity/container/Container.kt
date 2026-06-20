@@ -14,14 +14,14 @@ import io.potatogun.gdxhelper.world.World;
 /**
  * 아이템 상자 역할을 하는 추상 클래스
  *
- * @param world			개체가 속한 세계
- * @param x				개체의 처음 X 위치
- * @param y				개체의 처음 Y 위치
- * @param width			개체 너비
- * @param height		개체 높이
- * @param texture		개체 텍스처
- * @param emptyTexture	상자가 비어 있을 때 사용할 텍스처
- * @param initialItem	처음 들어있는 아이템
+ * @param    world        개체가 속한 세계
+ * @param    x            개체의 처음 X 위치
+ * @param    y            개체의 처음 Y 위치
+ * @param    width        개체 너비
+ * @param    height       개체 높이
+ * @param    texture      개체 텍스처
+ * @property emptyTexture 상자가 비어 있을 때 사용할 텍스처
+ * @param    initialItem  처음 들어있는 아이템
  */
 abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture?, private val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture), InventoryEntity {
 	// 상자는 아이템을 '선택'할 수 없기 때문에 이들은 null이다.
@@ -63,9 +63,10 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	/**
 	 * 아이템 가져가기
 	 *
-	 * @param 	taker	아이템을 가져가는 인벤토리를 가진 개체
-	 * @param	select	아이템을 가져간 후 자동으로 선택할지 여부
-	 * @return 	성공하면 들어있는 아이템, 실패하면 null
+	 * @param taker  아이템을 가져가는 인벤토리를 가진 개체
+	 * @param select 아이템을 가져간 후 자동으로 선택할지 여부
+	 * @return       성공하면 들어있는 아이템, 실패하면 null
+	 * @throws IllegalArgumentException	taker가 자기 자신인 경우
 	 */
 	@JvmOverloads fun takeItem(taker: InventoryEntity, select: Boolean = false): Item? {
 		if(taker === this) throw IllegalArgumentException("taker is the container itself");
@@ -93,6 +94,8 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 
 	/**
 	 * 아이템 제거
+	 *
+	 * @return 성공 여부
 	 */
 	private fun removeItem(): Boolean {
 		if(containedItem == null) return false;

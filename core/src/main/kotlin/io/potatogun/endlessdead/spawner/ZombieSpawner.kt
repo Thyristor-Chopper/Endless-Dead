@@ -12,8 +12,8 @@ import kotlin.random.Random;
 /**
  * 좀비 소환기
  *
- * @param world			소속 세계
- * @param spawnInterval	소환 간격
+ * @param    world         소속 세계
+ * @property spawnInterval 소환 간격
  */
 class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(world) {
     private var spawnTimer = 0f;
@@ -39,7 +39,7 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
         찾아보니, delta는 1초 맞아 떨어지는게 아니라 30초에 맞아 떨어지지 않는다여 하여
         spawnIncreaseTimer가 Internal보다 커지면 약 30초가 되는 걸 이용
         타이머가 인터버에 도달하면 -로 다시 처음부터 세며 간격
-         */
+        */
         spawnIncreaseTimer += delta
         if(spawnIncreaseTimer >= spawnIncreaseInterval) {
             spawnIncreaseTimer -= spawnIncreaseInterval
@@ -51,7 +51,7 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
     }
 
 	/**
-	 * 무작위로 좀비 종류를 골라서 월드에 추가하고 반환한다
+	 * 무작위로 좀비 종류를 골라서 월드에 추가한다.
 	 */
     private inline fun spawnRandomZombie() {
 		val attackTarget: Player? = world.getRandom<Player>();

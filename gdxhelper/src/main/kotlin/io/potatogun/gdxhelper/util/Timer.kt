@@ -3,8 +3,8 @@ package io.potatogun.gdxhelper.util;
 /**
  * 일정 시간마다 특정 작업을 실행하게 해 주는 클래스
  *
- * @param interval	실행 간격(초)
- * @param operation	실행할 서브루틴
+ * @property interval  실행 간격(초)
+ * @property operation 실행할 서브루틴
  */
 class Timer(val interval: Float, private val operation: () -> Unit) {
 	private var timer = interval

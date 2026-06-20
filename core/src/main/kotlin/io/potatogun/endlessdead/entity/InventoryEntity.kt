@@ -41,64 +41,64 @@ interface InventoryEntity {
 	/**
 	 * 인벤토리에 아이템 넣기
 	 *
-	 * @param item	추가할 아이템
-	 * @return 	성공 여부 (이미 있으면 실패)
+	 * @param item 추가할 아이템
+	 * @return     성공 여부 (이미 있으면 실패)
 	 */
 	fun addItem(item: Item, select: Boolean): Boolean;
 
 	/**
 	 * 인벤토리에서 아이템 빼기
 	 *
-	 * @param	index	아이템 위치
-	 * @throws	IllegalArgumentException	인덱스가 범위를 벗어난 경우
+	 * @param index 아이템 위치
+	 * @throws IllegalArgumentException 인덱스가 범위를 벗어난 경우
 	 */
 	fun removeItem(index: Int);
 
 	/**
 	 * 인벤토리에서 아이템 빼기
 	 *
-	 * @param 	item	제거할 아이템
-	 * @return 	성공 여부
+	 * @param item 제거할 아이템
+	 * @return     성공 여부
 	 */
 	fun removeItem(item: Item): Boolean;
 
 	/**
 	 * 지정한 아이템 가져오기
 	 *
-	 * @param	index	아이템 인벤토리 인덱스
-	 * @return	해당하는 아이템
-	 * @throws	IllegalArgumentException	인덱스가 범위를 벗어난 경우
+	 * @param index 아이템 인벤토리 인덱스
+	 * @return      해당하는 아이템
+	 * @throws IllegalArgumentException 인덱스가 범위를 벗어난 경우
 	 */
 	fun getItem(index: Int): Item;
 
 	/**
 	 * 인벤토리의 다음 아이템 선택
 	 *
-	 * @return	성공 여부
+	 * @return 성공 여부
 	 */
 	fun selectNextItem(): Boolean;
 
 	/**
 	 * 인벤토리의 이전 아이템 선택
 	 *
-	 * @return	성공 여부
+	 * @return 성공 여부
 	 */
 	fun selectPreviousItem(): Boolean;
 
 	/**
 	 * 지정한 아이템을 갖고 있다면 선택한다.
 	 *
-	 * @param	item	선택할 아이템
-	 * @return	성공 여부
+	 * @param item 선택할 아이템
+	 * @return     성공 여부
 	 */
 	fun selectItem(item: Item): Boolean;
 
 	/**
 	 * 지정한 인덱스의 아이템을 선택한다.
 	 *
-	 * @param	index	아이템 인벤토리 인덱스
-	 * @return	아이템의 인덱스
-	 * @throws	IllegalArgumentException	인덱스가 범위를 벗어난 경우
+	 * @param index 아이템 인벤토리 인덱스
+	 * @return      아이템의 인덱스
+	 * @throws IllegalArgumentException 인덱스가 범위를 벗어난 경우
 	 */
 	fun selectItem(index: Int);
 
