@@ -34,6 +34,8 @@ java -version    # 17.x.x 가 보이면 OK
 gradlew.bat desktop:run      # Windows
 ```
 
+또는 Windows는 `run.bat` 실행
+
 ---
 
 ## 3. 조작법
