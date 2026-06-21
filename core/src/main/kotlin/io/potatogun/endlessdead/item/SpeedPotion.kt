@@ -1,7 +1,7 @@
 package io.potatogun.endlessdead.item;
 
+import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.inventory.InventoryHolder;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.world.World;
 

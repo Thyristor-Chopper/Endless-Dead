@@ -3,9 +3,10 @@ package io.potatogun.endlessdead.item;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Timer.Task;
 
+import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.entity.Bullet;
+import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.inventory.InventoryHolder;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
@@ -60,6 +61,13 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 	 * 총 쏘기 쿨타임
 	 */
 	private var cooldownTimer: Task? = null;
+	/**
+	 * 남은 쿨타임을 전체 공격 간격에 비례하여 0.0~1.0로 정규화하여 반환한다.
+	 * 
+	 * @return 정규화된 값
+	 */
+	val remainingCooldownPercentage: Float
+		get() = fireCooldown / fireInterval;
 
 	init {
 		if(fireInterval < 0f) throw IllegalArgumentException("invalid fire interval");
@@ -82,22 +90,17 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 		// 남은 쿨타임을 갱신한다. update, delta를 쓰지 않은 이유는 이건 게임 프레임과는 독립적이라고 보기 때문.
 		cooldownTimer?.let { Utils.clearInterval(it) };
 		cooldownTimer = Utils.setInterval(0.01f) {
-			fireCooldown -= 0.01f;
-			if(fireCooldown == 0f) {
-				cooldownTimer?.let {
-					Utils.clearInterval(it);
-					cooldownTimer = null;
-				};
+			if(GameManager.isPlaying) {
+				fireCooldown -= 0.01f;
+				if(fireCooldown == 0f) {
+					cooldownTimer?.let {
+						Utils.clearInterval(it);
+						cooldownTimer = null;
+					};
+				}
 			}
 		};
 	}
-
-	/**
-	 * 남은 쿨타임을 전체 공격 간격에 비례하여 0.0~1.0로 정규화하여 반환한다.
-	 * 
-	 * @return 정규화된 값
-	 */
-	fun getRemainingCooldownPercentage(): Float = fireCooldown / fireInterval;
 
 	/**
 	 * 총 쏘기

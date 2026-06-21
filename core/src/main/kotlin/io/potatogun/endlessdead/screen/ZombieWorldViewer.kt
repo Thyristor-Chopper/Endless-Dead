@@ -21,7 +21,7 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.screen.WorldViewer;
-import io.potatogun.gdxhelper.util.Timer;
+import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
@@ -91,7 +91,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		};
 
 		// 제목 표시줄 정보 전환
-		timerManager.registerTimer(Timer(3f) {
+		timerManager.registerTimer(RepeatingTimer(3f) {
 			currentTitleInfo++;
 		});
 	}
@@ -199,7 +199,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 
 			// 총의 공격 쿨타임 표시
 			if(holding.fireInterval > 0.2f) {
-				val cooldown = holding.getRemainingCooldownPercentage();
+				val cooldown = holding.remainingCooldownPercentage;
 				if(cooldown > 0f)
 					cooldownIndicator.apply {
 						value = cooldown;

@@ -10,11 +10,9 @@ class TimerManager {
 	 * 타이머 등록
 	 *
 	 * @param timer 등록할 타이머
-	 * @return      타이머 자신
 	 */
-	fun registerTimer(timer: Timer): Timer {
+	fun registerTimer(timer: Timer) {
 		timers.add(timer);
-		return timer;
 	}
 
 	/**
@@ -31,7 +29,11 @@ class TimerManager {
 	 * @param delta 직전 프레임과의 시간 간격(초)
 	 */
 	fun tick(delta: Float) {
-		timers.forEach { it.tick(delta) };
+		timers.toList().forEach {
+			it.tick(delta);
+			if(it !is RepeatingTimer && it.executed)
+				timers.remove(it);
+		};
 	}
 
 	/**

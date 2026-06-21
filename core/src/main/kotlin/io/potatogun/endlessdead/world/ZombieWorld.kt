@@ -1,7 +1,6 @@
 package io.potatogun.endlessdead.world;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.Timer.Task;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
@@ -20,6 +19,7 @@ import io.potatogun.endlessdead.spawner.ZombieSpawner;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
+import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.world.Freezable;
@@ -88,7 +88,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		private set;
 	// 타이머
 	private val timerManager = TimerManager();
-	private var unfreezer: Task? = null;
+	private var unfreezer: Timer? = null;
 
 	/**
 	 * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -115,7 +115,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		spawners.add(ZombieSpawner(this, 3f));
 
 		// 10초마다 빈 상자 하나 리필
-		timerManager.registerTimer(Timer(10f) {
+		timerManager.registerTimer(RepeatingTimer(10f) {
 			val emptyContainers = getEntities().filterIsInstance<Container>().filter { it.inventory.isEmpty };
 			emptyContainers.randomOrNull()?.inventory?.addItem(generateRandomItem());
 		});
@@ -139,17 +139,25 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 	override fun freeze(duration: Float) {
 		isFrozen = true;
-		unfreezer?.let { Utils.clearTimeout(it) };
+		cancelUnfreezer();  // 기존 타이머 해제
 		if(duration > 0f)
-			unfreezer = Utils.setTimeout(duration) {
+			unfreezer = Timer(duration) {
 				unfreeze();
-				unfreezer = null;
-			};
+			}.also { timerManager.registerTimer(it) };
+		(viewer as? SubtitlesDrawable)?.drawSubtitles("Time stop!");
 	}
 
 	override fun unfreeze() {
 		isFrozen = false;
+		cancelUnfreezer();
 		(viewer as? SubtitlesDrawable)?.drawSubtitles("Time moves again");
+	}
+
+	private inline fun cancelUnfreezer() {
+		unfreezer?.let {
+			timerManager.unregisterTimer(it);
+			unfreezer = null;
+		};
 	}
 
 	// ────────────────────────────────────────────────────────
@@ -252,7 +260,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		spawners.clear();
 		timerManager.clearTimers();
 		unfreezer?.let {
-			Utils.clearTimeout(it);
+			timerManager.unregisterTimer(it);
 			unfreezer = null;
 		};
 	}

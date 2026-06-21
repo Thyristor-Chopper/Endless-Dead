@@ -7,7 +7,6 @@ import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Statistics;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.container.Container;
-import io.potatogun.endlessdead.inventory.InventoryHolder;
 import io.potatogun.endlessdead.inventory.LinearInventory;
 import io.potatogun.endlessdead.inventory.ObservableInventory;
 import io.potatogun.endlessdead.item.Fireable;
@@ -20,7 +19,7 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.util.Position;
-import io.potatogun.gdxhelper.util.Timer;
+import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.world.World;
 
@@ -52,21 +51,21 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
 	private val timerManager = TimerManager();
-	private val healTimer: Timer;
+	private val healTimer: RepeatingTimer;
 
 	init {
 		// 타이머
 
 		// 1. 생존 시간 기록 & 생존 시간 보너스
-		timerManager.registerTimer(Timer(1f) {
+		timerManager.registerTimer(RepeatingTimer(1f) {
 			Statistics.survivedDuration++;
 			ScoreManager.addScore(1);
 		});
 
 		// 2. 30초마다 자연 회복
-		healTimer = timerManager.registerTimer(Timer(30f) {
+		healTimer = RepeatingTimer(30f) {
 			heal(3);
-		});
+		}.also { timerManager.registerTimer(it) };
 	}
 
 	// ---- 매 프레임 로직 ----

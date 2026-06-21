@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.inventory;
 
+import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.item.Item;
 
 /**
