@@ -46,7 +46,7 @@ class SingleItemInventory : InventoryObserverAdapter() {
 
 	override fun getItem(index: Int): Item {
 		val item: Item? = inventoryItem;
-		if(index != 0 || item == null) throw IllegalArgumentException("index out of bounds");
+		if(index != 0 || item == null) throw IndexOutOfBoundsException("index out of bounds");
 		return item;
 	}
 
