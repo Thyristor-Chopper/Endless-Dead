@@ -36,7 +36,7 @@ abstract class Screen : ScreenAdapter() {
 	 * 이미지(Texture)와 글자를 화면에 찍어주는 도구.
 	 *   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
 	 */
-	@JvmField protected val batch = SpriteBatch();  // @JvmField가 있지만 protected라 외부 자바 클래스에서 접근하라고 있는 게 아니기 때문에 캠슐화가 많이 깨지지는 않는 것 같아 성능을 위해서 씀.
+	@JvmField protected val batch = SpriteBatch();  // @JvmField가 있지만 protected라 외부 자바 클래스에서 접근하라고 있는 게 아니기 때문에 캡슐화가 많이 깨지지는 않는 것 같아 성능을 위해서 씀.
 	/**
 	 * 화면의 기본 글꼴
 	 *   화면 구현체에서 다른 글꼴을 사용할 수도 있으므로 open이다.
@@ -163,11 +163,18 @@ abstract class Screen : ScreenAdapter() {
 
 	/**
 	 * 스크린에 등록된 위젯(컨트롤)들을 그린다.
+	 * render에서만 한 번 쓰이기 때문에 inline이다.
+	 *
+	 * @return 보이는(실제로 그린) 위젯 수
 	 */
-	private inline fun drawWidgets() {
+	private inline fun drawWidgets(): Int {
+		var count = 0;
 		for(widget in widgets.values)
-			if(widget.isVisible)
+			if(widget.isVisible) {
 				widget.draw(batch);
+				count++;
+			}
+		return count;
 	}
 
 	/**
