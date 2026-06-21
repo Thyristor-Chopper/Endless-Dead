@@ -8,7 +8,7 @@ import io.potatogun.endlessdead.item.Item;
  * @property maxSlots 최대 아이템 개수(-1: 무제한)
  * @throws IllegalArgumentException 최대 아이템 개수가 잘못된 경우
  */
-class BasicInventory(override val maxSlots: Int = -1) : ObservableInventory() {
+class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 	private val inventory = mutableListOf<Item>();
 	override val itemCount: Int
 		get() = inventory.size;
