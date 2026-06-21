@@ -6,7 +6,7 @@ package io.potatogun.gdxhelper.util;
  * @param interval  실행 간격(초)
  * @param operation 실행할 서브루틴
  */
-class RepeatingTimer(interval: Float, operation: () -> Unit) : Timer(interval, operation) {
+class RepeatingTimer(interval: Float, operation: (Timer) -> Unit) : Timer(interval, operation) {
 	override fun tick(delta: Float) {
 		super.tick(delta);
 		if(executed) reset();

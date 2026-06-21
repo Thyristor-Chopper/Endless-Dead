@@ -6,7 +6,7 @@ package io.potatogun.gdxhelper.util;
  * @property delay     대기 시간(초)
  * @property operation 실행할 서브루틴
  */
-open class Timer(private val delay: Float, private val operation: () -> Unit) {
+open class Timer(private val delay: Float, private val operation: (Timer) -> Unit) {
 	private var timer = delay
 		set(value) {
 			if(value < 0f) field = 0f;
@@ -26,7 +26,7 @@ open class Timer(private val delay: Float, private val operation: () -> Unit) {
 	internal open fun tick(delta: Float) {
 		timer -= delta;
 		if(timer == 0f) {
-			operation();
+			operation(this);
 			executed = true;
 		}
 	}

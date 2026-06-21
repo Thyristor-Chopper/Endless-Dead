@@ -20,6 +20,7 @@ import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
+import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.world.World;
 
@@ -211,9 +212,7 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	 */
 	fun speedUp(amount: Float, duration: Float) {
 		speed += amount;
-		Utils.setTimeout(duration) {
-			speed -= amount;
-		};
+		timerManager.register(Timer(duration) { speed -= amount });
 	}
 
 	// 플레이어를 들고 있는 아이템에 맞게 그린다.

@@ -4,6 +4,8 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.util.Position;
+import io.potatogun.gdxhelper.util.RepeatingTimer;
+import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.util.distanceTo;
 import io.potatogun.gdxhelper.world.World;
 
@@ -16,38 +18,38 @@ import kotlin.random.Random;
  * @property spawnInterval 소환 간격
  */
 class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(world) {
-	private var spawnTimer = 0f;
-	private var zombiesPerSpawn = 1;
+	private var zombiesPerSpawn = 1
+		set(value) {
+			if(value < 0) field = 0;
+			else if(value > maxZombiesPerSpawn) field = maxZombiesPerSpawn;
+			else field = value;
+		};
 	private val maxZombiesPerSpawn = 8;
-	private var spawnIncreaseTimer = 0f;
-	private val spawnIncreaseInterval = 30f
+	private val spawnIncreaseTimer: RepeatingTimer;
+	private val spawnIncreaseInterval = 30f;
+	private val timerManager = TimerManager();
 
-	/**
-	 * 매 프레임 실행해서 소환할 시간이 되면 좀비를 스폰한다
-	 */
-	override fun update(delta: Float) {
-		spawnTimer += delta
-		if(spawnTimer >= spawnInterval) {
-			spawnTimer -= spawnInterval
+	init {
+		timerManager.register(RepeatingTimer(spawnInterval) {
 			for(i in 1..zombiesPerSpawn)
-				spawnRandomZombie()
-		}
+				spawnRandomZombie();
+		});
 
-		/*
-		좀비의 스폰 수 증가
-		spawnIncreaseInterval = 30f
-		찾아보니, delta는 1초 맞아 떨어지는게 아니라 30초에 맞아 떨어지지 않는다여 하여
-		spawnIncreaseTimer가 Internal보다 커지면 약 30초가 되는 걸 이용
-		타이머가 인터버에 도달하면 -로 다시 처음부터 세며 간격
-		*/
-		spawnIncreaseTimer += delta
-		if(spawnIncreaseTimer >= spawnIncreaseInterval) {
-			spawnIncreaseTimer -= spawnIncreaseInterval
+		spawnIncreaseTimer = RepeatingTimer(spawnIncreaseInterval) { timer ->
 			if(zombiesPerSpawn < maxZombiesPerSpawn) {
 				zombiesPerSpawn++;
 				(world.viewer as? SubtitlesDrawable)?.drawSubtitles("More zombies coming...");
+			} else {
+				timerManager.unregister(timer);
 			}
-		}
+		}.also { timerManager.register(it) };
+	}
+
+	/**
+	 * 매 프레임 실행해서 타이머를 갱신하여 소환할 시간이 되면 좀비를 스폰한다
+	 */
+	override fun update(delta: Float) {
+		timerManager.tick(delta);
 	}
 
 	/**
