@@ -288,11 +288,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 		private val instances = weakMutableSetOf<World>();
 
 		internal fun disposeAllWorlds() {
-			instances.forEach {
-				try {
-					it.dispose();
-				} catch(e: IllegalArgumentException) {}  // 이미 dispose된 경우
-			};
+			instances.forEach { world -> runCatching { world.dispose() } };
 		}
 	}
 }
