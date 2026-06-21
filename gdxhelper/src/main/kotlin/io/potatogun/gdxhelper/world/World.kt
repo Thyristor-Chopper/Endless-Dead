@@ -10,6 +10,7 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.WorldViewer;
+import io.potatogun.gdxhelper.util.weakMutableSetOf;
 import io.potatogun.gdxhelper.world.Freezable;
 
 /**
@@ -72,6 +73,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	private val entities = mutableListOf<Entity>();
 
 	init {
+		instances.add(this);
 		setCameraCenter();
 	}
 
@@ -278,5 +280,19 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 		batch.dispose();
 		font.dispose();
 		entities.forEach { it.dispose() };
+	}
+
+	companion object {
+		// 생성된 모든 인스턴스를 관리하는 목록이다. 생성자에서 자동으로 추가한다. 누가 설마 자바 unsafe의 allocateInstance를 쓰진 않겠지
+		//   dispose 시 필요하다.
+		private val instances = weakMutableSetOf<World>();
+
+		internal fun disposeAllWorlds() {
+			instances.forEach {
+				try {
+					it.dispose();
+				} catch(e: IllegalArgumentException) {}  // 이미 dispose된 경우
+			};
+		}
 	}
 }

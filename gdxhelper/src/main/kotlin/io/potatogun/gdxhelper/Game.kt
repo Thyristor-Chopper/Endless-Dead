@@ -4,6 +4,7 @@ import com.badlogic.gdx.Game as GdxGame;
 
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.WorldViewer;
+import io.potatogun.gdxhelper.world.World;
 
 /**
  * 이 프레임워크에 맞게 일부 처리가 추가된 Game 추상 클래스
@@ -19,5 +20,6 @@ abstract class Game : GdxGame() {
 	override fun dispose() {
 		super.dispose();
 		HelperTextures.disposeShared();
+		World.disposeAllWorlds();
 	}
 }
