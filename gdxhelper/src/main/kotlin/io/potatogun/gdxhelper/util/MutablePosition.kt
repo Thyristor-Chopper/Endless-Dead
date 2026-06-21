@@ -25,13 +25,13 @@ import kotlin.properties.Delegates;
  *   println(mp2[b]);  // 2 - 메모리 상에서 다른 객체이지만 동일한 값에 대해 같은 해시를 생성하기 때문
  *   println(a == b);  // true - equals를 override했기 때문
  *
- * @param initialX 처음 X 좌표
- * @param initialY 처음 Y 좌표
+ * @property x 처음 X 좌표
+ * @property y 처음 Y 좌표
  */
-class MutablePosition(initialX: Float, initialY: Float) : Position(initialX, initialY) {
+class MutablePosition(x: Float, y: Float) : Position(x, y) {
 	private var changeHandler: ((x: Float, y: Float) -> Unit)? = null;
-	override var x: Float by Delegates.observable(initialX) { _, _, _ -> changeHandler?.invoke(this.x, this.y) };
-	override var y: Float by Delegates.observable(initialY) { _, _, _ -> changeHandler?.invoke(this.x, this.y) };
+	override var x: Float by Delegates.observable(x) { _, _, newX -> changeHandler?.invoke(newX, this.y) };
+	override var y: Float by Delegates.observable(y) { _, _, newY -> changeHandler?.invoke(this.x, newY) };
 
 	/**
 	 * 값이 바뀔 때 콜백 함수를 지정한다.
