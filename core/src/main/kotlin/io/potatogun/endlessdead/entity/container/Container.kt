@@ -31,8 +31,8 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	/**
 	 * 현재 들어있는 아이템
 	 */
-	var containedItem: Item? = initialItem
-		private set;
+	val containedItem: Item?
+		inline get() = inventory.getItem();
 	/**
 	 * 플레이어가 직접 아이템을 넣었는지의 여부
 	 */
