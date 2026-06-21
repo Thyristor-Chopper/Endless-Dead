@@ -10,7 +10,7 @@ import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.inventory.BasicInventory;
-import io.potatogun.endlessdead.inventory.Inventory;
+import io.potatogun.endlessdead.inventory.ObservableInventory;
 import io.potatogun.endlessdead.item.Fireable;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.MachineGun;
@@ -49,7 +49,7 @@ import kotlin.math.atan2;
  * @param    y         처음 Y 좌표
  * @property inventory 플레이어가 가질 인벤토리
  */
-class Player(world: World, x: Float, y: Float, override val inventory: Inventory = BasicInventory(-1)) : LivingEntity(world, x, y, 52f, 63f, Utils.loadTexture("entity/player.bmp"), 50), InventoryEntity, ItemSelectable by InventoryItemSelector(inventory) {
+class Player(world: World, x: Float, y: Float, override val inventory: ObservableInventory = BasicInventory(-1)) : LivingEntity(world, x, y, 52f, 63f, Utils.loadTexture("entity/player.bmp"), 50), InventoryEntity, ItemSelectable by InventoryItemSelector(inventory) {
 	override val isUpdatableWhileFrozen = true;
 	private val textureShotgun = Utils.loadTexture("entity/player_shotgun.bmp");
 	private val textureMachineGun = Utils.loadTexture("entity/player_machinegun.bmp");

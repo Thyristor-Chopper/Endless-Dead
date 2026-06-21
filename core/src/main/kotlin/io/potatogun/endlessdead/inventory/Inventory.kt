@@ -88,27 +88,4 @@ interface Inventory {
 	 * @return 성공 여부
 	 */
 	fun clear();
-
-	// ---- 이벤트 ----
-
-	/**
-	 * 아이템이 추가될 때 호출되는 콜백 함수를 지정한다.
-	 *
-	 * @param handler 콜백, Item: 추가된 아이템, Entity?: 기존 소유자 (없으면 null)
-	 */
-	fun addItemAddObserver(handler: (Item, Entity?) -> Unit);
-
-	/**
-	 * 아이템이 제거될 때 호출되는 콜백 함수를 지정한다.
-	 *
-	 * @param handler 콜백, Item: 제거된 아이템
-	 */
-	fun addItemRemoveObserver(handler: (Item) -> Unit);
-
-	/**
-	 * 인벤토리가 초기화될 때 콜백 함수를 지정한다.
-	 *
-	 * @param handler 콜백
-	 */
-	fun addClearObserver(handler: () -> Unit);
 }

@@ -10,7 +10,7 @@ import io.potatogun.gdxhelper.entity.Entity;
  * @property maxSlots 최대 아이템 개수(-1: 무제한)
  * @throws IllegalArgumentException 최대 아이템 개수가 잘못된 경우
  */
-class BasicInventory(override val maxSlots: Int = -1) : InventoryObserverAdapter() {
+class BasicInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 	private val inventory = mutableListOf<Item>();
 	override val itemCount: Int
 		get() = inventory.size;
@@ -32,7 +32,7 @@ class BasicInventory(override val maxSlots: Int = -1) : InventoryObserverAdapter
 		val holder: Entity? = item.holder;
 		if(!((holder as? InventoryEntity)?.inventory?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
 		inventory.add(item);
-		itemAddObservers.forEach { it(item, holder) };
+		invokeItemAddObservers(item, holder);
 		return true;
 	}
 
@@ -40,7 +40,7 @@ class BasicInventory(override val maxSlots: Int = -1) : InventoryObserverAdapter
 		if(index < 0 || index >= inventory.size) return false;
 		val item = inventory[index];
 		inventory.removeAt(index);
-		itemRemoveObservers.forEach { it(item) };
+		invokeItemRemoveObservers(item);
 		return true;
 	}
 
@@ -48,7 +48,7 @@ class BasicInventory(override val maxSlots: Int = -1) : InventoryObserverAdapter
 		val index = inventory.indexOfFirst({ it === item });
 		if(index == -1) return false;
 		inventory.removeAt(index);
-		itemRemoveObservers.forEach { it(item) };
+		invokeItemRemoveObservers(item);
 		return true;
 	}
 
@@ -63,6 +63,6 @@ class BasicInventory(override val maxSlots: Int = -1) : InventoryObserverAdapter
 	override fun clear() {
 		inventory.toList().forEach { it.destroy() };
 		inventory.clear();
-		clearObservers.forEach { it() };
+		invokeClearObservers();
 	}
 }

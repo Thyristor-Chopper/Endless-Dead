@@ -7,7 +7,7 @@ import io.potatogun.gdxhelper.entity.Entity;
 /**
  * 하나의 아이템만 가질 수 있는 인벤토리 구현체
  */
-class SingleItemInventory : InventoryObserverAdapter() {
+class SingleItemInventory : ObservableInventory() {
 	private var inventoryItem: Item? = null;
 	override val itemCount: Int
 		get() = if(inventoryItem != null) 1 else 0;
@@ -25,7 +25,7 @@ class SingleItemInventory : InventoryObserverAdapter() {
 		if(holder is InventoryEntity)
 			holder.inventory.removeItem(item);
 		inventoryItem = item;
-		itemAddObservers.forEach { it(item, holder) };
+		invokeItemAddObservers(item, holder);
 		return true;
 	}
 
@@ -33,14 +33,14 @@ class SingleItemInventory : InventoryObserverAdapter() {
 		val item = inventoryItem;
 		if(index != 0 || item == null) return false;
 		inventoryItem = null;
-		itemRemoveObservers.forEach { it(item) };
+		invokeItemRemoveObservers(item);
 		return true;
 	}
 
 	override fun removeItem(item: Item): Boolean {
 		if(inventoryItem !== item) return false;
 		inventoryItem = null;
-		itemRemoveObservers.forEach { it(item) };
+		invokeItemRemoveObservers(item);
 		return true;
 	}
 
@@ -58,7 +58,7 @@ class SingleItemInventory : InventoryObserverAdapter() {
 
 	override fun clear() {
 		inventoryItem?.destroy();
-		clearObservers.forEach { it() };
+		invokeClearObservers();
 	}
 
 	fun getItem(): Item? = inventoryItem;

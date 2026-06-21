@@ -1,6 +1,6 @@
 package io.potatogun.endlessdead.entity;
 
-import io.potatogun.endlessdead.inventory.Inventory;
+import io.potatogun.endlessdead.inventory.ObservableInventory;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.entity.Entity;
 
@@ -8,7 +8,7 @@ import io.potatogun.gdxhelper.entity.Entity;
  * 인벤토리에서 아이템을 선택할 수 있는 개체에 대한 구현체.
  * 단독으로 사용하지 않고 위임으로만 사용된다.
  */
-class InventoryItemSelector(private val inventory: Inventory) : ItemSelectable {
+class InventoryItemSelector(private val inventory: ObservableInventory) : ItemSelectable {
 	override val selectedItem: Item?
 		get() {
 			try {
