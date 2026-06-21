@@ -56,7 +56,10 @@ class SingleItemInventory : ObservableInventory() {
 	override fun getItems(): List<Item> = inventoryItem?.let { listOf<Item>(it) } ?: listOf<Item>();
 
 	override fun clear() {
-		inventoryItem?.destroy();
+		inventoryItem?.let {
+			inventoryItem = null;
+			invokeItemRemoveObservers(it);
+		}
 		invokeClearObservers();
 	}
 
