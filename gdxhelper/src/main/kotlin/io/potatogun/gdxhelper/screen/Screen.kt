@@ -83,9 +83,9 @@ abstract class Screen : ScreenAdapter() {
 	 *
 	 * @param id 가져올 위젯의 식별자
 	 * @return   해당 위젯
-	 * @throws IllegalArgumentException 지정한 식별자의 위젯이 없는 경우
+	 * @throws NoSuchElementException 지정한 식별자의 위젯이 없는 경우
 	 */
-	fun getWidget(id: String): Widget = widgets[id] ?: throw IllegalArgumentException("invalid widget ID");
+	fun getWidget(id: String): Widget = widgets[id] ?: throw NoSuchElementException("invalid widget ID");
 
 	/**
 	 * 모든 위젯 목록 (읽기 전용)
@@ -235,7 +235,7 @@ abstract class Screen : ScreenAdapter() {
 inline fun Screen.getWidgetOrNull(id: String): Widget? {
 	try {
 		return this.getWidget(id);
-	} catch(e: IllegalArgumentException) {
+	} catch(e: NoSuchElementException) {
 		return null;
 	}
 }
