@@ -125,6 +125,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	 *
 	 * @param i 행
 	 * @param j 열
+	 * @throws IndexOutOfBoundsException 행과 열이 범위를 벗어났을 때
 	 */
 	fun getItem(i: Int, j: Int): Item? {
 		if(i < 0 || i >= rows || j < 0 || j >= columns) throw IndexOutOfBoundsException("column or row out of bounds");
