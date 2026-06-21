@@ -7,6 +7,8 @@ import io.potatogun.gdxhelper.entity.Entity;
 /**
  * 인벤토리에서 아이템을 선택할 수 있는 개체에 대한 구현체.
  * 단독으로 사용하지 않고 위임으로만 사용된다.
+ *
+ * @property inventory 이벤트 핸들러가 지원되는 인벤토리
  */
 class InventoryItemSelector(private val inventory: ObservableInventory) : ItemSelectable {
 	override val selectedItem: Item?
