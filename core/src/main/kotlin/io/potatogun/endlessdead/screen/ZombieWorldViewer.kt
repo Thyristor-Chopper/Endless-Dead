@@ -321,8 +321,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			color = Color.YELLOW,
 			scale = 2.0f,
 			width = Window.width,
-			align = Align.center,
-			skipBatch = true
+			align = Align.center
 		);
 		drawText(
 			text = "Press <P> or <Esc> or <Space> to resume",
@@ -331,8 +330,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			color = Color.WHITE,
 			scale = 1.0f,
 			width = Window.width,
-			align = Align.center,
-			skipBatch = true
+			align = Align.center
 		);
 
 		drawWidget(resumeButton);
@@ -353,8 +351,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			color = Color.RED,
 			scale = 2.0f,
 			width = Window.width,
-			align = Align.center,
-			skipBatch = true
+			align = Align.center
 		);
 		drawText(
 			text = "Press <Esc> to exit or press <R> or <Space> to continue",
@@ -363,8 +360,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			color = Color.WHITE,
 			scale = 1.0f,
 			width = Window.width,
-			align = Align.center,
-			skipBatch = true
+			align = Align.center
 		);
 
 		// 통계
@@ -373,48 +369,42 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 20f,
 			color = Color.LIGHT_GRAY,
-			scale = 1.0f,
-			skipBatch = true
+			scale = 1.0f
 		);
 		drawText(
 			text = "Killed zombies: ${Statistics.killedZombieCount}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 35f,
 			color = Color.LIGHT_GRAY,
-			scale = 1.0f,
-			skipBatch = true
+			scale = 1.0f
 		);
 		drawText(
 			text = "Fired: ${Statistics.fireCount}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 50f,
 			color = Color.LIGHT_GRAY,
-			scale = 1.0f,
-			skipBatch = true
+			scale = 1.0f
 		);
 		drawText(
 			text = "Survived duration: ${Utils.parseSeconds(Statistics.survivedDuration, "m", "s")}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 65f,
 			color = Color.LIGHT_GRAY,
-			scale = 1.0f,
-			skipBatch = true
+			scale = 1.0f
 		);
 		drawText(
 			text = "Total damage: ${Statistics.totalDamage}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 80f,
 			color = Color.LIGHT_GRAY,
-			scale = 1.0f,
-			skipBatch = true
+			scale = 1.0f
 		);
 		drawText(
 			text = "Final score: ${ScoreManager.score}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 95f,
 			color = Color.LIGHT_GRAY,
-			scale = 1.0f,
-			skipBatch = true
+			scale = 1.0f
 		);
 
 		// 게임 오버 관련 단추 그리기(게임 오버 화면에서만 보임)
@@ -431,7 +421,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		batch.color = noWorldOverlay;
 		batch.draw(lazyStillCut.value, 0f, 0f, Window.width, Window.height);
 		batch.color = Color.WHITE;
-		drawText("No world loaded!", 0f, Window.height * 0.5f, Color.SCARLET, 2.0f, Window.width, Align.center, true);
+		drawText("No world loaded!", 0f, Window.height * 0.5f, Color.SCARLET, 2.0f, Window.width, Align.center);
 	}
 
 	override fun drawElements() {
@@ -447,8 +437,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 				color = subtitlesColor,
 				scale = 1.0f,
 				width = Window.width,
-				align = Align.center,
-				skipBatch = true
+				align = Align.center
 			);
 		};
 
@@ -478,8 +467,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			x = 10f,
 			y = Window.height - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
 			color = Utils.rgb(255, 240, 128),
-			scale = 1.2f,
-			skipBatch = true
+			scale = 1.2f
 		);
 
 		// 현재 플레이어가 들고 있는 아이템
@@ -489,8 +477,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 				x = 10f,
 				y = 20f,
 				color = Utils.rgb(255, 255, 192),
-				scale = 1.0f,
-				skipBatch = true
+				scale = 1.0f
 			);
 		};
 
@@ -502,8 +489,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			color = Utils.rgb(203, 241, 194),
 			scale = 1.2f,
 			width = 120f,
-			align = Align.right,
-			skipBatch = true
+			align = Align.right
 		);
 	}
 

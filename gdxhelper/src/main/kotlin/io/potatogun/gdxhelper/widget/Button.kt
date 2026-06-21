@@ -78,7 +78,7 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, 
 		if(isEnabled) batch.color = color;
 		toDraw.draw(batch, x, y, width, height);
 		batch.color = Color.WHITE;
-		Utils.drawText(batch, font, caption, x, y + height * 0.5f + 6f, fontColor, 1.0f, width, Align.center, true);
+		Utils.drawText(batch, font, caption, x, y + height * 0.5f + 6f, fontColor, 1.0f, width, Align.center);
 
 		detectAccessKeyPress();
 	}

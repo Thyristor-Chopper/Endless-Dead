@@ -69,8 +69,7 @@ class Title(private val game: EndlessDead) : Screen() {
 				color = Color.WHITE,
 				scale = 1f,
 				width = Window.width,
-				align = Align.center,
-				skipBatch = true
+				align = Align.center
 			);
 	}
 

@@ -260,17 +260,16 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 * 월드의 특정 지점에 고정되므로, 카메라를 움직이면 텍스트도 따라 움직인다.
 	 *   → 지도 표지판, NPC 머리 위 말풍선, 특정 지역 이름 등에 적합.
 	 *
-	 * @param text      출력할 메시지
-	 * @param x         X 위치
-	 * @param y         Y 위치
-	 * @param color     글자 색
-	 * @param scale     글자 크기(배)
-	 * @param width     텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
-	 * @param align     글자 정렬(없으면 왼쪽 정렬)
-	 * @param skipBatch batch.begin()/end() 사이에서 사용할 경우 true
+	 * @param text  출력할 메시지
+	 * @param x     X 위치
+	 * @param y     Y 위치
+	 * @param color 글자 색
+	 * @param scale 글자 크기(배)
+	 * @param width 텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
+	 * @param align 글자 정렬(없으면 왼쪽 정렬)
 	 */
-	@JvmOverloads fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, skipBatch: Boolean = false) {
-		Utils.drawText(batch, font, text, x, y, color, scale, width, align, skipBatch);
+	@JvmOverloads fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left) {
+		Utils.drawText(batch, font, text, x, y, color, scale, width, align);
 	}
 
 	// ────────────────────────────────────────────────────────

@@ -235,8 +235,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 			x = width * 0.5f - 24f,
 			y = height * 0.5f + 20f,
 			color = Color.FOREST,
-			scale = 8.0f,
-			skipBatch = true
+			scale = 8.0f
 		);
 	}
 
