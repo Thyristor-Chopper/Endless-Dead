@@ -138,9 +138,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		isFrozen = true;
 		cancelUnfreezer();  // 기존 타이머 해제
 		if(duration > 0f)
-			unfreezer = Timer(duration) {
-				unfreeze();
-			}.also { timerManager.register(it) };
+			unfreezer = Timer(duration) { unfreeze() }.also { timerManager.register(it) };
 		(viewer as? SubtitlesDrawable)?.drawSubtitles("Time stop!");
 	}
 
