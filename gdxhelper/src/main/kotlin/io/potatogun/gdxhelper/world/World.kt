@@ -269,7 +269,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 * @param align     글자 정렬(없으면 왼쪽 정렬)
 	 * @param skipBatch batch.begin()/end() 사이에서 사용할 경우 true
 	 */
-	fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, skipBatch: Boolean = false) {
+	@JvmOverloads fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, skipBatch: Boolean = false) {
 		Utils.drawText(batch, font, text, x, y, color, scale, width, align, skipBatch);
 	}
 
