@@ -81,9 +81,6 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	private val bgColorDark = Utils.rgb(38, 92, 38);
 	private val bgColorLight = Utils.rgb(38, 107, 38);
 	private val tileSize = 64f;
-	/**
-	 * world의 시간이 정지되었는지 확인하는 변수
-	 */
 	override var isFrozen: Boolean = false
 		private set;
 	// 타이머
