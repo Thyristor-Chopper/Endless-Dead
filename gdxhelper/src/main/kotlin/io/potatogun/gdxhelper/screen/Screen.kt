@@ -225,7 +225,6 @@ abstract class Screen : ScreenAdapter() {
 		font.dispose();
 		for(widget in widgets.values)
 			widget.dispose();
-		widgets.clear();
 	}
 }
 

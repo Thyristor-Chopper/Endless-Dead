@@ -276,7 +276,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 
 	open fun dispose() {
 		batch.dispose();
+		font.dispose();
 		entities.forEach { it.dispose() };
-		entities.clear();
 	}
 }

@@ -143,12 +143,4 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 		val targetY = sin(radians) * distance + holder.y;
 		return fire(Position(targetX.toFloat(), targetY.toFloat()), holder) > 0;
 	}
-
-	// 쿨타임 해제, 타이머 정리
-	override fun cleanUp() {
-		cooldownTimer?.let {
-			Utils.clearInterval(it);
-			cooldownTimer = null;
-		};
-	}
 }

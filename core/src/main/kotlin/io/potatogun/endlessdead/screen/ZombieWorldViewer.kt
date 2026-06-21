@@ -496,7 +496,6 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		solidColor.dispose();
 		if(lazyStillCut.isInitialized())
 			lazyStillCut.value.dispose();
-		timerManager.clearTimers();
 	}
 
 	/**

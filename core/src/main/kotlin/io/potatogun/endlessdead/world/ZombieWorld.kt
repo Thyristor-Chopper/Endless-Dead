@@ -254,11 +254,5 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	override fun dispose() {
 		super.dispose();
 		tileTexture.dispose();
-		spawners.clear();
-		timerManager.clearTimers();
-		unfreezer?.let {
-			timerManager.unregisterTimer(it);
-			unfreezer = null;
-		};
 	}
 }

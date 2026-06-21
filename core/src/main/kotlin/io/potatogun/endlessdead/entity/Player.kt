@@ -231,7 +231,5 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 		super.dispose();
 		textureShotgun.dispose();
 		textureMachineGun.dispose();
-		timerManager.clearTimers();
-		Gdx.app.postRunnable { inventory.clear() };
 	}
 }

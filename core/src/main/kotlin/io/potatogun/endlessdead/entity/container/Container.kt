@@ -83,6 +83,5 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		super.dispose();
 		playerItemTexture?.dispose();
 		emptyTexture?.dispose();
-		inventory.clear();
 	}
 }

@@ -34,11 +34,7 @@ abstract class Item(val world: World, @get:JvmName("getID") val id: String, val 
 	 * @return 성공 여부
 	 */
 	fun destroy(): Boolean {
-		val removed = holder?.inventory?.removeItem(this) ?: true;  // 소유자가 없는 아이템 정리를 위해 true
-
-		if(removed) cleanUp();
-
-		return removed;
+		return holder?.inventory?.removeItem(this) ?: true;  // 소유자가 없는 아이템은 그냥 없어지는 것이기 때문에 true로
 
 		// 나머지는 jvm이나 달빅이 알아서 gc 해주겠지.
 	}
