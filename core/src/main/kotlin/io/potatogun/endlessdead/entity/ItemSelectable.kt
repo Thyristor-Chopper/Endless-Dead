@@ -44,4 +44,9 @@ interface ItemSelectable {
 	 * @return      성공 여부
 	 */
 	fun selectItem(index: Int): Boolean;
+
+	/**
+	 * 선택을 해제한다.
+	 */
+	fun deselect();
 }

@@ -80,4 +80,8 @@ class InventoryItemSelector(private val inventory: ObservableInventory) : ItemSe
 		selectedItemIndex = index;
 		return true;
 	}
+
+	override fun deselect() {
+		selectedItemIndex = -1;
+	}
 }
