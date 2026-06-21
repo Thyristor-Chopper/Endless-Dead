@@ -115,7 +115,7 @@ object Utils {
 	 */
 	@JvmStatic
 	@JvmOverloads
-	fun drawText(batch: SpriteBatch, font: BitmapFont, text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, skipBatch: Boolean = false) {
+	inline fun drawText(batch: SpriteBatch, font: BitmapFont, text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left, skipBatch: Boolean = false) {
 		font.color = color;
 		font.data.setScale(scale);
 		if(!skipBatch) batch.begin();
