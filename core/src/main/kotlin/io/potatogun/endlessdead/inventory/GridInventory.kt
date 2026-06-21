@@ -5,11 +5,11 @@ import io.potatogun.endlessdead.item.Item;
 /**
  * 2차원 인벤토리 구현체
  *
- * @property columns 열 수
  * @property rows    행 수
+ * @property columns 열 수
  * @throws IllegalArgumentException 열이나 행 개수가 잘못된 경우
  */
-class GridInventory(private val columns: Int, private val rows: Int) : ObservableInventory() {
+class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	private val inventory: Array<Array<Item?>> = Array(rows) { arrayOfNulls<Item>(columns) };
 	override val itemCount: Int
 		get() {
