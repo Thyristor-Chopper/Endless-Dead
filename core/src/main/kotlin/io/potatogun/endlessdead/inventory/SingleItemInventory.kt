@@ -52,7 +52,7 @@ class SingleItemInventory : ObservableInventory() {
 
 	override fun indexOf(item: Item): Int = if(inventoryItem === item) 0 else -1;
 
-	override fun getInventory(): List<Item> = inventoryItem?.let { listOf<Item>(it) } ?: listOf<Item>();
+	override fun getItems(): List<Item> = inventoryItem?.let { listOf<Item>(it) } ?: listOf<Item>();
 
 	override fun clear() {
 		inventoryItem?.destroy();

@@ -75,11 +75,11 @@ interface Inventory {
 	fun indexOf(item: Item): Int;
 
 	/**
-	 * 인벤토리의 읽기용 사본을 가져온다.
+	 * 인벤토리의 아이템 목록(읽기 전용)을 가져온다.
 	 *
 	 * @return 인벤토리 아이템 목록
 	 */
-	fun getInventory(): List<Item>;
+	fun getItems(): List<Item>;
 
 	/**
 	 * 인벤토리 비우기

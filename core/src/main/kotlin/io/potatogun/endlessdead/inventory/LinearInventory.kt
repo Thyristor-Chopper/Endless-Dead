@@ -3,7 +3,7 @@ package io.potatogun.endlessdead.inventory;
 import io.potatogun.endlessdead.item.Item;
 
 /**
- * 인벤토리를 가진 개체의 기본적인 구현체
+ * 인벤토리의 기본적인 구현체
  *
  * @property maxSlots 최대 아이템 개수(-1: 무제한)
  * @throws IllegalArgumentException 최대 아이템 개수가 잘못된 경우
@@ -56,7 +56,7 @@ class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 
 	override fun indexOf(item: Item): Int = inventory.indexOfFirst({ it === item });
 
-	override fun getInventory(): List<Item> = inventory.toList();
+	override fun getItems(): List<Item> = inventory.toList();
 
 	override fun clear() {
 		inventory.toList().forEach { it.destroy() };
