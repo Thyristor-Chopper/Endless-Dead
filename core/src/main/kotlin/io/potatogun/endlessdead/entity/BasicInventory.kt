@@ -15,20 +15,20 @@ class BasicInventory(override val maxSlots: Int = -1) : InventoryEntity {
 	override val selectedItem: Item?
 		get() {
 			try {
-				return selectedItemIndex?.let { inventory[it] };
+				return inventory[selectedItemIndex];
 			} catch(e: IndexOutOfBoundsException) {
-				selectedItemIndex = null;
+				selectedItemIndex = -1;
 				return null;
 			}
 		};
-	override var selectedItemIndex: Int? = null
+	override var selectedItemIndex: Int = -1
 		private set(value) {
-			if(value == null) {
-				field = null;
+			if(value == -1) {
+				field = -1;
 			} else {
 				val inventorySize = inventory.size;
 				if(value < 0) field = 0;
-				else if(value >= inventorySize) field = inventorySize - 1;
+				else if(value >= inventorySize) field = inventorySize - 1;  // 비었다면 -1
 				else field = value;
 			}
 		};
@@ -58,10 +58,10 @@ class BasicInventory(override val maxSlots: Int = -1) : InventoryEntity {
 
 	override fun removeItem(index: Int) {
 		if(index < 0 || index >= inventory.size) throw IndexOutOfBoundsException("index out of bounds");
-		val currentIndex: Int? = selectedItemIndex;
+		val currentIndex: Int = selectedItemIndex;
 		inventory.removeAt(index);
 		if(inventory.isEmpty())
-			selectedItemIndex = null;
+			selectedItemIndex = -1;
 		else if(index == currentIndex)
 			selectPreviousItem();
 	}
@@ -83,29 +83,25 @@ class BasicInventory(override val maxSlots: Int = -1) : InventoryEntity {
 	override fun getItem(index: Int): Item = inventory.getOrNull(index) ?: throw IndexOutOfBoundsException("index out of bounds");
 
 	override fun selectNextItem(): Boolean {
-		val index: Int? = selectedItemIndex;
+		val index: Int = selectedItemIndex;
 		if(inventory.isEmpty())
-			selectedItemIndex = null;
-		else if(index == null)
-			selectedItemIndex = 0;
-		else if(index == inventory.size - 1)
+			selectedItemIndex = -1;
+		else if(index == -1 || index == inventory.size - 1)
 			selectedItemIndex = 0;
 		else
 			selectedItemIndex = index + 1;
-		return selectedItemIndex != null;
+		return selectedItemIndex != -1;
 	}
 
 	override fun selectPreviousItem(): Boolean {
-		val index: Int? = selectedItemIndex;
+		val index: Int = selectedItemIndex;
 		if(inventory.isEmpty())
-			selectedItemIndex = null;
-		else if(index == null)
-			selectedItemIndex = 0;
-		else if(index == 0)
+			selectedItemIndex = -1;
+		else if(index == -1 || index == 0)
 			selectedItemIndex = inventory.size - 1;
 		else
 			selectedItemIndex = index - 1;
-		return selectedItemIndex != null;
+		return selectedItemIndex != -1;
 	}
 
 	override fun selectItem(item: Item): Boolean {

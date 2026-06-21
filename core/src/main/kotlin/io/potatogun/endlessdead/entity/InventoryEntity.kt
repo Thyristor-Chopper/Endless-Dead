@@ -11,9 +11,9 @@ interface InventoryEntity {
 	 */
 	val selectedItem: Item?;
 	/**
-	 * 선택한 아이템의 인덱스
+	 * 선택한 아이템의 인덱스 (선택하지 않았다면 -1)
 	 */
-	val selectedItemIndex: Int?;  // 이건 nullable이라 아마 Integer로 컴파일될 것 같은데
+	val selectedItemIndex: Int;
 	/**
 	 * 인벤토리 내 아이템 개수
 	 */

@@ -24,9 +24,9 @@ import io.potatogun.gdxhelper.world.World;
  * @param    initialItem  처음 들어있는 아이템
  */
 abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture?, private val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture), InventoryEntity {
-	// 상자는 아이템을 '선택'할 수 없기 때문에 이들은 null이다.
+	// 상자는 아이템을 '선택'할 수 없기 때문에 null이다.
 	override val selectedItem: Item? = null;
-	override val selectedItemIndex: Int? = null;
+	override val selectedItemIndex: Int = -1;
 	override val itemCount: Int
 		get() = if(containedItem != null) 1 else 0;
 	override val isInventoryEmpty: Boolean
