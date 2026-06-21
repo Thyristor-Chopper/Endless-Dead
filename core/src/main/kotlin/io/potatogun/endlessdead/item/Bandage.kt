@@ -2,7 +2,7 @@ package io.potatogun.endlessdead.item;
 
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.endlessdead.inventory.InventoryHolder;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.world.World;
 
@@ -16,7 +16,7 @@ class Bandage(world: World) : Item(world, "bandage", "Bandage"), Usable {
 
 	// 붕대를 사용하여 체력을 10만큼 회복한다.
 	override fun use(): Boolean {
-		val holder: Entity? = this.holder;
+		val holder: InventoryHolder? = this.holder;
 		if(holder is LivingEntity) {
 			holder.heal(10);
 			if(holder is Player)

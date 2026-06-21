@@ -1,6 +1,5 @@
 package io.potatogun.endlessdead.inventory;
 
-import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.entity.Entity;
 
@@ -21,8 +20,8 @@ class SingleItemInventory : ObservableInventory() {
 
 	override fun addItem(item: Item): Boolean {
 		if(inventoryItem != null) return false;
-		val holder: Entity? = item.holder;
-		if(holder is InventoryEntity)
+		val holder: InventoryHolder? = item.holder;
+		if(holder != null)
 			holder.inventory.removeItem(item);
 		inventoryItem = item;
 		invokeItemAddObservers(item, holder);

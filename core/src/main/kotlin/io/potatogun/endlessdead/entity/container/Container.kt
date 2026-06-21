@@ -4,8 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.entity.Player;
+import io.potatogun.endlessdead.inventory.InventoryHolder;
 import io.potatogun.endlessdead.inventory.SingleItemInventory;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.Utils;
@@ -24,7 +24,7 @@ import io.potatogun.gdxhelper.world.World;
  * @property emptyTexture 상자가 비어 있을 때 사용할 텍스처
  * @param    initialItem  처음 들어있는 아이템
  */
-abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture?, private val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture), InventoryEntity {
+abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture?, private val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture), InventoryHolder {
 	override val inventory = SingleItemInventory();
 	/**
 	 * 플레이어가 직접 아이템을 넣었을 때의 텍스처
@@ -71,7 +71,7 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	 * @return      성공하면 들어있는 아이템, 실패하면 null
 	 * @throws IllegalArgumentException	taker가 자기 자신인 경우
 	 */
-	fun takeItem(taker: InventoryEntity): Item? {
+	fun takeItem(taker: InventoryHolder): Item? {
 		if(taker === this) throw IllegalArgumentException("taker is the container itself");
 		val item = inventory.getItem();  // https://stackoverflow.com/questions/44595529/smart-cast-to-type-is-impossible-because-variable-is-a-mutable-property-tha
 		if(item == null) return null;

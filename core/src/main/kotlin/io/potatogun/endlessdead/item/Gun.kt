@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import io.potatogun.endlessdead.entity.Bullet;
-import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.entity.Player;
+import io.potatogun.endlessdead.inventory.InventoryHolder;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
@@ -131,8 +131,8 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 	 * @return 성공 여부
 	 */
 	override fun use(): Boolean {
-		val holder: Entity? = this.holder;
-		if(holder == null) return false;
+		val holder: InventoryHolder? = this.holder;
+		if(holder !is Entity) return false;
 
 		// 개체 회전 각도에 맞는 임의의 위치를 생성한다.
 		val radians = toRadians(holder.getRotationAngle() + 90.0);

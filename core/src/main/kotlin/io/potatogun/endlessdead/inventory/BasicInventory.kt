@@ -1,6 +1,5 @@
 package io.potatogun.endlessdead.inventory;
 
-import io.potatogun.endlessdead.entity.InventoryEntity;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.entity.Entity;
 
@@ -29,8 +28,8 @@ class BasicInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 	override fun addItem(item: Item): Boolean {
 		if(maxSlots != -1 && inventory.size >= maxSlots) return false;
 		if(hasItem(item)) return false;
-		val holder: Entity? = item.holder;
-		if(!((holder as? InventoryEntity)?.inventory?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
+		val holder: InventoryHolder? = item.holder;
+		if(!(holder?.inventory?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
 		inventory.add(item);
 		invokeItemAddObservers(item, holder);
 		return true;
