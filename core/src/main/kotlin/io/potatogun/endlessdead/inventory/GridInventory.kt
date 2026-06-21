@@ -71,6 +71,12 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		return true;
 	}
 
+	/**
+	 * 지정한 행과 열의 아이템을 삭제한다.
+	 *
+	 * @param i 행
+	 * @param j 열
+	 */
 	fun removeItem(i: Int, j: Int): Boolean {
 		if(i < 0 || i >= rows || j < 0 || j >= columns) return false;
 		val item = inventory[i][j];
@@ -112,6 +118,17 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		if(!removed) return false;
 		invokeItemRemoveObservers(item);
 		return true;
+	}
+
+	/**
+	 * 지정한 행과 열의 아이템을 가져온다. 없으면 null이다.
+	 *
+	 * @param i 행
+	 * @param j 열
+	 */
+	fun getItem(i: Int, j: Int): Item? {
+		if(i < 0 || i >= rows || j < 0 || j >= columns) throw IndexOutOfBoundsException("column or row out of bounds");
+		return inventory[i][j];
 	}
 
 	override fun getItem(index: Int): Item {
@@ -175,7 +192,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	/**
 	 * 인벤토리를 행렬(2차원 배열) 형태로 사본으로 반환한다.
 	 *
-	 * @return 인벤토리
+	 * @return 인벤토리 행렬
 	 */
 	fun getGrid(): Array<Array<Item?>> {
 		val inventoryClone: Array<Array<Item?>> = Array(rows) { arrayOfNulls<Item>(columns) };
