@@ -151,10 +151,11 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	override fun freeze(duration: Float) {
 		isFrozen = true;
 		unfreezer?.let { Utils.clearTimeout(it) };
-		unfreezer = Utils.setTimeout(duration) {
-			unfreeze();
-			unfreezer = null;
-		};
+		if(duration > 0f)
+			unfreezer = Utils.setTimeout(duration) {
+				unfreeze();
+				unfreezer = null;
+			};
 	}
 
 	override fun unfreeze() {
@@ -167,7 +168,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	// ────────────────────────────────────────────────────────
 
 	/**
-	 * PLAYING 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신
+	 * 매 프레임 처리 — 개체, 스포너 및 타이머 갱신
 	 */
 	override fun update(delta: Float) {
 		timerManager.tick(delta);
@@ -255,9 +256,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		super.updateCamera();
 	}
 
-	/**
-	 * 화면이 닫힐 때 — 부모도 dispose한 뒤 우리만의 자원도 해제.
-	 */
+	// 화면이 닫힐 때 — 부모도 dispose한 뒤 우리만의 자원도 해제.
 	override fun dispose() {
 		super.dispose();
 		tileTexture.dispose();

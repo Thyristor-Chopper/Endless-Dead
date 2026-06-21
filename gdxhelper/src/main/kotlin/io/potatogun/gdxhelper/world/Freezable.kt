@@ -16,7 +16,7 @@ interface Freezable {
 	/**
 	 * 시간을 멈춘다.
 	 *
-	 * @param duration 멈춤 지속 시간(초)
+	 * @param duration 멈춤 지속 시간(초) - 0이면 무기한 정지
 	 */
 	fun freeze(duration: Float);
 
