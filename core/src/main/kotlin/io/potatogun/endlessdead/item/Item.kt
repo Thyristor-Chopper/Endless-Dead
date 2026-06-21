@@ -24,7 +24,7 @@ abstract class Item(val world: World, @get:JvmName("getID") val id: String, val 
 	val holder: Entity?
 		get() {
 			for(entity in world.getEntities()) {
-				if(entity is InventoryEntity && entity.hasItem(this))
+				if(entity is InventoryEntity && entity.inventory.hasItem(this))
 					return entity;
 			}
 			return null;
@@ -33,21 +33,18 @@ abstract class Item(val world: World, @get:JvmName("getID") val id: String, val 
 	/**
 	 * 아이템을 파괴한다.
 	 *
-	 * @return 아이템 존재 여부
+	 * @return 성공 여부
 	 */
 	fun destroy(): Boolean {
 		val removed = holder?.let {
 			if(it is InventoryEntity) {
-				it.removeItem(this);
-				it.onItemDestoryed(this);
-
-				true
+				it.inventory.removeItem(this)
 			} else {
 				false
 			}
 		} ?: false;
 
-		cleanUp();
+		if(removed) cleanUp();
 
 		return removed;
 

@@ -9,6 +9,8 @@ import io.potatogun.endlessdead.Statistics;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.container.Container;
+import io.potatogun.endlessdead.inventory.BasicInventory;
+import io.potatogun.endlessdead.inventory.Inventory;
 import io.potatogun.endlessdead.item.Fireable;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.MachineGun;
@@ -42,11 +44,12 @@ import kotlin.math.atan2;
  *   ▸ 객체가 사라질 때 dispose()로 GPU 자원 해제 — 기본 Entity#dispose()를 override.
  *   ▸ batch.draw(texture, x, y, w, h) 한 줄로 이미지를 그린다.
  *
- * @param world 플레이어가 속한 월드
- * @param x     처음 X 좌표
- * @param y     처음 Y 좌표
+ * @param    world     플레이어가 속한 월드
+ * @param    x         처음 X 좌표
+ * @param    y         처음 Y 좌표
+ * @property inventory 플레이어가 가질 인벤토리
  */
-class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 63f, Utils.loadTexture("entity/player.bmp"), 50), InventoryEntity by BasicInventory(-1) {
+class Player(world: World, x: Float, y: Float, override val inventory: Inventory = BasicInventory(-1)) : LivingEntity(world, x, y, 52f, 63f, Utils.loadTexture("entity/player.bmp"), 50), InventoryEntity, ItemSelectable by InventoryItemSelector(inventory) {
 	override val isUpdatableWhileFrozen = true;
 	private val textureShotgun = Utils.loadTexture("entity/player_shotgun.bmp");
 	private val textureMachineGun = Utils.loadTexture("entity/player_machinegun.bmp");
@@ -146,20 +149,21 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 		for(entity in world.getEntities()) {
 			if(entity !is Container) continue;
 			if(collidesWith(entity))
-				if(entity.isInventoryEmpty) {
+				if(entity.inventory.isEmpty) {
 					var putItem = false;
 					selectedItem?.let {
 						(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Put ${it.name} into the container");
-						entity.addItem(it);
+						entity.inventory.addItem(it);
 						putItem = true;  // 하나씩만
 					} ?: (world.viewer as? SubtitlesDrawable)?.drawSubtitles("Can't take any item; container is empty");
 					if(putItem) break;
 				} else {
 					val isPlayerItem = entity.isPlayerItem;
-					val item: Item? = entity.takeItem(this, true);
+					val item: Item? = entity.takeItem(this);
 					if(item == null) {
 						(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Failed to take the item in the container");
 					} else {
+						selectItem(item);
 						(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Took ${item.name} from the container");
 						if(!isPlayerItem)
 							Statistics.openedContainerCount++;
@@ -197,7 +201,7 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 	 * @return     성공 여부
 	 */
 	fun useItem(item: Item): Boolean {
-		if(!hasItem(item) || item !is Usable) return false;
+		if(!inventory.hasItem(item) || item !is Usable) return false;
 		val succeeded = item.use();
 		if(succeeded)
 			if(item is Fireable)
@@ -234,6 +238,6 @@ class Player(world: World, x: Float, y: Float) : LivingEntity(world, x, y, 52f, 
 		textureShotgun.dispose();
 		textureMachineGun.dispose();
 		timerManager.clearTimers();
-		Gdx.app.postRunnable { clearInventory() };
+		Gdx.app.postRunnable { inventory.clear() };
 	}
 }

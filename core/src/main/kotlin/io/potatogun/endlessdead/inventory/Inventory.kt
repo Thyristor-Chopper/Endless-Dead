@@ -1,0 +1,114 @@
+package io.potatogun.endlessdead.inventory;
+
+import io.potatogun.endlessdead.item.Item;
+import io.potatogun.gdxhelper.entity.Entity;
+
+/**
+ * 인벤토리 인터페이스
+ */
+interface Inventory {
+	/**
+	 * 인벤토리 내 아이템 개수
+	 */
+	val itemCount: Int;
+	/**
+	 * 인벤토리가 비어 있는지의 여부
+	 */
+	val isEmpty: Boolean;
+	/**
+	 * 인벤토리 아이템 최대 개수
+	 */
+	val maxSlots: Int;
+	/**
+	 * 처음으로 추가된 아이템
+	 */
+	val firstItem: Item?;
+	/**
+	 * 마지막으로 추가된 아이템
+	 */
+	val lastItem: Item?;
+
+	/**
+	 * 인벤토리에 아이템 넣기
+	 *
+	 * @param item 추가할 아이템
+	 * @return     성공 여부 (이미 있으면 실패)
+	 */
+	fun addItem(item: Item): Boolean;
+
+	/**
+	 * 인벤토리에서 아이템 빼기
+	 *
+	 * @param index 아이템 위치
+	 * @return 성공 여부
+	 */
+	fun removeItem(index: Int): Boolean;
+
+	/**
+	 * 인벤토리에서 아이템 빼기
+	 *
+	 * @param item 제거할 아이템
+	 * @return     성공 여부
+	 */
+	fun removeItem(item: Item): Boolean;
+
+	/**
+	 * 지정한 아이템 가져오기
+	 *
+	 * @param index 아이템 인벤토리 인덱스
+	 * @return      해당하는 아이템
+	 * @throws IndexOutOfBoundsException 인덱스가 범위를 벗어난 경우
+	 */
+	fun getItem(index: Int): Item;
+
+	/**
+	 * 지정한 아이템이 있는지 확인
+	 *
+	 * @return 있으면 true
+	 */
+	fun hasItem(item: Item): Boolean;
+
+	/**
+	 * 지정한 아이템의 인덱스
+	 *
+	 * @return 인덱스 (없으면 -1)
+	 */
+	fun indexOf(item: Item): Int;
+
+	/**
+	 * 인벤토리의 읽기용 사본을 가져온다.
+	 *
+	 * @return 인벤토리 아이템 목록
+	 */
+	fun getInventory(): List<Item>;
+
+	/**
+	 * 인벤토리 비우기
+	 *
+	 * @return 성공 여부
+	 */
+	fun clear();
+
+	// ---- 이벤트 ----
+
+	/**
+	 * 아이템이 추가될 때 호출되는 콜백 함수를 지정한다.
+	 *
+	 * @param handler 콜백, Item: 추가된 아이템, Entity?: 기존 소유자 (없으면 null)
+	 */
+	fun addItemAddObserver(handler: (Item, Entity?) -> Unit);
+
+	/**
+	 * 아이템이 제거될 때 호출되는 콜백 함수를 지정한다.
+	 *
+	 * @param handler 콜백, Item: 제거된 아이템
+	 */
+	fun addItemRemoveObserver(handler: (Item) -> Unit);
+
+	/**
+	 * 인벤토리가 초기화될 때 콜백 함수를 지정한다.
+	 *
+	 * @param handler 콜백
+	 */
+	fun addClearObserver(handler: () -> Unit);
+}
