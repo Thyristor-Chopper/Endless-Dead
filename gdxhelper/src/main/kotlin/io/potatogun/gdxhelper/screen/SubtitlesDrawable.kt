@@ -18,7 +18,7 @@ interface SubtitlesDrawable {
 	}
 
 	// @JvmOverloads이 불가능해서 수동으로
-	fun drawSubtitles(message: String, duration: Int) {
+	fun drawSubtitles(message: String, duration: Float) {
 		drawSubtitles(message, duration, DEFAULT_COLOR);
 	}
 
@@ -29,10 +29,10 @@ interface SubtitlesDrawable {
 	 * @param duration 표시 시간(초)
 	 * @param color    글자 색
 	 */
-	fun drawSubtitles(message: String, duration: Int, color: Color);
+	fun drawSubtitles(message: String, duration: Float, color: Color);
 
 	companion object {
-		private const val DEFAULT_DURATION = 3;
+		private const val DEFAULT_DURATION = 3f;
 		private val DEFAULT_COLOR = Color.WHITE;
 	}
 }

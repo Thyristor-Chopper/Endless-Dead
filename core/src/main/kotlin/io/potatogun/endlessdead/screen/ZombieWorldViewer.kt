@@ -22,6 +22,7 @@ import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.screen.WorldViewer;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
+import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
@@ -54,10 +55,13 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	private val lazyStillCut = lazy { Utils.loadTexture("title/still_cut.bmp") };
 	// 타이머
 	private val timerManager = TimerManager();
-	// 자막 타이머 관련 필드들. 우리가 만든 Timer 객체와 달리 일정 시간 간격으로 '계속' 실행하는 그런 게 아니기 때문에 따로 관리.
-	private var subtitlesTimer = 0f;
-	private var subtitlesMessage: String? = null;
+	private val playingTimerManager = TimerManager();  // 플레이 중일 때만 가동되는 타이머
+	// 자막 관련 필드들.
+	private var subtitlesTimer: Timer? = null;
+	private var subtitlesMessage: String = "";
 	private var subtitlesColor = Color.WHITE;
+	private val subtitlesVisible: Boolean
+		inline get() = (subtitlesTimer != null);
 
 	init {
 		// 단색용 텍스처 생성
@@ -91,7 +95,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		};
 
 		// 제목 표시줄 정보 전환
-		timerManager.registerTimer(RepeatingTimer(3f) {
+		timerManager.register(RepeatingTimer(3f) {
 			currentTitleInfo++;
 		});
 	}
@@ -111,6 +115,8 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	 *  상태 변화·입력은 update가 책임진다.)
 	 */
 	override fun update(delta: Float) {
+		timerManager.tick(delta);
+
 		when {
 			GameManager.isPlaying	-> updatePlaying(delta);
 			GameManager.isPaused	-> updatePaused(delta);
@@ -124,16 +130,12 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
 	private inline fun updatePlaying(delta: Float) {
-		timerManager.tick(delta);
+		playingTimerManager.tick(delta);
 
 		// 제목 표시줄에 통계 표시
 		updateTitleBarInfo();
 
 		super.update(delta);
-
-		// 자막 만료 타이머 갱신
-		if(subtitlesTimer > 0f)
-			subtitlesTimer -= delta;
 
 		// 미터기 정보 갱신
 		updateProgressBars();
@@ -223,8 +225,6 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
 	private inline fun updatePaused(delta: Float) {
-		timerManager.tick(delta);
-
 		// 제목 표시줄에 통계 표시
 		updateTitleBarInfo();
 		
@@ -427,9 +427,9 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		super.drawElements();
 
 		// 자막이 있으면 표시
-		if(subtitlesTimer > 0f) subtitlesMessage?.let {
+		if(subtitlesVisible)
 			drawText(
-				text = it,
+				text = subtitlesMessage,
 				x = 0f,
 				y = 20f,
 				color = subtitlesColor,
@@ -437,16 +437,23 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 				width = Window.width,
 				align = Align.center
 			);
-		};
 
 		// ── 항상 보이는 UI ──
 		drawHud();
 	}
 
-	override fun drawSubtitles(message: String, duration: Int, color: Color) {
-		subtitlesTimer = duration.toFloat();
+	override fun drawSubtitles(message: String, duration: Float, color: Color) {
+		subtitlesTimer?.let {
+			playingTimerManager.unregister(it);
+			subtitlesTimer = null;
+		};
 		subtitlesMessage = message;
 		subtitlesColor = color;
+		subtitlesTimer = Timer(duration) {
+			subtitlesMessage = "";
+			subtitlesColor = Color.WHITE;  // 초깃값으로 복원하여 메모리를 점유하지 않게 함
+			subtitlesTimer = null;
+		}.also { playingTimerManager.register(it) };
 	}
 
 	/**
@@ -496,6 +503,10 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		solidColor.dispose();
 		if(lazyStillCut.isInitialized())
 			lazyStillCut.value.dispose();
+		resumeButton.dispose();
+		replayButton.dispose();
+		titleButton.dispose();
+		quitButton.dispose();
 	}
 
 	/**

@@ -112,7 +112,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		spawners.add(ZombieSpawner(this, 3f));
 
 		// 10초마다 빈 상자 하나 리필
-		timerManager.registerTimer(RepeatingTimer(10f) {
+		timerManager.register(RepeatingTimer(10f) {
 			val emptyContainers = getEntities().filterIsInstance<Container>().filter { it.inventory.isEmpty };
 			emptyContainers.randomOrNull()?.inventory?.addItem(generateRandomItem());
 		});
@@ -140,7 +140,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		if(duration > 0f)
 			unfreezer = Timer(duration) {
 				unfreeze();
-			}.also { timerManager.registerTimer(it) };
+			}.also { timerManager.register(it) };
 		(viewer as? SubtitlesDrawable)?.drawSubtitles("Time stop!");
 	}
 
@@ -152,7 +152,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 	private inline fun cancelUnfreezer() {
 		unfreezer?.let {
-			timerManager.unregisterTimer(it);
+			timerManager.unregister(it);
 			unfreezer = null;
 		};
 	}

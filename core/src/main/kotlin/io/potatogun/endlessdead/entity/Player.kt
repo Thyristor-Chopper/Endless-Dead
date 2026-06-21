@@ -57,7 +57,7 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 		// 타이머
 
 		// 1. 생존 시간 기록 & 생존 시간 보너스
-		timerManager.registerTimer(RepeatingTimer(1f) {
+		timerManager.register(RepeatingTimer(1f) {
 			Statistics.survivedDuration++;
 			ScoreManager.addScore(1);
 		});
@@ -65,7 +65,7 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 		// 2. 30초마다 자연 회복
 		healTimer = RepeatingTimer(30f) {
 			heal(3);
-		}.also { timerManager.registerTimer(it) };
+		}.also { timerManager.register(it) };
 	}
 
 	// ---- 매 프레임 로직 ----
