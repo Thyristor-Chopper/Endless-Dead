@@ -11,7 +11,7 @@ abstract class SharedTextureManager {
 	private val shared = mutableMapOf<String, Lazy<Texture>>();
 
 	/**
-	 * 텍스처를 등록한다(생성자에서만 사용할 것)
+	 * 텍스처를 등록한다(생성자에서 사용)
 	 *
 	 * @param id   텍스처 식별자
 	 * @param path 텍스처 경로
