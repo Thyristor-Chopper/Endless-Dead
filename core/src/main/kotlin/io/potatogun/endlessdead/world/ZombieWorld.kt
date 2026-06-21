@@ -239,9 +239,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		);
 	}
 
-	/**
-	 * 플레이어 위치에 따라 카메라 위치 변경
-	 */
+	// 플레이어 위치에 따라 카메라 위치 변경
 	override fun updateCamera() {
 		// 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
 		//   보여주는 영역이 [offset, offset+screen]이어야 하므로
