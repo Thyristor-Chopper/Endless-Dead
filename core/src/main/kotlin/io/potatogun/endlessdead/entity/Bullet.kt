@@ -3,6 +3,7 @@ package io.potatogun.endlessdead.entity;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.item.Fireable;
+import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.world.World;
@@ -13,7 +14,7 @@ import kotlin.math.sqrt;
  * 총알 개체
  *
  * @param    world      총알이 있는 세계
- * @property gun        쏜 총
+ * @property gun        쏜 발사기
  * @property shooter    쏜 개체
  * @property target     총알이 향할 위치
  * @property speed      총알 속도
@@ -57,7 +58,8 @@ class Bullet(world: World, val gun: Fireable, val shooter: Entity, private val t
 		y += amountY * delta;
 
 		// 화면 밖으로 나가면 소멸
-		if(x < 0f || x > world.width || y < 0f || y > world.height)
+		val maxHalfLength = Utils.max2(width, height) * 0.5f;
+		if(x < 0f - maxHalfLength || x > world.width + maxHalfLength || y < 0f - maxHalfLength || y > world.height + maxHalfLength)
 			this.kill();
 
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지 주고 총알은 소멸.

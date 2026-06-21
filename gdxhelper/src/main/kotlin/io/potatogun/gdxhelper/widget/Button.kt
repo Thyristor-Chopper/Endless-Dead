@@ -1,6 +1,5 @@
 package io.potatogun.gdxhelper.widget;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
@@ -10,6 +9,7 @@ import com.badlogic.gdx.utils.Align;
 import io.potatogun.gdxhelper.HelperTextures;
 import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.Window;
 
 /**
  * 단추
@@ -50,8 +50,8 @@ class Button(x: () -> Float, y: () -> Float, width: Float, height: Float = 25f, 
 		val x = this.x();
 		val y = this.y();
 
-		val mouseX = Input.mouseX;
-		val mouseY = Gdx.graphics.height - Input.mouseY;
+		val mouseX = Input.mouseX.toFloat();
+		val mouseY = Window.height - Input.mouseY;
 		val isHover = isEnabled && mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
 		val isPressed = isEnabled && Input.isButtonPressed(Input.LEFT_MOUSE);
 		val fontColor = if(!isEnabled) skin.disabledCaptionColor else skin.captionColor;

@@ -12,10 +12,9 @@ import io.potatogun.gdxhelper.util.MutablePosition;
 import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.world.World;
 
-import java.lang.Math.toDegrees;
+import java.lang.Math;
 
 import kotlin.math.atan2;
-import kotlin.math.sqrt;
 
 /**
  * 게임에 등장하는 모든 '무엇인가'의 공통 부모.
@@ -233,7 +232,7 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	 */
 	inline fun rotateTo(position: Position) {
 		// 샷건 내 360도 구현 참고함
-		rotate(toDegrees(atan2((Window.height - position.y) - (this.y - world.offsetY + Window.height * 0.5f), position.x - (this.x - world.offsetX + Window.width * 0.5f)).toDouble()).toFloat() - 90f);
+		rotate(Math.toDegrees(atan2((Window.height - position.y) - (this.y - world.offsetY + Window.height * 0.5f), position.x - (this.x - world.offsetX + Window.width * 0.5f)).toDouble()).toFloat() - 90f);
 	}
 
 	/**

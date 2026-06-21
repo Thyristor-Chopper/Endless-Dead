@@ -1,6 +1,5 @@
 package io.potatogun.endlessdead.entity.container;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -8,7 +7,6 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.inventory.InventoryHolder;
 import io.potatogun.endlessdead.inventory.SingleItemInventory;
 import io.potatogun.endlessdead.item.Item;
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.world.World;
 

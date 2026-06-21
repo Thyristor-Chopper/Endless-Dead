@@ -1,7 +1,6 @@
 package io.potatogun.endlessdead.inventory;
 
 import io.potatogun.endlessdead.item.Item;
-import io.potatogun.gdxhelper.entity.Entity;
 
 /**
  * 하나의 아이템만 가질 수 있는 인벤토리 구현체

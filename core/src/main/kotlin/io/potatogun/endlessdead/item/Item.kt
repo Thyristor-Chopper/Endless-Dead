@@ -1,8 +1,6 @@
 package io.potatogun.endlessdead.item;
 
-import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.inventory.InventoryHolder;
-import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.world.World;
 
 /**

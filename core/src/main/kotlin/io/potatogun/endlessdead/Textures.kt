@@ -1,11 +1,8 @@
 package io.potatogun.endlessdead;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.util.SharedTextureManager;
 import io.potatogun.gdxhelper.widget.Button;
 

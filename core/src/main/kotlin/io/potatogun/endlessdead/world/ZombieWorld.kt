@@ -1,21 +1,15 @@
 package io.potatogun.endlessdead.world;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
-import io.potatogun.endlessdead.ScoreManager;
-import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
 import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.item.Bandage;
-import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.MachineGun;
 import io.potatogun.endlessdead.item.Shotgun;
@@ -23,13 +17,9 @@ import io.potatogun.endlessdead.item.SpeedPotion;
 import io.potatogun.endlessdead.item.TimeStopper;
 import io.potatogun.endlessdead.spawner.Spawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
-import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
-import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
-import io.potatogun.gdxhelper.screen.WorldViewer;
-import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.world.Freezable;

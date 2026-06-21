@@ -2,7 +2,6 @@ package io.potatogun.gdxhelper.screen;
 
 import com.badlogic.gdx.Gdx;
 
-import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.util.weakMutableSetOf;
 import io.potatogun.gdxhelper.world.World;
 

@@ -1,12 +1,10 @@
 package io.potatogun.endlessdead.entity;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Statistics;
-import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.inventory.BasicInventory;
@@ -25,10 +23,6 @@ import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.world.World;
-
-import java.lang.Math.toDegrees;
-
-import kotlin.math.atan2;
 
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━

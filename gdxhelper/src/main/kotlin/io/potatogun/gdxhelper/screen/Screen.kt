@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.gdxhelper.Utils;
-import io.potatogun.gdxhelper.screen.Screen;
 import io.potatogun.gdxhelper.widget.Widget;
 
 /**

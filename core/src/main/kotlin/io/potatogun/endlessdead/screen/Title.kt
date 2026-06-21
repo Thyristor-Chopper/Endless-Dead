@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 
-import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Textures;
@@ -35,7 +34,6 @@ class Title(private val game: EndlessDead) : Screen() {
 		GameManager.setPlaying();
 		val worldViewer = game.worldViewer.apply { loadWorld(ZombieWorld()) };
 		game.setScreen(worldViewer);
-		// Gdx.app.postRunnable { dispose() };
 	}
 
 	override fun update(delta: Float) {

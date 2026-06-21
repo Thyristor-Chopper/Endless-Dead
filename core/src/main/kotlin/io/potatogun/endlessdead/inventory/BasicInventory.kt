@@ -1,7 +1,6 @@
 package io.potatogun.endlessdead.inventory;
 
 import io.potatogun.endlessdead.item.Item;
-import io.potatogun.gdxhelper.entity.Entity;
 
 /**
  * 인벤토리를 가진 개체의 기본적인 구현체
