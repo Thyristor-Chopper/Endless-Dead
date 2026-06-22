@@ -21,7 +21,6 @@ import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
-import io.potatogun.gdxhelper.util.TimerExecutor;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.world.World;
 
@@ -45,21 +44,21 @@ import io.potatogun.gdxhelper.world.World;
  * @param    y         처음 Y 좌표
  * @property inventory 플레이어가 가질 인벤토리
  */
-class Player(world: World, x: Float, y: Float, override val inventory: ObservableInventory = LinearInventory(-1)) : LivingEntity(world, x, y, 52f, 63f, Utils.loadTexture("entity/player.bmp"), 50), InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), TimerExecutor {
+class Player(world: World, x: Float, y: Float, override val inventory: ObservableInventory = LinearInventory(-1)) : LivingEntity(world, x, y, 52f, 63f, Utils.loadTexture("entity/player.bmp"), 50), InventoryHolder, ItemSelectable by InventoryItemSelector(inventory) {
 	override val isUpdatableWhileFrozen = true;
 	private val textureShotgun = Utils.loadTexture("entity/player_shotgun.bmp");
 	private val textureMachineGun = Utils.loadTexture("entity/player_machinegun.bmp");
 	private var speed = 200f
 	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
-	override val timers = TimerManager();
+	private val timerManager = TimerManager();
 	private val healTimer: RepeatingTimer;
 
 	init {
 		// 타이머
 
 		// 1. 생존 시간 기록 & 생존 시간 보너스
-		timers.register(RepeatingTimer(1f) {
+		timerManager.register(RepeatingTimer(1f) {
 			Statistics.survivedDuration++;
 			ScoreManager.addScore(1);
 		});
@@ -67,12 +66,14 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 		// 2. 30초마다 자연 회복
 		healTimer = RepeatingTimer(30f) {
 			heal(3);
-		}.also { timers.register(it) };
+		}.also { timerManager.register(it) };
 	}
 
 	// ---- 매 프레임 로직 ----
 
 	override fun update(delta: Float) {
+		timerManager.tick(delta);
+
 		super.update(delta);
 
 		// 반디 위치에 따라 플레이어 회전
@@ -211,7 +212,7 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	 */
 	fun speedUp(amount: Float, duration: Float) {
 		speed += amount;
-		timers.register(Timer(duration) { speed -= amount });
+		timerManager.register(Timer(duration) { speed -= amount });
 	}
 
 	// 플레이어를 들고 있는 아이템에 맞게 그린다.

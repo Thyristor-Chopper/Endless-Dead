@@ -30,11 +30,9 @@ class TimerManager {
 	 */
 	fun tick(delta: Float) {
 		timers.toList().forEach {
-			if(it.condition?.invoke() ?: true) {
-				it.tick(delta);
-				if(it !is RepeatingTimer && it.executed)
-					timers.remove(it);
-			}
+			it.tick(delta);
+			if(it !is RepeatingTimer && it.executed)
+				timers.remove(it);
 		};
 	}
 

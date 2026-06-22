@@ -2,7 +2,6 @@ package io.potatogun.gdxhelper.screen;
 
 import com.badlogic.gdx.Gdx;
 
-import io.potatogun.gdxhelper.util.TimerExecutor;
 import io.potatogun.gdxhelper.util.weakMutableSetOf;
 import io.potatogun.gdxhelper.world.World;
 
@@ -64,11 +63,7 @@ open class WorldViewer : Screen() {
 	// 월드 갱신
 	override fun update(delta: Float) {
 		// 월드 갱신
-		projectingWorld?.let {
-			if(it is TimerExecutor)
-				it.timers.tick(delta);
-			it.update(delta);
-		};
+		projectingWorld?.update(delta);
 	}
 
 	// 일반적으로 월드가 아닌 뷰어 자체의 배경은 없다(그려봤자 월드의 배경이 반투명하지 않는 이상 월드의 배경에 가려질 것이다).
