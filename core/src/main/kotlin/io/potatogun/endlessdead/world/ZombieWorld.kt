@@ -21,6 +21,7 @@ import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
+import io.potatogun.gdxhelper.util.TimerExecutor;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
@@ -62,7 +63,7 @@ import kotlin.random.Random;
  *   카메라 이동을 눈으로 보여주기 위함이다.
  *   GameWorld.drawBackground(batch)를 override 해서 그린다.
  */
-class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), Freezable {
+class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), Freezable, TimerExecutor {
 	/**
 	 * 플레이어 — 월드 중앙에서 시작.
 	 */
@@ -84,7 +85,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	override var isFrozen: Boolean = false
 		private set;
 	// 타이머
-	private val timerManager = TimerManager();
+	override val timers = TimerManager();
 	private var unfreezer: Timer? = null;
 
 	/**
@@ -112,7 +113,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		spawners.add(ZombieSpawner(this, 3f));
 
 		// 10초마다 빈 상자 하나 리필
-		timerManager.register(RepeatingTimer(10f) {
+		timers.register(RepeatingTimer(10f) {
 			val emptyContainers = getEntities().filterIsInstance<Container>().filter { it.inventory.isEmpty };
 			emptyContainers.randomOrNull()?.inventory?.addItem(generateRandomItem());
 		});
@@ -138,7 +139,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		isFrozen = true;
 		cancelUnfreezer();  // 기존 타이머 해제
 		if(duration > 0f)
-			unfreezer = Timer(duration) { unfreeze() }.also { timerManager.register(it) };
+			unfreezer = Timer(duration) { unfreeze() }.also { timers.register(it) };
 		(viewer as? SubtitlesDrawable)?.drawSubtitles("Time stop!");
 	}
 
@@ -150,7 +151,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 	private inline fun cancelUnfreezer() {
 		unfreezer?.let {
-			timerManager.unregister(it);
+			timers.unregister(it);
 			unfreezer = null;
 		};
 	}
@@ -163,14 +164,16 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	 * 매 프레임 처리 — 개체, 스포너 및 타이머 갱신
 	 */
 	override fun update(delta: Float) {
-		timerManager.tick(delta);
-
 		// ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
 		super.update(delta);  // updateEntities와 removeDead
 
 		// 스포너 갱신
 		if(!isFrozen)
-			spawners.forEach { it.update(delta) };
+			spawners.forEach {
+				if(it is TimerExecutor)
+					it.timers.tick(delta);
+				it.update(delta);
+			};
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
 		if(!player.isAlive)

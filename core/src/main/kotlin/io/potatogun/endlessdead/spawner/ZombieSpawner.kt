@@ -5,6 +5,7 @@ import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
+import io.potatogun.gdxhelper.util.TimerExecutor;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.util.distanceTo;
 import io.potatogun.gdxhelper.world.World;
@@ -17,7 +18,7 @@ import kotlin.random.Random;
  * @param    world         소속 세계
  * @property spawnInterval 소환 간격
  */
-class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(world) {
+class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(world), TimerExecutor {
 	private var zombiesPerSpawn = 1
 		set(value) {
 			if(value < 0) field = 0;
@@ -27,10 +28,10 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 	private val maxZombiesPerSpawn = 8;
 	private val spawnIncreaseTimer: RepeatingTimer;
 	private val spawnIncreaseInterval = 30f;
-	private val timerManager = TimerManager();
+	override val timers = TimerManager();
 
 	init {
-		timerManager.register(RepeatingTimer(spawnInterval) {
+		timers.register(RepeatingTimer(spawnInterval) {
 			for(i in 1..zombiesPerSpawn)
 				spawnRandomZombie();
 		});
@@ -40,16 +41,9 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 				zombiesPerSpawn++;
 				(world.viewer as? SubtitlesDrawable)?.drawSubtitles("More zombies coming...");
 			} else {
-				timerManager.unregister(timer);
+				timers.unregister(timer);
 			}
-		}.also { timerManager.register(it) };
-	}
-
-	/**
-	 * 매 프레임 실행해서 타이머를 갱신하여 소환할 시간이 되면 좀비를 스폰한다
-	 */
-	override fun update(delta: Float) {
-		timerManager.tick(delta);
+		}.also { timers.register(it) };
 	}
 
 	/**
