@@ -80,6 +80,11 @@ open class WorldViewer : Screen() {
 		};
 	}
 
+	override fun dispose() {
+		super.dispose();
+		projectingWorld?.dispose();
+	}
+
 	companion object {
 		// 생성된 모든 인스턴스를 관리하는 목록이다. 생성자에서 자동으로 추가한다. 누가 설마 자바 unsafe의 allocateInstance를 쓰진 않겠지
 		private val instances = weakMutableSetOf<WorldViewer>();
