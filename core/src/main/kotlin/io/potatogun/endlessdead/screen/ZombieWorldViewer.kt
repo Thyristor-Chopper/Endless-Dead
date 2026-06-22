@@ -158,7 +158,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			TitleInfoType.FIRED		-> "Fired: ${Statistics.fireCount}"
 			TitleInfoType.SURVIVED	-> "Survived duration: ${Utils.parseSeconds(Statistics.survivedDuration, "m", "s")}"
 			TitleInfoType.DAMAGE	-> "Total damage: ${Statistics.totalDamage}"
-			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.getAll<Zombie>().size}"
+			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.getEntities().filterIsInstance<Zombie>().size}"
 		};
 	}
 

@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.inventory;
 
+import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.item.Item;
 
 /**
@@ -28,6 +29,22 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 						return false;
 			return true;
 		};
+	override val firstItem: Item?
+		get() {
+			for(i in 0 until rows)
+				for(j in 0 until columns)
+					if(inventory[i][j] != null)
+						return inventory[i][j];
+			return null;
+		};
+	override val lastItem: Item?
+		get() {
+			for(i in (rows - 1) downTo 0)
+				for(j in (columns - 1) downTo 0)
+					if(inventory[i][j] != null)
+						return inventory[i][j];
+			return null;
+		};
 	override val maxSlots = columns * rows;
 
 	init {
@@ -47,11 +64,10 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 					break;
 				}
 		if(emptyI == -1 || emptyJ == -1) return false;
-		val holder: Inventory? = item.inventory;
-		if(!(holder?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
+		val holder: InventoryHolder? = item.holder;
+		if(!(holder?.inventory?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
 		inventory[emptyI][emptyJ] = item;
-		item.inventory = this;
-		invokeItemAddObservers(item);
+		invokeItemAddObservers(item, holder);
 		return true;
 	}
 
@@ -66,7 +82,6 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		val item = inventory[i][j];
 		if(item == null) return false;
 		inventory[i][j] = null;
-		item.inventory = null;
 		invokeItemRemoveObservers(item);
 		return true;
 	}
@@ -74,32 +89,35 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	override fun removeItem(index: Int): Boolean {
 		if(index < 0) return false;
 		var n = 0;
+		var removed = false;
 		for(i in 0 until rows)
 			for(j in 0 until columns) {
 				val item: Item? = inventory[i][j];
 				if(item != null) {
 					if(n == index) {
 						inventory[i][j] = null;
-						item.inventory = null;
 						invokeItemRemoveObservers(item);
-						return true;
+						removed = true;
+						break;
 					}
 					n++;
 				}
 			}
-		return false;
+		return removed;
 	}
 
 	override fun removeItem(item: Item): Boolean {
+		var removed = false;
 		for(i in 0 until rows)
 			for(j in 0 until columns)
 				if(inventory[i][j] === item) {
 					inventory[i][j] = null;
-					item.inventory = null;
-					invokeItemRemoveObservers(item);
-					return true;
+					removed = true;
+					break;
 				}
-		return false;
+		if(!removed) return false;
+		invokeItemRemoveObservers(item);
+		return true;
 	}
 
 	/**
@@ -166,7 +184,6 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 				val item = inventory[i][j];
 				if(item != null) {
 					inventory[i][j] = null;
-					item.inventory = null;
 					invokeItemRemoveObservers(item);
 				}
 			}

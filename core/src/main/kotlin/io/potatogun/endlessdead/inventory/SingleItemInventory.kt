@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.inventory;
 
+import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.item.Item;
 
 /**
@@ -12,14 +13,18 @@ class SingleItemInventory : ObservableInventory() {
 	override val isEmpty: Boolean
 		get() = (inventoryItem == null);
 	override val maxSlots = 1;
+	override val firstItem: Item?
+		get() = inventoryItem;
+	override val lastItem: Item?
+		get() = inventoryItem;
 
 	override fun addItem(item: Item): Boolean {
 		if(inventoryItem != null) return false;
-		val holder: Inventory? = item.holder;
-		holder?.removeItem(item);
+		val holder: InventoryHolder? = item.holder;
+		if(holder != null)
+			holder.inventory.removeItem(item);
 		inventoryItem = item;
-		item.inventory = this;
-		invokeItemAddObservers(item);
+		invokeItemAddObservers(item, holder);
 		return true;
 	}
 
@@ -27,7 +32,6 @@ class SingleItemInventory : ObservableInventory() {
 		val item = inventoryItem;
 		if(index != 0 || item == null) return false;
 		inventoryItem = null;
-		item.inventory = null;
 		invokeItemRemoveObservers(item);
 		return true;
 	}
@@ -35,7 +39,6 @@ class SingleItemInventory : ObservableInventory() {
 	override fun removeItem(item: Item): Boolean {
 		if(inventoryItem !== item) return false;
 		inventoryItem = null;
-		item.inventory = null;
 		invokeItemRemoveObservers(item);
 		return true;
 	}
@@ -54,17 +57,11 @@ class SingleItemInventory : ObservableInventory() {
 
 	override fun clear() {
 		inventoryItem?.let {
-			it.inventory = null;
 			inventoryItem = null;
 			invokeItemRemoveObservers(it);
 		}
 		invokeClearObservers();
 	}
 
-	/**
-	 * 들어 있는 아이템을 반환한다.
-	 *
-	 * @return 현재 들어 있는 아이템
-	 */
 	fun getItem(): Item? = inventoryItem;
 }

@@ -1,6 +1,6 @@
 package io.potatogun.endlessdead.item;
 
-import io.potatogun.endlessdead.inventory.Inventory;
+import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -17,9 +17,16 @@ import io.potatogun.gdxhelper.world.World;
  */
 abstract class Item(val world: World, @get:JvmName("getID") val id: String, val name: String) {
 	/**
-	 * 아이템을 들고 있는 인벤토리 (캐시)
+	 * 아이템을 들고 있는 개체
 	 */
-	internal var inventory: Inventory? = null;
+	val holder: InventoryHolder?
+		get() {
+			for(entity in world.getEntities()) {
+				if(entity is InventoryHolder && entity.inventory.hasItem(this))
+					return entity;
+			}
+			return null;
+		};
 
 	/**
 	 * 아이템을 파괴한다.
@@ -27,7 +34,7 @@ abstract class Item(val world: World, @get:JvmName("getID") val id: String, val 
 	 * @return 성공 여부
 	 */
 	fun destroy(): Boolean {
-		return inventory?.removeItem(this) ?: true;  // 소유자가 없는 아이템은 그냥 없어지는 것이기 때문에 true로
+		return holder?.inventory?.removeItem(this) ?: true;  // 소유자가 없는 아이템은 그냥 없어지는 것이기 때문에 true로
 
 		// 나머지는 jvm이나 달빅이 알아서 gc 해주겠지.
 	}

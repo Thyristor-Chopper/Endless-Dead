@@ -113,7 +113,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		// 10초마다 빈 상자 하나 리필
 		timerManager.register(RepeatingTimer(10f) {
-			val emptyContainers = getAll<Container>().filter { it.inventory.isEmpty };
+			val emptyContainers = getEntities().filterIsInstance<Container>().filter { it.inventory.isEmpty };
 			emptyContainers.randomOrNull()?.inventory?.addItem(generateRandomItem());
 		});
 	}
