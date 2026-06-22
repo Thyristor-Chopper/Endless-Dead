@@ -1,7 +1,5 @@
 package io.potatogun.gdxhelper.util;
 
-import io.potatogun.gdxhelper.util.weakMutableSetOf;
-
 /**
  * 타이머 객체들을 관리한다.
  */
