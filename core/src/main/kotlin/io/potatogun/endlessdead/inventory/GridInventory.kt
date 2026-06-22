@@ -20,7 +20,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 					if(inventory[i][j] != null)
 						ret++;
 			return ret;
-		}
+		};
 	override val isEmpty: Boolean
 		get() {
 			for(i in 0 until rows)
@@ -28,7 +28,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 					if(inventory[i][j] != null)
 						return false;
 			return true;
-		}
+		};
 	override val firstItem: Item?
 		get() {
 			for(i in 0 until rows)
@@ -36,7 +36,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 					if(inventory[i][j] != null)
 						return inventory[i][j];
 			return null;
-		}
+		};
 	override val lastItem: Item?
 		get() {
 			for(i in (rows - 1) downTo 0)
@@ -44,7 +44,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 					if(inventory[i][j] != null)
 						return inventory[i][j];
 			return null;
-		}
+		};
 	override val maxSlots = columns * rows;
 
 	init {
