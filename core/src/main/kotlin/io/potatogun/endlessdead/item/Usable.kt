@@ -1,5 +1,7 @@
 package io.potatogun.endlessdead.item;
 
+import io.potatogun.endlessdead.entity.InventoryHolder;
+
 /**
  * '사용할 수 있다'의 개념이 있는 아이템
  */
@@ -12,7 +14,9 @@ interface Usable {
 	/**
 	 * 아이템 사용 처리
 	 *
+	 * @param user 아이템 사용자 (이 아이템을 실제로 가지고 있어야 함)
 	 * @return 사용 성공 여부
+	 * @throws IllegalStateException 사용자가 이 아이템을 가지고 있지 않은 경우
 	 */
-	fun use(): Boolean;
+	fun use(user: InventoryHolder): Boolean;
 }

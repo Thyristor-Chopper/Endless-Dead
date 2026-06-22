@@ -18,14 +18,6 @@ interface Inventory {
 	 * 인벤토리 아이템 최대 개수
 	 */
 	val maxSlots: Int;
-	/**
-	 * 처음으로 추가된 아이템
-	 */
-	val firstItem: Item?;
-	/**
-	 * 마지막으로 추가된 아이템
-	 */
-	val lastItem: Item?;
 
 	/**
 	 * 인벤토리에 아이템 넣기

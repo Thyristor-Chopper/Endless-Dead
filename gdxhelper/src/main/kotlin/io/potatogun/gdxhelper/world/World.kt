@@ -13,6 +13,8 @@ import io.potatogun.gdxhelper.screen.WorldViewer;
 import io.potatogun.gdxhelper.util.weakMutableSetOf;
 import io.potatogun.gdxhelper.world.Freezable;
 
+import kotlin.reflect.KClass;
+
 /**
  * 게임 내 월드 = '월드 하나' 의 추상 기본 클래스.
  * '월드'의 개념에 맞게 플레이어나 적 등의 개체 등을 추가한다.
@@ -123,18 +125,54 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	fun getEntities(): List<Entity> = entities.toList();
 
 	/**
+	 * 지정한 종류의 개체들의 목록을 반환한다.
+	 *
+	 * @return 개체 목록
+	 */
+	inline fun <reified T : Entity> getAll(): List<T> = getAll(T::class);
+
+	fun <T : Entity> getAll(type: KClass<T>): List<T> = entities.filterIsInstance(type.java);
+
+	/**
+	 * 등록된 모든 개체를 역순으로 순회한다. (현재 개체만 지운다면 concurrentModificationException 방지 가능)
+	 *
+	 * @param operation 실행할 서브루틴, Entity: 현재 개체
+	 */
+	fun forEachEntities(operation: (Entity) -> Unit) {
+		for(i in entities.lastIndex downTo 0)
+			operation(entities[i]);
+	}
+
+	/**
+	 * 등록된 모든 개체를 역순으로 순회하며 중지 가능한 변형판이다.
+	 *
+	 * @param operation 실행할 서브루틴, Entity: 현재 개체, () -> Unit: 호출하면 순회 중단
+	 */
+	fun forEachEntities(operation: (Entity, () -> Unit) -> Unit) {
+		for(i in entities.lastIndex downTo 0) {
+			var breakFor = false;
+			operation(entities[i], { breakFor = true });
+			if(breakFor) break;
+		}
+	}
+
+	/**
 	 * 지정한 종류의 개체 중 처음으로 등록된 것을 반환한다.
 	 *
 	 * @return 개체 (없으면 null)
 	 */
-	inline fun <reified T : Entity> get(): T? = getEntities().firstOrNull { it::class == T::class } as T?;
+	inline fun <reified T : Entity> get(): T? = get(T::class);
+
+	fun <T : Entity> get(type: KClass<T>): T? = entities.firstOrNull { it::class == type } as T?;
 
 	/**
 	 * 지정한 종류의 개체를 아무거나 반환한다.
 	 *
 	 * @return 개체 (없으면 null)
 	 */
-	inline fun <reified T : Entity> getRandom(): T? = getEntities().shuffled().firstOrNull { it::class == T::class } as T?;
+	inline fun <reified T : Entity> getRandom(): T? = getRandom(T::class);
+
+	fun <T : Entity> getRandom(type: KClass<T>): T? = entities.shuffled().firstOrNull { it::class == type } as T?;
 
 	/**
 	 * 등록된 모든 개체에게 'update(delta) 한 프레임 진행'을 시킨다.

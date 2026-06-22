@@ -1,6 +1,5 @@
 package io.potatogun.endlessdead.inventory;
 
-import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.item.Item;
 
 /**
@@ -15,10 +14,6 @@ class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 		get() = inventory.size;
 	override val isEmpty: Boolean
 		get() = inventory.isEmpty();
-	override val firstItem: Item?
-		get() = inventory.getOrNull(0);
-	override val lastItem: Item?
-		get() = inventory.getOrNull(inventory.size - 1);
 
 	init {
 		if(maxSlots < -1)
@@ -28,10 +23,11 @@ class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 	override fun addItem(item: Item): Boolean {
 		if(maxSlots != -1 && inventory.size >= maxSlots) return false;
 		if(hasItem(item)) return false;
-		val holder: InventoryHolder? = item.holder;
-		if(!(holder?.inventory?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
+		val holder: Inventory? = item.inventory;
+		if(!(holder?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
 		inventory.add(item);
-		invokeItemAddObservers(item, holder);
+		item.inventory = this;
+		invokeItemAddObservers(item);
 		return true;
 	}
 
@@ -39,6 +35,7 @@ class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 		if(index < 0 || index >= inventory.size) return false;
 		val item = inventory[index];
 		inventory.removeAt(index);
+		item.inventory = null;
 		invokeItemRemoveObservers(item);
 		return true;
 	}
@@ -47,6 +44,7 @@ class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 		val index = inventory.indexOfFirst({ it === item });
 		if(index == -1) return false;
 		inventory.removeAt(index);
+		item.inventory = null;
 		invokeItemRemoveObservers(item);
 		return true;
 	}
@@ -60,6 +58,7 @@ class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 	override fun getItems(): List<Item> = inventory.toList();
 
 	override fun clear() {
+		inventory.forEach { it.inventory = null };
 		inventory.clear();
 		invokeClearObservers();
 	}
