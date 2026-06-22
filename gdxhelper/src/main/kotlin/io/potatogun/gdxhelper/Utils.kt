@@ -61,7 +61,7 @@ object Utils {
 				if(condition?.invoke() ?: true)
 					operation();
 			}
-		}.apply { Timer.schedule(this, delay) };
+		}.also { Timer.schedule(it, delay) };
 	}
 
 	/**
@@ -89,7 +89,7 @@ object Utils {
 				if(condition?.invoke() ?: true)
 					operation();
 			}
-		}.apply { Timer.schedule(this, interval, interval) };
+		}.also { Timer.schedule(it, interval, interval) };
 	}
 
 	/**
