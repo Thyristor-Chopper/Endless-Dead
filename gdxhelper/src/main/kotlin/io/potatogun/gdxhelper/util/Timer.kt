@@ -4,9 +4,10 @@ package io.potatogun.gdxhelper.util;
  * 지정된 시간 후 특정 작업을 실행하게 해 주는 클래스
  *
  * @property delay     대기 시간(초)
+ * @property condition 실행 조건
  * @property operation 실행할 서브루틴
  */
-open class Timer(private val delay: Float, private val operation: (Timer) -> Unit) {
+open class Timer(private val delay: Float, internal val condition: (() -> Boolean)? = null, private val operation: (Timer) -> Unit) {
 	private var timer = delay
 		set(value) {
 			if(value < 0f) field = 0f;
