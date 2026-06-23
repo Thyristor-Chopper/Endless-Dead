@@ -10,8 +10,11 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.WorldViewer;
+import io.potatogun.gdxhelper.util.identityMutableSetOf;
 import io.potatogun.gdxhelper.util.weakMutableSetOf;
 import io.potatogun.gdxhelper.world.Freezable;
+
+import java.util.Collections;
 
 import kotlin.reflect.KClass;
 
@@ -72,7 +75,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	/**
 	 * 등록된 개체 목록
 	 */
-	private val entities = mutableListOf<Entity>();
+	private val entities = identityMutableSetOf<Entity>();
 
 	init {
 		instances.add(this);
@@ -95,10 +98,9 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 * 개체를 월드에 등록 — 이후부터 자동으로 update/draw 된다.
 	 *
 	 * @param entity 추가할 개체
+	 * @return       성공 여부 (중복 시 false)
 	 */
-	fun addEntity(entity: Entity) {
-		entities.add(entity);
-	}
+	fun addEntity(entity: Entity): Boolean = entities.add(entity);
 
 	/**
 	 * 특정 개체를 수동 제거. 보통은 isAlive=false 후 removeDead() 로 정리.
@@ -106,12 +108,10 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 * @param entity 제거할 개체
 	 * @return       성공 여부
 	 */
-	fun removeEntity(entity: Entity): Boolean {
-		entity.let {
-			it.dispose();
-			return entities.remove(it);
-		};
-	}
+	fun removeEntity(entity: Entity): Boolean = entity.let {
+		it.dispose();
+		entities.remove(it);
+	};
 
 	/**
 	 * 현재 등록된 개체 목록의 '읽기용 복사본'.
@@ -132,29 +132,6 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	inline fun <reified T : Entity> getAll(): List<T> = getAll(T::class);
 
 	fun <T : Entity> getAll(type: KClass<T>): List<T> = entities.filterIsInstance(type.java);
-
-	/**
-	 * 등록된 모든 개체를 역순으로 순회한다. (현재 개체만 지운다면 concurrentModificationException 방지 가능)
-	 *
-	 * @param operation 실행할 서브루틴, Entity: 현재 개체
-	 */
-	fun forEachEntities(operation: (Entity) -> Unit) {
-		for(i in entities.lastIndex downTo 0)
-			operation(entities[i]);
-	}
-
-	/**
-	 * 등록된 모든 개체를 역순으로 순회하며 중지 가능한 변형판이다.
-	 *
-	 * @param operation 실행할 서브루틴, Entity: 현재 개체, () -> Unit: 호출하면 순회 중단
-	 */
-	fun forEachEntities(operation: (Entity, () -> Unit) -> Unit) {
-		for(i in entities.lastIndex downTo 0) {
-			var breakFor = false;
-			operation(entities[i], { breakFor = true });
-			if(breakFor) break;
-		}
-	}
 
 	/**
 	 * 지정한 종류의 개체 중 처음으로 등록된 것을 반환한다.

@@ -15,7 +15,7 @@ class SingleItemInventory : ObservableInventory() {
 
 	override fun addItem(item: Item): Boolean {
 		if(inventoryItem != null) return false;
-		val holder: Inventory? = item.holder;
+		val holder: Inventory? = item.inventory;
 		holder?.removeItem(item);
 		inventoryItem = item;
 		item.inventory = this;

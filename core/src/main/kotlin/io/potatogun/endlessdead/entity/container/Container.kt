@@ -42,11 +42,6 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 	init {
 		initialItem?.let { inventory.addItem(it) };
 
-		inventory.addItemAddObserver { _, previousOwner -> 
-			if(previousOwner is Player)
-				isPlayerItem = true;
-		};
-
 		inventory.addItemRemoveObserver {
 			if(isPlayerItem)
 				isPlayerItem = false;
@@ -76,6 +71,21 @@ abstract class Container(world: World, x: Float, y: Float, width: Float, height:
 		if(!taker.inventory.addItem(item)) return null;
 		isPlayerItem = false;
 		return item;
+	}
+
+	/**
+	 * 아이템 넣기
+	 *
+	 * @param item         넣을 아이템
+	 * @param isPlayerItem 플레이어가 직접 아이템을 넣었는지의 여부
+	 * @return             성공 여부
+	 */
+	@JvmOverloads fun putItem(item: Item, isPlayerItem: Boolean = false): Boolean {
+		if(inventory.addItem(item)) {
+			if(isPlayerItem) this.isPlayerItem = true;
+			return true;
+		}
+		return false;
 	}
 
 	// 추가적인 두 텍스처도 비운다.

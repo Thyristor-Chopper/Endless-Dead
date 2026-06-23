@@ -114,7 +114,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		// 10초마다 빈 상자 하나 리필
 		timerManager.register(RepeatingTimer(10f) {
 			val emptyContainers = getAll<Container>().filter { it.inventory.isEmpty };
-			emptyContainers.randomOrNull()?.inventory?.addItem(generateRandomItem());
+			emptyContainers.randomOrNull()?.putItem(generateRandomItem());
 		});
 	}
 
@@ -124,11 +124,11 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	private fun generateRandomItem(): Item {
 		val rand = Random.nextInt(100) + 1;  // 1~100
 		return when {
-			rand <= 40	-> MachineGun(this)	// 40%
-			rand <= 70	-> Shotgun(this)		// 30%
-			rand <= 85	-> Bandage(this)		// 15%
-			rand <= 95	-> SpeedPotion(this)	// 10%
-			else		-> TimeStopper(this)	// 5%
+			rand <= 40	-> MachineGun()		// 40%
+			rand <= 70	-> Shotgun()		// 30%
+			rand <= 85	-> Bandage()		// 15%
+			rand <= 95	-> SpeedPotion()	// 10%
+			else		-> TimeStopper()	// 5%
 		};
 	}
 

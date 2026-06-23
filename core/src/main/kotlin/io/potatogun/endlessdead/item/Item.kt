@@ -1,7 +1,6 @@
 package io.potatogun.endlessdead.item;
 
 import io.potatogun.endlessdead.inventory.Inventory;
-import io.potatogun.gdxhelper.world.World;
 
 /**
  * 아이템 추상 클래스
@@ -11,11 +10,10 @@ import io.potatogun.gdxhelper.world.World;
  *         Bukkit.broadcastMessage("This player has " + item.name + "!");
  *   자바에서 두 형식 다 쓰일 법할 것 같기도 하고...
  *
- * @property world 아이템이 있는 세계
- * @property id    아이템 식별자
- * @property name  아이템 이름
+ * @property id   아이템 식별자
+ * @property name 아이템 이름
  */
-abstract class Item(val world: World, @get:JvmName("getID") val id: String, val name: String) {
+abstract class Item(@get:JvmName("getID") val id: String, val name: String) {
 	/**
 	 * 아이템을 들고 있는 인벤토리 (캐시)
 	 */

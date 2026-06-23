@@ -2,7 +2,7 @@ package io.potatogun.endlessdead.entity;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.item.Fireable;
+import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.util.Position;
@@ -22,7 +22,7 @@ import kotlin.math.sqrt;
  * @property penetrable 총알 관통 가능 여부
  * @param    hp         총알 체력 (관통 시 감소)
  */
-class Bullet(world: World, val gun: Fireable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.position.x, shooter.position.y, 16f, 16f, Textures.getShared("bullet"), hp) {
+class Bullet(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.position.x, shooter.position.y, 16f, 16f, Textures.getShared("bullet"), hp) {
 	override val isUpdatableWhileFrozen = (shooter is Player);
 	override val showDamagedIndicator = false;
 	/**

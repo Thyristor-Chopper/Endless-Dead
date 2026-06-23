@@ -11,7 +11,6 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.util.Position;
-import io.potatogun.gdxhelper.world.World;
 
 import java.lang.Math.toRadians;
 
@@ -23,7 +22,6 @@ import kotlin.math.sin;
  *
  * @JvmField가 있는 곳은 빌드 후 직접 디컴파일하여 null이 불가능한 원시 int, float로 바뀜을 확인했다.
  *
- * @param    world              아이템이 있는 세계
  * @param    id                 총 식별자
  * @param    name               총 이름
  * @property bulletDamage       총알 피해량
@@ -35,7 +33,7 @@ import kotlin.math.sin;
  * @property maxBullets         최대 총알 개수
  * @throws IllegalArgumentException	지정한 값 중 일부가 잘못된 경우
  */
-abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, @get:JvmName("getBulletHP") val bulletHP: Int, @JvmField val isBulletPenetreble: Boolean, val fireInterval: Float, initialBullets: Int, @JvmField val maxBullets: Int = initialBullets) : Item(world, id, name), Fireable, Usable {
+abstract class Gun(id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, @get:JvmName("getBulletHP") val bulletHP: Int, @JvmField val isBulletPenetreble: Boolean, val fireInterval: Float, initialBullets: Int, @JvmField val maxBullets: Int = initialBullets) : Item(id, name), Shootable, Usable {
 	override val isContinuousUseAllowed = false;
 	private var fireCooldown = 0f
 		set(value) {
@@ -107,18 +105,18 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 	 * @param shooter 총알을 쏜 개체
 	 * @return        쏜 총알 개수 (실패하면 0)
 	 */
-	override fun fire(target: Position, shooter: Entity): Int {
+	override fun shoot(target: Position, shooter: Entity): Int {
 		if(!canFire) return 0;
 
-		val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetreble, bulletHP);
-		world.addEntity(bullet);
+		val bullet = Bullet(shooter.world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetreble, bulletHP);
+		shooter.world.addEntity(bullet);
 		startFireCooldown();
 		remainingBullets--;
 
 		// ammo가 다 떨어진 총은 파괴
 		if(remainingBullets == 0) {
-			if(holder is Player)
-				(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
+			if(shooter is Player)
+				(shooter.world.viewer as? SubtitlesDrawable)?.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
 			destroy();
 		}
 
@@ -130,15 +128,14 @@ abstract class Gun(world: World, id: String, name: String, val bulletDamage: Int
 	 *
 	 * @return 성공 여부
 	 */
-	override fun use(): Boolean {
-		val holder: InventoryHolder? = this.holder;
-		if(holder !is Entity) return false;
+	override fun use(user: InventoryHolder): Boolean {
+		if(user !is Entity) return false;
 
 		// 개체 회전 각도에 맞는 임의의 위치를 생성한다.
-		val radians = toRadians(holder.getRotationAngle() + 90.0);
-		val distance = Utils.max2(world.width, world.height);  // 그냥 100f 이상 가능한 한 큰 수면 된다.
-		val targetX = cos(radians) * distance + holder.x;
-		val targetY = sin(radians) * distance + holder.y;
-		return fire(Position(targetX.toFloat(), targetY.toFloat()), holder) > 0;
+		val radians = toRadians(user.getRotationAngle() + 90.0);
+		val distance = Utils.max2(user.world.width, user.world.height);  // 그냥 100f 이상 가능한 한 큰 수면 된다.
+		val targetX = cos(radians) * distance + user.x;
+		val targetY = sin(radians) * distance + user.y;
+		return shoot(Position(targetX.toFloat(), targetY.toFloat()), user) > 0;
 	}
 }

@@ -4,16 +4,15 @@ package io.potatogun.gdxhelper.util;
  * 타이머 객체들을 관리한다.
  */
 class TimerManager {
-	private val timers = mutableListOf<Timer>();
+	private val timers = identityMutableSetOf<Timer>();
 
 	/**
 	 * 타이머 등록
 	 *
 	 * @param timer 등록할 타이머
+	 * @return      성공 여부 (중복 시 실패)
 	 */
-	fun register(timer: Timer) {
-		timers.add(timer);
-	}
+	fun register(timer: Timer): Boolean = timers.add(timer);
 
 	/**
 	 * 타이머 등록 해제
@@ -29,13 +28,12 @@ class TimerManager {
 	 * @param delta 직전 프레임과의 시간 간격(초)
 	 */
 	fun tick(delta: Float) {
-		timers.toList().forEach {
-			if(it.condition?.invoke() ?: true) {
-				it.tick(delta);
-				if(it !is RepeatingTimer && it.executed)
-					timers.remove(it);
+		for(timer in timers.toList())
+			if(timer.condition?.invoke() ?: true) {
+				timer.tick(delta);
+				if(timer !is RepeatingTimer && timer.executed)
+					timers.remove(timer);
 			}
-		};
 	}
 
 	/**

@@ -8,13 +8,11 @@ import io.potatogun.endlessdead.item.Item;
  */
 abstract class ObservableInventory : Inventory {
 	private val itemAddObservers = mutableListOf<(Item) -> Unit>();
-	private val itemAddObserversEx = mutableListOf<(Item, InventoryHolder?) -> Unit>();
 	private val itemRemoveObservers = mutableListOf<(Item) -> Unit>();
 	private val clearObservers = mutableListOf<() -> Unit>();
 
-	protected fun invokeItemAddObservers(item: Item, previousOwner: InventoryHolder?) {
+	protected fun invokeItemAddObservers(item: Item) {
 		itemAddObservers.forEach { it(item) };
-		itemAddObserversEx.forEach { it(item, previousOwner) };
 	}
 
 	protected fun invokeItemRemoveObservers(item: Item) {
@@ -32,15 +30,6 @@ abstract class ObservableInventory : Inventory {
 	 */
 	fun addItemAddObserver(handler: (Item) -> Unit) {
 		itemAddObservers.add(handler);
-	}
-
-	/**
-	 * 아이템이 추가될 때 호출되는 콜백 함수를 지정한다. 기존 소유자를 추적할 수 있다.
-	 *
-	 * @param handler 콜백, Item: 추가된 아이템, InventoryHolder?: 기존 소유자 (없으면 null)
-	 */
-	fun addItemAddObserver(handler: (Item, InventoryHolder?) -> Unit) {
-		itemAddObserversEx.add(handler);
 	}
 
 	/**
