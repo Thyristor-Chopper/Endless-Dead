@@ -141,8 +141,8 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	 * update()에서만 한 번 쓰이기 때문에 inline이다.
 	 */
 	private inline fun interactContainer() {
-		for(entity in world.getEntities()) {
-			if(entity !is Container) continue;
+		world.forEachEntities { entity, stopIterating ->
+			if(entity !is Container) return@forEachEntities;
 			if(collidesWith(entity))
 				if(entity.inventory.isEmpty) {
 					var putItem = false;
@@ -151,7 +151,7 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 						entity.inventory.addItem(it);
 						putItem = true;  // 하나씩만
 					} ?: (world.viewer as? SubtitlesDrawable)?.drawSubtitles("Can't take any item; container is empty");
-					if(putItem) break;
+					if(putItem) stopIterating();
 				} else {
 					val isPlayerItem = entity.isPlayerItem;
 					val item: Item? = entity.takeItem(this);
@@ -162,10 +162,10 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 						(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Took ${item.name} from the container");
 						if(!isPlayerItem)
 							Statistics.openedContainerCount++;
-						break;  // 하나씩만
+						stopIterating();  // 하나씩만
 					}
 				}
-		}
+		};
 	}
 
 	// ---- 콜백(이벤트) 처리 ----
