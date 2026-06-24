@@ -279,6 +279,13 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	open fun forceUpdate(delta: Float) {}
 
 	/**
+	 * 개체를 월드에서 제거하고 등록을 해제한다.
+	 */
+	inline fun remove() {
+		world.removeEntity(this);
+	}
+
+	/**
 	 * 이 객체가 갖고 있는 GPU 자원을 정리한다 — 화면이 닫힐 때 한 번 호출된다.
 	 *
 	 * 왜 필요한가?
@@ -287,12 +294,5 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	 */
 	open fun dispose() {
 		texture?.dispose();
-	}
-
-	/**
-	 * 개체를 월드에서 제거하고 등록을 해제한다.
-	 */
-	fun remove() {
-		world.removeEntity(this);
 	}
 }
