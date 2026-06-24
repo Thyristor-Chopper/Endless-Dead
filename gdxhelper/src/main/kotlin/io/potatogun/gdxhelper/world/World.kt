@@ -10,7 +10,6 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.WorldViewer;
-import io.potatogun.gdxhelper.util.identityMutableSetOf;
 import io.potatogun.gdxhelper.util.weakMutableSetOf;
 import io.potatogun.gdxhelper.world.Freezable;
 
@@ -75,7 +74,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	/**
 	 * 등록된 개체 목록
 	 */
-	private val entities = identityMutableSetOf<Entity>();
+	private val entities = mutableListOf<Entity>();
 
 	init {
 		instances.add(this);
@@ -98,9 +97,10 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 * 개체를 월드에 등록 — 이후부터 자동으로 update/draw 된다.
 	 *
 	 * @param entity 추가할 개체
-	 * @return       성공 여부 (중복 시 false)
 	 */
-	fun addEntity(entity: Entity): Boolean = entities.add(entity);
+	fun addEntity(entity: Entity) {
+		entities.add(entity);
+	}
 
 	/**
 	 * 특정 개체를 수동 제거. 보통은 isAlive=false 후 removeDead() 로 정리.
@@ -294,7 +294,8 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	open fun dispose() {
 		batch.dispose();
 		font.dispose();
-		entities.forEach { it.dispose() };
+		for(entity in entities)
+			entity.dispose();
 	}
 
 	companion object {
