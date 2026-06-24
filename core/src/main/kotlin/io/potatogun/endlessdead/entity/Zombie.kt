@@ -39,7 +39,9 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 	override val defaultInvincibleDuration = 0.25f;
 	var target: LivingEntity? = initialTarget  // 자바에서도 getTarget()같은 거 많아서 어느 정도의 캡슐화는 유지하기 위해 @JvmField 없음
 		private set;
+	protected val attackInterval = 0.2f;
 	private var attackTextureTimer = 0f;
+	private var attackCooldownTimer = attackInterval;
 
 	/**
 	 * 공격 대상을 가져오거나 대상이 사라지면 초기화한다.
@@ -69,6 +71,7 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 		// 플레이어의 중심으로 정확히 모이면 어색하니까 살짝은 거리를 두게 하자.
 		if(distance > target.width * (3f / 4f)) {
 			attackTextureTimer = 0f;
+			attackCooldownTimer = 0f;
 			x += dx / distance * speed * delta;
 			y += dy / distance * speed * delta;
 		} else {
@@ -78,8 +81,12 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 			attackTextureTimer -= delta;
 			if(attackTextureTimer <= 0f)
 				attackTextureTimer = 0.75f;
+			attackCooldownTimer -= delta;
+			if(attackCooldownTimer <= 0f)
+				attackCooldownTimer = attackInterval;
 
-			target.takeDamage(attackDamage, attacker = this);
+			if(attackCooldownTimer == attackInterval)
+				target.takeDamage(attackDamage, attacker = this);
 		}
 	}
 

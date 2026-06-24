@@ -103,7 +103,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	}
 
 	/**
-	 * 특정 개체를 수동 제거. 보통은 isAlive=false 후 removeDead() 로 정리.
+	 * 특정 개체를 수동 제거
 	 *
 	 * @param entity 제거할 개체
 	 * @return       성공 여부
@@ -158,8 +158,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 * @param delta 직전 프레임과의 시간 간격(초)
 	 */
 	private inline fun updateEntities(delta: Float) {
-		// 매번 순서를 섞어서 먼저 등록된 개체가 먼저 처리되는 것을 방지
-		for(entity in entities.shuffled()) {
+		for(entity in entities.toList()) {
 			if(this !is Freezable || !this.isFrozen || entity.isUpdatableWhileFrozen)
 				entity.update(delta);
 			entity.forceUpdate(delta);

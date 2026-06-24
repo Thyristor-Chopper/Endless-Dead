@@ -49,7 +49,6 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	private val textureShotgun = Utils.loadTexture("entity/player_shotgun.bmp");
 	private val textureMachineGun = Utils.loadTexture("entity/player_machinegun.bmp");
 	private var speed = 200f
-	override val defaultInvincibleDuration = 0.2f //플레이어 무적시간 조정으로 난이도 조절
 	// 타이머
 	private val timerManager = TimerManager();
 	private val healTimer: RepeatingTimer;
