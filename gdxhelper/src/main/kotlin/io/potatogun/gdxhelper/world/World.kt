@@ -188,8 +188,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 * 매 프레임 게임 로직 — 서브클래스가 override해서 자기 게임 로직을 넣는 곳.
 	 *
 	 * 기본 구현은 가장 단순한 '갱신 → 정리' 시나리오를 보여준다:
-	 *   ① updateAllObjects(delta) — 각 객체가 자기 위치 갱신
-	 *   ② removeDead()            — isAlive=false인 개체 제거
+	 *   ① updateEntities(delta) — 각 객체가 자기 위치 갱신
 	 *
 	 * @param delta 직전 프레임과의 시간 간격(초)
 	 */
@@ -257,7 +256,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	}
 
 	/**
-	 * 카메라를 갱신한다.
+	 * 카메라를 갱신하고 월드에 따라 override하여 투영 좌표를 원하는 위치로 이동한다.
 	 */
 	open fun updateCamera() {
 		camera.update();
@@ -279,10 +278,10 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 * @param y     Y 위치
 	 * @param color 글자 색
 	 * @param scale 글자 크기(배)
-	 * @param width 텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
+	 * @param width 텍스트 상자의 크기, 0은 자동 (오른쪽이나 가운데 정렬 시 반드시 필요, 이때는 0 불가)
 	 * @param align 글자 정렬(없으면 왼쪽 정렬)
 	 */
-	@JvmOverloads fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left) {
+	@JvmOverloads fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float = 0f, align: Int = Align.left) {
 		Utils.drawText(batch, font, text, x, y, color, scale, width, align);
 	}
 
@@ -299,7 +298,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 
 	companion object {
 		// 생성된 모든 인스턴스를 관리하는 목록이다. 생성자에서 자동으로 추가한다. 누가 설마 자바 unsafe의 allocateInstance를 쓰진 않겠지
-		//   dispose 시 필요하다.
+		//   게임 dispose 시 사용된다.
 		private val instances = weakMutableSetOf<World>();
 
 		internal fun disposeAllWorlds() {

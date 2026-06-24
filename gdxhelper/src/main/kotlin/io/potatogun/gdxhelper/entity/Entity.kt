@@ -54,12 +54,9 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	 * @JvmField는 성능 때문도 있지만, 외부 자바 클래스에서 이 클래스를 접근한다고 생각해보면
 	 *   이게 없으면 entity.getPosition()이 될텐데 위치를 바꾼다고 생각해보자.
 	 *   그럼 entity.getPosition().setX(3);같이 될텐데 'get'을 해 놓고 set을 하는 게 좀 어색하지 않을까.
-	 *   어차피 val(final)이고 클래스 생성 시 바로 Position 객체가 할당되니까 null 위험성도 없지.
-	 *   그리고 set이 아닌 get을 하더라도 entity.getPosition().getX()보다는 entity.position.getX()가 더 깔끔하지 않을까
+	 *   어차피 val(final)이고 클래스 생성 시 바로 Position 객체가 할당되니까 null 위험성도 없다.
 	 */
-	@JvmField val position = MutablePosition(x, y).apply {
-		setObserver { _, _ -> isCachedRectValid = false };
-	};
+	@JvmField val position = MutablePosition(x, y).apply { setObserver { _, _ -> isCachedRectValid = false } };
 	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)
 	//   기존에는 x과 y가 backing field가 있는 실제 var였고 
 	//   val position get() = Position(x, y)가 있었다.
@@ -100,32 +97,22 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 			else if(value > 1f) color.a = 1f;
 			else color.a = value;
 		};
-	// 매번 계산하면 오버헤드가 상당하므로 회전 시에만 계산해서 캐시
 	/**
-	 * 충돌 감지용 너비
+	 * 충돌 감지용 너비 (캐시)
 	 */
 	private var collideCheckWidth = width;
 	/**
-	 * 충돌 감지용 높이
+	 * 충돌 감지용 높이 (캐시)
 	 */
 	private var collideCheckHeight = height;
-	// 사각형 영역 캐시
 	/**
-	 * 개체가 차지하는 사각형 영역
+	 * 개체가 차지하는 사각형 영역 (캐시)
 	 */
 	private var cachedRect = calculateRect();
 	/**
 	 * 개체가 차지하는 사각형 영역의 유효 여부 (캐시용)
 	 */
 	private var isCachedRectValid = true;
-
-	// 사각형 영역 캐시 갱신
-	/**
-	 * 개체가 차지하는 사각형 영역을 새로 계산한다.
-	 *
-	 * @return 사각형
-	 */
-	private inline fun calculateRect(): Rectangle = Rectangle(x - collideCheckWidth * 0.5f, y - collideCheckHeight * 0.5f, collideCheckWidth, collideCheckHeight);
 
 	/**
 	 * 매 프레임 호출되어 자신을 그린다.
@@ -157,6 +144,13 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 			batch.color = Color.WHITE;
 		};
 	}
+
+	/**
+	 * 개체가 차지하는 사각형 영역을 새로 계산한다.
+	 *
+	 * @return 사각형
+	 */
+	private inline fun calculateRect(): Rectangle = Rectangle(x - collideCheckWidth * 0.5f, y - collideCheckHeight * 0.5f, collideCheckWidth, collideCheckHeight);
 
 	/**
 	 * 이 객체가 차지하는 사각형 영역
@@ -230,7 +224,7 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	 * 
 	 * @param position 타겟 방향
 	 */
-	inline fun rotateTo(position: Position) {
+	fun rotateTo(position: Position) {
 		// 샷건 내 360도 구현 참고함
 		rotate(Math.toDegrees(atan2((Window.height - position.y) - (this.y - world.offsetY + Window.height * 0.5f), position.x - (this.x - world.offsetX + Window.width * 0.5f)).toDouble()).toFloat() - 90f);
 	}
@@ -263,7 +257,7 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	/**
 	 * 매 프레임 호출되어 상태를 갱신한다.
 	 *
-	 * 상자나 물체처럼 로직이 없는 개체일 수도 있으니 기본은 빈 함수
+	 * 상자나 물체처럼 로직이 없는 개체일 수도 있으니 기본은 빈 함수.
 	 *
 	 * @param delta 직전 프레임과의 시간 간격(초). 60fps 면 약 0.0167.
 	 *              '픽셀/초' 단위의 속도에 delta 를 곱하면 '이번 프레임 이동량' 이 된다.

@@ -113,19 +113,18 @@ object Utils {
 	 * @param y     Y 위치
 	 * @param color 글자 색
 	 * @param scale 글자 크기(배)
-	 * @param width 텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
+	 * @param width 텍스트 상자의 크기, 0은 자동 (오른쪽이나 가운데 정렬 시 반드시 필요, 이때는 0 불가)
 	 * @param align 글자 정렬(없으면 왼쪽 정렬)
 	 */
 	@JvmStatic
 	@JvmOverloads
-	fun drawText(batch: SpriteBatch, font: BitmapFont, text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left) {
+	fun drawText(batch: SpriteBatch, font: BitmapFont, text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float = 0f, align: Int = Align.left) {
 		val skipBatch = batch.isDrawing();
 		font.color = color;
 		font.data.setScale(scale);
 		if(!skipBatch) batch.begin();
-		val boxWidth: Float? = width;
-		if(boxWidth != null)
-			font.draw(batch, text, x, y, boxWidth, align, false);
+		if(width != 0f)
+			font.draw(batch, text, x, y, width, align, false);
 		else
 			font.draw(batch, text, x, y);
 		if(!skipBatch) batch.end();

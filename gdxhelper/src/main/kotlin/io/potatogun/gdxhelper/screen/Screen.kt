@@ -162,11 +162,10 @@ abstract class Screen : ScreenAdapter() {
 
 	/**
 	 * 스크린에 등록된 위젯(컨트롤)들을 그린다.
-	 * render에서만 한 번 쓰이기 때문에 inline이다.
 	 *
 	 * @return 보이는(실제로 그린) 위젯 수
 	 */
-	private inline fun drawWidgets(): Int {
+	private fun drawWidgets(): Int {
 		var count = 0;
 		for(widget in widgets.values)
 			if(widget.isVisible) {
@@ -205,10 +204,10 @@ abstract class Screen : ScreenAdapter() {
 	 * @param y     Y 위치
 	 * @param color 글자 색
 	 * @param scale 글자 크기(배)
-	 * @param width 텍스트 상자의 크기 (오른쪽이나 가운데 정렬 시 반드시 필요)
+	 * @param width 텍스트 상자의 크기, 0은 자동 (오른쪽이나 가운데 정렬 시 반드시 필요, 이때는 0 불가)
 	 * @param align 글자 정렬(없으면 왼쪽 정렬)
 	 */
-	@JvmOverloads fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float? = null, align: Int = Align.left) {
+	@JvmOverloads fun drawText(text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float = 0f, align: Int = Align.left) {
 		Utils.drawText(batch, font, text, x, y, color, scale, width, align);
 	}
 
