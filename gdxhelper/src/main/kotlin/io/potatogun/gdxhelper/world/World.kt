@@ -10,7 +10,7 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.WorldViewer;
-import io.potatogun.gdxhelper.util.EntityManager;
+import io.potatogun.gdxhelper.util.SpatialGrid;
 import io.potatogun.gdxhelper.util.SpatialHashGrid;
 import io.potatogun.gdxhelper.util.weakMutableSetOf;
 import io.potatogun.gdxhelper.world.Freezable;
@@ -72,9 +72,9 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 * 등록된 개체 목록
 	 *   등록된 객체들만 update/draw된다.
 	 *
-	 * 자바에서는 world.getEntityManager().add()처럼 호출하면 된다.
+	 * 자바에서도 world.entities.add()를 자연스럽게 호출하기 위해 @JvmField
 	 */
-	@get:JvmName("getEntityManager") open val entities: EntityManager = SpatialHashGrid(128f);
+	@JvmField val entities: SpatialGrid = SpatialHashGrid(128f);
 
 	init {
 		instances.add(this);
