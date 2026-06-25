@@ -19,6 +19,7 @@ import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
+import io.potatogun.gdxhelper.util.SpatialGrid;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.world.World;
@@ -138,7 +139,8 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	 * update()에서만 한 번 쓰이기 때문에 inline이다.
 	 */
 	private inline fun interactContainer() {
-		for(entity in world.entities.getNearby(this)) {
+		val entities = if(world.entities is SpatialGrid) world.entities.getNearby(this) else world.getEntities();
+		for(entity in entities) {
 			if(entity !is Container) continue;
 			if(collidesWith(entity))
 				if(entity.inventory.isEmpty) {

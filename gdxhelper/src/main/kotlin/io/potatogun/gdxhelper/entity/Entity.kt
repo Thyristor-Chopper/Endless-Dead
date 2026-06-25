@@ -10,6 +10,7 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.util.MutablePosition;
 import io.potatogun.gdxhelper.util.Position;
+import io.potatogun.gdxhelper.util.SpatialGrid;
 import io.potatogun.gdxhelper.world.World;
 
 import java.lang.Math;
@@ -59,7 +60,8 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	@JvmField val position = MutablePosition(x, y).apply {
 		setObserver { _, _ ->
 			isCachedRectValid = false;
-			world.entities.updateTile(this@Entity);
+			if(world.entities is SpatialGrid)
+				world.entities.updateTile(this@Entity);
 		};
 	};
 	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)

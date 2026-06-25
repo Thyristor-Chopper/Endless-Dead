@@ -12,18 +12,18 @@ abstract class ObservableInventory : Inventory {
 	private val clearObservers = mutableListOf<() -> Unit>();
 
 	protected fun invokeItemAddObservers(item: Item) {
-		for(it in itemAddObservers)
-			it(item);
+		for(handler in itemAddObservers)
+			handler(item);
 	}
 
 	protected fun invokeItemRemoveObservers(item: Item) {
-		for(it in itemRemoveObservers)
-			it(item);
+		for(handler in itemRemoveObservers)
+			handler(item);
 	}
 
 	protected fun invokeClearObservers() {
-		for(it in clearObservers)
-			it();
+		for(handler in clearObservers)
+			handler();
 	}
 
 	/**
