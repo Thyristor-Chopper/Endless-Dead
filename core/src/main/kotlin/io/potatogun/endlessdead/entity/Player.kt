@@ -139,7 +139,8 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	 * update()에서만 한 번 쓰이기 때문에 inline이다.
 	 */
 	private inline fun interactContainer() {
-		val entities = if(world.entities is SpatialGrid) world.entities.getNearby(this) else world.getEntities();
+		val entityManager = world.entities;
+		val entities = if(entityManager is SpatialGrid) entityManager.getNearby(this) else world.getEntities();
 		for(entity in entities) {
 			if(entity !is Container) continue;
 			if(collidesWith(entity))
