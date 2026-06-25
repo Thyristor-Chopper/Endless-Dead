@@ -13,6 +13,7 @@ class TimeStopper : Item("time_stopper", "Time Stopper"), Usable {
 
 	// 타이머를 사용해서 시간을 3초 멈춘다.
 	override fun use(user: InventoryHolder): Boolean {
+		if(!user.inventory.hasItem(this)) return false;
 		if(user !is Player) return false;
 		val world = user.world;
 		if(world !is Freezable) {

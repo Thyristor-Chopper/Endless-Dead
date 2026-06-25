@@ -88,16 +88,23 @@ class SpatialHashGrid(private val tileSize: Float) : SpatialGrid {
 
 	/**
 	 * 개체가 속한 타일 좌표의 해시를 계산한다. (중심만)
+	 * 
+	 * @param entity 기준 개체
 	 */
 	private inline fun getTileHash(entity: Entity) = getTileHash(floor(entity.x / tileSize).toInt(), floor(entity.y / tileSize).toInt());
 
 	/**
 	 * 타일 좌표의 해시를 계산한다.
+	 * 
+	 * @param tileX 타일 X 좌표
+	 * @param tileY 타일 Y 좌표
 	 */
 	private fun getTileHash(tileX: Int, tileY: Int): Long = (tileX.toLong() shl 32) or (tileY.toLong() and 0xffffffffL);
 
 	/**
 	 * 지정한 개체의 크기와 위치에 맞는 모든 타일 좌표 해시를 구한다.
+	 * 
+	 * @param entity 기준 개체
 	 */
 	private fun getTileHashes(entity: Entity): Set<Long> {
 		val halfWidth = entity.width * 0.5f;

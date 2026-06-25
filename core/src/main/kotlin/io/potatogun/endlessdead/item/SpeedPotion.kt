@@ -12,6 +12,7 @@ class SpeedPotion : Item("speed_potion", "Speed Potion"), Usable {
 
 	// 포션을 사용하여 속도를 1만큼 올린다.
 	override fun use(user: InventoryHolder): Boolean {
+		if(!user.inventory.hasItem(this)) return false;
 		if(user !is Player) return false;
 		user.speedUp(20f, 30f);
 		(user.world.viewer as? SubtitlesDrawable)?.drawSubtitles("SPEED UP");

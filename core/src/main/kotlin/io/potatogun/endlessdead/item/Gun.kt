@@ -129,6 +129,7 @@ abstract class Gun(id: String, name: String, val bulletDamage: Int, val bulletSp
 	 * @return 성공 여부
 	 */
 	override fun use(user: InventoryHolder): Boolean {
+		if(!user.inventory.hasItem(this)) return false;
 		if(user !is Entity) return false;
 
 		// 개체 회전 각도에 맞는 임의의 위치를 생성한다.

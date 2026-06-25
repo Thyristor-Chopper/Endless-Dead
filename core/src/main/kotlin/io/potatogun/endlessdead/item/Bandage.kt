@@ -13,6 +13,7 @@ class Bandage : Item("bandage", "Bandage"), Usable {
 
 	// 붕대를 사용하여 체력을 10만큼 회복한다.
 	override fun use(user: InventoryHolder): Boolean {
+		if(!user.inventory.hasItem(this)) return false;
 		if(user !is LivingEntity) return false;
 		user.heal(10);
 		if(user is Player)
