@@ -1,5 +1,6 @@
 package io.potatogun.gdxhelper.world;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -10,6 +11,7 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.WorldViewer;
+import io.potatogun.gdxhelper.util.BasicEntityManager;
 import io.potatogun.gdxhelper.util.EntityManager;
 import io.potatogun.gdxhelper.util.SpatialHashGrid;
 import io.potatogun.gdxhelper.util.weakMutableSetOf;
@@ -32,14 +34,15 @@ import java.util.Collections;
  *
  *  이 클래스를 상속해 자기 게임의 월드를 만든다 (ZombieWorld 참고).
  *
- * @property width  월드 전체 너비 (JvmField이 있지만 빌드 후 Fernflower로 자바로 디컴파일하여 null이 불가능한 원시 float임을 확인함.)
- * @property height 월드 전체 높이 (위와 동일)
+ * @property width    월드 전체 너비 (JvmField이 있지만 빌드 후 Fernflower로 자바로 디컴파일하여 null이 불가능한 원시 float임을 확인함.)
+ * @property height   월드 전체 높이 (위와 동일)
+ * @param    settings 월드 옵션
  */
-abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
+abstract class World(@JvmField val width: Float, @JvmField val height: Float, settings: Properties = Properties()) {
 	/**
-	 * 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라
+	 * 월드를 보여주는 카메라
 	 */
-	private val camera = OrthographicCamera();
+	private val camera: Camera;
 	/**
 	 * 이미지(Texture)와 글자를 화면에 찍어주는 도구
 	 */
@@ -48,7 +51,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 * 월드의 기본 글꼴
 	 *   월드 구현체에서 다른 글꼴을 사용할 수도 있으므로 open이다.
 	 */
-	protected open val font = BitmapFont();
+	@JvmField protected val font: BitmapFont;
 	/**
 	 * 월드를 보여주는 스크린. 만약 이 월드를 띄우는 뷰어가 없으면 null일 수도 있음에 주의
 	 */
@@ -74,19 +77,19 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 *
 	 * 자바에서도 world.entities.add()로 자연스럽게 호출하기 위해 @JvmField
 	 */
-	@JvmField val entities: EntityManager = SpatialHashGrid(128f);
+	@JvmField val entities: EntityManager;
 
 	init {
-		instances.add(this);
-		setCameraCenter();
-	}
+		settings.fillDefaults();
+		camera = settings.worldCamera;
+		font = settings.worldFont;
+		entities = settings.worldEntityManager;
 
-	/**
-	 * 카메라를 '왼쪽 아래 = (0,0), 오른쪽 위 = (screenWidth, screenHeight)'로 설정.
-	 */
-	private inline fun setCameraCenter() {
-		// false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
-		camera.setToOrtho(false, Window.width, Window.height);
+		updateCameraViewport();
+		if(camera is OrthographicCamera)
+			camera.setToOrtho(false);  // false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
+
+		instances.add(this);
 	}
 
 	/**
@@ -119,8 +122,13 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 * @param height 새 창 높이
 	 */
 	open fun onResize(width: Int, height: Int) {
-		setCameraCenter();
+		updateCameraViewport();
 		updateCamera();
+	}
+
+	private inline fun updateCameraViewport() {
+		camera.viewportWidth = Window.width;
+		camera.viewportHeight = Window.height;
 	}
 
 	// ────────────────────────────────────────────────────────
@@ -236,6 +244,61 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 		batch.dispose();
 		font.dispose();
 		entities.dispose();
+	}
+
+	/**
+	 * 월드 옵션
+	 */
+	open class Properties {
+		internal lateinit var worldCamera: Camera
+			private set;
+		internal lateinit var worldFont: BitmapFont
+			private set;
+		internal lateinit var worldEntityManager: EntityManager
+			private set;
+
+		/**
+		 * 카메라를 지정한다.
+		 *
+		 * @param camera 카메라
+		 * @return       옵션 객체 자신
+		 */
+		fun camera(camera: Camera): Properties {
+			worldCamera = camera;
+			return this;
+		}
+
+		/**
+		 * 글꼴을 지정한다.
+		 *
+		 * @param font 글꼴
+		 * @return     옵션 객체 자신
+		 */
+		fun font(font: BitmapFont): Properties {
+			worldFont = font;
+			return this;
+		}
+
+		/**
+		 * 개체 관리자를 지정한다.
+		 *   서로 다른 두 월드가 같은 개체 목록을 공유할 수는 있지만 권장하지 않는다.
+		 *
+		 * @param manager 개체 관리자
+		 * @return        옵션 객체 자신
+		 */
+		fun entityManager(manager: EntityManager): Properties {
+			worldEntityManager = manager;
+			return this;
+		}
+
+		internal open fun fillDefaults() {
+			if(!::worldCamera.isInitialized)
+				worldCamera = OrthographicCamera();
+			if(!::worldFont.isInitialized)
+				worldFont = BitmapFont();
+			if(!::worldEntityManager.isInitialized)
+				worldEntityManager = BasicEntityManager();
+		}
 	}
 
 	companion object {

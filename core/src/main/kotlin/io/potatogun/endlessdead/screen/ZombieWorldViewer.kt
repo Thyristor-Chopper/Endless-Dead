@@ -15,6 +15,7 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
+import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.endlessdead.world.ZombieWorld;
 import io.potatogun.gdxhelper.Input;
@@ -193,8 +194,12 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		if(holding != null && holding is Gun) {
 			// 총의 ammo를 미터기로 표시
 			ammoIndicator.apply {
-				value = holding.remainingBullets.toFloat() / holding.maxBullets;
-				show();
+				if(!holding.infiniteBullets) {
+					value = holding.remainingBullets.toFloat() / holding.maxBullets;
+					show();
+				} else {
+					hide();
+				}
 			};
 
 			// 총의 공격 쿨타임 표시
@@ -480,7 +485,11 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 					text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.itemCount}]",
 					x = 10f,
 					y = 20f,
-					color = Utils.rgb(255, 255, 192),
+					color = when(it.rarity) {
+						Rarity.UNCOMMON	-> Color.YELLOW  // 마인크래프트 따라함
+						Rarity.RARE		-> Color.MAGENTA  // 마인크래프트 따라함
+						else			-> Color.WHITE
+					},
 					scale = 1.0f
 				);
 			};

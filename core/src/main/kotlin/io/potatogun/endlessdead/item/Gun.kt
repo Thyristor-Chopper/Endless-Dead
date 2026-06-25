@@ -22,19 +22,41 @@ import kotlin.math.sin;
  *
  * @JvmField가 있는 곳은 빌드 후 직접 디컴파일하여 null이 불가능한 원시 int, float로 바뀜을 확인했다.
  *
- * @param    id                 총 식별자
- * @param    name               총 이름
- * @property bulletDamage       총알 피해량
- * @property bulletSpeed        총알 속도
- * @property bulletHP           총알 체력
- * @property isBulletPenetreble 총알 관통 가능 여부
- * @property fireInterval       공격 속도
- * @param    initialBullets     초기 총알 개수
- * @property maxBullets         최대 총알 개수
- * @throws IllegalArgumentException	지정한 값 중 일부가 잘못된 경우
+ * @param id       총 식별자
+ * @param name     총 이름
+ * @param settings 총 옵션
+ * @throws IllegalArgumentException	총 옵션이 잘못된 경우
  */
-abstract class Gun(id: String, name: String, val bulletDamage: Int, val bulletSpeed: Float, @get:JvmName("getBulletHP") val bulletHP: Int, @JvmField val isBulletPenetreble: Boolean, val fireInterval: Float, initialBullets: Int, @JvmField val maxBullets: Int = initialBullets) : Item(id, name), Shootable, Usable {
+open class Gun(id: String, name: String, settings: Properties = Properties()) : Item(id, name, settings), Shootable, Usable {
 	override val isContinuousUseAllowed = false;
+	/**
+	 * 총알 피해량
+	 */
+	val bulletDamage: Int;
+	/**
+	 * 총알 속도
+	 */
+	val bulletSpeed: Float;
+	/**
+	 * 총알 관통력
+	 */
+	@get:JvmName("getBulletPenetration") val bulletHP: Int;
+	/**
+	 * 총알 관통 가능 여부
+	 */
+	@JvmField val isBulletPenetrable: Boolean;
+	/**
+	 * 발사 속도
+	 */
+	val fireInterval: Float;
+	/**
+	 * 최대 총알 개수
+	 */
+	@JvmField val maxBullets: Int;
+	/**
+	 * 무한 총알 여부
+	 */
+	@JvmField val infiniteBullets: Boolean;
 	private var fireCooldown = 0f
 		set(value) {
 			if(value < 0f) field = 0f;
@@ -45,14 +67,13 @@ abstract class Gun(id: String, name: String, val bulletDamage: Int, val bulletSp
 	 */
 	@get:JvmName("canFire")
 	val canFire: Boolean
-		get() = fireCooldown == 0f && remainingBullets > 0;
+		get() = fireCooldown == 0f && (infiniteBullets || remainingBullets > 0);
 	/**
 	 * 남은 총탄 개수
 	 */
-	var remainingBullets: Int = initialBullets
+	var remainingBullets: Int = 0  // 생성자에서 다시 초기화됨
 		protected set(value) {
 			if(value < 0) field = 0;
-			else if(value > maxBullets) field = maxBullets;
 			else field = value;
 		};  // 샷건이라는 하위클래스에서도 사용해야할 것 같아 private를 protected로 변경
 	/**
@@ -65,16 +86,18 @@ abstract class Gun(id: String, name: String, val bulletDamage: Int, val bulletSp
 	 * @return 정규화된 값
 	 */
 	val remainingCooldownPercentage: Float
-		get() = fireCooldown / fireInterval;
+		get() = if(fireInterval == 0f) 0f else fireCooldown / fireInterval;
 
 	init {
-		if(fireInterval < 0f) throw IllegalArgumentException("invalid fire interval");
-		if(bulletDamage < 0) throw IllegalArgumentException("invalid bullet damage");
-		if(bulletSpeed < 0f) throw IllegalArgumentException("invalid bullet speed");
-		if(bulletHP < 0f) throw IllegalArgumentException("invalid bullet HP");
-		if(initialBullets < 0f) throw IllegalArgumentException("invalid ammo");
-		if(maxBullets < 0f) throw IllegalArgumentException("invalid max ammo");
-		if(initialBullets > maxBullets) throw IllegalArgumentException("ammo count can't be greater than max ammo");
+		settings.fillDefaults();
+		bulletDamage = settings.bulletDamage;
+		bulletSpeed = settings.bulletSpeed;
+		bulletHP = settings.bulletHP;
+		isBulletPenetrable = settings.isBulletPenetrable;
+		fireInterval = settings.fireInterval;
+		maxBullets = settings.maxBullets;
+		remainingBullets = settings.bullets;
+		infiniteBullets = settings.isBulletsInfinite;
 	}
 
 	/**
@@ -108,17 +131,20 @@ abstract class Gun(id: String, name: String, val bulletDamage: Int, val bulletSp
 	override fun shoot(target: Position, shooter: Entity): Int {
 		if(!canFire) return 0;
 
-		val bullet = Bullet(shooter.world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetreble, bulletHP);
+		val bullet = Bullet(shooter.world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletHP);
 		shooter.world.entities.add(bullet);
 		startFireCooldown();
-		remainingBullets--;
+		
+		if(!infiniteBullets) {
+			remainingBullets--;
 
-		// ammo가 다 떨어진 총은 파괴
-		if(remainingBullets == 0) {
-			val viewer = shooter.world.viewer;
-			if(shooter is Player && viewer is SubtitlesDrawable)
-				viewer.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
-			destroy();
+			// ammo가 다 떨어진 총은 파괴
+			if(remainingBullets == 0) {
+				val viewer = shooter.world.viewer;
+				if(shooter is Player && viewer is SubtitlesDrawable)
+					viewer.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
+				destroy();
+			}
 		}
 
 		return 1;
@@ -139,5 +165,150 @@ abstract class Gun(id: String, name: String, val bulletDamage: Int, val bulletSp
 		val targetX = cos(radians) * distance + user.x;
 		val targetY = sin(radians) * distance + user.y;
 		return shoot(Position(targetX.toFloat(), targetY.toFloat()), user) > 0;
+	}
+
+	/**
+	 * 총 아이템 옵션
+	 */
+	open class Properties : Item.Properties() {
+		internal var bulletDamage = 0
+			private set;
+		internal var bulletSpeed = -1f  // lateinit이 불가능해서
+			private set;
+		internal var bulletHP = -1  // lateinit이 불가능해서
+			private set;
+		internal var isBulletPenetrable = false
+			private set;
+		internal var fireInterval = 0f
+			private set;
+		internal var bullets = 1
+			private set;
+		internal var maxBullets = 1
+			private set;
+		internal var isBulletsInfinite = false
+			private set;
+
+		/**
+		 * 총알 피해량을 지정한다.
+		 *
+		 * @param bulletDamage 총탄 피해량
+		 * @return             옵션 객체 자신
+		 */
+		fun bulletDamage(bulletDamage: Int): Properties {
+			if(bulletDamage < 0) throw IllegalArgumentException("invalid value");
+			this.bulletDamage = bulletDamage;
+			return this;
+		}
+
+		/**
+		 * 총알 속도을 지정한다.
+		 *
+		 * @param bulletDamage 총알 속도
+		 * @return             옵션 객체 자신
+		 */
+		fun bulletSpeed(bulletSpeed: Float): Properties {
+			if(bulletSpeed < 0f) throw IllegalArgumentException("invalid value");
+			this.bulletSpeed = bulletSpeed;
+			return this;
+		}
+
+		/**
+		 * 총알 관통력을 지정한다.
+		 *
+		 * @param bulletHP 총알 관통력
+		 * @return         옵션 객체 자신
+		 */
+		fun bulletHP(bulletHP: Int): Properties {
+			if(bulletHP < 0) throw IllegalArgumentException("invalid value");
+			this.bulletHP = bulletHP;
+			return this;
+		}
+
+		/**
+		 * 총알이 관통 가능하게 한다.
+		 *
+		 * @return 옵션 객체 자신
+		 */
+		fun penetrableBullets(): Properties {
+			this.isBulletPenetrable = true;
+			return this;
+		}
+
+		/**
+		 * 총알이 관통 불가능하게 한다.
+		 *
+		 * @return 옵션 객체 자신
+		 */
+		fun impenetrableBullets(): Properties {
+			this.isBulletPenetrable = false;
+			return this;
+		}
+
+		/**
+		 * 발사 속도를 지정한다.
+		 *
+		 * @param fireInterval 발사 속도
+		 * @return             옵션 객체 자신
+		 */
+		fun fireInterval(fireInterval: Float): Properties {
+			if(fireInterval < 0f) throw IllegalArgumentException("invalid value");
+			this.fireInterval = fireInterval;
+			return this;
+		}
+
+		/**
+		 * 처음 총알 개수를 지정한다.
+		 *
+		 * @param bullets 총알 개수
+		 * @return        옵션 객체 자신
+		 */
+		fun bullets(bullets: Int): Properties {
+			if(bullets <= 0) throw IllegalArgumentException("invalid value");
+			if(bullets > maxBullets) maxBullets = bullets;
+			this.bullets = bullets;
+			if(maxBullets == -1) maxBullets = bullets;
+			return this;
+		}
+
+		/**
+		 * 최대 총알 개수를 지정한다.
+		 *
+		 * @param bullets 최대 총알 개수
+		 * @return        옵션 객체 자신
+		 */
+		fun maxBullets(bullets: Int): Properties {
+			if(bullets <= 0) throw IllegalArgumentException("invalid value");
+			this.maxBullets = bullets;
+			return this;
+		}
+
+		/**
+		 * 무한 총알 총으로 만든다.
+		 *
+		 * @return 옵션 객체 자신
+		 */
+		fun infiniteBullets(): Properties {
+			this.isBulletsInfinite = true;
+			return this;
+		}
+
+		/**
+		 * 총알 수 제한 총으로 만든다.
+		 *
+		 * @return 옵션 객체 자신
+		 */
+		fun limitedBullets(): Properties {
+			this.isBulletsInfinite = false;
+			return this;
+		}
+
+		override fun fillDefaults() {
+			if(bulletSpeed < 0)
+				throw IllegalStateException("bullet speed not set");
+			if(bulletHP < 0)
+				throw IllegalStateException("bullet HP not set");
+
+			super.fillDefaults();
+		}
 	}
 }

@@ -13,11 +13,20 @@ import io.potatogun.endlessdead.inventory.Inventory;
  * @property id   아이템 식별자
  * @property name 아이템 이름
  */
-abstract class Item(@get:JvmName("getID") val id: String, val name: String) {
+abstract class Item(@get:JvmName("getID") val id: String, val name: String, settings: Properties = Properties()) {
 	/**
 	 * 아이템을 들고 있는 인벤토리 (캐시)
 	 */
 	internal var inventory: Inventory? = null;
+	/**
+	 * 아이템 희귀도
+	 */
+	val rarity: Rarity;
+
+	init {
+		settings.fillDefaults();
+		rarity = settings.rarity;
+	}
 
 	/**
 	 * 아이템을 파괴한다.
@@ -41,4 +50,25 @@ abstract class Item(@get:JvmName("getID") val id: String, val name: String) {
 	 * 자원을 정리한다.
 	 */
 	open fun cleanUp() {}
+
+	/**
+	 * 아이템 옵션
+	 */
+	open class Properties {
+		internal var rarity: Rarity = Rarity.COMMON
+			private set;
+
+		/**
+		 * 희귀도를 지정한다.
+		 *
+		 * @param rarity 아이템 희귀도
+		 * @return       옵션 객체 자신
+		 */
+		fun rarity(rarity: Rarity): Properties {
+			this.rarity = rarity;
+			return this;
+		}
+
+		internal open fun fillDefaults() {}
+	}
 }

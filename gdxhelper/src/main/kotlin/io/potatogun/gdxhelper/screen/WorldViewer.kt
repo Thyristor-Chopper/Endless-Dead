@@ -1,6 +1,7 @@
 package io.potatogun.gdxhelper.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import io.potatogun.gdxhelper.util.weakMutableSetOf;
 import io.potatogun.gdxhelper.world.World;
@@ -12,8 +13,10 @@ import io.potatogun.gdxhelper.world.World;
  *   가급적이면 같은 종류의 뷰어는 하나만 생성하는 것을 권한다.
  *   (기존엔 두 개 이상의 인스턴스를 생성하면 오류가 나게 했지만 굳이 오류를
  *    낼 정도는 아닌 것 같다.)
+ *
+ * @param settings 스크린 옵션
  */
-open class WorldViewer : Screen() {
+open class WorldViewer(settings: Screen.Properties = Screen.Properties()) : Screen(settings) {
 	/**
 	 * 현재 보여주고 있는 월드를 반환한다.
 	 */

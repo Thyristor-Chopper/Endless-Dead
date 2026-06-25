@@ -29,8 +29,10 @@ import io.potatogun.gdxhelper.widget.Widget;
  *   ▸ drawBackground(batch) — 자기 배경 그리기 (필수, abstract)
  *   ▸ update(delta)         — 자기 게임 로직 (대부분 override 함)
  *   ▸ render(delta)         — 객체 위에 텍스트/HUD 추가 그리기 (선택)
+ *
+ * @param settings 스크린 옵션
  */
-abstract class Screen : ScreenAdapter() {
+abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
 	/**
 	 * 이미지(Texture)와 글자를 화면에 찍어주는 도구.
 	 *   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
@@ -40,11 +42,16 @@ abstract class Screen : ScreenAdapter() {
 	 * 화면의 기본 글꼴
 	 *   화면 구현체에서 다른 글꼴을 사용할 수도 있으므로 open이다.
 	 */
-	protected open val font = BitmapFont();
+	@JvmField protected val font: BitmapFont;
 	/**
 	 * 등록된 위젯들
 	 */
 	private val widgets = mutableMapOf<String, Widget>();
+
+	init {
+		settings.fillDefaults();
+		font = settings.screenFont;
+	}
 
 	// ────────────────────────────────────────────────────────
 	//  위젯 객체 관리
@@ -224,6 +231,30 @@ abstract class Screen : ScreenAdapter() {
 		font.dispose();
 		for(widget in widgets.values)
 			widget.dispose();
+	}
+
+	/**
+	 * 스크린 옵션
+	 */
+	open class Properties {
+		internal lateinit var screenFont: BitmapFont
+			private set;
+
+		/**
+		 * 글꼴을 지정한다.
+		 *
+		 * @param font 글꼴
+		 * @return     옵션 객체 자신
+		 */
+		fun font(font: BitmapFont): Properties {
+			screenFont = font;
+			return this;
+		}
+
+		internal open fun fillDefaults() {
+			if(!::screenFont.isInitialized)
+				screenFont = BitmapFont();
+		}
 	}
 }
 

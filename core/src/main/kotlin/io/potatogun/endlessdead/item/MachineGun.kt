@@ -4,6 +4,6 @@ package io.potatogun.endlessdead.item;
  * 기관총
  *   allowContinuousUse을 true로 놓아 키다운으로도 연사 가능
  */
-class MachineGun : Gun("machine_gun", "Machine Gun", 5, 500f, 2, true, 0.1f, 30, 30) {
+class MachineGun : Gun("machine_gun", "Machine Gun", Gun.Properties().bulletDamage(5).bulletSpeed(500f).bulletHP(2).penetrableBullets().fireInterval(0.1f).bullets(40)) {
 	override val isContinuousUseAllowed = true;
 }

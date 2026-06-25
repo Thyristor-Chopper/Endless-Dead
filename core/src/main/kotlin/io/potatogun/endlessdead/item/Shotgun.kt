@@ -15,7 +15,7 @@ import kotlin.math.sin;
 /**
  * 샷건
  */
-class Shotgun : Gun("shotgun", "Shotgun", 5, 500f, 5, true, 1f, 10, 10) {
+class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties().bulletDamage(5).bulletSpeed(500f).bulletHP(5).penetrableBullets().fireInterval(1f).bullets(5)) {
 	private val spreadAngles = listOf(-0.2f, -0.1f, 0f, 0.1f, 0.2f) //방향 기준 퍼짐 좌표
 
 	override fun shoot(target: Position, shooter: Entity): Int {
@@ -32,18 +32,21 @@ class Shotgun : Gun("shotgun", "Shotgun", 5, 500f, 5, true, 1f, 10, 10) {
 				centerX + cos(finalAngle) * 100f,
 				centerY + sin(finalAngle) * 100f  // angle 객체로 각도(방향)을 지정했으니, 그곳의 cos,sin을 이용한 위치 좌표를 구하는 식
 			);
-			shooter.world.entities.add(Bullet(shooter.world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetreble, bulletHP));
+			shooter.world.entities.add(Bullet(shooter.world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetrable, bulletHP));
 		}
 
 		startFireCooldown();  // 발사간격 함수
-		if(remainingBullets > 0) remainingBullets -= spreadAngles.size;  // 탄약 수 차감
 
-		// 남은 탄약이 0이 됐을 떄, 무기가 파괴(destroy())되는 효과
-		if(remainingBullets == 0) {
-			val viewer = shooter.world.viewer;
-			if(shooter is Player && viewer is SubtitlesDrawable)
-				viewer.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON);
-			destroy();
+		if(!infiniteBullets) {
+			remainingBullets -= spreadAngles.size;  // 탄약 수 차감
+
+			// 남은 탄약이 0이 됐을 떄, 무기가 파괴(destroy())되는 효과
+			if(remainingBullets == 0) {
+				val viewer = shooter.world.viewer;
+				if(shooter is Player && viewer is SubtitlesDrawable)
+					viewer.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON);
+				destroy();
+			}
 		}
 
 		return spreadAngles.size;

@@ -35,15 +35,25 @@ import io.potatogun.gdxhelper.world.World;
  * @param    texture       개체 텍스처
  * @param    initialTarget 처음 공격 대상
  */
-open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, protected open val attackDamage: Int, protected open val speed: Float, texture: Texture = Textures.getShared("zombie"), initialTarget: LivingEntity? = null) : LivingEntity(world, x, y, width, height, texture, hp), PenetratorDamagable {
+open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, texture: Texture = Textures.getShared("zombie"), settings: Properties = Properties()) : LivingEntity(world, x, y, width, height, texture, hp), PenetratorDamagable {
+	protected open val attackDamage: Int;
+	protected open val speed: Float;
 	protected open val attackingTexture = Textures.getShared("attacking_zombie");
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
-	var target: LivingEntity? = initialTarget  // 자바에서도 getTarget()같은 거 많아서 어느 정도의 캡슐화는 유지하기 위해 @JvmField 없음
-		private set;
+	/**
+	 * 공격 대상
+	 */
+	var target: LivingEntity? = null;  // 자바에서도 getTarget()같은 거 많아서 어느 정도의 캡슐화는 유지하기 위해 @JvmField 없음
 	protected open val attackInterval = 0.3f;
 	private var attackTextureTimer = 0f;
 	private var attackCooldownTimer = attackInterval;
+
+	init {
+		settings.fillDefaults();
+		attackDamage = settings.attackDamage;
+		speed = settings.speed;
+	}
 
 	/**
 	 * 공격 대상을 가져오거나 대상이 사라지면 초기화한다.
@@ -109,97 +119,39 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 	// 공유 자원이기 때문에 여기서 정리하지 않고 다른 인스턴스에서 재활용한다.
 	override fun dispose() {}
 
-	class Weak(world: World, x: Float, y: Float, initialTarget: LivingEntity? = null) : Zombie(world, x, y, width=21f, height=30f, hp=3, speed=150f, attackDamage=1, initialTarget = initialTarget);
+	/**
+	 * 좀비 옵션
+	 */
+	open class Properties {
+		internal var attackDamage = 0
+			private set;
+		internal var speed = 0f
+			private set;
 
-	class Normal(world: World, x: Float, y: Float, initialTarget: LivingEntity? = null) : Zombie(world, x, y, width=32f, height=45f, hp=5, speed=100f, attackDamage=3, initialTarget = initialTarget);
-
-	class Strong(world: World, x: Float, y: Float, initialTarget: LivingEntity? = null) : Zombie(world, x, y, width=49f, height=70f, hp=15, speed=50f, attackDamage=5, initialTarget = initialTarget) {
-		// 평상시 스피드, 대미지
-		private val originalSpeed = super.speed;
-		private val originalDamage = super.attackDamage;
-		override var speed = originalSpeed;
-		override var attackDamage = originalDamage;
-		private var dashState = DashState.WALKING;
-		private var stateTimer = 0f;
-		// 돌진할 '방향(벡터)'을 기억해 둘 변수
-		private var dashDirX = 0f;
-		private var dashDirY = 0f;
-		// 강한 좀비는 살짝 붉게
-		override val color = Utils.rgb(255, 192, 192);
-
-		override fun update(delta: Float) {
-			val target: LivingEntity? = getTargetOrReset();
-			if(target == null) return;
-
-			when(dashState) {
-				DashState.WALKING -> {
-					val distance = distanceTo(target);
-					if(distance < 250f) {
-						dashState = DashState.PREPARING;
-						stateTimer = 0.5f;
-
-						// 대기 상태에 들어가는 첫 프레임, 이때 플레이어를 조준해서 방향을 기억해둔다
-						val dx = target.x - x;
-						val dy = target.y - y;
-						if(distance > 0) {
-							dashDirX = dx / distance;
-							dashDirY = dy / distance;
-						}
-					}
-				}
-				DashState.PREPARING -> {
-					speed = 0f;
-					stateTimer -= delta;
-					if(stateTimer <= 0f) {
-						dashState = DashState.DASHING;
-						stateTimer = 0.4f;
-					}
-				}
-				DashState.DASHING -> {
-					// speed 0으로 해서 super 업데이트 로직 때 따로 안 움직이게 함
-					speed = 0f;
-					attackDamage = 20;
-
-					x += dashDirX * 800f * delta;
-					y += dashDirY * 800f * delta;
-
-					// 돌진 중에 플레이어랑 부딪히면, 대미지 주고 즉시 쿨타임으로 넘어감
-					if(collidesWith(target)) {
-						target.takeDamage(attackDamage, attacker = this);
-						dashState = DashState.COOLDOWN;
-						speed = originalSpeed;
-						attackDamage = originalDamage;
-						stateTimer = 5.0f;
-					} else {
-						stateTimer -= delta;
-
-						if(stateTimer <= 0f) {
-							dashState = DashState.COOLDOWN;
-							speed = originalSpeed;
-							attackDamage = originalDamage;
-							stateTimer = 5.0f;
-						}
-					}
-				}
-				DashState.COOLDOWN -> {
-					stateTimer -= delta;
-					if(stateTimer <= 0f)
-						dashState = DashState.WALKING;
-				}
-			}
-
-			// 속도 세팅이 완벽히 끝난 후, 마지막에 부모를 호출해서 이동시킴
-			super.update(delta);
+		/**
+		 * 좀비 공격 피해량을 지정한다.
+		 *
+		 * @param attackDamage 공격 피해량
+		 * @return             옵션 객체 자신
+		 */
+		fun attackDamage(attackDamage: Int): Properties {
+			if(attackDamage < 0) throw IllegalArgumentException("invalid value");
+			this.attackDamage = attackDamage;
+			return this;
 		}
 
 		/**
-		 * 평상시, 돌진하려고 잠깐 멈춰있음, 돌진, 돌진 쿨
+		 * 좀비 이동 속도을 지정한다.
+		 *
+		 * @param speed 이동 속도
+		 * @return      옵션 객체 자신
 		 */
-		private enum class DashState {
-			WALKING,
-			PREPARING,
-			DASHING,
-			COOLDOWN;
+		fun speed(speed: Float): Properties {
+			if(speed < 0f) throw IllegalArgumentException("invalid value");
+			this.speed = speed;
+			return this;
 		}
+
+		internal open fun fillDefaults() {}
 	}
 }
