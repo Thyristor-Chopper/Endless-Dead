@@ -9,10 +9,9 @@ import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.inventory.LinearInventory;
 import io.potatogun.endlessdead.inventory.ObservableInventory;
+import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
-import io.potatogun.endlessdead.item.MachineGun;
 import io.potatogun.endlessdead.item.Shootable;
-import io.potatogun.endlessdead.item.Shotgun;
 import io.potatogun.endlessdead.item.Usable;
 import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Utils;
@@ -44,10 +43,9 @@ import io.potatogun.gdxhelper.world.World;
  * @param    y         처음 Y 좌표
  * @property inventory 플레이어가 가질 인벤토리
  */
-class Player(world: World, x: Float, y: Float, override val inventory: ObservableInventory = LinearInventory(-1)) : LivingEntity(world, x, y, 52f, 63f, Utils.loadTexture("entity/player.bmp"), 50), InventoryHolder, ItemSelectable by InventoryItemSelector(inventory) {
+class Player(world: World, x: Float, y: Float, override val inventory: ObservableInventory = LinearInventory(-1)) : LivingEntity(world, x, y, 24f, 57f, Utils.loadTexture("entity/player.bmp"), 50), InventoryHolder, ItemSelectable by InventoryItemSelector(inventory) {
 	override val isUpdatableWhileFrozen = true;
-	private val textureShotgun = Utils.loadTexture("entity/player_shotgun.bmp");
-	private val textureMachineGun = Utils.loadTexture("entity/player_machinegun.bmp");
+	private val textureWithGun = Utils.loadTexture("entity/player_holding_gun.bmp");
 	private var speed = 200f
 	// 타이머
 	private val timerManager = TimerManager();
@@ -217,9 +215,8 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	// 플레이어를 들고 있는 아이템에 맞게 그린다.
 	override fun draw(batch: SpriteBatch) {
 		val texture = when(selectedItem) {
-			is Shotgun		-> textureShotgun
-			is MachineGun	-> textureMachineGun
-			else			-> this.texture
+			is Gun	-> textureWithGun
+			else	-> this.texture
 		};
 		super.draw(batch, texture);
 	}
@@ -227,7 +224,6 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	// 자원 및 타이머 정리
 	override fun dispose() {
 		super.dispose();
-		textureShotgun.dispose();
-		textureMachineGun.dispose();
+		textureWithGun.dispose();
 	}
 }
