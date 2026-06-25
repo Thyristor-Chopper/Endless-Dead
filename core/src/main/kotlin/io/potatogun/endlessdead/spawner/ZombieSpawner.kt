@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.spawner;
 
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
+import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
@@ -57,7 +58,7 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 	 * 무작위로 좀비 종류를 골라서 월드에 추가한다.
 	 */
 	private inline fun spawnRandomZombie() {
-		val attackTarget: Player? = world.entities.getRandom<Player>();
+		val attackTarget: Player? = if(world is SinglePlayerWorld) world.player else world.entities.getRandom<Player>();
 		if(attackTarget == null) return;
 		var randomX: Float;
 		var randomY: Float;

@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.util.getRandom;
@@ -40,7 +41,7 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 	override val defaultInvincibleDuration = 0.25f;
 	var target: LivingEntity? = initialTarget  // 자바에서도 getTarget()같은 거 많아서 어느 정도의 캡슐화는 유지하기 위해 @JvmField 없음
 		private set;
-	protected val attackInterval = 0.2f;
+	protected open val attackInterval = 0.3f;
 	private var attackTextureTimer = 0f;
 	private var attackCooldownTimer = attackInterval;
 
@@ -53,7 +54,8 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 	protected open fun getTargetOrReset(): LivingEntity? {
 		val target: LivingEntity? = this.target;
 		if(target == null || !target.isAlive) {
-			this.target = world.entities.getRandom<Player>();
+			val world = this.world;
+			this.target = if(world is SinglePlayerWorld) world.player else world.entities.getRandom<Player>();
 			return null;  // 다음 프레임에...
 		}
 		return target;

@@ -63,11 +63,11 @@ import kotlin.random.Random;
  *   카메라 이동을 눈으로 보여주기 위함이다.
  *   GameWorld.drawBackground(batch)를 override 해서 그린다.
  */
-class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), Freezable {
+class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT), Freezable, SinglePlayerWorld {
 	/**
 	 * 플레이어 — 월드 중앙에서 시작.
 	 */
-	private val player = Player(this, width * 0.5f, height * 0.5f);
+	override val player = Player(this, width * 0.5f, height * 0.5f);
 	/**
 	 * 등록된 스포너
 	 */

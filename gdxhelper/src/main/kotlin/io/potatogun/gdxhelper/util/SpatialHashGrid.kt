@@ -19,8 +19,8 @@ class SpatialHashGrid(private val tileSize: Float) : SpatialGrid {
 		val hashes = getTileHashes(entity);
 		for(hash in hashes)
 			entitiesOfTile.getOrPut(hash)
-					 { mutableListOf<Entity>() }
-				 .add(entity);
+				{ mutableListOf<Entity>() }
+				.add(entity);
 		tilesOfEntity[entity] = hashes;
 		return true;
 	}
@@ -62,7 +62,9 @@ class SpatialHashGrid(private val tileSize: Float) : SpatialGrid {
 
 	override fun getNearby(entity: Entity): List<Entity> {
 		val outerRange = 1;
-		val maxHalfLength = Utils.max2(entity.width * 0.5f, entity.height * 0.5f);  // 개체가 회전됐을 때를 고려
+		val halfWidth = entity.width * 0.5f;
+		val halfHeight = entity.height * 0.5f;
+		val maxHalfLength = Utils.max2(halfWidth, halfHeight);  // 개체가 회전됐을 때를 고려
 
 		val minTileX = floor((entity.x - maxHalfLength) / tileSize).toInt() - outerRange;
 		val maxTileX = floor((entity.x + maxHalfLength) / tileSize).toInt() + outerRange;
@@ -98,7 +100,9 @@ class SpatialHashGrid(private val tileSize: Float) : SpatialGrid {
 	 * 지정한 개체의 크기와 위치에 맞는 모든 타일 좌표 해시를 구한다.
 	 */
 	private fun getTileHashes(entity: Entity): Set<Long> {
-		val maxHalfLength = Utils.max2(entity.width * 0.5f, entity.height * 0.5f);  // 개체가 회전됐을 때를 고려
+		val halfWidth = entity.width * 0.5f;
+		val halfHeight = entity.height * 0.5f;
+		val maxHalfLength = Utils.max2(halfWidth, halfHeight);  // 개체가 회전됐을 때를 고려
 
 		val minTileX = floor((entity.x - maxHalfLength) / tileSize).toInt();
 		val maxTileX = floor((entity.x + maxHalfLength) / tileSize).toInt();

@@ -15,6 +15,7 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
+import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.endlessdead.world.ZombieWorld;
 import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Utils;
@@ -24,7 +25,6 @@ import io.potatogun.gdxhelper.screen.WorldViewer;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
-import io.potatogun.gdxhelper.util.get;
 import io.potatogun.gdxhelper.util.getAllOf;
 import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
@@ -148,8 +148,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	 */
 	private fun updateTitleBarInfo() {
 		val world: World? = projectingWorld;
-		val player: Player? = world?.entities?.get<Player>();
-		if(world == null || player == null) {
+		if(world == null) {
 			Window.titleBarStats = null;
 			return;
 		}
@@ -175,13 +174,13 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		val cooldownIndicator = getWidget("gun_cooldown_indicator") as ProgressBar;
 
 		val world: World? = projectingWorld;
-		val player: Player? = world?.entities?.get<Player>();
-		if(world == null || player == null) {
+		if(world !is SinglePlayerWorld) {
 			hpIndicator.hide();
 			ammoIndicator.hide();
 			cooldownIndicator.hide();
 			return;
 		}
+		val player = world.player;
 
 		// HP 미터기 처리
 		hpIndicator.apply {
@@ -461,29 +460,31 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	 */
 	private inline fun drawHud() {
 		val world: World? = projectingWorld;
-		val player: Player? = world?.entities?.get<Player>();
-		if(world == null || player == null) return;
+		if(world == null) return;
 
-		// 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
-		//    카메라가 움직여도 항상 이 위치에 있다.
-		drawText(
-			text = "HP: ${player.hp}",
-			x = 10f,
-			y = Window.height - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
-			color = Utils.rgb(255, 240, 128),
-			scale = 1.2f
-		);
-
-		// 현재 플레이어가 들고 있는 아이템
-		player.selectedItem?.let {
+		if(world is SinglePlayerWorld) {
+			val player = world.player;
+			// 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
+			//    카메라가 움직여도 항상 이 위치에 있다.
 			drawText(
-				text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.itemCount}]",
+				text = "HP: ${player.hp}",
 				x = 10f,
-				y = 20f,
-				color = Utils.rgb(255, 255, 192),
-				scale = 1.0f
+				y = Window.height - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
+				color = Utils.rgb(255, 240, 128),
+				scale = 1.2f
 			);
-		};
+
+			// 현재 플레이어가 들고 있는 아이템
+			player.selectedItem?.let {
+				drawText(
+					text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.itemCount}]",
+					x = 10f,
+					y = 20f,
+					color = Utils.rgb(255, 255, 192),
+					scale = 1.0f
+				);
+			};
+		}
 
 		// 점수
 		drawText(
