@@ -16,11 +16,13 @@ class TimeStopper : Item("time_stopper", "Time Stopper"), Usable {
 		if(!user.inventory.hasItem(this)) return false;
 		if(user !is Player) return false;
 		val world = user.world;
+		val viewer = world.viewer as? SubtitlesDrawable;
 		if(world !is Freezable) {
-			(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Can't use this item here");
+			viewer?.drawSubtitles("Can't use this item here");
 			return false;
 		}
-		world.freeze(3f);
+		world.freeze(3f) { viewer?.drawSubtitles("Time moves again") };
+		viewer?.drawSubtitles("Time stop!");
 		destroy();
 		return true;
 	}

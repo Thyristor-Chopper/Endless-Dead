@@ -40,8 +40,9 @@ class Shotgun : Gun("shotgun", "Shotgun", 5, 500f, 5, true, 1f, 10, 10) {
 
 		// 남은 탄약이 0이 됐을 떄, 무기가 파괴(destroy())되는 효과
 		if(remainingBullets == 0) {
-			if(shooter is Player)
-				(shooter.world.viewer as? SubtitlesDrawable)?.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON);
+			val viewer = shooter.world.viewer;
+			if(shooter is Player && viewer is SubtitlesDrawable)
+				viewer.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON);
 			destroy();
 		}
 

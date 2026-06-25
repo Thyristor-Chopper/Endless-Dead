@@ -16,8 +16,9 @@ class Bandage : Item("bandage", "Bandage"), Usable {
 		if(!user.inventory.hasItem(this)) return false;
 		if(user !is LivingEntity) return false;
 		user.heal(10);
-		if(user is Player)
-			(user.world.viewer as? SubtitlesDrawable)?.drawSubtitles("Healed 10 HP");
+		val viewer = user.world.viewer;
+		if(user is Player && viewer is SubtitlesDrawable)
+			viewer.drawSubtitles("Healed 10 HP");
 		destroy();
 		return true;
 	}
