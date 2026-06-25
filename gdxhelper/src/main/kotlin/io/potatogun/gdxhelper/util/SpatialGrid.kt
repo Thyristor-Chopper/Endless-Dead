@@ -58,24 +58,18 @@ interface SpatialGrid {
  *
  * @return 개체 목록
  */
-inline fun <reified T : Entity> SpatialGrid.getAllOf(): List<T> = getAllOf(T::class);
-
-fun <T : Entity> SpatialGrid.getAllOf(type: KClass<T>): List<T> = this.getAll().filterIsInstance(type.java);
+inline fun <reified T : Entity> SpatialGrid.getAllOf(): List<T> = this.getAll().filterIsInstance<T>();
 
 /**
  * 지정한 종류의 개체 중 처음으로 등록된 것을 반환한다.
  *
  * @return 개체 (없으면 null)
  */
-inline fun <reified T : Entity> SpatialGrid.get(): T? = get(T::class);
-
-fun <T : Entity> SpatialGrid.get(type: KClass<T>): T? = this.getAll().firstOrNull { it::class == type } as T?;
+inline fun <reified T : Entity> SpatialGrid.get(): T? = this.getAll().firstOrNull { it::class == T::class } as T?;
 
 /**
  * 지정한 종류의 개체를 아무거나 반환한다.
  *
  * @return 개체 (없으면 null)
  */
-inline fun <reified T : Entity> SpatialGrid.getRandom(): T? = getRandom(T::class);
-
-fun <T : Entity> SpatialGrid.getRandom(type: KClass<T>): T? = this.getAll().shuffled().firstOrNull { it::class == type } as T?;
+inline fun <reified T : Entity> SpatialGrid.getRandom(): T? = this.getAll().shuffled().firstOrNull { it::class == T::class } as T?;
