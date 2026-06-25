@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.util.getRandom;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -52,7 +53,7 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 	protected open fun getTargetOrReset(): LivingEntity? {
 		val target: LivingEntity? = this.target;
 		if(target == null || !target.isAlive) {
-			this.target = world.getRandom<Player>();
+			this.target = world.entities.getRandom<Player>();
 			return null;  // 다음 프레임에...
 		}
 		return target;

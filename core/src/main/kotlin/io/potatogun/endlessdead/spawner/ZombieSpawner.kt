@@ -7,6 +7,7 @@ import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.util.distanceTo;
+import io.potatogun.gdxhelper.util.getRandom;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.random.Random;
@@ -56,7 +57,7 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 	 * 무작위로 좀비 종류를 골라서 월드에 추가한다.
 	 */
 	private inline fun spawnRandomZombie() {
-		val attackTarget: Player? = world.getRandom<Player>();
+		val attackTarget: Player? = world.entities.getRandom<Player>();
 		if(attackTarget == null) return;
 		var randomX: Float;
 		var randomY: Float;
@@ -73,6 +74,6 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 			else		-> Zombie.Strong(world, randomX, randomY, initialTarget = attackTarget)	// 10% 확률
 		};
 
-		world.addEntity(newZombie);
+		world.entities.add(newZombie);
 	}
 }

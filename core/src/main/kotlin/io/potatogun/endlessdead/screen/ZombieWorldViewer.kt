@@ -24,6 +24,8 @@ import io.potatogun.gdxhelper.screen.WorldViewer;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
+import io.potatogun.gdxhelper.util.get;
+import io.potatogun.gdxhelper.util.getAllOf;
 import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
 import io.potatogun.gdxhelper.world.World;
@@ -146,7 +148,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	 */
 	private fun updateTitleBarInfo() {
 		val world: World? = projectingWorld;
-		val player: Player? = world?.get<Player>();
+		val player: Player? = world?.entities?.get<Player>();
 		if(world == null || player == null) {
 			Window.titleBarStats = null;
 			return;
@@ -158,7 +160,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			TitleInfoType.FIRED		-> "Fired: ${Statistics.fireCount}"
 			TitleInfoType.SURVIVED	-> "Survived duration: ${Utils.parseSeconds(Statistics.survivedDuration, "m", "s")}"
 			TitleInfoType.DAMAGE	-> "Total damage: ${Statistics.totalDamage}"
-			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.getAll<Zombie>().size}"
+			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.entities.getAllOf<Zombie>().size}"
 		};
 	}
 
@@ -173,7 +175,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		val cooldownIndicator = getWidget("gun_cooldown_indicator") as ProgressBar;
 
 		val world: World? = projectingWorld;
-		val player: Player? = world?.get<Player>();
+		val player: Player? = world?.entities?.get<Player>();
 		if(world == null || player == null) {
 			hpIndicator.hide();
 			ammoIndicator.hide();
@@ -459,7 +461,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	 */
 	private inline fun drawHud() {
 		val world: World? = projectingWorld;
-		val player: Player? = world?.get<Player>();
+		val player: Player? = world?.entities?.get<Player>();
 		if(world == null || player == null) return;
 
 		// 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.

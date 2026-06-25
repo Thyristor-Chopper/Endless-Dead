@@ -10,12 +10,12 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.WorldViewer;
+import io.potatogun.gdxhelper.util.SpatialGrid;
+import io.potatogun.gdxhelper.util.SpatialHashGrid;
 import io.potatogun.gdxhelper.util.weakMutableSetOf;
 import io.potatogun.gdxhelper.world.Freezable;
 
 import java.util.Collections;
-
-import kotlin.reflect.KClass;
 
 /**
  * 게임 내 월드 = '월드 하나' 의 추상 기본 클래스.
@@ -68,13 +68,13 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	var offsetY: Float
 		get() = camera.position.y
 		protected set(value) { camera.position.y = value };
-	// 등록된 객체들만 update/draw된다.
-	//   private으로 감춘 이유: 외부가 직접 add/remove하면
-	//   '순회 중 삭제' 같은 버그가 나기 쉽다. addEntity(), removeEntity()라는 공식 창구만 허용.
 	/**
 	 * 등록된 개체 목록
+	 *   등록된 객체들만 update/draw된다.
+	 *
+	 * 자바에서도 world.entities.add()를 자연스럽게 호출하기 위해 @JvmField
 	 */
-	private val entities = mutableListOf<Entity>();
+	@JvmField val entities: SpatialGrid = SpatialHashGrid(128f);
 
 	init {
 		instances.add(this);
@@ -89,67 +89,10 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 		camera.setToOrtho(false, Window.width, Window.height);
 	}
 
-	// ────────────────────────────────────────────────────────
-	//  개체 관리
-	// ────────────────────────────────────────────────────────
-
 	/**
-	 * 개체를 월드에 등록 — 이후부터 자동으로 update/draw 된다.
-	 *
-	 * @param entity 추가할 개체
+	 * 월드 내 모든 개체 목록을 가져온다.
 	 */
-	fun addEntity(entity: Entity) {
-		entities.add(entity);
-	}
-
-	/**
-	 * 특정 개체를 수동 제거
-	 *
-	 * @param entity 제거할 개체
-	 * @return       성공 여부
-	 */
-	fun removeEntity(entity: Entity): Boolean = entity.let {
-		it.dispose();
-		entities.remove(it);
-	};
-
-	/**
-	 * 현재 등록된 개체 목록의 '읽기용 복사본'.
-	 *
-	 * toList()로 복사해서 주는 이유:
-	 *   외부가 받은 리스트에 add/remove하면 내부 상태가 망가진다.
-	 *   복사본을 줘서 '훔쳐보기만 하고 건드리진 못하게' 한다.
-	 *
-	 * @return 읽기 전용 개체 목록
-	 */
-	fun getEntities(): List<Entity> = entities.toList();
-
-	/**
-	 * 지정한 종류의 개체들의 목록을 반환한다.
-	 *
-	 * @return 개체 목록
-	 */
-	inline fun <reified T : Entity> getAll(): List<T> = getAll(T::class);
-
-	fun <T : Entity> getAll(type: KClass<T>): List<T> = entities.filterIsInstance(type.java);
-
-	/**
-	 * 지정한 종류의 개체 중 처음으로 등록된 것을 반환한다.
-	 *
-	 * @return 개체 (없으면 null)
-	 */
-	inline fun <reified T : Entity> get(): T? = get(T::class);
-
-	fun <T : Entity> get(type: KClass<T>): T? = entities.firstOrNull { it::class == type } as T?;
-
-	/**
-	 * 지정한 종류의 개체를 아무거나 반환한다.
-	 *
-	 * @return 개체 (없으면 null)
-	 */
-	inline fun <reified T : Entity> getRandom(): T? = getRandom(T::class);
-
-	fun <T : Entity> getRandom(type: KClass<T>): T? = entities.shuffled().firstOrNull { it::class == type } as T?;
+	inline fun getEntities(): List<Entity> = entities.getAll();
 
 	/**
 	 * 등록된 모든 개체에게 'update(delta) 한 프레임 진행'을 시킨다.
@@ -158,7 +101,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	 * @param delta 직전 프레임과의 시간 간격(초)
 	 */
 	private inline fun updateEntities(delta: Float) {
-		for(entity in entities.toList()) {
+		for(entity in getEntities()) {
 			if(this !is Freezable || !this.isFrozen || entity.isUpdatableWhileFrozen)
 				entity.update(delta);
 			entity.forceUpdate(delta);
@@ -245,7 +188,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 		val offsetX = this.offsetX;
 		val offsetY = this.offsetY;
 
-		for(entity in entities) {
+		for(entity in getEntities()) {
 			// 보이는 개체만 그리기 (자원 낭비 감소)
 			val maxEntityLength = Utils.max2(entity.width, entity.height);
 			val entityX = entity.x;
@@ -292,8 +235,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	open fun dispose() {
 		batch.dispose();
 		font.dispose();
-		for(entity in entities)
-			entity.dispose();
+		entities.dispose();
 	}
 
 	companion object {
@@ -302,7 +244,10 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 		private val instances = weakMutableSetOf<World>();
 
 		internal fun disposeAllWorlds() {
-			instances.forEach { world -> runCatching { world.dispose() } };
+			for(world in instances)
+				try {
+					world.dispose();
+				} catch(e: IllegalArgumentException) {}
 		}
 	}
 }

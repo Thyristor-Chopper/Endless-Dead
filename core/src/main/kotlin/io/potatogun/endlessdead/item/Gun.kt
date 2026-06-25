@@ -109,7 +109,7 @@ abstract class Gun(id: String, name: String, val bulletDamage: Int, val bulletSp
 		if(!canFire) return 0;
 
 		val bullet = Bullet(shooter.world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetreble, bulletHP);
-		shooter.world.addEntity(bullet);
+		shooter.world.entities.add(bullet);
 		startFireCooldown();
 		remainingBullets--;
 

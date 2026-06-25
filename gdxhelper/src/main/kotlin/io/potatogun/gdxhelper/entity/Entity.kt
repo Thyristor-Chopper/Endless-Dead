@@ -56,7 +56,12 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	 *   그럼 entity.getPosition().setX(3);같이 될텐데 'get'을 해 놓고 set을 하는 게 좀 어색하지 않을까.
 	 *   어차피 val(final)이고 클래스 생성 시 바로 Position 객체가 할당되니까 null 위험성도 없다.
 	 */
-	@JvmField val position = MutablePosition(x, y).apply { setObserver { _, _ -> isCachedRectValid = false } };
+	@JvmField val position = MutablePosition(x, y).apply {
+		setObserver { _, _ ->
+			isCachedRectValid = false;
+			world.entities.updateTile(this@Entity);
+		};
+	};
 	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)
 	//   기존에는 x과 y가 backing field가 있는 실제 var였고 
 	//   val position get() = Position(x, y)가 있었다.
@@ -276,7 +281,7 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	 * 개체를 월드에서 제거하고 등록을 해제한다.
 	 */
 	inline fun remove() {
-		world.removeEntity(this);
+		world.entities.remove(this);
 	}
 
 	/**

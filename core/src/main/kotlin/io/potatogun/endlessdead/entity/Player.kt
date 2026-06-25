@@ -140,7 +140,7 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	 * update()에서만 한 번 쓰이기 때문에 inline이다.
 	 */
 	private inline fun interactContainer() {
-		for(entity in world.getEntities()) {
+		for(entity in world.entities.getNearby(this)) {
 			if(entity !is Container) continue;
 			if(collidesWith(entity))
 				if(entity.inventory.isEmpty) {

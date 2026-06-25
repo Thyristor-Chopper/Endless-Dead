@@ -32,7 +32,7 @@ class Shotgun : Gun("shotgun", "Shotgun", 5, 500f, 5, true, 1f, 10, 10) {
 				centerX + cos(finalAngle) * 100f,
 				centerY + sin(finalAngle) * 100f  // angle 객체로 각도(방향)을 지정했으니, 그곳의 cos,sin을 이용한 위치 좌표를 구하는 식
 			);
-			shooter.world.addEntity(Bullet(shooter.world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetreble, bulletHP));
+			shooter.world.entities.add(Bullet(shooter.world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetreble, bulletHP));
 		}
 
 		startFireCooldown();  // 발사간격 함수

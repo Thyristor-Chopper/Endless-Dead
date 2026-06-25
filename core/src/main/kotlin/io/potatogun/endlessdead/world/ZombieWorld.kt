@@ -22,6 +22,7 @@ import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
+import io.potatogun.gdxhelper.util.getAllOf;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
 
@@ -99,21 +100,21 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 			val x = Random.nextInt(intWidth).toFloat();
 			val y = Random.nextInt(intHeight).toFloat();
 			val item: Item = generateRandomItem();  // 들어있을 아이템
-			addEntity(when(Random.nextInt(2)) {
+			entities.add(when(Random.nextInt(2)) {
 				0		-> Building(this, x, y, item);
 				else	-> Chest(this, x, y, item);
 			});
 		}
 
 		// 플레이어 등록
-		addEntity(player);
+		entities.add(player);
 
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this, 3f));
 
 		// 10초마다 빈 상자 하나 리필
 		timerManager.register(RepeatingTimer(10f) {
-			val emptyContainers = getAll<Container>().filter { it.inventory.isEmpty };
+			val emptyContainers = entities.getAllOf<Container>().filter { it.inventory.isEmpty };
 			emptyContainers.randomOrNull()?.putItem(generateRandomItem());
 		});
 	}
@@ -170,7 +171,8 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		// 스포너 갱신
 		if(!isFrozen)
-			spawners.forEach { it.update(delta) };
+			for(spawner in spawners)
+				spawner.update(delta);
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
 		if(!player.isAlive)
