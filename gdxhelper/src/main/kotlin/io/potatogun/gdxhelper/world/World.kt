@@ -10,8 +10,8 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.WorldViewer;
-import io.potatogun.gdxhelper.util.BasicEntityManager;
 import io.potatogun.gdxhelper.util.EntityManager;
+import io.potatogun.gdxhelper.util.SpatialHashGrid;
 import io.potatogun.gdxhelper.util.weakMutableSetOf;
 import io.potatogun.gdxhelper.world.Freezable;
 
@@ -32,11 +32,10 @@ import java.util.Collections;
  *
  *  이 클래스를 상속해 자기 게임의 월드를 만든다 (ZombieWorld 참고).
  *
- * @property width         월드 전체 너비 (JvmField이 있지만 빌드 후 Fernflower로 자바로 디컴파일하여 null이 불가능한 원시 float임을 확인함.)
- * @property height        월드 전체 높이 (위와 동일)
- * @param    entityManager 개체 관리자
+ * @property width  월드 전체 너비 (JvmField이 있지만 빌드 후 Fernflower로 자바로 디컴파일하여 null이 불가능한 원시 float임을 확인함.)
+ * @property height 월드 전체 높이 (위와 동일)
  */
-abstract class World(@JvmField val width: Float, @JvmField val height: Float, entityManager: EntityManager = BasicEntityManager()) {
+abstract class World(@JvmField val width: Float, @JvmField val height: Float) {
 	/**
 	 * 원근 없이(평행 투영) 2D 좌표를 그대로 그려주는 카메라
 	 */
@@ -75,7 +74,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, en
 	 *
 	 * 자바에서도 world.entities.add()로 자연스럽게 호출하기 위해 @JvmField
 	 */
-	@JvmField val entities: EntityManager = entityManager;
+	@JvmField val entities: EntityManager = SpatialHashGrid(128f);
 
 	init {
 		instances.add(this);
