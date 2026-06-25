@@ -1,0 +1,59 @@
+package io.potatogun.gdxhelper.util;
+
+import io.potatogun.gdxhelper.entity.Entity;
+
+/**
+ * 개체 목록 관리자
+ */
+interface EntityManager {
+	/**
+	 * 개체를 등록한다.
+	 *
+	 * @param entity 등록할 개체
+	 * @return       성공 여부(중복 시 실패)
+	 */
+	fun add(entity: Entity): Boolean;
+
+	/**
+	 * 개체를 제거한다.
+	 *
+	 * @param entity 제거할 개체
+	 * @return       성공 여부
+	 */
+	fun remove(entity: Entity): Boolean;
+
+	/**
+	 * 등록된 모든 개체 목록을 반환한다.
+	 *
+	 * @return 개체 목록
+	 */
+	fun getAll(): List<Entity>;
+
+	/**
+	 * 등록된 개체들의 자원을 해제한다.
+	 */
+	fun dispose();
+}
+
+// 확장 함수
+
+/**
+ * 지정한 종류의 개체들의 목록을 반환한다.
+ *
+ * @return 개체 목록
+ */
+inline fun <reified T : Entity> EntityManager.getAllOf(): List<T> = this.getAll().filterIsInstance<T>();
+
+/**
+ * 지정한 종류의 개체 중 처음으로 등록된 것을 반환한다.
+ *
+ * @return 개체 (없으면 null)
+ */
+inline fun <reified T : Entity> EntityManager.get(): T? = this.getAll().firstOrNull { it::class == T::class } as T?;
+
+/**
+ * 지정한 종류의 개체를 아무거나 반환한다.
+ *
+ * @return 개체 (없으면 null)
+ */
+inline fun <reified T : Entity> EntityManager.getRandom(): T? = this.getAll().shuffled().firstOrNull { it::class == T::class } as T?;
