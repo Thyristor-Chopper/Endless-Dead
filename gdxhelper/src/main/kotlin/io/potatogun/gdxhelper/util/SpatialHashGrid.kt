@@ -5,6 +5,11 @@ import io.potatogun.gdxhelper.entity.Entity;
 
 import kotlin.math.floor;
 
+/**
+ * 해시를 사용하는 개체 좌표 분할 격자
+ *
+ * @property tileSize 타일 크기
+ */
 class SpatialHashGrid(private val tileSize: Float) : SpatialGrid {
 	private val entitiesOfTile = mutableMapOf<Long, MutableList<Entity>>();
 	private val tilesOfEntity = mutableMapOf<Entity, Set<Long>>();
