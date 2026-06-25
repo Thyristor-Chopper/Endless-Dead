@@ -2,8 +2,6 @@ package io.potatogun.gdxhelper.util;
 
 import io.potatogun.gdxhelper.entity.Entity;
 
-import kotlin.reflect.KClass;
-
 /**
  * 개체 좌표계를 나누는 그리드이다.
  */
