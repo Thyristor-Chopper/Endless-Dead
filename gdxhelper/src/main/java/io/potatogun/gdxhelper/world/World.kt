@@ -121,6 +121,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 
 	internal fun resize(width: Int, height: Int) {
 		updateCameraViewport();
+		updateCameraOffset();
 		updateCamera();
 		onResize(width, height);
 	}
