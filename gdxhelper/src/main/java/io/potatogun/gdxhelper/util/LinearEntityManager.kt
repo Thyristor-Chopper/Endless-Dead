@@ -3,11 +3,11 @@ package io.potatogun.gdxhelper.util;
 import io.potatogun.gdxhelper.entity.Entity;
 
 /**
- * 선형 목록에서 모두 관리하는 초보적인 관리자
+ * 선형 목록에서 모두 관리하는 기초적인 관리자
  *
- * @property nearbyStandard getNearby에서 사용할 가깝다의 기준
+ * @property nearbyThreshold getNearby에서 사용할 가깝다의 기준
  */
-class BasicEntityManager(private val nearbyStandard: Float) : EntityManager {
+class LinearEntityManager(private val nearbyThreshold: Float) : EntityManager {
 	private val entities = mutableListOf<Entity>();
 
 	override fun add(entity: Entity): Boolean {
@@ -26,7 +26,7 @@ class BasicEntityManager(private val nearbyStandard: Float) : EntityManager {
 	override fun getNearby(entity: Entity): List<Entity> {
 		val ret = mutableListOf<Entity>();
 		for(it in entities)
-			if(it.distanceTo(entity) <= nearbyStandard)
+			if(it.distanceTo(entity) <= nearbyThreshold)
 				ret.add(it);
 		return ret;
 	}

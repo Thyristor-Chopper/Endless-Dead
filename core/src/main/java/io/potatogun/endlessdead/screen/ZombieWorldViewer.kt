@@ -271,19 +271,8 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		}
 	}
 
-	/**
-	 * 매 프레임 그리기 — 부모가 배경·객체까지 그려준 뒤, 텍스트 UI를 얹는다.
-	 *
-	 * 이 함수에서는 '그리기'만 한다. 입력 처리·상태 변경은 update()의 책임.
-	 *
-	 * 주의: super.render(delta) 가 화면 clear + 배경 + 객체까지 그리므로,
-	 *       텍스트는 반드시 super 호출 '이후' 그려야 가려지지 않는다.
-	 */
-	override fun render(delta: Float) {
-		super.render(delta);
-
-		batch.begin();
-
+	// 일시 정지 시 맨 위에 메시지와 컨트롤 표시
+	override fun drawOverlay() {
 		// 일시 정지 시 어둡게 변경
 		if(!GameManager.isPlaying)
 			drawFrozenOverlay();
@@ -294,8 +283,6 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			GameManager.isPaused	-> drawPausedMessage();  // 일시정지 화면 그리기
 			GameManager.isGameOver	-> drawGameOverMessage();
 		}
-
-		batch.end();
 	}
 
 	/**

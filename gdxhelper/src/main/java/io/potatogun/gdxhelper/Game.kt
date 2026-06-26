@@ -1,9 +1,10 @@
 package io.potatogun.gdxhelper;
 
 import com.badlogic.gdx.Game as GdxGame;
+import com.badlogic.gdx.Gdx;
 
 import io.potatogun.gdxhelper.Window;
-import io.potatogun.gdxhelper.screen.WorldViewer;
+import io.potatogun.gdxhelper.screen.Screen;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -14,6 +15,17 @@ abstract class Game : GdxGame() {
 	override fun resize(width: Int, height: Int) {
 		Window.updateWindowDimensions();
 		super.resize(width, height);
+	}
+
+	override fun render() {
+		val screen = getScreen();
+		if(screen !is Screen) {
+			super.render();
+			return;
+		}
+		val delta = Gdx.graphics.getDeltaTime();
+		screen.update(delta);
+		screen.render();
 	}
 
 	// 자원 정리

@@ -118,7 +118,7 @@ abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
 	 *
 	 * @param delta 직전 프레임과의 시간 간격(초)
 	 */
-	protected open fun update(delta: Float) {}
+	open fun update(delta: Float) {}
 
 	// ────────────────────────────────────────────────────────
 	//  매 프레임 그리기
@@ -133,19 +133,17 @@ abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
 	 *
 	 * @param delta 직전 프레임과의 시간 간격(초)
 	 */
-	override fun render(delta: Float) {
+	internal fun render() {
 		// 1) 이전 프레임의 잔상 지우기 (검은색으로 채움)
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// 2) 화면 로직 업데이트
-		update(delta);
-
-		// 3) 그리기 — SpriteBatch는 begin()/end() 사이에서만 동작한다.
+		// 2) 그리기 — SpriteBatch는 begin()/end() 사이에서만 동작한다.
 		batch.begin();
 		drawBackground();
 		drawElements();
 		drawWidgets();
+		drawOverlay();
 		batch.end();
 	}
 
@@ -181,6 +179,11 @@ abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
 			}
 		return count;
 	}
+
+	/**
+	 * 스크린의 모든 것 위에 그려야 할 오버레이가 있다면 여기서 그린다.
+	 */
+	protected open fun drawOverlay() {}
 
 	/**
 	 * 스크린의 addWidget로 직접 등록하지 않은 위젯(컨트롤)을 수동으로 그린다.

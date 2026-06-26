@@ -6,7 +6,7 @@ import io.potatogun.gdxhelper.entity.Entity;
 import kotlin.math.floor;
 
 /**
- * 해시를 사용하는 개체 좌표 분할 격자
+ * 해시를 사용하는 좌표 분할 격자식 개체 관리자
  *
  * @property tileSize 타일 크기
  */
