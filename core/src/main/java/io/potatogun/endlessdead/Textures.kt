@@ -34,5 +34,7 @@ object Textures : SharedTextureManager() {
 		register("green_button_hover", "widget/green_button_hover.bmp");
 		register("green_button_pressed", "widget/green_button_pressed.bmp");
 		register("green_button_disabled", "widget/green_button_disabled.bmp");
+
+		register("default_item", "item/default.bmp");
 	}
 }

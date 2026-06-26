@@ -1,6 +1,11 @@
 package io.potatogun.endlessdead.item;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.GdxRuntimeException;
+
+import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.inventory.Inventory;
+import io.potatogun.gdxhelper.Utils;
 
 /**
  * 아이템 추상 클래스
@@ -10,10 +15,14 @@ import io.potatogun.endlessdead.inventory.Inventory;
  *         Bukkit.broadcastMessage("This player has " + item.name + "!");
  *   자바에서 두 형식 다 쓰일 법할 것 같기도 하고...
  *
- * @property id   아이템 식별자
+ * @property id   아이템 식별자 (소문자)
  * @property name 아이템 이름
  */
-abstract class Item(@get:JvmName("getID") val id: String, val name: String, settings: Properties = Properties()) {
+abstract class Item(id: String, val name: String, settings: Properties = Properties()) {
+	/**
+	 * 아이템 식별자
+	 */
+	@get:JvmName("getID") val id = id.toLowerCase();
 	/**
 	 * 아이템을 들고 있는 인벤토리 (캐시)
 	 */
@@ -22,10 +31,20 @@ abstract class Item(@get:JvmName("getID") val id: String, val name: String, sett
 	 * 아이템 희귀도
 	 */
 	val rarity: Rarity;
+	/**
+	 * 아이템 텍스처 (인벤토리용)
+	 *   ID가 텍스처 화일명이 된다.
+	 */
+	val texture: Texture;
 
 	init {
 		settings.fillDefaults();
 		rarity = settings.rarity;
+		texture = try {
+			Utils.loadTexture("item/${id}.bmp")
+		} catch(e: GdxRuntimeException) {
+			Textures.getShared("default_item")
+		};
 	}
 
 	/**

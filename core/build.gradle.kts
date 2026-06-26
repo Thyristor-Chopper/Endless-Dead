@@ -6,3 +6,7 @@ dependencies {
     api("com.badlogicgames.gdx:gdx:1.12.1")
     implementation(project(":gdxhelper"))
 }
+
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+}
