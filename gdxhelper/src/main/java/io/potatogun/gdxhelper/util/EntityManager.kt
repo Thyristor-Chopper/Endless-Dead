@@ -23,11 +23,25 @@ interface EntityManager {
 	fun remove(entity: Entity): Boolean;
 
 	/**
+	 * 개체가 이동하면 이동된 위치에 맞게 저장된 데이타를 갱신한다.
+	 *
+	 * @param entity 갱신할 개체
+	 */
+	fun updatePosition(entity: Entity) {}
+
+	/**
 	 * 등록된 모든 개체 목록을 반환한다.
 	 *
 	 * @return 개체 목록
 	 */
 	fun getAll(): List<Entity>;
+
+	/**
+	 * 현재 개체의 주변 개체를 나열한다.
+	 *
+	 * @param entity 기준 개체
+	 */
+	fun getNearby(entity: Entity): List<Entity>;
 
 	/**
 	 * 등록된 개체들의 자원을 해제한다.

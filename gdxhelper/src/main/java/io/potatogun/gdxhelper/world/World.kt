@@ -11,9 +11,8 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.WorldViewer;
-import io.potatogun.gdxhelper.util.BasicEntityManager;
 import io.potatogun.gdxhelper.util.EntityManager;
-import io.potatogun.gdxhelper.util.SpatialHashGrid;
+import io.potatogun.gdxhelper.util.SpatialHashGridEntityManager;
 import io.potatogun.gdxhelper.util.weakMutableSetOf;
 import io.potatogun.gdxhelper.world.Freezable;
 
@@ -77,13 +76,12 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 	 *
 	 * 자바에서도 world.entities.add()로 자연스럽게 호출하기 위해 @JvmField
 	 */
-	@JvmField val entities: EntityManager;
+	@JvmField val entities: EntityManager = SpatialHashGridEntityManager(settings.worldTileSize);
 
 	init {
 		settings.fillDefaults();
 		camera = settings.worldCamera;
 		font = settings.worldFont;
-		entities = settings.worldEntityManager;
 
 		updateCameraViewport();
 		if(camera is OrthographicCamera)
@@ -254,7 +252,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 			private set;
 		internal lateinit var worldFont: BitmapFont
 			private set;
-		internal lateinit var worldEntityManager: EntityManager
+		internal var worldTileSize = 64f
 			private set;
 
 		/**
@@ -280,14 +278,13 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 		}
 
 		/**
-		 * 개체 관리자를 지정한다.
-		 *   서로 다른 두 월드가 같은 개체 목록을 공유할 수는 있지만 권장하지 않는다.
+		 * 격자 개체 관리자의 타일 크기를 지정한다.
 		 *
-		 * @param manager 개체 관리자
-		 * @return        옵션 객체 자신
+		 * @param tileSize 타일 크기
+		 * @return         옵션 객체 자신
 		 */
-		fun entityManager(manager: EntityManager): Properties {
-			worldEntityManager = manager;
+		fun tileSize(tileSize: Float): Properties {
+			worldTileSize = tileSize;
 			return this;
 		}
 
@@ -296,8 +293,6 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 				worldCamera = OrthographicCamera();
 			if(!::worldFont.isInitialized)
 				worldFont = BitmapFont();
-			if(!::worldEntityManager.isInitialized)
-				worldEntityManager = BasicEntityManager();
 		}
 	}
 

@@ -10,7 +10,7 @@ import kotlin.math.floor;
  *
  * @property tileSize 타일 크기
  */
-class SpatialHashGrid(private val tileSize: Float) : SpatialGrid {
+class SpatialHashGridEntityManager(private val tileSize: Float) : EntityManager {
 	private val entitiesOfTile = mutableMapOf<Long, MutableList<Entity>>();
 	private val tilesOfEntity = mutableMapOf<Entity, Set<Long>>();
 
@@ -38,7 +38,7 @@ class SpatialHashGrid(private val tileSize: Float) : SpatialGrid {
 		return true;
 	}
 
-	override fun updateTile(entity: Entity) {
+	override fun updatePosition(entity: Entity) {
 		val oldHashes = tilesOfEntity[entity] ?: return;
 		val newHashes = getTileHashes(entity);
 		if(oldHashes == newHashes) return;
