@@ -36,16 +36,12 @@ import io.potatogun.gdxhelper.world.World;
  * @param    initialTarget 처음 공격 대상
  */
 open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, texture: Texture = Textures.getShared("zombie"), settings: Properties) : LivingEntity(world, x, y, width, height, texture, hp), PenetratorDamagable, Attackable {
-	/**
-	 * 개체 추적 범위 (0: 제한 없음)
-	 */
-	protected open val followRange = 0f;
-	private val attacker = SimpleAttacker(this, followRange, { if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
+	private val attacker = SimpleAttacker(this, targetFetcher = { if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
 	open val attackDamage: Int = settings.attackDamage;
 	open val speed: Float = settings.speed;
 	protected open val attackingTexture = Textures.getShared("attacking_zombie");
 	override val penetrationDamage = 1;
-	override val defaultInvincibleDuration = 0.25f;
+	override val defaultInvincibleDuration = 0.2f;
 	protected open val attackInterval = 0.3f;
 	private var attackTextureTimer = 0f;
 	private var attackCooldownTimer = attackInterval;
@@ -60,6 +56,10 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 
 	protected fun setTargetFetcher(fetcher: () -> LivingEntity?) {
 		attacker.setTargetFetcher(fetcher);
+	}
+
+	protected fun setFollowRange(range: Float) {
+		attacker.setFollowRange(range);
 	}
 
 	override fun update(delta: Float) {

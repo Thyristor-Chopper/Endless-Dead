@@ -10,7 +10,7 @@ import io.potatogun.gdxhelper.entity.Entity;
  * @property targetFetcher 새 공격 대상자를 찾는 함수
  * @throws IllegalArgumentException 감지 범위가 잘못됐을 때
  */
-class SimpleAttacker(private val owner: Entity, private val followRange: Float = 0f, private var targetFetcher: () -> LivingEntity? = { null }) : Attackable {
+class SimpleAttacker(private val owner: Entity, private var followRange: Float = 0f, private var targetFetcher: () -> LivingEntity? = { null }) : Attackable {
 	override var target: LivingEntity? = targetFetcher()
 		get() {
 			val target: LivingEntity? = field;
@@ -35,5 +35,15 @@ class SimpleAttacker(private val owner: Entity, private val followRange: Float =
 	 */
 	fun setTargetFetcher(fetcher: () -> LivingEntity?) {
 		targetFetcher = fetcher;
+	}
+
+	/**
+	 * 공격 대상 탐색 범위를 변경한다.
+	 *
+	 * @param range 대상 탐색 범위
+	 */
+	fun setFollowRange(range: Float) {
+		if(range < 0f) throw IllegalArgumentException("invalid follow range");
+		followRange = range;
 	}
 }

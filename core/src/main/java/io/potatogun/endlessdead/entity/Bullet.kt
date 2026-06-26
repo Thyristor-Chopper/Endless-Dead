@@ -25,6 +25,7 @@ import kotlin.math.sqrt;
 class Bullet(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.position.x, shooter.position.y, 16f, 16f, Textures.getShared("bullet"), hp) {
 	override val isUpdatableWhileFrozen = (shooter is Player);
 	override val showDamagedIndicator = false;
+	override val defaultInvincibleDuration = 0.1f;
 	/**
 	 * 총알 속도에 따른 가로 이동량
 	 */

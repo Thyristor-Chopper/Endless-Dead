@@ -13,11 +13,7 @@ import java.lang.Math.toDegrees;
 import kotlin.math.atan2;
 
 abstract class Turret(world: World, x: Float, y: Float, texture: Texture, gunSettings: Gun.Properties) : Entity(world, x, y, 83f, 154f, texture), InventoryHolder, Attackable {
-	/**
-	 * 개체 추적 범위 (0: 제한 없음)
-	 */
-	protected open val followRange = 408f;
-	private val attacker = SimpleAttacker(this, followRange);  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
+	private val attacker = SimpleAttacker(this);  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
 	final override val inventory = SingleItemInventory();
 	override var target: LivingEntity?
 		get() = attacker.target
@@ -29,6 +25,10 @@ abstract class Turret(world: World, x: Float, y: Float, texture: Texture, gunSet
 
 	protected fun setTargetFetcher(fetcher: () -> LivingEntity?) {
 		attacker.setTargetFetcher(fetcher);
+	}
+
+	protected fun setFollowRange(range: Float) {
+		attacker.setFollowRange(range);
 	}
 
 	override fun update(delta: Float) {
