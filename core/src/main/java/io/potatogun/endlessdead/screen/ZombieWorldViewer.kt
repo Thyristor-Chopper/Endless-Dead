@@ -409,7 +409,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		batch.color = noWorldOverlay;
 		batch.draw(lazyStillCut.value, 0f, 0f, Window.width, Window.height);
 		batch.color = Color.WHITE;
-		drawText("No world loaded!", 0f, Window.height * 0.5f, Color.SCARLET, 2.0f, Window.width, Align.center);
+		drawText("Waiting for a new adventure...", 0f, Window.height * 0.5f, Color.LIGHT_GRAY, 2.0f, Window.width, Align.center);
 	}
 
 	override fun drawElements() {
