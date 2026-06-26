@@ -7,7 +7,7 @@ import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.util.getRandom;
+import io.potatogun.gdxhelper.util.getDistanceSorted;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -66,7 +66,7 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 		val target: LivingEntity? = this.target;
 		if(target == null || !target.isAlive) {
 			val world = this.world;
-			this.target = if(world is SinglePlayerWorld) world.player else world.entities.getRandom<Player>();
+			this.target = if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player;
 			return null;  // 다음 프레임에...
 		}
 		return target;

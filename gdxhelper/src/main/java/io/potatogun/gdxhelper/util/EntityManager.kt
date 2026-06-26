@@ -63,11 +63,18 @@ inline fun <reified T : Entity> EntityManager.getAllOf(): List<T> = getAll().fil
  *
  * @return 개체 (없으면 null)
  */
-inline fun <reified T : Entity> EntityManager.get(): T? = getAll().firstOrNull { it::class == T::class } as T?;
+inline fun <reified T : Entity> EntityManager.get(): T? = getAll().firstOrNull { it is T } as T?;
 
 /**
  * 지정한 종류의 개체를 아무거나 반환한다.
  *
  * @return 개체 (없으면 null)
  */
-inline fun <reified T : Entity> EntityManager.getRandom(): T? = getAll().shuffled().firstOrNull { it::class == T::class } as T?;
+inline fun <reified T : Entity> EntityManager.getRandom(): T? = getAll().shuffled().firstOrNull { it is T } as T?;
+
+/**
+ * 지정한 개체로부터 거리순으로 정렬한다.
+ *
+ * @param entity 기준 개체
+ */
+fun EntityManager.getDistanceSorted(entity: Entity): List<Entity> = getAll().sortedWith(compareBy { it.distanceTo(entity) });

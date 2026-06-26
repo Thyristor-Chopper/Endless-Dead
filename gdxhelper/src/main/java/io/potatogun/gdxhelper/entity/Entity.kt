@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
+import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.util.MutablePosition;
@@ -228,7 +229,17 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	 */
 	fun rotateTo(position: Position) {
 		// 샷건 내 360도 구현 참고함
-		rotate(Math.toDegrees(atan2((Window.height - position.y) - (this.y - world.offsetY + Window.height * 0.5f), position.x - (this.x - world.offsetX + Window.width * 0.5f)).toDouble()).toFloat() - 90f);
+		rotate(Math.toDegrees(atan2(position.y - y.toDouble(), position.x - x.toDouble())).toFloat() - 90f);
+	}
+
+	/**
+	 * 마우스를 향해 회전한다.
+	 */
+	fun rotateToCursor() {
+		// 샷건 내 360도 구현 참고함
+		val x = Input.mouseX.toFloat();
+		val y = Input.mouseY.toFloat();
+		rotate(Math.toDegrees(atan2((Window.height - y) - (this.y - world.offsetY + Window.height * 0.5f), x - (this.x - world.offsetX + Window.width * 0.5f)).toDouble()).toFloat() - 90f);
 	}
 
 	/**

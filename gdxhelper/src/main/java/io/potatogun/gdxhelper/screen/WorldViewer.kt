@@ -40,6 +40,7 @@ open class WorldViewer(settings: Screen.Properties = Screen.Properties()) : Scre
 			throw IllegalStateException("another viewer is already projecting that world");
 		val previousWorld: World? = projectingWorld;
 		projectingWorld = world;
+		world.updateCameraOffset();
 		world.updateCamera();
 		if(disposePreviousWorld && previousWorld != null) Gdx.app.postRunnable { previousWorld.dispose() };
 	}
@@ -58,9 +59,8 @@ open class WorldViewer(settings: Screen.Properties = Screen.Properties()) : Scre
 		return true;
 	}
 
-	override fun resize(width: Int, height: Int) {
-		super.resize(width, height);
-		projectingWorld?.onResize(width, height);
+	override fun onResize(width: Int, height: Int) {
+		projectingWorld?.resize(width, height);
 	}
 
 	// 월드 갱신

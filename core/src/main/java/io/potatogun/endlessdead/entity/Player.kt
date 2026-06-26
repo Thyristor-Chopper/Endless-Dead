@@ -74,7 +74,7 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 		super.update(delta);
 
 		// 반디 위치에 따라 플레이어 회전
-		rotateTo(Position(Input.mouseX.toFloat(), Input.mouseY.toFloat()));
+		rotateToCursor();
 
 		// 아이템 가져가기 & 넣기
 		if(Input.isKeyJustPressed(Input.SPACE) || Input.isButtonJustPressed(Input.RIGHT_MOUSE))
@@ -101,7 +101,7 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 
 		// 이동
 		val moved = updatePosition(delta);
-		if(moved) world.updateCamera();
+		if(moved) world.updateCameraOffset();
 	}
 
 	/**

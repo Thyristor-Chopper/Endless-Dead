@@ -63,13 +63,19 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 	 */
 	var offsetX: Float
 		get() = camera.position.x
-		protected set(value) { camera.position.x = value };
+		protected set(value) {
+			camera.position.x = value;
+			updateCamera();
+		};
 	/**
 	 * 카메라의 Y 오프셋
 	 */
 	var offsetY: Float
 		get() = camera.position.y
-		protected set(value) { camera.position.y = value };
+		protected set(value) {
+			camera.position.y = value;
+			updateCamera();
+		};
 	/**
 	 * 등록된 개체 목록
 	 *   등록된 객체들만 update/draw된다.
@@ -113,21 +119,19 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 	//  콜백 함수
 	// ────────────────────────────────────────────────────────
 
+	internal fun resize(width: Int, height: Int) {
+		updateCameraViewport();
+		updateCamera();
+		onResize(width, height);
+	}
+
 	/**
 	 * 창 크기 조절 시 호출된다.
 	 *
 	 * @param width  새 창 너비
 	 * @param height 새 창 높이
 	 */
-	open fun onResize(width: Int, height: Int) {
-		updateCameraViewport();
-		updateCamera();
-	}
-
-	private inline fun updateCameraViewport() {
-		camera.viewportWidth = Window.width;
-		camera.viewportHeight = Window.height;
-	}
+	open fun onResize(width: Int, height: Int) {}
 
 	// ────────────────────────────────────────────────────────
 	//  매 프레임 로직
@@ -203,11 +207,21 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 	}
 
 	/**
-	 * 카메라를 갱신하고 월드에 따라 override하여 투영 좌표를 원하는 위치로 이동한다.
+	 * 카메라를 갱신한다.
 	 */
-	open fun updateCamera() {
+	fun updateCamera() {
 		camera.update();
 		batch.projectionMatrix = camera.combined;
+	}
+
+	/**
+	 * 월드에 따라 override하여 투영 좌표를 의도에 맞는 위치로 이동한다.
+	 */
+	open fun updateCameraOffset() {}
+
+	private inline fun updateCameraViewport() {
+		camera.viewportWidth = Window.width;
+		camera.viewportHeight = Window.height;
 	}
 
 	// ────────────────────────────────────────────────────────

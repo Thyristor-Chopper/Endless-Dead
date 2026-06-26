@@ -28,6 +28,8 @@ object Textures : SharedTextureManager() {
 		register("chest_player_item", "entity/chest_player_added.bmp");
 		register("empty_building", "entity/building_empty.bmp");
 		register("empty_chest", "entity/chest_empty.bmp");
+		register("turret_friendly", "entity/turret_friendly.bmp");
+		register("turret_hostile", "entity/turret_hostile.bmp");
 		register("zombie", "entity/zombie.bmp");
 
 		register("green_button", "widget/green_button.bmp");

@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Color;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
+import io.potatogun.endlessdead.entity.FriendlyTurret;
+import io.potatogun.endlessdead.entity.HostileTurret;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
@@ -100,7 +102,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 			val x = Random.nextInt(intWidth).toFloat();
 			val y = Random.nextInt(intHeight).toFloat();
 			val item: Item = generateRandomItem();  // 들어있을 아이템
-			entities.add(when(Random.nextInt(2)) {
+			entities.add(when(Random.nextInt(3)) {
 				0		-> Building(this, x, y, item);
 				else	-> Chest(this, x, y, item);
 			});
@@ -108,6 +110,16 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		// 플레이어 등록
 		entities.add(player);
+
+		// 각각 0.5% 확률로 좀비 공격 포탑을 1~2대 설치
+		for(i in 1..2)
+			if(Random.nextInt(500) == 0)
+				entities.add(FriendlyTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
+		// 각각 2% 확률로 플레이어 공격 포탑을 월드의 각 모퉁이에 설치
+		if(Random.nextInt(50) == 0) entities.add(HostileTurret(this, 100f, 100f));
+		if(Random.nextInt(50) == 0) entities.add(HostileTurret(this, width - 100f, 100f));
+		if(Random.nextInt(50) == 0) entities.add(HostileTurret(this, 100f, height - 100f));
+		if(Random.nextInt(50) == 0) entities.add(HostileTurret(this, width - 100f, height - 100f));
 
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this, 3f));
@@ -234,7 +246,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	}
 
 	// 플레이어 위치에 따라 카메라 위치 변경
-	override fun updateCamera() {
+	override fun updateCameraOffset() {
 		// 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
 		//   보여주는 영역이 [offset, offset+screen]이어야 하므로
 		//   offset은 0 ~ (world - screen) 범위여야 한다.
@@ -243,8 +255,6 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		val halfScreenHeight = Window.height * 0.5f;
 		offsetX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);
 		offsetY = player.y.coerceIn(halfScreenHeight, height - halfScreenHeight);
-
-		super.updateCamera();
 	}
 
 	// 화면이 닫힐 때 — 부모도 dispose한 뒤 우리만의 자원도 해제.

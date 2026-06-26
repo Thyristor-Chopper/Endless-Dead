@@ -104,9 +104,18 @@ abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
 	//  콜백 함수
 	// ────────────────────────────────────────────────────────
 
-	override fun resize(width: Int, height: Int) {
+	final override fun resize(width: Int, height: Int) {
 		batch.projectionMatrix.setToOrtho2D(0f, 0f, width.toFloat(), height.toFloat());
+		onResize(width, height);
 	}
+
+	/**
+	 * 크기 조절 시 호출된다.
+	 *
+	 * @param width  새 창 너비
+	 * @param height 새 창 높이
+	 */
+	open fun onResize(width: Int, height: Int) {}
 
 	// ────────────────────────────────────────────────────────
 	//  매 프레임 로직
