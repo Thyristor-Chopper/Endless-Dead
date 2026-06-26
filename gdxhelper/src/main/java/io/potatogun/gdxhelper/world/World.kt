@@ -45,7 +45,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 	/**
 	 * 이미지(Texture)와 글자를 화면에 찍어주는 도구
 	 */
-	@JvmField protected val batch = SpriteBatch();  // @JvmField가 있지만 protected라 외부 자바 클래스에서 접근하라고 있는 게 아니기 때문에 캠슐화가 많이 깨지지는 않는 것 같아 성능을 위해서 씀.
+	@JvmField protected val batch = SpriteBatch();
 	/**
 	 * 월드의 기본 글꼴
 	 *   월드 구현체에서 다른 글꼴을 사용할 수도 있으므로 open이다.
