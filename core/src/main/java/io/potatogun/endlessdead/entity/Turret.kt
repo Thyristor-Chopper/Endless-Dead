@@ -5,10 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.inventory.SingleItemInventory;
 import io.potatogun.endlessdead.item.Gun;
-import io.potatogun.gdxhelper.Utils;
-import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.world.World;
 
 import java.lang.Math.toDegrees;
