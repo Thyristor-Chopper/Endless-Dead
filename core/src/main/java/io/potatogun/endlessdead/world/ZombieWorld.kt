@@ -113,7 +113,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		// 각각 0.5% 확률로 좀비 공격 포탑을 1~2대 설치
 		for(i in 1..2)
-			if(Random.nextInt(500) == 0)
+			if(Random.nextInt(200) == 0)
 				entities.add(FriendlyTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 		// 각각 2% 확률로 플레이어 공격 포탑을 월드의 각 모퉁이에 설치
 		if(Random.nextInt(50) == 0) entities.add(HostileTurret(this, 100f, 100f));
