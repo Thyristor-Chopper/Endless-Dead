@@ -37,7 +37,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 * 개체가 살아있는지의 여부
 	 */
 	val isAlive: Boolean
-		inline get() = hp > 0;
+		get() = hp > 0;
 	/**
 	 * 피격 시 잠깐 동안 대미지를 안 받게 해주는 무적 타이머
 	 */

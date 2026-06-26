@@ -9,14 +9,6 @@ import kotlin.properties.Delegates;
  */
 object Window {
 	// 창 크기 캐시
-	//   전에는 'val width get() = Gdx.graphics.width.toFloat()'로 구현했다.
-	//   이에 관한 고찰을 적어보자면...
-	//   일단 private set이 있기 때문에 @JvmField 적용이 불가능하여 getter가 생겨 컴파일 타임에서는 어쨌거나 함수 호출이 있다.
-	//   그리고 Gdx.graphics.getWidth()에서 Graphics 클래스가 자체적으로 길이를 캐시한다는 말이 있지만
-	//   libGDX의 소스코드를 읽어봤지만 잘은 모르겠다 - https://github.com/libgdx/libgdx/blob/f9af1f6273e04da84eaffebbb782d083441634b0/backends/gdx-backend-lwjgl3/src/com/badlogic/gdx/backends/lwjgl3/Lwjgl3Graphics.java#L21
-	//   gdx 내부적으로 캐시하지 않고 매번 계산할 가능성도 염두하여 캐시하긴 한다.
-	//   참고로 Int#toFloat()는 실제 함수 호출으로 구현되지는 않고 자바의 '(float) 정수' 형태로 변환된다.
-	//   그래서 toFloat '함수' 호출 오버헤드는 없다. (이 부분도 빌드 후 디컴파일된 자바 코드로 직접 확인함)
 	/**
 	 * 현재 창의 너비
 	 */

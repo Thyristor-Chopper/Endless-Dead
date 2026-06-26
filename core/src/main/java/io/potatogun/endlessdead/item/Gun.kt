@@ -20,8 +20,6 @@ import kotlin.math.sin;
 /**
  * 총 아이템 추상 클래스
  *
- * @JvmField가 있는 곳은 빌드 후 직접 디컴파일하여 null이 불가능한 원시 int, float로 바뀜을 확인했다.
- *
  * @param id       총 식별자
  * @param name     총 이름
  * @param settings 총 옵션
@@ -175,7 +173,7 @@ open class Gun(id: String, name: String, settings: Properties) : Item(id, name, 
 	 * @throws IllegalArgumentException 속성이 잘못된 경우
 	 */
 	open class Properties(val bulletDamage: Int, val bulletSpeed: Float) : Item.Properties() {
-		internal var bulletHP = 1
+		@get:JvmName("getBulletHP") internal var bulletHP = 1
 			private set;
 		internal var isBulletPenetrable = false
 			private set;

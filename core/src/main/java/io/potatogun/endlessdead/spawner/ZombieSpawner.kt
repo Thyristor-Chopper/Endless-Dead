@@ -58,6 +58,7 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 
 	/**
 	 * 무작위로 좀비 종류를 골라서 월드에 추가한다.
+	 *   스폰 타이머에서만 한 번 쓰이기 떄문에 inline이다.
 	 */
 	private inline fun spawnRandomZombie() {
 		val attackTarget: Player? = if(world is SinglePlayerWorld) world.player else world.entities.getRandom<Player>();

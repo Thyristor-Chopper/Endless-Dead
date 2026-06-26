@@ -43,8 +43,9 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 	override val defaultInvincibleDuration = 0.25f;
 	/**
 	 * 공격 대상
+	 *   자바에서는 getTarget()과 setTarget() 사용
 	 */
-	var target: LivingEntity? = null;  // 자바에서도 getTarget()같은 거 많아서 어느 정도의 캡슐화는 유지하기 위해 @JvmField 없음
+	var target: LivingEntity? = null;
 	protected open val attackInterval = 0.3f;
 	private var attackTextureTimer = 0f;
 	private var attackCooldownTimer = attackInterval;

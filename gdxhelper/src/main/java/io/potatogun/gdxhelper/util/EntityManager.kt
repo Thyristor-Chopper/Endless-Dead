@@ -56,18 +56,18 @@ interface EntityManager {
  *
  * @return 개체 목록
  */
-inline fun <reified T : Entity> EntityManager.getAllOf(): List<T> = this.getAll().filterIsInstance<T>();
+inline fun <reified T : Entity> EntityManager.getAllOf(): List<T> = getAll().filterIsInstance<T>();
 
 /**
  * 지정한 종류의 개체 중 처음으로 등록된 것을 반환한다.
  *
  * @return 개체 (없으면 null)
  */
-inline fun <reified T : Entity> EntityManager.get(): T? = this.getAll().firstOrNull { it::class == T::class } as T?;
+inline fun <reified T : Entity> EntityManager.get(): T? = getAll().firstOrNull { it::class == T::class } as T?;
 
 /**
  * 지정한 종류의 개체를 아무거나 반환한다.
  *
  * @return 개체 (없으면 null)
  */
-inline fun <reified T : Entity> EntityManager.getRandom(): T? = this.getAll().shuffled().firstOrNull { it::class == T::class } as T?;
+inline fun <reified T : Entity> EntityManager.getRandom(): T? = getAll().shuffled().firstOrNull { it::class == T::class } as T?;

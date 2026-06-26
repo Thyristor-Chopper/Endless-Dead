@@ -198,8 +198,6 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	 *   끝에 다시 흰색으로 되돌려두지 않으면 그 다음 그리는 것까지 영향을 받으니 주의.
 	 */
 	override fun drawBackground() {
-		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 함수 호출이 발생하여
-		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
 		val screenWidth = Window.width;
 		val screenHeight = Window.height;
 
@@ -241,8 +239,6 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		//   보여주는 영역이 [offset, offset+screen]이어야 하므로
 		//   offset은 0 ~ (world - screen) 범위여야 한다.
 
-		// Window.width는 private set로 @JvmField가 불가능하여 내부적으로 getter 호출이 발생하여
-		//   반복된 함수 호출 오버헤드를 줄이기 위해 미리 저장해둔다.
 		val halfScreenWidth = Window.width * 0.5f;
 		val halfScreenHeight = Window.height * 0.5f;
 		offsetX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);

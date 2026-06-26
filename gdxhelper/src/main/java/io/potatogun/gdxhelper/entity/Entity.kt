@@ -40,21 +40,18 @@ import kotlin.math.atan2;
  *        override fun update(delta: Float) { y += 400f * delta }
  *    }
  *
- * @property world   개체가 속한 세계 - 자바로 만든 게임에서도 이런 때는 getWorld()를 쓰는 경우가 많아 @JvmField는 안 붙임
+ * @property world   개체가 속한 세계 - 자바에서는 getWorld() 사용
  * @param    x       개체의 처음 X 위치
  * @param    y       개체의 처음 Y 위치
  * @property width   가로 크기 (픽셀)
  * @property height  세로 크기 (픽셀)
- * @property texture 개체 텍스처(없을 수도 있음) - @JvmField가 있지만 protected라 외부 자바 클래스에서 접근하라고 있는 게 아니기 때문에 캠슐화가 많이 깨지지는 않는 것 같아 성능을 위해서 씀.
+ * @property texture 개체 텍스처(없을 수도 있음)
  */
 abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width: Float, @JvmField val height: Float, @JvmField protected val texture: Texture? = null) {
 	/**
 	 * 개체의 평면좌표 위치
 	 *
-	 * @JvmField는 성능 때문도 있지만, 외부 자바 클래스에서 이 클래스를 접근한다고 생각해보면
-	 *   이게 없으면 entity.getPosition()이 될텐데 위치를 바꾼다고 생각해보자.
-	 *   그럼 entity.getPosition().setX(3);같이 될텐데 'get'을 해 놓고 set을 하는 게 좀 어색하지 않을까.
-	 *   어차피 val(final)이고 클래스 생성 시 바로 Position 객체가 할당되니까 null 위험성도 없다.
+	 * 자바에서도 entity.position.getX() 등으로 자연스럽게 접근하기 위해 @JvmField
 	 */
 	@JvmField val position = MutablePosition(x, y).apply {
 		setObserver { _, _ ->
