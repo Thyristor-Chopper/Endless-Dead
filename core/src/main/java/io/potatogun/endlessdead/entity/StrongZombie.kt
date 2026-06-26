@@ -3,7 +3,7 @@ package io.potatogun.endlessdead.entity;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.world.World;
 
-class StrongZombie(world: World, x: Float, y: Float) : Zombie(world, x, y, 49f, 70f, hp = 15, settings = Zombie.Properties().attackDamage(5).speed(50f)) {
+class StrongZombie(world: World, x: Float, y: Float) : Zombie(world, x, y, 49f, 70f, hp = 15, settings = Zombie.Properties(5, 50f)) {
 	// 평상시 속도와 피해량
 	private val originalDamage = super.attackDamage;
 	private val originalSpeed = super.speed;

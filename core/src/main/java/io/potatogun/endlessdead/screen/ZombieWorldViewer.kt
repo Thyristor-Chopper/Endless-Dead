@@ -481,10 +481,11 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 
 			// 현재 플레이어가 들고 있는 아이템
 			player.selectedItem?.let {
+				batch.draw(it.texture, 8f, 4f, 24f, 24f);
 				drawText(
 					text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.itemCount}]",
-					x = 10f,
-					y = 20f,
+					x = 40f,
+					y = 22f,
 					color = when(it.rarity) {
 						Rarity.UNCOMMON	-> Color.YELLOW  // 마인크래프트 따라함
 						Rarity.RARE		-> Color.MAGENTA  // 마인크래프트 따라함

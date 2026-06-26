@@ -2,6 +2,7 @@ package io.potatogun.endlessdead;
 
 import com.badlogic.gdx.Gdx;
 
+import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.screen.Title;
 import io.potatogun.endlessdead.screen.ZombieWorldViewer;
 import io.potatogun.gdxhelper.Game;
@@ -78,6 +79,7 @@ class EndlessDead : Game() {
 	override fun dispose() {
 		super.dispose();
 		Textures.disposeShared();  // 공유 자원 정리
+		Item.textures.disposeShared();
 		titleScreen.dispose();  // 이게 로딩이 안 됐을 리가 없다.
 		worldViewer.dispose();
 	}

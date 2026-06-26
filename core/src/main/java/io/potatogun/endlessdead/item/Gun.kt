@@ -27,7 +27,7 @@ import kotlin.math.sin;
  * @param settings 총 옵션
  * @throws IllegalArgumentException	총 옵션이 잘못된 경우
  */
-open class Gun(id: String, name: String, settings: Properties = Properties()) : Item(id, name, settings), Shootable, Usable {
+open class Gun(id: String, name: String, settings: Properties) : Item(id, name, settings), Shootable, Usable {
 	override val isContinuousUseAllowed = false;
 	/**
 	 * 총알 피해량
@@ -169,58 +169,39 @@ open class Gun(id: String, name: String, settings: Properties = Properties()) : 
 
 	/**
 	 * 총 아이템 옵션
+	 *
+	 * @property bulletDamage 총탄 피해량 (0 이상)
+	 * @property bulletSpeed  총탄 속도 (0이면 지뢰처럼 안 움직임, 음수면 역방향으로 발사)
+	 * @throws IllegalArgumentException 속성이 잘못된 경우
 	 */
-	open class Properties : Item.Properties() {
-		internal var bulletDamage = 0
-			private set;
-		internal var bulletSpeed = -1f  // lateinit이 불가능해서
-			private set;
-		internal var bulletHP = -1  // lateinit이 불가능해서
+	open class Properties(val bulletDamage: Int, val bulletSpeed: Float) : Item.Properties() {
+		internal var bulletHP = 1
 			private set;
 		internal var isBulletPenetrable = false
 			private set;
 		internal var fireInterval = 0f
 			private set;
-		internal var bullets = 1
+		internal var bullets = 0
 			private set;
-		internal var maxBullets = 1
+		internal var maxBullets = 0
 			private set;
-		internal var isBulletsInfinite = false
+		internal var isBulletsInfinite = true
 			private set;
 
-		/**
-		 * 총알 피해량을 지정한다.
-		 *
-		 * @param bulletDamage 총탄 피해량
-		 * @return             옵션 객체 자신
-		 */
-		fun bulletDamage(bulletDamage: Int): Properties {
-			if(bulletDamage < 0) throw IllegalArgumentException("invalid value");
-			this.bulletDamage = bulletDamage;
-			return this;
+		init {
+			if(bulletDamage < 0) throw IllegalArgumentException("invalid bullet damage");
 		}
 
 		/**
-		 * 총알 속도을 지정한다.
-		 *
-		 * @param bulletDamage 총알 속도
-		 * @return             옵션 객체 자신
-		 */
-		fun bulletSpeed(bulletSpeed: Float): Properties {
-			if(bulletSpeed < 0f) throw IllegalArgumentException("invalid value");
-			this.bulletSpeed = bulletSpeed;
-			return this;
-		}
-
-		/**
-		 * 총알 관통력을 지정한다.
+		 * 총알 관통력을 지정한다. 자동으로 penetrableBullets도 호출된다.
 		 *
 		 * @param bulletHP 총알 관통력
 		 * @return         옵션 객체 자신
 		 */
 		fun bulletHP(bulletHP: Int): Properties {
-			if(bulletHP < 0) throw IllegalArgumentException("invalid value");
+			if(bulletHP <= 0) throw IllegalArgumentException("invalid value");
 			this.bulletHP = bulletHP;
+			this.isBulletPenetrable = true;
 			return this;
 		}
 
@@ -231,16 +212,6 @@ open class Gun(id: String, name: String, settings: Properties = Properties()) : 
 		 */
 		fun penetrableBullets(): Properties {
 			this.isBulletPenetrable = true;
-			return this;
-		}
-
-		/**
-		 * 총알이 관통 불가능하게 한다.
-		 *
-		 * @return 옵션 객체 자신
-		 */
-		fun impenetrableBullets(): Properties {
-			this.isBulletPenetrable = false;
 			return this;
 		}
 
@@ -257,7 +228,7 @@ open class Gun(id: String, name: String, settings: Properties = Properties()) : 
 		}
 
 		/**
-		 * 처음 총알 개수를 지정한다.
+		 * 처음 총알 개수를 지정하고 발사 가능한 총알 수를 제한한다.
 		 *
 		 * @param bullets 총알 개수
 		 * @return        옵션 객체 자신
@@ -266,7 +237,8 @@ open class Gun(id: String, name: String, settings: Properties = Properties()) : 
 			if(bullets <= 0) throw IllegalArgumentException("invalid value");
 			if(bullets > maxBullets) maxBullets = bullets;
 			this.bullets = bullets;
-			if(maxBullets == -1) maxBullets = bullets;
+			if(maxBullets == 0) maxBullets = bullets;
+			isBulletsInfinite = false;
 			return this;
 		}
 
@@ -279,36 +251,9 @@ open class Gun(id: String, name: String, settings: Properties = Properties()) : 
 		fun maxBullets(bullets: Int): Properties {
 			if(bullets <= 0) throw IllegalArgumentException("invalid value");
 			this.maxBullets = bullets;
+			if(this.bullets == 0) this.bullets = bullets;
+			isBulletsInfinite = false;
 			return this;
-		}
-
-		/**
-		 * 무한 총알 총으로 만든다.
-		 *
-		 * @return 옵션 객체 자신
-		 */
-		fun infiniteBullets(): Properties {
-			this.isBulletsInfinite = true;
-			return this;
-		}
-
-		/**
-		 * 총알 수 제한 총으로 만든다.
-		 *
-		 * @return 옵션 객체 자신
-		 */
-		fun limitedBullets(): Properties {
-			this.isBulletsInfinite = false;
-			return this;
-		}
-
-		override fun fillDefaults() {
-			if(bulletSpeed < 0)
-				throw IllegalStateException("bullet speed not set");
-			if(bulletHP < 0)
-				throw IllegalStateException("bullet HP not set");
-
-			super.fillDefaults();
 		}
 	}
 }

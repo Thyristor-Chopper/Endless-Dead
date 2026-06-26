@@ -1,6 +1,7 @@
 package io.potatogun.gdxhelper.util;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import io.potatogun.gdxhelper.Utils;
 
@@ -11,13 +12,23 @@ abstract class SharedTextureManager {
 	private val shared = mutableMapOf<String, Lazy<Texture>>();
 
 	/**
-	 * 텍스처를 등록한다(생성자에서 사용)
+	 * 텍스처를 등록한다.
 	 *
 	 * @param id   텍스처 식별자
 	 * @param path 텍스처 경로
 	 */
 	protected fun register(id: String, path: String) {
 		shared[id] = lazy { Utils.loadTexture(path) };
+	}
+
+	/**
+	 * 텍스처를 등록한다.
+	 *
+	 * @param id      텍스처 식별자
+	 * @param texture 텍스처
+	 */
+	protected fun register(id: String, texture: Texture) {
+		shared[id] = lazyOf(texture);
 	}
 
 	/**

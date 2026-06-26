@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.inventory.Inventory;
 import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.util.SharedTextureManager;
 
 /**
  * 아이템 추상 클래스
@@ -22,7 +23,7 @@ abstract class Item(id: String, val name: String, settings: Properties = Propert
 	/**
 	 * 아이템 식별자
 	 */
-	@get:JvmName("getID") val id = id.toLowerCase();
+	@get:JvmName("getID") val id = id.lowercase();
 	/**
 	 * 아이템을 들고 있는 인벤토리 (캐시)
 	 */
@@ -35,16 +36,11 @@ abstract class Item(id: String, val name: String, settings: Properties = Propert
 	 * 아이템 텍스처 (인벤토리용)
 	 *   ID가 텍스처 화일명이 된다.
 	 */
-	val texture: Texture;
+	val texture = textures.get(this);
 
 	init {
 		settings.fillDefaults();
 		rarity = settings.rarity;
-		texture = try {
-			Utils.loadTexture("item/${id}.bmp")
-		} catch(e: GdxRuntimeException) {
-			Textures.getShared("default_item")
-		};
 	}
 
 	/**
@@ -66,11 +62,6 @@ abstract class Item(id: String, val name: String, settings: Properties = Propert
 	override fun toString(): String = name;
 
 	/**
-	 * 자원을 정리한다.
-	 */
-	open fun cleanUp() {}
-
-	/**
 	 * 아이템 옵션
 	 */
 	open class Properties {
@@ -89,5 +80,36 @@ abstract class Item(id: String, val name: String, settings: Properties = Propert
 		}
 
 		internal open fun fillDefaults() {}
+	}
+
+	companion object {
+		/**
+		 * 재사용하기 위한 아이템 텍스처들이다.
+		 */
+		@JvmStatic val textures = ItemTextures();
+	}
+
+	class ItemTextures : SharedTextureManager() {
+		init {
+			register("default", "item/default.bmp");
+		}
+
+		/**
+		 * 아이템의 텍스처를 불러온다.
+		 */
+		fun get(item: Item): Texture {
+			val itemID = item.id;
+			try {
+				return getShared(itemID);
+			} catch(e: NoSuchElementException) {
+				try {
+					val texture = Utils.loadTexture("item/${itemID}.bmp");
+					register(itemID, texture);
+					return getShared(itemID);
+				} catch(e: GdxRuntimeException) {
+					return getShared("default");
+				}
+			}
+		}
 	}
 }

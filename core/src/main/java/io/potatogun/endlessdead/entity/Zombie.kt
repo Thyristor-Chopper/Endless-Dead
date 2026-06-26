@@ -35,7 +35,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param    texture       개체 텍스처
  * @param    initialTarget 처음 공격 대상
  */
-open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, texture: Texture = Textures.getShared("zombie"), settings: Properties = Properties()) : LivingEntity(world, x, y, width, height, texture, hp), PenetratorDamagable {
+open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, texture: Texture = Textures.getShared("zombie"), settings: Properties) : LivingEntity(world, x, y, width, height, texture, hp), PenetratorDamagable {
 	protected open val attackDamage: Int;
 	protected open val speed: Float;
 	protected open val attackingTexture = Textures.getShared("attacking_zombie");
@@ -121,35 +121,14 @@ open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float,
 
 	/**
 	 * 좀비 옵션
+	 * 
+	 * @property attackDamage 공격 피해량
+	 * @property speed        이동 속도 (0이면 멈춤, 음수도 가능하지만 비권장)
+	 * @throws IllegalArgumentException 값 일부가 잘못됐을 때
 	 */
-	open class Properties {
-		internal var attackDamage = 0
-			private set;
-		internal var speed = 0f
-			private set;
-
-		/**
-		 * 좀비 공격 피해량을 지정한다.
-		 *
-		 * @param attackDamage 공격 피해량
-		 * @return             옵션 객체 자신
-		 */
-		fun attackDamage(attackDamage: Int): Properties {
-			if(attackDamage < 0) throw IllegalArgumentException("invalid value");
-			this.attackDamage = attackDamage;
-			return this;
-		}
-
-		/**
-		 * 좀비 이동 속도을 지정한다.
-		 *
-		 * @param speed 이동 속도
-		 * @return      옵션 객체 자신
-		 */
-		fun speed(speed: Float): Properties {
-			if(speed < 0f) throw IllegalArgumentException("invalid value");
-			this.speed = speed;
-			return this;
+	open class Properties(val attackDamage: Int = 0, val speed: Float = 0f) {
+		init {
+			if(attackDamage < 0) throw IllegalArgumentException("invalid attack damage");
 		}
 
 		internal open fun fillDefaults() {}

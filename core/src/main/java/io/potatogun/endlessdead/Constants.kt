@@ -11,7 +11,7 @@ object Constants {
 	/**
 	 * 중지 상태일 때 FPS
 	 */
-	const val PASSIVE_FPS = 15;
+	const val PASSIVE_FPS = 20;
 	/**
 	 * 월드의 너비
 	 */

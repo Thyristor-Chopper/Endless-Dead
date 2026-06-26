@@ -15,7 +15,7 @@ import kotlin.math.sin;
 /**
  * 샷건
  */
-class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties().bulletDamage(5).bulletSpeed(500f).bulletHP(5).penetrableBullets().fireInterval(1f).bullets(5)) {
+class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(5, 500f).bulletHP(5).fireInterval(1f).bullets(5)) {
 	private val spreadAngles = listOf(-0.2f, -0.1f, 0f, 0.1f, 0.2f) //방향 기준 퍼짐 좌표
 
 	override fun shoot(target: Position, shooter: Entity): Int {
