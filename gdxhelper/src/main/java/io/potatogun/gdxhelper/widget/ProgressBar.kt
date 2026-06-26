@@ -15,15 +15,15 @@ import kotlin.math.ceil;
  *
  * @param    x      X 좌표 계산 함수
  * @param    y      Y 좌표 계산 함수
- * @param    width  미터기 너비
- * @param    height 미터기 높이
+ * @param    width  미터기 너비 계산 함수
+ * @param    height 미터기 높이 계산 함수
  * @property value  미터기의 값(진행률) (0.0~1.0)
  * @property color  미터기의 색
  * @param    skin   미터기의 스킨(텍스처 묶음)
  * @property style  미터기의 스타일
  * @throws IllegalArgumentException 미터기 값이 잘못된 경우
  */
-class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 15f, value: Float = 0f, private val color: Color = Color.WHITE, skin: Skin? = null, private val style: Style = Style.SMOOTH) : Widget(x, y, width, height) {
+class ProgressBar(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> Float = { 15f }, value: Float = 0f, private val color: Color = Color.WHITE, skin: Skin? = null, private val style: Style = Style.SMOOTH) : Widget(x, y, width, height) {
 	companion object {
 		private const val BAR_VERTICAL_PADDING = 3f;		// 미터기 틀 안쪽 세로 여백
 		private const val BAR_HORIZONTAL_PADDING = 3f;	// 미터기 틀 안쪽 가로 여백
@@ -60,12 +60,14 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: Float, height: Float = 
 	override fun draw(batch: SpriteBatch) {
 		val barX = x();
 		val barY = y();
-		skin.bar.draw(batch, barX, barY, width, height);
+		val barWidth = this.width();
+		val barHeight = this.height();
+		skin.bar.draw(batch, barX, barY, barWidth, barHeight);
 		if(value > 0f) {
 			batch.color = color;
-			val maxFillWidth = width - BAR_HORIZONTAL_PADDING * 2;
+			val maxFillWidth = barWidth - BAR_HORIZONTAL_PADDING * 2;
 			val fillWidth = maxFillWidth * value;
-			val fillHeight = height - BAR_VERTICAL_PADDING * 2;
+			val fillHeight = barHeight - BAR_VERTICAL_PADDING * 2;
 			val fillX = barX + BAR_HORIZONTAL_PADDING;
 			val fillY = barY + BAR_VERTICAL_PADDING;
 			when(style) {

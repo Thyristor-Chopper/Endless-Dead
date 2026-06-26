@@ -75,24 +75,24 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		};
 
 		// 미터기 추가
-		addWidget("hp_indicator", ProgressBar({ 80f }, { Window.height - 24f }, 220f, color = Utils.rgb(234, 197, 21)));
-		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, 130f, color = Utils.rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() });
-		addWidget("gun_cooldown_indicator", ProgressBar({ Window.width - 215f }, { 10f }, 60f, value=0.42f, color = Color.SCARLET).apply { hide() });
+		addWidget("hp_indicator", ProgressBar({ 80f }, { Window.height - 24f }, { 220f }, color = Utils.rgb(234, 197, 21)));
+		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, { 130f }, color = Utils.rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() });
+		addWidget("gun_cooldown_indicator", ProgressBar({ Window.width - 215f }, { 10f }, { 60f }, value=0.42f, color = Color.SCARLET).apply { hide() });
 
 		// 일시 중지 및 게임 오버 단추
-		resumeButton = Button({ Window.width * 0.5f - 195f }, { 120f }, 120f, caption = "Resume", skin = Textures.greenButton) {
+		resumeButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = Textures.greenButton) {
 			GameManager.resume();
 		};
-		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, 120f, caption = "Continue", skin = Textures.greenButton) {
+		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Textures.greenButton) {
 			restartGame();
 		};
-		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, 120f, caption = "Back to title", color = Utils.rgb(225, 247, 231)) {
+		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", color = Utils.rgb(225, 247, 231)) {
 			unloadWorld(dispose = true);
 			GameManager.resetAll();
 			GameManager.standBy();
 			game.setScreen(game.titleScreen);
 		};
-		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, 120f, caption = "Quit", color = Utils.rgb(225, 247, 231)) {
+		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", color = Utils.rgb(225, 247, 231)) {
 			Gdx.app.exit();
 		};
 
