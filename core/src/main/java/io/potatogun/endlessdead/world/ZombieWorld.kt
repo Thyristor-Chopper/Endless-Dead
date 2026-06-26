@@ -108,9 +108,6 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 			});
 		}
 
-		// 플레이어 등록
-		entities.add(player);
-
 		// 각각 0.5% 확률로 좀비 공격 포탑을 1~3대 설치
 		for(i in 1..3)
 			if(Random.nextInt(200) == 0)
@@ -120,6 +117,9 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		if(Random.nextInt(50) == 0) entities.add(HostileTurret(this, width - 100f, 100f).apply { rotate(45f) });
 		if(Random.nextInt(50) == 0) entities.add(HostileTurret(this, 100f, height - 100f).apply { rotate(225f) });
 		if(Random.nextInt(50) == 0) entities.add(HostileTurret(this, width - 100f, height - 100f).apply { rotate(135f) });
+
+		// 플레이어 등록
+		entities.add(player);
 
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this, 3f));
