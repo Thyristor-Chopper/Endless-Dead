@@ -129,10 +129,10 @@ open class Gun(id: String, name: String, settings: Properties) : Item(id, name, 
 	override fun shoot(target: Position, shooter: Entity): Int {
 		if(!canFire) return 0;
 
-		val bullet = Bullet(shooter.world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletHP);
+		val bullet = Bullet(shooter.world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletHP).apply { team = shooter.team };
 		shooter.world.entities.add(bullet);
 		startFireCooldown();
-		
+
 		if(!infiniteBullets) {
 			remainingBullets--;
 

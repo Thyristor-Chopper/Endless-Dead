@@ -61,10 +61,6 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 		};
 	};
 	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)
-	//   기존에는 x과 y가 backing field가 있는 실제 var였고 
-	//   val position get() = Position(x, y)가 있었다.
-	//   하지만 매번 Position 객체를 새로 생성하는 것은 오버헤드가 상당할 것 같아서
-	//   이렇게 바꾸었다.
 	/**
 	 * 개체의 현재 X 좌표
 	 */
@@ -116,6 +112,12 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	 * 개체가 차지하는 사각형 영역의 유효 여부 (캐시용)
 	 */
 	private var isCachedRectValid = true;
+	/**
+	 * 개체가 속한 그룹 또는 팀 (null: 중립)
+	 *
+	 * 자바에서는 getTeam, setTeam 사용
+	 */
+	var team: String? = null;
 
 	/**
 	 * 매 프레임 호출되어 자신을 그린다.
@@ -291,6 +293,8 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 	inline fun remove() {
 		world.entities.remove(this);
 	}
+
+	fun isSameTeamWith(entity: Entity): Boolean = (team == entity.team && team != null && entity.team != null);
 
 	/**
 	 * 이 객체가 갖고 있는 GPU 자원을 정리한다 — 화면이 닫힐 때 한 번 호출된다.

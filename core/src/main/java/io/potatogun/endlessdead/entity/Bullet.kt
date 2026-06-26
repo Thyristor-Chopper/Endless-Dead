@@ -66,7 +66,7 @@ class Bullet(world: World, val gun: Shootable, val shooter: Entity, private val 
 		// 처음 템플릿(예제) 코드에서는 모든 상호작용을 월드에서 처리했으나
 		//   난 총알'이' 누군가에게 직접 대미지를 주는 게 맞는 것 같아서 여기서 처리함.
 		for(entity in world.entities.getNearby(this))
-			if(entity !== this && entity !== shooter && entity is LivingEntity && (entity !is Bullet || entity.gun !== this.gun) && collidesWith(entity)) {
+			if(entity !== this && entity !== shooter && entity is LivingEntity && !isSameTeamWith(entity) && (entity !is Bullet || entity.gun !== this.gun) && collidesWith(entity)) {
 				entity.takeDamage(damage, attacker=shooter);  // 무적 시간이 필요하면 추가...
 				if(penetrable) {
 					val penetrationDamage = if(entity is PenetratorDamagable) entity.penetrationDamage else 0;

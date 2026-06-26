@@ -35,47 +35,37 @@ import io.potatogun.gdxhelper.world.World;
  * @param    texture       개체 텍스처
  * @param    initialTarget 처음 공격 대상
  */
-open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, texture: Texture = Textures.getShared("zombie"), settings: Properties) : LivingEntity(world, x, y, width, height, texture, hp), PenetratorDamagable {
-	protected open val attackDamage: Int;
-	protected open val speed: Float;
+open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, hp: Int, texture: Texture = Textures.getShared("zombie"), settings: Properties) : LivingEntity(world, x, y, width, height, texture, hp), PenetratorDamagable, Attackable {
+	/**
+	 * 개체 추적 범위 (0: 제한 없음)
+	 */
+	protected open val followRange = 0f;
+	private val attacker = SimpleAttacker(this, followRange, { if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
+	open val attackDamage: Int = settings.attackDamage;
+	open val speed: Float = settings.speed;
 	protected open val attackingTexture = Textures.getShared("attacking_zombie");
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.25f;
-	/**
-	 * 공격 대상
-	 *   자바에서는 getTarget()과 setTarget() 사용
-	 */
-	var target: LivingEntity? = null;
 	protected open val attackInterval = 0.3f;
 	private var attackTextureTimer = 0f;
 	private var attackCooldownTimer = attackInterval;
+	override var target: LivingEntity?
+		get() = attacker.target
+		set(value) { attacker.target = value };
 
 	init {
 		settings.fillDefaults();
-		attackDamage = settings.attackDamage;
-		speed = settings.speed;
+		team = "enemies";
 	}
 
-	/**
-	 * 공격 대상을 가져오거나 대상이 사라지면 초기화한다.
-	 *   기본 공격 대상 선정 방식을 바꿀 수도 있으므로 open이다.
-	 *
-	 * @return 공격 대상
-	 */
-	protected open fun getTargetOrReset(): LivingEntity? {
-		val target: LivingEntity? = this.target;
-		if(target == null || !target.isAlive) {
-			val world = this.world;
-			this.target = if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player;
-			return null;  // 다음 프레임에...
-		}
-		return target;
+	protected fun setTargetFetcher(fetcher: () -> LivingEntity?) {
+		attacker.setTargetFetcher(fetcher);
 	}
 
 	override fun update(delta: Float) {
 		super.update(delta);
 
-		val target: LivingEntity? = getTargetOrReset();
+		val target: LivingEntity? = this.target;
 		if(target == null) return;
 
 		val dx = target.x - x;

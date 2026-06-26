@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.world.World;
 
@@ -167,11 +168,12 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 			damagedIndicatorTimer -= delta;
 
 		// 몸 대미지 처리
-		for(entity in world.entities.getNearby(this))
-			if(entity is BodyDamagable && entity !== this && collidesWith(entity) && distanceTo(entity) < 8f && entity.bodyDamage > 0 && (this !is BodyDamagable || !ignoreFriendBodyDamage || (this is BodyDamagable && ignoreFriendBodyDamage && this::class != entity::class))) {
+		for(entity in world.entities.getNearby(this)) {
+			if(entity is BodyDamagable && entity !== this && !isSameTeamWith(entity) && collidesWith(entity)) {
 				val attacker = if(entity is Bullet) entity.shooter else entity;  // 일단 총알은 Bullet 클래스에서 자체적으로 처리하고 bodyDamage는 0이기 때문에 의미는 없지만...
 				takeDamage(entity.bodyDamage, attacker=attacker);
 			}
+		}
 	}
 
 	/**

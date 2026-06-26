@@ -20,7 +20,7 @@ class StrongZombie(world: World, x: Float, y: Float) : Zombie(world, x, y, 49f, 
 	override val color = Utils.rgb(255, 192, 192);
 
 	override fun update(delta: Float) {
-		val target: LivingEntity? = getTargetOrReset();
+		val target: LivingEntity? = this.target;
 		if(target == null) return;
 
 		when(dashState) {

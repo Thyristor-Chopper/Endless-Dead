@@ -12,35 +12,31 @@ import java.lang.Math.toDegrees;
 
 import kotlin.math.atan2;
 
-abstract class Turret(world: World, x: Float, y: Float, texture: Texture, gunSettings: Gun.Properties) : Entity(world, x, y, 83f, 154f, texture), InventoryHolder {
-	final override val inventory = SingleItemInventory();
+abstract class Turret(world: World, x: Float, y: Float, texture: Texture, gunSettings: Gun.Properties) : Entity(world, x, y, 83f, 154f, texture), InventoryHolder, Attackable {
 	/**
-	 * 공격 대상
-	 *   자바에서는 getTarget()과 setTarget() 사용
+	 * 개체 추적 범위 (0: 제한 없음)
 	 */
-	var target: LivingEntity? = null;
+	protected open val followRange = 408f;
+	private val attacker = SimpleAttacker(this, followRange);  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
+	final override val inventory = SingleItemInventory();
+	override var target: LivingEntity?
+		get() = attacker.target
+		set(value) { attacker.target = value };
 
 	init {
 		inventory.addItem(Gun("turret_gun", "Turret's Gun", gunSettings));
 	}
 
-	/**
-	 * 공격 대상을 가져오거나 대상이 사라지면 초기화한다.
-	 *   기본 공격 대상 선정 방식을 바꿀 수도 있으므로 open이다.
-	 *
-	 * @return 공격 대상
-	 */
-	protected abstract fun getTargetOrReset(): LivingEntity?;
+	protected fun setTargetFetcher(fetcher: () -> LivingEntity?) {
+		attacker.setTargetFetcher(fetcher);
+	}
 
 	override fun update(delta: Float) {
 		super.update(delta);
 
-		val target: LivingEntity? = getTargetOrReset();
+		val target: LivingEntity? = this.target;
 		if(target == null) return;
 		rotateTo(target.position);
-
-		val distance = distanceTo(target);
-		if(distance > 408f) return;
 
 		inventory.getItem()?.let {
 			if(it !is Gun) return;

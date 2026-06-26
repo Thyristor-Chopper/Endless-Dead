@@ -64,6 +64,8 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 		healTimer = RepeatingTimer(30f) {
 			heal(3);
 		}.also { timerManager.register(it) };
+
+		team = "friends";
 	}
 
 	// ---- 매 프레임 로직 ----
