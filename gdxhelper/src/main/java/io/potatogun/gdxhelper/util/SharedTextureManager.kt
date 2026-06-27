@@ -61,6 +61,6 @@ abstract class SharedTextureManager {
 	companion object {
 		private val sharedTextures = weakMutableSetOf<Texture>();
 
-		fun isSharedTexture(texture: Texture): Boolean = sharedTextures.contains(texture);
+		@JvmStatic fun isSharedTexture(texture: Texture): Boolean = sharedTextures.contains(texture);
 	}
 }
