@@ -2,7 +2,6 @@ package io.potatogun.endlessdead.entity;
 
 import io.potatogun.endlessdead.entity.ai.Behavior.Result;
 import io.potatogun.endlessdead.entity.ai.DashToTarget;
-import io.potatogun.endlessdead.entity.ai.DashToTarget.DashState;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.world.World;
 
@@ -13,7 +12,7 @@ class StrongZombie(world: World, x: Float, y: Float) : Zombie(world, x, y, 49f, 
 
 	override fun updateAI(delta: Float) {
 		dasher.update(delta);
-		if(dasher.state == DashState.STANDBY || dasher.state == DashState.COOLDOWN)
+		if(dasher.state == DashToTarget.State.STANDBY || dasher.state == DashToTarget.State.COOLDOWN)
 			super.updateAI(delta);
 	}
 }

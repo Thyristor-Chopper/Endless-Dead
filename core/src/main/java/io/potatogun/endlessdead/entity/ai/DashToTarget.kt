@@ -6,7 +6,7 @@ import io.potatogun.endlessdead.entity.Movable;
 import io.potatogun.gdxhelper.entity.Entity;
 
 class DashToTarget(private val attacker: AttackTargetable, private val dashSpeed: Float, private val dashThreshold: Float) : Behavior {
-	var state = DashState.STANDBY
+	var state = State.STANDBY
 		private set;
 	private var stateTimer = 0f;
 	// 돌진할 '방향(벡터)'을 기억해 둘 변수
@@ -27,10 +27,10 @@ class DashToTarget(private val attacker: AttackTargetable, private val dashSpeed
 		if(target == null) return Behavior.Result.FAILED;
 
 		when(state) {
-			DashState.STANDBY -> {
+			State.STANDBY -> {
 				val distance = attacker.distanceTo(target);
 				if(distance < dashThreshold) {
-					state = DashState.PREPARING;
+					state = State.PREPARING;
 					stateTimer = 0.5f;
 
 					// 대기 상태에 들어가는 첫 프레임. 이때 플레이어를 조준해서 방향을 기억해둔다
@@ -44,34 +44,34 @@ class DashToTarget(private val attacker: AttackTargetable, private val dashSpeed
 					return Behavior.Result.REJECTED;
 				}
 			}
-			DashState.PREPARING -> {
+			State.PREPARING -> {
 				stateTimer -= delta;
 				if(stateTimer <= 0f) {
-					state = DashState.DASHING;
+					state = State.DASHING;
 					stateTimer = 0.4f;
 				}
 			}
-			DashState.DASHING -> {
+			State.DASHING -> {
 				attacker.x += dashDirX * dashSpeed * delta;
 				attacker.y += dashDirY * dashSpeed * delta;
 
 				// 돌진 중에 플레이어랑 부딪히면 대미지 주고 즉시 쿨타임으로 넘어감
 				if(attacker.collidesWith(target)) {
 					target.takeDamage(20, attacker = attacker);
-					state = DashState.COOLDOWN;
+					state = State.COOLDOWN;
 					stateTimer = 5.0f;
 				} else {
 					stateTimer -= delta;
 					if(stateTimer <= 0f) {
-						state = DashState.COOLDOWN;
+						state = State.COOLDOWN;
 						stateTimer = 5.0f;
 					}
 				}
 			}
-			DashState.COOLDOWN -> {
+			State.COOLDOWN -> {
 				stateTimer -= delta;
 				if(stateTimer <= 0f)
-					state = DashState.STANDBY;
+					state = State.STANDBY;
 			}
 		}
 
@@ -81,7 +81,7 @@ class DashToTarget(private val attacker: AttackTargetable, private val dashSpeed
 	/**
 	 * 평상시, 돌진하려고 잠깐 멈춰있음, 돌진, 돌진 쿨
 	 */
-	enum class DashState {
+	enum class State {
 		STANDBY,
 		PREPARING,
 		DASHING,
