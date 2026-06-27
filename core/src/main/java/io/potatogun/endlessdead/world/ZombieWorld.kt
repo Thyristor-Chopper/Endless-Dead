@@ -251,16 +251,6 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		// 배경에 입힌 색이 다음 그리기(게임 객체)에 영향을 주지 않도록 흰색으로 복원.
 		batch.color = Color.WHITE;
-
-		// 월드 텍스트 (월드 좌표) — 월드 정중앙에 표시
-		//    WASD로 카메라를 움직이면 이 글자도 화면에서 움직인다.
-		drawText(
-			text = "*",
-			x = width * 0.5f - 24f,
-			y = height * 0.5f + 20f,
-			color = Color.FOREST,
-			scale = 8.0f
-		);
 	}
 
 	// 플레이어 위치에 따라 카메라 위치 변경
