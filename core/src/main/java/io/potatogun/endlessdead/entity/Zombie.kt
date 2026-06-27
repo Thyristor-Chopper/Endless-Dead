@@ -47,7 +47,6 @@ abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Fl
 	override var target: LivingEntity?
 		get() = targeter.target
 		set(value) { targeter.target = value };
-	private var isMovable = true;
 
 	init {
 		settings.fillDefaults();
@@ -62,10 +61,6 @@ abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Fl
 
 	protected fun setFollowRange(range: Float) {
 		targeter.setFollowRange(range);
-	}
-
-	protected fun setMovable(movable: Boolean) {
-		isMovable = movable;
 	}
 
 	override fun update(delta: Float) {
