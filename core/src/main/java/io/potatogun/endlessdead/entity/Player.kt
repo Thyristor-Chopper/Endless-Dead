@@ -52,7 +52,7 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	// 타이머
 	private val timerManager = TimerManager();
 	private val healTimer: RepeatingTimer;
-	override val defaultInvincibleDuration = 0.05f;
+	override val defaultInvincibleDuration = 0.01f;
 	private var _latestAttackVictim: WeakReference<LivingEntity>? = null;
 	val latestAttackVictim: LivingEntity?
 		get() = _latestAttackVictim?.get();
