@@ -34,6 +34,7 @@ abstract class SharedTextureManager {
 	 * @param texture 텍스처
 	 */
 	protected fun register(id: String, texture: Texture) {
+		sharedTextures.add(texture);
 		shared[id] = lazyOf(texture);
 	}
 
