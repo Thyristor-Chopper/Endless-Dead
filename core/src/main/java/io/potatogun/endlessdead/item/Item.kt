@@ -88,7 +88,7 @@ abstract class Item(id: String, val name: String, settings: Properties = Propert
 		@JvmStatic val textures = ItemTextures();
 	}
 
-	class ItemTextures : SharedTextureManager() {
+	class ItemTextures internal constructor() : SharedTextureManager() {
 		init {
 			register("default", "item/default.bmp");
 		}
