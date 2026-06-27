@@ -106,6 +106,7 @@ abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Fl
 	}
 
 	// 누군가가 자신을 공격하면 처치 대상을 그자로 한다.
+	//   포탑은 살아있지 않기 때문에 포탑에게 공격받아도 그걸 타겟하지는 않는다.
 	override fun onDamage(damage: Int, attacker: Entity?) {
 		if(attacker is LivingEntity)
 			target = attacker;
