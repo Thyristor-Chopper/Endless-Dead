@@ -210,6 +210,15 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	fun getRotationAngle(): Float = rotation;
 
 	/**
+	 * 특정 개체를 향해 회전한다.
+	 * 
+	 * @param entity 타겟 개체
+	 */
+	inline fun rotateTo(entity: Entity) {
+		rotateTo(entity.position);
+	}
+
+	/**
 	 * 특정 위치를 향해 회전한다.
 	 * 
 	 * @param position 타겟 방향
@@ -289,6 +298,6 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	 *   garbage collector는 이 메모리를 해제해 주지 못한다 - dispose() 명시적 호출 필요.
 	 */
 	open fun dispose() {
-		texture?.dispose();
+		texture?.let { Utils.safeDispose(it) };
 	}
 }

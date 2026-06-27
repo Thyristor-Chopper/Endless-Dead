@@ -2,7 +2,6 @@ package io.potatogun.endlessdead.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 
-import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.inventory.SingleItemInventory;
 import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.endlessdead.item.Item;
@@ -27,11 +26,11 @@ import kotlin.random.Random;
  * @param texture     개체 텍스처
  */
 abstract class Turret @JvmOverloads constructor(world: World, name: String, x: Float, y: Float, gun: Item?, health: Int, isPermanent: Boolean = false, texture: Texture) : LivingEntity(world, name, x, y, 83f, 154f, health, texture), InventoryHolder, AttackTargetable, PenetratorDamagable {
-	private val attacker = AutoTargeter(this);  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
+	private val targeter = AutoTargeter(this);  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
 	final override val inventory = SingleItemInventory();
 	override var target: LivingEntity?
-		get() = attacker.target
-		set(value) { attacker.target = value };
+		get() = targeter.target
+		set(value) { targeter.target = value };
 	override val penetrationDamage = (health * 0.1f).toInt();
 	override val defaultInvincibleDuration = 0.05f;
 
@@ -42,11 +41,11 @@ abstract class Turret @JvmOverloads constructor(world: World, name: String, x: F
 	}
 
 	protected fun setTargetFetcher(fetcher: () -> LivingEntity?) {
-		attacker.setTargetFetcher(fetcher);
+		targeter.setTargetFetcher(fetcher);
 	}
 
 	protected fun setFollowRange(range: Float) {
-		attacker.setFollowRange(range);
+		targeter.setFollowRange(range);
 	}
 
 	override fun update(delta: Float) {
@@ -54,7 +53,7 @@ abstract class Turret @JvmOverloads constructor(world: World, name: String, x: F
 
 		val target: LivingEntity? = this.target;
 		if(target == null) return;
-		rotateTo(target.position);
+		rotateTo(target);
 
 		inventory.getItem()?.let {
 			if(it !is Shootable) return;

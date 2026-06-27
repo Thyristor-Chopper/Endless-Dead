@@ -19,6 +19,7 @@ import io.potatogun.endlessdead.item.SpeedPotion;
 import io.potatogun.endlessdead.item.TimeStopper;
 import io.potatogun.endlessdead.item.TurretInstaller;
 import io.potatogun.endlessdead.spawner.Spawner;
+import io.potatogun.endlessdead.spawner.TriggermanSpawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
@@ -132,6 +133,9 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this, 3f));
+		// 5% 확률로 총 쏘는 적도 나오는 월드
+		if(Random.nextInt(20) == 7)
+			spawners.add(TriggermanSpawner(this, 5f));
 
 		// 10초마다 빈 상자 하나 리필
 		timerManager.register(RepeatingTimer(10f) {

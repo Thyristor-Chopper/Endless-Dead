@@ -19,15 +19,10 @@ class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = fal
 	init {
 		setTargetFetcher { if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player };
 		setFollowRange(384f);
-		// 중립으로... (좀비도 어쩌다 총알에 맞으면 피격당하게)
-		// team = "enemies";
 	}
-
-	// 공유 자원이라 여기서 정리 안 함
-	override fun dispose() {}
 
 	/**
 	 * 이 터렛의 발사기
 	 */
-	private class HostileTurretGun : Gun("hostile_turret_shooter", "Hostile Turret Shooter", Gun.Properties(4, 190f).fireInterval(1.0f).bulletTexture(Textures.getShared("silver_bullet"), false).bulletSize(18f).rarity(Rarity.RARE) as Gun.Properties);
+	private class HostileTurretGun : Gun("hostile_turret_shooter", "Hostile Turret Shooter", Gun.Properties(4, 190f).fireInterval(1.0f).bulletTexture(Textures.getShared("silver_bullet")).bulletSize(18f).rarity(Rarity.RARE) as Gun.Properties);
 }

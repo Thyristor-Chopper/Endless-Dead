@@ -15,19 +15,20 @@ import kotlin.math.sqrt;
 /**
  * 총알 개체
  *
- * @param    world             총알이 있는 세계
- * @property gun               쏜 발사기
- * @property shooter           쏜 개체
- * @property target            총알이 향할 위치
- * @property speed             총알 속도
- * @property damage            총알이 주는 피해량
- * @property penetrable        총알 관통 가능 여부
- * @param    health            총알 체력 (관통 시 감소)
- * @param    size              총알 지름
- * @param    texture           총알 텍스처
- * @property textureDisposable 총알 텍스처가 공유 텍스처라면 false
+ * MeleeAttacker로 분류해야 할지가 애매하지만 일단은 아닌 것으로 본다.
+ *
+ * @param    world        총알이 있는 세계
+ * @property gun          쏜 발사기
+ * @property shooter      쏜 개체
+ * @property target       총알이 향할 위치
+ * @property speed        총알 속도
+ * @property damage       총알이 주는 피해량
+ * @property isPenetrable 총알 관통 가능 여부
+ * @param    health       총알 관통력
+ * @param    size         총알 지름
+ * @param    texture      총알 텍스처
  */
-class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet"), private val textureDisposable: Boolean = false) : LivingEntity(world, "Bullet", shooter.position.x, shooter.position.y, size, size, health, texture) {
+class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, override val speed: Float, val damage: Int, val isPenetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet")) : LivingEntity(world, "Bullet", shooter.position.x, shooter.position.y, size, size, health, texture), Movable {
 	override val isUpdatableWhileFrozen = (shooter is Player);
 	override val showDamageIndicator = false;
 	override val defaultInvincibleDuration = 0.1f;
@@ -48,17 +49,14 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 		val dx = target.x - shooter.x;
 		val dy = target.y - shooter.y;
 		val distance = sqrt(dx * dx + dy * dy);
-
 		if(distance > 0f) {
 			amountX = dx / distance * speed;
 			amountY = dy / distance * speed;
 		} else {
-			this.kill();
 			amountX = 0f;
 			amountY = 0f;
+			this.kill();  // 안 움직이는 총알 방지
 		}
-
-		if(shooter.position == target) this.kill();  // 안 움직이는 총알 방지
 	}
 
 	override fun update(delta: Float) {
@@ -74,19 +72,14 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 		// 처음 템플릿(예제) 코드에서는 모든 상호작용을 월드에서 처리했으나
 		//   난 총알'이' 누군가에게 직접 대미지를 주는 게 맞는 것 같아서 여기서 처리함.
 		for(entity in world.entities.getNearby(this))
-			if(entity !== this && entity !== shooter && entity is LivingEntity && !isSameTeamWith(entity) && (entity !is Bullet || entity.gun !== this.gun) && collidesWith(entity)) {
+			if(entity !== this && entity !== shooter && entity is LivingEntity && !entity.isInvincible && !isSameTeamWith(entity) && (entity !is Bullet || entity.gun !== this.gun) && collidesWith(entity)) {
 				entity.takeDamage(damage, attacker = shooter);  // 무적 시간이 필요하면 추가...
-				if(penetrable) {
+				if(isPenetrable) {
 					val penetrationDamage = if(entity is PenetratorDamagable) entity.penetrationDamage else 0;
 					this.takeDamage(penetrationDamage, attacker = entity);
 				} else {
 					this.kill();
 				}
 			}
-	}
-
-	override fun dispose() {
-		if(textureDisposable)
-			texture?.dispose();
 	}
 }

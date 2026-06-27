@@ -14,7 +14,4 @@ import io.potatogun.gdxhelper.world.World;
  */
 open class Building(world: World, x: Float, y: Float, initialItem: Item? = null): Container(world, "Building", x, y, 23f, 24f, Textures.getShared("building"), Textures.getShared("empty_building"), initialItem) {
 	override val playerItemTexture = Textures.getShared("building_player_item");
-
-	// 공유 자원이기 때문에 여기서 정리하지 않고 다른 인스턴스에서 재활용한다.
-	override fun dispose() {}
 }

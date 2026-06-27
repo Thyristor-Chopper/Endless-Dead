@@ -45,10 +45,11 @@ import java.lang.ref.WeakReference;
  * @param    y         처음 Y 좌표
  * @property inventory 플레이어가 가질 인벤토리
  */
-class Player(world: World, x: Float, y: Float, override val inventory: ObservableInventory = LinearInventory(-1)) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, Utils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory) {
+class Player(world: World, x: Float, y: Float, override val inventory: ObservableInventory = LinearInventory(-1)) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, Utils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable {
 	override val isUpdatableWhileFrozen = true;
 	private val textureWithGun = Utils.loadTexture("entity/player_holding_gun.bmp");
-	private var speed = 200f
+	override var speed = 200f
+		private set;
 	// 타이머
 	private val timerManager = TimerManager();
 	private val healTimer: RepeatingTimer;

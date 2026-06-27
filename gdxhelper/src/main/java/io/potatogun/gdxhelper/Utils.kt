@@ -9,6 +9,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
+import io.potatogun.gdxhelper.util.SharedTextureManager;
+
 /**
  * 유용한 함수 모음
  */
@@ -154,4 +156,12 @@ object Utils {
 	 * @return     불러온 텍스처 객체
 	 */
 	@JvmStatic inline fun loadTexture(path: String): Texture = Texture(Gdx.files.internal("assets/textures/$path"));
+
+	/**
+	 * 공유 자원이 아닌 경우에만 비디오 카드 메모리에서 정리한다.
+	 *
+	 * @param texture 해제할 텍스처
+	 * @return        성공 여부
+	 */
+	@JvmStatic inline fun safeDispose(texture: Texture): Boolean = texture.takeIf { !SharedTextureManager.isSharedTexture(it) }?.let { it.dispose(); true } ?: false;
 }

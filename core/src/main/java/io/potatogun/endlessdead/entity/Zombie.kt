@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.util.getDistanceSorted;
 import io.potatogun.gdxhelper.world.World;
@@ -24,45 +23,42 @@ import io.potatogun.gdxhelper.world.World;
  *   ▸ 생성자에서 speed를 받아 FastEnemy, SlowEnemy로 다양화
  *   ▸ 이동 패턴을 사인파, 원운동 등으로 바꾸기
  *
- * @param    world    개체가 속한 세계
- * @param name        개체 표시 이름
- * @param    x        개체의 처음 X 위치
- * @param    y        개체의 처음 Y 위치
- * @param    width    가로 크기 (픽셀)
- * @param    height   세로 크기 (픽셀)
- * @param    texture  개체 텍스처
- * @property settings 좀비 옵션
+ * @param world    개체가 속한 세계
+ * @param x        개체의 처음 X 위치
+ * @param y        개체의 처음 Y 위치
+ * @param width    가로 크기 (픽셀)
+ * @param height   세로 크기 (픽셀)
+ * @param settings 좀비 옵션
  */
-abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Float, height: Float, texture: Texture = Textures.getShared("zombie"), settings: Properties) : LivingEntity(world, name, x, y, width, height, settings.health, texture), PenetratorDamagable, AttackTargetable, DamageListener {
-	private val attacker = AutoTargeter(this, targetFetcher = { if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
-	val attackDamage: Int = settings.attackDamage;
-	val speed: Float = settings.speed;
-	protected open val attackingTexture = Textures.getShared("attacking_zombie");
+abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, settings: Properties) : LivingEntity(world, "Zombie", x, y, width, height, settings.health, Textures.getShared("zombie")), PenetratorDamagable, AttackTargetable, DamageListener, MeleeAttacker, Movable {
+	private val targeter = AutoTargeter(this, targetFetcher = { if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
+	private val attackingTexture = Textures.getShared("attacking_zombie");
+	override val attackDamage = settings.attackDamage;
+	override val speed = settings.speed;
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.15f;
-	protected open val attackInterval = 0.3f;
+	override val attackInterval = 0.3f;
 	private var attackTextureTimer = 0f;
 	private var attackCooldownTimer = attackInterval;
 	override var target: LivingEntity?
-		get() = attacker.target
-		set(value) { attacker.target = value };
-	private var movable = true;
+		get() = targeter.target
+		set(value) { targeter.target = value };
+	private var isMovable = true;
 
 	init {
 		settings.fillDefaults();
-		team = "enemies";
 	}
 
 	protected fun setTargetFetcher(fetcher: () -> LivingEntity?) {
-		attacker.setTargetFetcher(fetcher);
+		targeter.setTargetFetcher(fetcher);
 	}
 
 	protected fun setFollowRange(range: Float) {
-		attacker.setFollowRange(range);
+		targeter.setFollowRange(range);
 	}
 
 	protected fun setMovable(movable: Boolean) {
-		this.movable = movable;
+		isMovable = movable;
 	}
 
 	override fun update(delta: Float) {
@@ -79,7 +75,7 @@ abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Flo
 		if(distance > target.width * (3f / 4f)) {
 			attackTextureTimer = 0f;
 			attackCooldownTimer = 0f;
-			if(movable) {
+			if(isMovable) {
 				x += dx / distance * speed * delta;
 				y += dy / distance * speed * delta;
 			}
@@ -112,9 +108,6 @@ abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Flo
 		if(attacker is LivingEntity)
 			target = attacker;
 	}
-
-	// 공유 자원이기 때문에 여기서 정리하지 않고 다른 인스턴스에서 재활용한다.
-	override fun dispose() {}
 
 	/**
 	 * 좀비 옵션

@@ -19,9 +19,6 @@ class FriendlyTurret(world: World, x: Float, y: Float, isPermanent: Boolean = fa
 		setFollowRange(456f);
 	}
 
-	// 공유 자원이라 여기서 정리 안 함
-	override fun dispose() {}
-
 	/**
 	 * 이 터렛의 발사기
 	 */

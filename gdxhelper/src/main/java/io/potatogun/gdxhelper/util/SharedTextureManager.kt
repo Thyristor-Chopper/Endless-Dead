@@ -3,6 +3,8 @@ package io.potatogun.gdxhelper.util;
 import com.badlogic.gdx.graphics.Texture;
 
 import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.util.WeakMutableSet;
+import io.potatogun.gdxhelper.util.weakMutableSetOf;
 
 /**
  * 공유 자원 관리자
@@ -17,7 +19,12 @@ abstract class SharedTextureManager {
 	 * @param path 텍스처 경로
 	 */
 	protected fun register(id: String, path: String) {
-		shared[id] = lazy { Utils.loadTexture(path) };
+		shared[id] = lazy {
+			val texture = Utils.loadTexture(path);
+			sharedTextures.add(texture);
+
+			texture  // return
+		};
 	}
 
 	/**
@@ -48,5 +55,11 @@ abstract class SharedTextureManager {
 		for(texture in shared.values)
 			if(texture.isInitialized())
 				texture.value.dispose();
+	}
+
+	companion object {
+		private val sharedTextures = weakMutableSetOf<Texture>();
+
+		fun isSharedTexture(texture: Texture): Boolean = sharedTextures.contains(texture);
 	}
 }
