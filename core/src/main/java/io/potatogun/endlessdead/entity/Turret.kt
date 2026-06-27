@@ -31,7 +31,7 @@ abstract class Turret(world: World, x: Float, y: Float, texture: Texture, gunSet
 
 	init {
 		val identity = System.identityHashCode(this).toString();
-		inventory.addItem(object : Gun("turret_gun_${identity}", "Turret ${identity}'s Gun", gunSettings.rarity(Rarity.RARE) as Gun.Properties) {});
+		inventory.addItem(object : Gun("turret_gun_${identity}", "Turret #${identity}'s Gun", gunSettings.rarity(Rarity.RARE) as Gun.Properties) {});
 	}
 
 	protected fun setTargetFetcher(fetcher: () -> LivingEntity?) {
