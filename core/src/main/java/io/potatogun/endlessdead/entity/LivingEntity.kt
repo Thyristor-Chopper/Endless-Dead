@@ -9,28 +9,27 @@ import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.world.World;
 
 /**
- * 살아있다는 개념이 있는 개체
+ * 살아있다는 개념과 피격이 있는 개체
  *
- * @param world     개체가 속한 세계
- * @param x         개체의 처음 X 위치
- * @param y         개체의 처음 Y 위치
- * @param width     가로 크기 (픽셀)
- * @param height    세로 크기 (픽셀)
- * @param texture   개체 텍스처(없을 수도 있음)
- * @param initialHP 초기(최대) 체력
+ * @param world         개체가 속한 세계
+ * @param x             개체의 처음 X 위치
+ * @param y             개체의 처음 Y 위치
+ * @param width         가로 크기 (픽셀)
+ * @param height        세로 크기 (픽셀)
+ * @param texture       개체 텍스처(없을 수도 있음)
+ * @param initialHealth 초기(최대) 체력
  */
-abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture? = null, initialHP: Int) : Entity(world, x, y, width, height, texture) {
+abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture? = null, initialHealth: Int) : Entity(world, x, y, width, height, texture) {
 	/**
 	 * 개체의 최대 체력.
 	 */
-	open val maxHP: Int = initialHP;
+	open val maxHealth: Int = initialHealth;
 	/**
 	 * 개체의 현재 체력
 	 */
-	@get:JvmName("getHP")
-	var hp = initialHP
+	var health = initialHealth
 		private set(value) {
-			if(value > maxHP) field = maxHP;
+			if(value > maxHealth) field = maxHealth;
 			else if(value < 0) field = 0;
 			else field = value;
 		};
@@ -38,7 +37,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 * 개체가 살아있는지의 여부
 	 */
 	val isAlive: Boolean
-		get() = hp > 0;
+		get() = health > 0;
 	/**
 	 * 피격 시 잠깐 동안 대미지를 안 받게 해주는 무적 타이머
 	 */
@@ -68,11 +67,11 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	/**
 	 * 대미지를 입었을 때 붉게 표시할지의 여부
 	 */
-	protected open val showDamagedIndicator = true;
+	protected open val showDamageIndicator = true;
 	/**
 	 * 대미지를 입었을 때 붉게 표시되는 기간
 	 */
-	protected open val damagedIndicatorDuration = 0.5f;
+	protected open val damageIndicatorDuration = 0.5f;
 	/**
 	 * 기본값 무적 타이머는 없음
 	 */
@@ -94,8 +93,8 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		// 무적 시간이 다 끝났을 때만 피격당함
 		if(isInvincibilityTimerActive) return false;
 
-		hp -= damage;
-		val killed = (hp == 0);
+		health -= damage;
+		val killed = (health == 0);
 		if(killed) {  // 사망
 			onDeath(attacker);  // 콜백 호출
 			if(attacker != null) attacker.onKill(this);
@@ -104,8 +103,8 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 			invincibilityTimer = invincibleDuration;  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
 			onDamage(damage, attacker);
 			// 타격 시 붉게 표시 타이머
-			if(showDamagedIndicator)
-				damagedIndicatorTimer = damagedIndicatorDuration;
+			if(showDamageIndicator)
+				damagedIndicatorTimer = damageIndicatorDuration;
 		}
 		if(attacker != null) {
 			if(!killed) attacker.onAttack(this);
@@ -122,7 +121,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 */
 	open fun heal(amount: Int): Boolean {
 		if(!isAlive) return false;
-		hp += amount;
+		health += amount;
 		return true;
 	}
 
@@ -134,7 +133,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 */
 	@JvmOverloads fun kill(attacker: Entity? = null): Boolean {
 		if(!isAlive) return false;
-		hp = 0;
+		health = 0;
 		onDeath(attacker);
 		if(attacker != null) attacker.onKill(this);
 		remove();
@@ -180,7 +179,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 * 대미지를 입은 경우 붉게 바꾼다.
 	 */
 	override fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
-		val showDamaged = (showDamagedIndicator && damagedIndicatorTimer > 0f);
+		val showDamaged = (showDamageIndicator && damagedIndicatorTimer > 0f);
 		if(showDamaged) batch.color = Color.RED;
 		super.draw(batch, alternateTexture);
 		if(showDamaged) batch.color = Color.WHITE;

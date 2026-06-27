@@ -20,11 +20,11 @@ import kotlin.math.sqrt;
  * @property speed      총알 속도
  * @property damage     총알이 주는 피해량
  * @property penetrable 총알 관통 가능 여부
- * @param    hp         총알 체력 (관통 시 감소)
+ * @param    health     총알 체력 (관통 시 감소)
  */
-class Bullet(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, hp: Int) : LivingEntity(world, shooter.position.x, shooter.position.y, 16f, 16f, Textures.getShared("bullet"), hp) {
+class Bullet(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, health: Int) : LivingEntity(world, shooter.position.x, shooter.position.y, 16f, 16f, Textures.getShared("bullet"), health) {
 	override val isUpdatableWhileFrozen = (shooter is Player);
-	override val showDamagedIndicator = false;
+	override val showDamageIndicator = false;
 	override val defaultInvincibleDuration = 0.1f;
 	/**
 	 * 총알 속도에 따른 가로 이동량
@@ -38,7 +38,7 @@ class Bullet(world: World, val gun: Shootable, val shooter: Entity, private val 
 	init {
 		if(speed < 0f) throw IllegalArgumentException("invalid speed");
 		if(damage < 0) throw IllegalArgumentException("invalid damage");
-		if(hp < 0f) throw IllegalArgumentException("invalid HP");
+		if(health < 0f) throw IllegalArgumentException("invalid health");
 
 		val dx = target.x - shooter.x;
 		val dy = target.y - shooter.y;

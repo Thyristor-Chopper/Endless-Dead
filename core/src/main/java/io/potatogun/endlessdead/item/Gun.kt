@@ -172,7 +172,7 @@ open class Gun(id: String, name: String, settings: Properties) : Item(id, name, 
 	 * @property bulletSpeed  총탄 속도 (0이면 지뢰처럼 안 움직임, 음수면 역방향으로 발사)
 	 * @throws IllegalArgumentException 속성이 잘못된 경우
 	 */
-	open class Properties(val bulletDamage: Int, val bulletSpeed: Float) : Item.Properties() {
+	open class Properties(@JvmField val bulletDamage: Int, @JvmField val bulletSpeed: Float) : Item.Properties() {
 		@get:JvmName("getBulletHP") internal var bulletHP = 1
 			private set;
 		internal var isBulletPenetrable = false

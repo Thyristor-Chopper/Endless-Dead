@@ -183,9 +183,9 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		}
 		val player = world.player;
 
-		// HP 미터기 처리
+		// 체력 미터기 처리
 		hpIndicator.apply {
-			value = player.hp.toFloat() / player.maxHP;
+			value = player.health.toFloat() / player.maxHealth;
 			show();
 		};
 
@@ -459,7 +459,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			// 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
 			//    카메라가 움직여도 항상 이 위치에 있다.
 			drawText(
-				text = "HP: ${player.hp}",
+				text = "HP: ${player.health}",
 				x = 10f,
 				y = Window.height - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
 				color = Utils.rgb(255, 240, 128),
