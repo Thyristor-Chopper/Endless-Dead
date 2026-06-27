@@ -15,11 +15,11 @@ object Constants {
 	/**
 	 * 월드의 너비
 	 */
-	const val ZOMBIE_WORLD_WIDTH = 1920f;
+	const val ZOMBIE_WORLD_WIDTH = 2000f;
 	/**
 	 * 월드의 높이
 	 */
-	const val ZOMBIE_WORLD_HEIGHT = 1920f;
+	const val ZOMBIE_WORLD_HEIGHT = 2000f;
 	/**
 	 * 게임 제목
 	 */

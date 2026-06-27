@@ -25,12 +25,11 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 	private var zombiesPerSpawn = 1
 		set(value) {
 			if(value < 0) field = 0;
-			else if(value > maxZombiesPerSpawn) field = maxZombiesPerSpawn;
 			else field = value;
 		};
-	private val maxZombiesPerSpawn = 8;
+	private val maxZombiesPerSpawn = 5;
 	private val spawnIncreaseTimer: RepeatingTimer;
-	private val spawnIncreaseInterval = 30f;
+	private val spawnIncreaseInterval = 60f;
 	private val timerManager = TimerManager();
 
 	init {
@@ -65,10 +64,12 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 		if(attackTarget == null) return;
 		var randomX: Float;
 		var randomY: Float;
+		var loopCount = 0;
 		do {
 			randomX = Random.nextFloat() * (world.width - 70f);
 			randomY = Random.nextFloat() * (world.height - 70f);
-		} while(Position(randomX, randomY).distanceTo(attackTarget) < 64f);
+			loopCount++;
+		} while(Position(randomX, randomY).distanceTo(attackTarget) < 408f && loopCount < 30);
 
 		// 주사위를 굴려서 확률로 좀비 종류 뽑기
 		val rand = Random.nextInt(10);

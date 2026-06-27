@@ -67,4 +67,23 @@ class SingleItemInventory : ObservableInventory() {
 	 * @return 현재 들어 있는 아이템
 	 */
 	fun getItem(): Item? = inventoryItem;
+
+	/**
+	 * 아이템을 교체한다.
+	 *
+	 * @param item 새 아이템
+	 * @return     성공 여부
+	 */
+	fun replaceItem(item: Item): Boolean {
+		if(inventoryItem == null) return false;
+		val holder: Inventory? = item.inventory;
+		if(!(holder?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
+		inventoryItem?.let {
+			inventoryItem = item;
+			invokeItemRemoveObservers(it);
+		};
+		item.inventory = this;
+		invokeItemAddObservers(item);
+		return true;
+	}
 }
