@@ -1,7 +1,7 @@
 package io.potatogun.endlessdead.entity;
 
 /**
- * 다른 개체를 공격하는 개체
+ * 다른 개체를 공격했을 때를 감지하는 개체
  */
 interface AttackListener {
 	/**

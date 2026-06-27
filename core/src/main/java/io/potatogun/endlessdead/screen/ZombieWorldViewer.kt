@@ -75,7 +75,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		};
 
 		// 미터기 추가
-		addWidget("hp_indicator", ProgressBar({ 80f }, { Window.height - 24f }, { 220f }, color = Utils.rgb(234, 197, 21)));
+		addWidget("hp_indicator", ProgressBar({ 80f }, { Window.height - 24f }, { 220f }, color = Utils.rgb(73, 186, 73)));
 		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, { 130f }, color = Utils.rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() });
 		addWidget("gun_cooldown_indicator", ProgressBar({ Window.width - 215f }, { 10f }, { 60f }, value=0.42f, color = Color.SCARLET).apply { hide() });
 
@@ -462,7 +462,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 				text = "HP: ${player.health}",
 				x = 10f,
 				y = Window.height - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
-				color = Utils.rgb(255, 240, 128),
+				color = Utils.rgb(156, 213, 155),
 				scale = 1.2f
 			);
 

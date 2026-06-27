@@ -107,12 +107,12 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 		health -= damage;
 		val killed = (health == 0);
 		if(killed) {  // 사망
-			onDeath(attacker);  // 콜백 호출
+			if(this is DamageListener) onDeath(attacker);  // 콜백 호출
 			if(attacker is AttackListener) attacker.onKill(this);
 			remove();
 		} else {
 			invincibilityTimer = invincibleDuration;  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
-			onDamage(damage, attacker);
+			if(this is DamageListener) onDamage(damage, attacker);
 			// 타격 시 붉게 표시 타이머
 			if(showDamageIndicator)
 				damagedIndicatorTimer = damageIndicatorDuration;
@@ -145,26 +145,11 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	@JvmOverloads fun kill(attacker: Entity? = null): Boolean {
 		if(!isAlive) return false;
 		health = 0;
-		onDeath(attacker);
+		if(this is DamageListener) onDeath(attacker);
 		if(attacker is AttackListener) attacker.onKill(this);
 		remove();
 		return true;
 	}
-
-	/**
-	 * 대미지를 받았을 때 실행할 콜백 함수
-	 *
-	 * @param damage   받은 피해량
-	 * @param attacker 공격자
-	 */
-	open fun onDamage(damage: Int, attacker: Entity?) {}
-
-	/**
-	 * 죽었을 때 실행할 콜백 함수
-	 *
-	 * @param killer 공격자
-	 */
-	open fun onDeath(killer: Entity?) {}
 
 	/**
 	 * 매 프레임 무적 시간 감소
