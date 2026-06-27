@@ -87,6 +87,6 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 
 	override fun dispose() {
 		if(textureDisposable)
-			texture.dispose();
+			texture?.dispose();
 	}
 }
