@@ -5,6 +5,13 @@ import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.gdxhelper.util.getDistanceSorted;
 import io.potatogun.gdxhelper.world.World;
 
+/**
+ * 좀비를 공격해주는 포탑
+ *
+ * @param world 속한 세계
+ * @param x     X 좌표
+ * @param y     Y 좌표
+ */
 class FriendlyTurret(world: World, x: Float, y: Float) : Turret(world, x, y, Textures.getShared("turret_friendly"), Gun.Properties(2, 1000f).fireInterval(0.45f)) {
 	init {
 		setTargetFetcher { world.entities.getDistanceSorted(this).firstOrNull { it is Zombie } as? Zombie };

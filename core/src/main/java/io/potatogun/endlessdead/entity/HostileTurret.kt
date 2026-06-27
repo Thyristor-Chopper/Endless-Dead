@@ -6,6 +6,13 @@ import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.util.getDistanceSorted;
 import io.potatogun.gdxhelper.world.World;
 
+/**
+ * 플레이어를 공격하는 포탑
+ *
+ * @param world 속한 세계
+ * @param x     X 좌표
+ * @param y     Y 좌표
+ */
 class HostileTurret(world: World, x: Float, y: Float) : Turret(world, x, y, Textures.getShared("turret_hostile"), Gun.Properties(3, 250f).fireInterval(0.8f)) {
 	init {
 		setTargetFetcher { if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player };

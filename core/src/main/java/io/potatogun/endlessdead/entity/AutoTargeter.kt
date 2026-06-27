@@ -3,14 +3,14 @@ package io.potatogun.endlessdead.entity;
 import io.potatogun.gdxhelper.entity.Entity;
 
 /**
- * Attackable을 수동 위임하기 위해 사용된다.
+ * AttackTargetable을 직접 위임하기 위해 사용된다.
  * 
- * @property owner         실제 공격하는 개체
+ * @property owner         실제 공격자
  * @property followRange   공격 대상자 감지 범위
  * @property targetFetcher 새 공격 대상자를 찾는 함수
  * @throws IllegalArgumentException 감지 범위가 잘못됐을 때
  */
-class SimpleAttacker(private val owner: Entity, private var followRange: Float = 0f, private var targetFetcher: () -> LivingEntity? = { null }) : Attackable {
+class AutoTargeter(private val owner: Entity, private var followRange: Float = 0f, private var targetFetcher: () -> LivingEntity? = { null }) : AttackTargetable {
 	override var target: LivingEntity? = targetFetcher()
 		get() {
 			val target: LivingEntity? = field;

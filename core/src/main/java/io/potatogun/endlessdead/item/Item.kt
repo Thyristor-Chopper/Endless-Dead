@@ -38,6 +38,10 @@ abstract class Item(id: String, val name: String, settings: Properties = Propert
 		rarity = settings.rarity;
 	}
 
+	override fun equals(other: Any?): Boolean = other is Item && other.id == this.id;
+
+	override fun hashCode(): Int = id.hashCode();
+
 	/**
 	 * 아이템을 파괴한다.
 	 *

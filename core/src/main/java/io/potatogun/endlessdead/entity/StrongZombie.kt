@@ -33,7 +33,7 @@ class StrongZombie(world: World, x: Float, y: Float) : Zombie(world, x, y, 49f, 
 				}
 			}
 			DashState.PREPARING -> {
-				movable = false;
+				setMovable(false);
 				stateTimer -= delta;
 				if(stateTimer <= 0f) {
 					dashState = DashState.DASHING;
@@ -42,7 +42,7 @@ class StrongZombie(world: World, x: Float, y: Float) : Zombie(world, x, y, 49f, 
 			}
 			DashState.DASHING -> {
 				// super 업데이트 로직 때 따로 안 움직이게 함
-				movable = false;
+				setMovable(false);
 
 				x += dashDirX * 900f * delta;
 				y += dashDirY * 900f * delta;
@@ -51,14 +51,14 @@ class StrongZombie(world: World, x: Float, y: Float) : Zombie(world, x, y, 49f, 
 				if(collidesWith(target)) {
 					target.takeDamage(20, attacker = this);
 					dashState = DashState.COOLDOWN;
-					movable = true;
+					setMovable(true);
 					stateTimer = 5.0f;
 				} else {
 					stateTimer -= delta;
 
 					if(stateTimer <= 0f) {
 						dashState = DashState.COOLDOWN;
-						movable = true;
+						setMovable(true);
 						stateTimer = 5.0f;
 					}
 				}

@@ -25,7 +25,7 @@ import kotlin.math.sin;
  * @param settings 총 옵션
  * @throws IllegalArgumentException	총 옵션이 잘못된 경우
  */
-open class Gun(id: String, name: String, settings: Properties) : Item(id, name, settings), Shootable, Usable {
+abstract class Gun(id: String, name: String, settings: Properties) : Item(id, name, settings), Shootable, Usable {
 	override val isContinuousUseAllowed = false;
 	/**
 	 * 총알 피해량
