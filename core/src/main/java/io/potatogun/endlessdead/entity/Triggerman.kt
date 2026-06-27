@@ -3,6 +3,7 @@ package io.potatogun.endlessdead.entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.entity.ai.ApproachTarget;
 import io.potatogun.endlessdead.inventory.SingleItemInventory;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
@@ -17,6 +18,7 @@ import io.potatogun.gdxhelper.world.World;
  */
 class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: SingleItemInventory) : LivingEntity(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, PenetratorDamagable, AttackTargetable, DamageListener, Movable, ItemSelectable by InventoryItemSelector(inventory) {
 	private val targeter = AutoTargeter(this, targetFetcher = { if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
+	private val approacher = ApproachTarget(this, 360f);
 	override val speed = 140f;
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.15f;
@@ -46,19 +48,12 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 		if(target == null) return;
 		rotateTo(target);
 
-		val dx = target.x - x;
-		val dy = target.y - y;
-		val distance = distanceTo(target);
-
-		if(distance > 360f) {
-			x += dx / distance * speed * delta;
-			y += dy / distance * speed * delta;
-		} else {
+		approacher.update(delta);
+		if(approacher.state == ApproachTarget.State.APPROACHED)
 			selectedItem?.let {
 				if(it !is Shootable) return;
 				it.shoot(target.position, this);
 			};
-		}
 	}
 
 	// 누군가가 자신을 공격하면 처치 대상을 그자로 한다.
