@@ -98,21 +98,21 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	 */
 	init {
 		// 50~100개의 건물과 상자를 무작위로 배치
-		val trapChestGeneratable = (Random.nextInt(1000) + 1 <= 5);  // 0.5%
+		val trapChestGeneratable = (Random.nextInt(1000) + 1 <= 1);  // 0.1% 확률
 		val intWidth = this.width.toInt();
 		val intHeight = this.height.toInt();
 		for(i in 0 until Random.nextInt(51) + 50) {
 			val x = Random.nextInt(intWidth).toFloat();
 			val y = Random.nextInt(intHeight).toFloat();
 			val item: Item = generateRandomItem();  // 들어있을 아이템
-			val rand = Random.nextInt(10);
+			val rand = Random.nextInt(100) + 1;
 			entities.add(when {
-				rand <= 3	-> Building(this, x, y, item)
+				rand <= 40	-> Building(this, x, y, item)  // 40% 확률
 				else		-> {
-					if(rand == 4 && trapChestGeneratable)
-						TrapChest(this, x, y, item)
+					if(rand >= 98 && trapChestGeneratable)
+						TrapChest(this, x, y, item)  // 3% 확률
 					else
-						Chest(this, x, y, item)
+						Chest(this, x, y, item)  // 60% 확률
 				}
 			});
 		}
@@ -120,12 +120,12 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		// 각각 1% 확률로 좀비 공격 포탑을 임의 위치에 1~3대 설치
 		for(i in 1..3)
 			if(Random.nextInt(100) == i * 24)
-				entities.add(FriendlyTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
+				entities.add(FriendlyTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, true));
 		// 각각 2.5% 확률로 플레이어 공격 포탑을 월드의 각 모퉁이에 설치
-		if(Random.nextInt(40) == 8) entities.add(HostileTurret(this, 100f, 100f).apply { rotate(315f) });
-		if(Random.nextInt(40) == 12) entities.add(HostileTurret(this, width - 100f, 100f).apply { rotate(45f) });
-		if(Random.nextInt(40) == 15) entities.add(HostileTurret(this, 100f, height - 100f).apply { rotate(225f) });
-		if(Random.nextInt(40) == 21) entities.add(HostileTurret(this, width - 100f, height - 100f).apply { rotate(135f) });
+		if(Random.nextInt(40) == 8) entities.add(HostileTurret(this, 100f, 100f, true).apply { rotate(315f) });
+		if(Random.nextInt(40) == 12) entities.add(HostileTurret(this, width - 100f, 100f, true).apply { rotate(45f) });
+		if(Random.nextInt(40) == 15) entities.add(HostileTurret(this, 100f, height - 100f, true).apply { rotate(225f) });
+		if(Random.nextInt(40) == 21) entities.add(HostileTurret(this, width - 100f, height - 100f, true).apply { rotate(135f) });
 
 		// 플레이어 등록
 		entities.add(player);
@@ -136,22 +136,26 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		// 10초마다 빈 상자 하나 리필
 		timerManager.register(RepeatingTimer(10f) {
 			val emptyContainers = entities.getAllOf<Container>().filter { it.inventory.isEmpty };
-			emptyContainers.randomOrNull()?.putItem(generateRandomItem());
+			emptyContainers.randomOrNull()?.putItem(generateRandomItem(false));
 		});
 	}
 
 	/**
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다.
 	 */
-	private fun generateRandomItem(): Item {
+	private fun generateRandomItem(allowRare: Boolean = true): Item {
 		val rand = Random.nextInt(1000) + 1;  // 1~1000
 		return when {
-			rand <= 350	-> MachineGun()			// 35%
-			rand <= 650	-> Shotgun()			// 30%
-			rand <= 850	-> Bandage()			// 20%
-			rand <= 950	-> SpeedPotion()		// 10%
-			rand <= 999	-> TimeStopper()		// 5%
-			else		-> TurretInstaller()	// 0.1%
+			rand <= 350	-> MachineGun()			// 35% 확률
+			rand <= 650	-> Shotgun()			// 30% 확률
+			rand <= 850	-> Bandage()			// 20% 확률
+			rand <= 950	-> SpeedPotion()		// 10% 확률
+			else		-> {
+				if(rand >= 1000 && allowRare)
+					TurretInstaller()  // 0.1% 확률
+				else
+					TimeStopper()  // 5% 확률
+			}
 		};
 	}
 

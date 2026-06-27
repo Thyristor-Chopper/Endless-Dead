@@ -16,10 +16,10 @@ import io.potatogun.gdxhelper.world.World;
  * @param y             개체의 처음 Y 위치
  * @param width         가로 크기 (픽셀)
  * @param height        세로 크기 (픽셀)
- * @param texture       개체 텍스처(없을 수도 있음)
  * @param initialHealth 초기(최대) 체력
+ * @param texture       개체 텍스처(없을 수도 있음)
  */
-abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture? = null, initialHealth: Int) : Entity(world, x, y, width, height, texture) {
+abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, initialHealth: Int, texture: Texture? = null) : Entity(world, x, y, width, height, texture) {
 	/**
 	 * 개체의 최대 체력.
 	 */
@@ -39,31 +39,15 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	val isAlive: Boolean
 		get() = health > 0;
 	/**
-	 * 피격 시 잠깐 동안 대미지를 안 받게 해주는 무적 타이머
+	 * 무적인지의 여부
 	 */
-	private var invincibilityTimer: Float = 0f
-		set(value) {
-			if(value < 0f) field = 0f;
-			else field = value;
-		};
-	/** 
-	 * 무적 타이머가 가동 중인지의 여부
-	 */
-	private val isInvincibilityTimerActive: Boolean
-		inline get() = (invincibilityTimer > 0f);
+	var isInvincible = false  // setter는 자바에서는 setInvincible임 디컴파일해서 확인함
+		protected set;
 	/**
 	 * 가장 최근에 대미지를 입힌 개체
 	 */
 	var latestAttacker: Entity? = null
 		private set;
-	/**
-	 * 대미지를 입으면 0.5초 동안 붉게 표시할 때 사용되는 타이머
-	 */
-	private var damagedIndicatorTimer: Float = 0f
-		set(value) {
-			if(value < 0f) field = 0f;
-			else field = value;
-		};
 	/**
 	 * 대미지를 입었을 때 붉게 표시할지의 여부
 	 */
@@ -76,6 +60,31 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 * 기본값 무적 타이머는 없음
 	 */
 	protected open val defaultInvincibleDuration = 0f;
+	/**
+	 * 대미지를 입으면 0.5초 동안 붉게 표시할 때 사용되는 타이머
+	 */
+	private var damagedIndicatorTimer: Float = 0f
+		set(value) {
+			if(value < 0f) field = 0f;
+			else field = value;
+		};
+	/**
+	 * 피격 시 잠깐 동안 대미지를 안 받게 해주는 무적 타이머
+	 */
+	private var invincibilityTimer: Float = 0f
+		set(value) {
+			if(value < 0f) field = 0f;
+			else field = value;
+		};
+	/** 
+	 * 피격 무적 타이머가 가동 중인지의 여부
+	 */
+	private val isInvincibilityTimerActive: Boolean
+		inline get() = (invincibilityTimer > 0f);
+
+	init {
+		if(initialHealth <= 0) throw IllegalArgumentException("invalid health");
+	}
 
 	/**
 	 * 체력 감소(대미지를 입는다.)
@@ -88,6 +97,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	 */
 	@JvmOverloads open fun takeDamage(damage: Int, invincibleDuration: Float = defaultInvincibleDuration, attacker: Entity? = null): Boolean {
 		if(damage < 0) throw IllegalArgumentException("damage must not be negative");
+		if(isInvincible) return false;
 		if(!isAlive) return false;
 
 		// 무적 시간이 다 끝났을 때만 피격당함
@@ -126,7 +136,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 	}
 
 	/**
-	 * 개체를 즉시 죽인다.
+	 * 개체를 isInvincible와 관계 없이 즉시 죽인다.
 	 *
 	 * @param attacker 공격자
 	 * @return         성공 여부

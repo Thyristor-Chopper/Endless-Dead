@@ -27,7 +27,7 @@ import kotlin.math.sqrt;
  * @param    texture           총알 텍스처
  * @property textureDisposable 총알 텍스처가 공유 텍스처라면 false
  */
-class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet"), private val textureDisposable: Boolean = false) : LivingEntity(world, shooter.position.x, shooter.position.y, size, size, texture, health) {
+class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet"), private val textureDisposable: Boolean = false) : LivingEntity(world, shooter.position.x, shooter.position.y, size, size, health, texture) {
 	override val isUpdatableWhileFrozen = (shooter is Player);
 	override val showDamageIndicator = false;
 	override val defaultInvincibleDuration = 0.1f;
