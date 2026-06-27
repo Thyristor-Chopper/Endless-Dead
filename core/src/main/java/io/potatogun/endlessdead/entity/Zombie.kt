@@ -4,6 +4,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.entity.ai.ApproachTarget;
+import io.potatogun.endlessdead.entity.ai.Behavior.Result;
+import io.potatogun.endlessdead.entity.ai.MeleeAttackTarget;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.util.getDistanceSorted;
@@ -32,14 +35,16 @@ import io.potatogun.gdxhelper.world.World;
  */
 abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, settings: Properties) : LivingEntity(world, "Zombie", x, y, width, height, settings.health, Textures.getShared("zombie")), PenetratorDamagable, AttackTargetable, DamageListener, MeleeAttacker, Movable {
 	private val targeter = AutoTargeter(this, targetFetcher = { if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
+	private val approacher: ApproachTarget;
+	private val meleeAttacker: MeleeAttackTarget;
 	private val attackingTexture = Textures.getShared("attacking_zombie");
 	override val attackDamage = settings.attackDamage;
+	override val attackInterval = 0.3f;
 	override val speed = settings.speed;
 	override val penetrationDamage = 1;
 	override val defaultInvincibleDuration = 0.15f;
-	override val attackInterval = 0.3f;
-	private var attackTextureTimer = 0f;
 	private var attackCooldownTimer = attackInterval;
+	private var attackTextureTimer = 0f;
 	override var target: LivingEntity?
 		get() = targeter.target
 		set(value) { targeter.target = value };
@@ -47,6 +52,9 @@ abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Fl
 
 	init {
 		settings.fillDefaults();
+		val targetCenterGapFactor = 3f / 4f;
+		approacher = ApproachTarget(this, targetCenterGapFactor = targetCenterGapFactor);
+		meleeAttacker = MeleeAttackTarget(this, targetCenterGapFactor = targetCenterGapFactor);
 	}
 
 	protected fun setTargetFetcher(fetcher: () -> LivingEntity?) {
@@ -64,35 +72,19 @@ abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Fl
 	override fun update(delta: Float) {
 		super.update(delta);
 
-		val target: LivingEntity? = this.target;
-		if(target == null) return;
-
-		val dx = target.x - x;
-		val dy = target.y - y;
-		val distance = distanceTo(target);
-
-		// 플레이어의 중심으로 정확히 모이면 어색하니까 살짝은 거리를 두게 하자.
-		if(distance > target.width * (3f / 4f)) {
-			attackTextureTimer = 0f;
-			attackCooldownTimer = 0f;
-			if(isMovable) {
-				x += dx / distance * speed * delta;
-				y += dy / distance * speed * delta;
-			}
-		} else {
-			// 플레이어에게 대미지 주기
-			// 처음 템플릿(예제) 코드에서는 모든 상호작용을 월드에서 처리했으나
-			//   난 좀비'가' 누군가에게 직접 대미지를 주는 게 맞는 것 같아서 여기서 처리함.
+		updateAI(delta);
+		if(meleeAttacker.state == MeleeAttackTarget.State.ATTACKING) {
 			attackTextureTimer -= delta;
 			if(attackTextureTimer <= 0f)
 				attackTextureTimer = 0.75f;
-			attackCooldownTimer -= delta;
-			if(attackCooldownTimer <= 0f)
-				attackCooldownTimer = attackInterval;
-
-			if(attackCooldownTimer == attackInterval)
-				target.takeDamage(attackDamage, attacker = this);
+		} else {
+			attackTextureTimer = 0f;
 		}
+	}
+
+	protected open fun updateAI(delta: Float) {
+		approacher.update(delta);
+		meleeAttacker.update(delta);
 	}
 
 	override fun draw(batch: SpriteBatch) {

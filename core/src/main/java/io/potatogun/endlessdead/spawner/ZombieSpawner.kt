@@ -8,6 +8,7 @@ import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
+import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.util.distanceTo;
 import io.potatogun.gdxhelper.util.getRandom;
@@ -33,7 +34,7 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 	private val timerManager = TimerManager();
 
 	init {
-		timerManager.register(RepeatingTimer(spawnInterval) {
+		timerManager.register(Timer(spawnInterval) {
 			for(i in 1..zombiesPerSpawn)
 				spawnRandomZombie();
 		});
