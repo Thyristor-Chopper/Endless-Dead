@@ -12,6 +12,7 @@ import io.potatogun.gdxhelper.world.World;
 import java.lang.Math.toDegrees;
 
 import kotlin.math.atan2;
+import kotlin.random.Random;
 
 /**
  * 포탑 (자동 총알 발사 기계)
@@ -31,6 +32,7 @@ abstract class Turret(world: World, x: Float, y: Float, texture: Texture, gun: I
 
 	init {
 		gun?.let { inventory.addItem(it) };
+		rotate(Random.nextInt(360).toFloat());
 	}
 
 	protected fun setTargetFetcher(fetcher: () -> LivingEntity?) {

@@ -26,7 +26,7 @@ class AutoTargeter(private val owner: Entity, private var followRange: Float = 0
 		if(followRange < 0f) throw IllegalArgumentException("invalid follow range");
 	}
 
-	private inline fun isValidTarget(entity: LivingEntity?): Boolean = entity != null && entity.isAlive && (followRange == 0f || (followRange > 0f && entity.distanceTo(owner) <= followRange));
+	private inline fun isValidTarget(entity: LivingEntity?): Boolean = entity != null && entity.isAlive && !owner.isSameTeamWith(entity) && (followRange == 0f || (followRange > 0f && entity.distanceTo(owner) <= followRange));
 
 	/**
 	 * 새 공격 대상자를 찾는 함수를 다시 등록한다.

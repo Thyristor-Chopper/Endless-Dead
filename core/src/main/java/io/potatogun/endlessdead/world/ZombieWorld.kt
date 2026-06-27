@@ -10,12 +10,14 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
 import io.potatogun.endlessdead.entity.container.Container;
+import io.potatogun.endlessdead.entity.container.TrapChest;
 import io.potatogun.endlessdead.item.Bandage;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.MachineGun;
 import io.potatogun.endlessdead.item.Shotgun;
 import io.potatogun.endlessdead.item.SpeedPotion;
 import io.potatogun.endlessdead.item.TimeStopper;
+import io.potatogun.endlessdead.item.TurretInstaller;
 import io.potatogun.endlessdead.spawner.Spawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
 import io.potatogun.gdxhelper.Utils;
@@ -96,22 +98,29 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	 */
 	init {
 		// 50~100개의 건물과 상자를 무작위로 배치
+		val trapChestGeneratable = (Random.nextInt(1000) + 1 <= 5);  // 0.5%
 		val intWidth = this.width.toInt();
 		val intHeight = this.height.toInt();
 		for(i in 0 until Random.nextInt(51) + 50) {
 			val x = Random.nextInt(intWidth).toFloat();
 			val y = Random.nextInt(intHeight).toFloat();
 			val item: Item = generateRandomItem();  // 들어있을 아이템
-			entities.add(when(Random.nextInt(3)) {
-				0		-> Building(this, x, y, item);
-				else	-> Chest(this, x, y, item);
+			val rand = Random.nextInt(10);
+			entities.add(when {
+				rand <= 3	-> Building(this, x, y, item)
+				else		-> {
+					if(rand == 4 && trapChestGeneratable)
+						TrapChest(this, x, y, item)
+					else
+						Chest(this, x, y, item)
+				}
 			});
 		}
 
 		// 각각 1% 확률로 좀비 공격 포탑을 임의 위치에 1~3대 설치
 		for(i in 1..3)
 			if(Random.nextInt(100) == i * 24)
-				entities.add(FriendlyTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f).apply { rotate(Random.nextInt(360).toFloat()) });
+				entities.add(FriendlyTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 		// 각각 2.5% 확률로 플레이어 공격 포탑을 월드의 각 모퉁이에 설치
 		if(Random.nextInt(40) == 8) entities.add(HostileTurret(this, 100f, 100f).apply { rotate(315f) });
 		if(Random.nextInt(40) == 12) entities.add(HostileTurret(this, width - 100f, 100f).apply { rotate(45f) });
@@ -135,13 +144,14 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다.
 	 */
 	private fun generateRandomItem(): Item {
-		val rand = Random.nextInt(100) + 1;  // 1~100
+		val rand = Random.nextInt(1000) + 1;  // 1~1000
 		return when {
-			rand <= 35	-> MachineGun()		// 35%
-			rand <= 65	-> Shotgun()		// 30%
-			rand <= 85	-> Bandage()		// 20%
-			rand <= 95	-> SpeedPotion()	// 10%
-			else		-> TimeStopper()	// 5%
+			rand <= 350	-> MachineGun()			// 35%
+			rand <= 650	-> Shotgun()			// 30%
+			rand <= 850	-> Bandage()			// 20%
+			rand <= 950	-> SpeedPotion()		// 10%
+			rand <= 999	-> TimeStopper()		// 5%
+			else		-> TurretInstaller()	// 0.1%
 		};
 	}
 
