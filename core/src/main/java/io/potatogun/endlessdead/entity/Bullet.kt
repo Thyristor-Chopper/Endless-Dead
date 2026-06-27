@@ -15,18 +15,19 @@ import kotlin.math.sqrt;
 /**
  * 총알 개체
  *
- * @param    world      총알이 있는 세계
- * @property gun        쏜 발사기
- * @property shooter    쏜 개체
- * @property target     총알이 향할 위치
- * @property speed      총알 속도
- * @property damage     총알이 주는 피해량
- * @property penetrable 총알 관통 가능 여부
- * @param    health     총알 체력 (관통 시 감소)
- * @param    size       총알 지름
- * @param    texture    총알 텍스처
+ * @param    world             총알이 있는 세계
+ * @property gun               쏜 발사기
+ * @property shooter           쏜 개체
+ * @property target            총알이 향할 위치
+ * @property speed             총알 속도
+ * @property damage            총알이 주는 피해량
+ * @property penetrable        총알 관통 가능 여부
+ * @param    health            총알 체력 (관통 시 감소)
+ * @param    size              총알 지름
+ * @param    texture           총알 텍스처
+ * @property textureDisposable 총알 텍스처가 공유 텍스처라면 false
  */
-class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet")) : LivingEntity(world, shooter.position.x, shooter.position.y, size, size, texture, health) {
+class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet"), private val textureDisposable: Boolean = false) : LivingEntity(world, shooter.position.x, shooter.position.y, size, size, texture, health) {
 	override val isUpdatableWhileFrozen = (shooter is Player);
 	override val showDamageIndicator = false;
 	override val defaultInvincibleDuration = 0.1f;
@@ -84,6 +85,8 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 			}
 	}
 
-	// 공유 자원이기 때문에 여기서 정리하지 않고 다른 인스턴스에서 재활용한다.
-	override fun dispose() {}
+	override fun dispose() {
+		if(textureDisposable)
+			texture.dispose();
+	}
 }

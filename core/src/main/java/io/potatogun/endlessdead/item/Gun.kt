@@ -65,6 +65,10 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	 * 총알 텍스처
 	 */
 	private val bulletTexture: Texture;
+	/**
+	 * 총알 텍스처 자원해제 가능 여부
+	 */
+	private val bulletTextureDisposable: Boolean;
 	private var fireCooldown = 0f
 		set(value) {
 			if(value < 0f) field = 0f;
@@ -108,6 +112,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		infiniteBullets = settings.isBulletsInfinite;
 		bulletSize = settings.bulletSize;
 		bulletTexture = settings.bulletFaceTexture;
+		bulletTextureDisposable = settings.bulletTextureDisposable;
 	}
 
 	/**
@@ -141,7 +146,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	override fun shoot(target: Position, shooter: Entity): Int {
 		if(!canFire) return 0;
 
-		val bullet = Bullet(shooter.world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture).apply { team = shooter.team };
+		val bullet = Bullet(shooter.world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture, bulletTextureDisposable).apply { team = shooter.team };
 		shooter.world.entities.add(bullet);
 		startFireCooldown();
 
@@ -200,6 +205,8 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		internal var bulletSize = 16f
 			private set;
 		internal lateinit var bulletFaceTexture: Texture
+			private set;
+		internal var bulletTextureDisposable = false
 			private set;
 
 		init {
@@ -288,8 +295,9 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		 * @param texture 텍스처
 		 * @return        옵션 객체 자신
 		 */
-		fun bulletTexture(texture: Texture): Properties {
+		@JvmOverloads fun bulletTexture(texture: Texture, disposable: Boolean = true): Properties {
 			bulletFaceTexture = texture;
+			bulletTextureDisposable = disposable;
 			return this;
 		}
 
