@@ -48,7 +48,7 @@ abstract class Turret @JvmOverloads constructor(world: World, name: String, x: F
 		targeter.setFollowRange(range);
 	}
 
-	override fun update(delta: Float) {
+	final override fun update(delta: Float) {
 		super.update(delta);
 
 		val target: LivingEntity? = this.target;
