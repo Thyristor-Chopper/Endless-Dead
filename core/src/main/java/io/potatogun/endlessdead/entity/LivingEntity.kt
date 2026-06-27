@@ -12,6 +12,7 @@ import io.potatogun.gdxhelper.world.World;
  * 살아있다는 개념과 피격이 있는 개체
  *
  * @param world         개체가 속한 세계
+ * @param name          개체 표시 이름
  * @param x             개체의 처음 X 위치
  * @param y             개체의 처음 Y 위치
  * @param width         가로 크기 (픽셀)
@@ -19,7 +20,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param initialHealth 초기(최대) 체력
  * @param texture       개체 텍스처(없을 수도 있음)
  */
-abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, height: Float, initialHealth: Int, texture: Texture? = null) : Entity(world, x, y, width, height, texture) {
+abstract class LivingEntity(world: World, name: String, x: Float, y: Float, width: Float, height: Float, initialHealth: Int, texture: Texture? = null) : Entity(world, name, x, y, width, height, texture) {
 	/**
 	 * 개체의 최대 체력.
 	 */
@@ -107,7 +108,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		val killed = (health == 0);
 		if(killed) {  // 사망
 			onDeath(attacker);  // 콜백 호출
-			if(attacker != null) attacker.onKill(this);
+			if(attacker is AttackListener) attacker.onKill(this);
 			remove();
 		} else {
 			invincibilityTimer = invincibleDuration;  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
@@ -117,7 +118,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 				damagedIndicatorTimer = damageIndicatorDuration;
 		}
 		if(attacker != null) {
-			if(!killed) attacker.onAttack(this);
+			if(!killed && attacker is AttackListener) attacker.onAttack(this);
 			latestAttacker = attacker;
 		}
 		return true;
@@ -145,7 +146,7 @@ abstract class LivingEntity(world: World, x: Float, y: Float, width: Float, heig
 		if(!isAlive) return false;
 		health = 0;
 		onDeath(attacker);
-		if(attacker != null) attacker.onKill(this);
+		if(attacker is AttackListener) attacker.onKill(this);
 		remove();
 		return true;
 	}

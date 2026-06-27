@@ -3,7 +3,7 @@ package io.potatogun.endlessdead.entity;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.world.World;
 
-class StrongZombie(world: World, x: Float, y: Float) : Zombie(world, x, y, 49f, 70f, settings = Zombie.Properties(15, 5, 50f)) {
+class StrongZombie(world: World, x: Float, y: Float) : Zombie(world, "Rabid Zombie", x, y, 49f, 70f, settings = Zombie.Properties(15, 5, 50f)) {
 	private var dashState = DashState.WALKING;
 	private var stateTimer = 0f;
 	// 돌진할 '방향(벡터)'을 기억해 둘 변수

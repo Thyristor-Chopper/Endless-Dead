@@ -27,7 +27,7 @@ import kotlin.math.sqrt;
  * @param    texture           총알 텍스처
  * @property textureDisposable 총알 텍스처가 공유 텍스처라면 false
  */
-class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet"), private val textureDisposable: Boolean = false) : LivingEntity(world, shooter.position.x, shooter.position.y, size, size, health, texture) {
+class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet"), private val textureDisposable: Boolean = false) : LivingEntity(world, "Bullet", shooter.position.x, shooter.position.y, size, size, health, texture) {
 	override val isUpdatableWhileFrozen = (shooter is Player);
 	override val showDamageIndicator = false;
 	override val defaultInvincibleDuration = 0.1f;
@@ -75,7 +75,7 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 		//   난 총알'이' 누군가에게 직접 대미지를 주는 게 맞는 것 같아서 여기서 처리함.
 		for(entity in world.entities.getNearby(this))
 			if(entity !== this && entity !== shooter && entity is LivingEntity && !isSameTeamWith(entity) && (entity !is Bullet || entity.gun !== this.gun) && collidesWith(entity)) {
-				entity.takeDamage(damage, attacker=shooter);  // 무적 시간이 필요하면 추가...
+				entity.takeDamage(damage, attacker = shooter);  // 무적 시간이 필요하면 추가...
 				if(penetrable) {
 					val penetrationDamage = if(entity is PenetratorDamagable) entity.penetrationDamage else 0;
 					this.takeDamage(penetrationDamage, attacker = entity);

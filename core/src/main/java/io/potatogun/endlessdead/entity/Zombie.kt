@@ -25,6 +25,7 @@ import io.potatogun.gdxhelper.world.World;
  *   ▸ 이동 패턴을 사인파, 원운동 등으로 바꾸기
  *
  * @param    world    개체가 속한 세계
+ * @param name        개체 표시 이름
  * @param    x        개체의 처음 X 위치
  * @param    y        개체의 처음 Y 위치
  * @param    width    가로 크기 (픽셀)
@@ -32,7 +33,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param    texture  개체 텍스처
  * @property settings 좀비 옵션
  */
-abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture = Textures.getShared("zombie"), settings: Properties) : LivingEntity(world, x, y, width, height, settings.health, texture), PenetratorDamagable, AttackTargetable {
+abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Float, height: Float, texture: Texture = Textures.getShared("zombie"), settings: Properties) : LivingEntity(world, name, x, y, width, height, settings.health, texture), PenetratorDamagable, AttackTargetable {
 	private val attacker = AutoTargeter(this, targetFetcher = { if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
 	val attackDamage: Int = settings.attackDamage;
 	val speed: Float = settings.speed;
@@ -106,8 +107,9 @@ abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Fl
 	}
 
 	// 누군가가 자신을 공격하면 처치 대상을 그자로 한다.
+	//   자연 생성된 포탑은 공격 불가이기 때문에 그것에게 공격받아도 그걸 타겟하지는 않는다.
 	override fun onDamage(damage: Int, attacker: Entity?) {
-		if(attacker is LivingEntity && attacker !is Turret)
+		if(attacker is LivingEntity)
 			target = attacker;
 	}
 

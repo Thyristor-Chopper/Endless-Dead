@@ -18,6 +18,7 @@ import kotlin.random.Random;
  * 포탑 (자동 총알 발사 기계)
  *
  * @param world       속한 세계
+ * @param name        개체 표시 이름
  * @param x           X 좌표
  * @param y           Y 좌표
  * @param gun         포탑의 총
@@ -25,12 +26,14 @@ import kotlin.random.Random;
  * @param isPermanent 포탑이 영구적인지의 여부(죽지 못하는지)
  * @param texture     개체 텍스처
  */
-abstract class Turret @JvmOverloads constructor(world: World, x: Float, y: Float, gun: Item?, health: Int, isPermanent: Boolean = false, texture: Texture) : LivingEntity(world, x, y, 83f, 154f, health, texture), InventoryHolder, AttackTargetable {
+abstract class Turret @JvmOverloads constructor(world: World, name: String, x: Float, y: Float, gun: Item?, health: Int, isPermanent: Boolean = false, texture: Texture) : LivingEntity(world, name, x, y, 83f, 154f, health, texture), InventoryHolder, AttackTargetable, PenetratorDamagable {
 	private val attacker = AutoTargeter(this);  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
 	final override val inventory = SingleItemInventory();
 	override var target: LivingEntity?
 		get() = attacker.target
 		set(value) { attacker.target = value };
+	override val penetrationDamage = (health * 0.1f).toInt();
+	override val defaultInvincibleDuration = 0.05f;
 
 	init {
 		gun?.let { inventory.addItem(it) };

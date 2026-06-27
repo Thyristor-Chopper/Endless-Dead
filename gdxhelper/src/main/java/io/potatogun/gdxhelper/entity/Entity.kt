@@ -42,13 +42,14 @@ import kotlin.math.atan2;
  *    }
  *
  * @property world   개체가 속한 세계 - 자바에서는 getWorld() 사용
+ * @property name    개체 표시 이름
  * @param    x       개체의 처음 X 위치
  * @param    y       개체의 처음 Y 위치
  * @property width   가로 크기 (픽셀)
  * @property height  세로 크기 (픽셀)
  * @property texture 개체 텍스처(없을 수도 있음)
  */
-abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width: Float, @JvmField val height: Float, @JvmField protected val texture: Texture? = null) {
+abstract class Entity(val world: World, val name: String, x: Float, y: Float, @JvmField val width: Float, @JvmField val height: Float, @JvmField protected val texture: Texture? = null) {
 	/**
 	 * 개체의 평면좌표 위치
 	 *
@@ -192,22 +193,6 @@ abstract class Entity(val world: World, x: Float, y: Float, @JvmField val width:
 
 		return Utils.abs(x - other.x) < (collideCheckWidth + other.collideCheckWidth) * 0.5f && Utils.abs(y - other.y) < (collideCheckHeight + other.collideCheckHeight) * 0.5f;
 	}
-
-	/**
-	 * 개체가 다른 누군가를 공격했을 때 콜백 함수
-	 * 확장성을 고려하여 LivingEntity가 아닌 그냥 Entity이다. 현재로썬 큰 의미는 없지만.
-	 *
-	 * @param victim 공격 대상
-	 */
-	open fun onAttack(victim: Entity) {}
-
-	/**
-	 * 개체가 다른 누군가를 처치했을 때 콜백 함수
-	 * 확장성을 고려하여 LivingEntity가 아닌 그냥 Entity이다. 현재로썬 큰 의미는 없지만.
-	 *
-	 * @param victim 공격 대상
-	 */
-	open fun onKill(victim: Entity) {}
 
 	/**
 	 * 다른 개체와의 거리 (몸의 중앙을 기준으로 한다)

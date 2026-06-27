@@ -14,7 +14,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param y           Y 좌표
  * @param isPermanent 포탑이 영구적인지의 여부(죽지 못하는지)
  */
-class FriendlyTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : TeamTurret(world, x, y, "friends", FriendlyTurretGun(), 1000, isPermanent, Textures.getShared("turret_friendly")) {
+class FriendlyTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : TeamTurret(world, "Friendly Turret", x, y, "friends", FriendlyTurretGun(), 2000, isPermanent, Textures.getShared("turret_friendly")) {
 	init {
 		setFollowRange(456f);
 	}

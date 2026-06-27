@@ -14,6 +14,7 @@ import io.potatogun.gdxhelper.world.World;
  * 아이템 상자 역할을 하는 추상 클래스
  *
  * @param    world        개체가 속한 세계
+ * @param    name         개체 표시 이름
  * @param    x            개체의 처음 X 위치
  * @param    y            개체의 처음 Y 위치
  * @param    width        개체 너비
@@ -22,7 +23,7 @@ import io.potatogun.gdxhelper.world.World;
  * @property emptyTexture 상자가 비어 있을 때 사용할 텍스처
  * @param    initialItem  처음 들어있는 아이템
  */
-abstract class Container(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture?, private val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, x, y, width, height, texture), InventoryHolder {
+abstract class Container(world: World, name: String, x: Float, y: Float, width: Float, height: Float, texture: Texture?, private val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, name, x, y, width, height, texture), InventoryHolder {
 	override val inventory = SingleItemInventory();
 	/**
 	 * 플레이어가 직접 아이템을 넣었을 때의 텍스처

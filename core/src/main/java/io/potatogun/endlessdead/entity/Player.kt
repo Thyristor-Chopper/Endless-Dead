@@ -43,13 +43,16 @@ import io.potatogun.gdxhelper.world.World;
  * @param    y         처음 Y 좌표
  * @property inventory 플레이어가 가질 인벤토리
  */
-class Player(world: World, x: Float, y: Float, override val inventory: ObservableInventory = LinearInventory(-1)) : LivingEntity(world, x, y, 24f, 57f, 50, Utils.loadTexture("entity/player.bmp")), InventoryHolder, ItemSelectable by InventoryItemSelector(inventory) {
+class Player(world: World, x: Float, y: Float, override val inventory: ObservableInventory = LinearInventory(-1)) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, Utils.loadTexture("entity/player.bmp")), AttackListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory) {
 	override val isUpdatableWhileFrozen = true;
 	private val textureWithGun = Utils.loadTexture("entity/player_holding_gun.bmp");
 	private var speed = 200f
 	// 타이머
 	private val timerManager = TimerManager();
 	private val healTimer: RepeatingTimer;
+	override val defaultInvincibleDuration = 0.05f;
+	var latestAttackVictim: LivingEntity? = null
+		private set;
 
 	init {
 		// 타이머
@@ -177,11 +180,15 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	}
 
 	// 처치한 좀비 수를 갱신한다.
-	override fun onKill(victim: Entity) {
+	override fun onKill(victim: LivingEntity) {
 		if(victim is Zombie) {
 			ScoreManager.addScore(10);
 			Statistics.killedZombieCount++;
 		}
+	}
+
+	override fun onAttack(victim: LivingEntity) {
+		latestAttackVictim = victim;
 	}
 
 	// ---- 그 외 유틸들 ----
