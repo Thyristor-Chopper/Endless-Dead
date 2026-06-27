@@ -8,6 +8,8 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.world.World;
 
+import java.lang.ref.WeakReference;
+
 /**
  * 살아있다는 개념과 피격이 있는 개체
  *
@@ -44,11 +46,12 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 */
 	var isInvincible = false  // setter는 자바에서는 setInvincible임 디컴파일해서 확인함
 		protected set;
+	private var _latestAttacker: WeakReference<Entity>? = null;
 	/**
 	 * 가장 최근에 대미지를 입힌 개체
 	 */
-	var latestAttacker: Entity? = null
-		private set;
+	val latestAttacker: Entity?
+		get() = _latestAttacker?.get();
 	/**
 	 * 대미지를 입었을 때 붉게 표시할지의 여부
 	 */
@@ -119,7 +122,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 		}
 		if(attacker != null) {
 			if(!killed && attacker is AttackListener) attacker.onAttack(this);
-			latestAttacker = attacker;
+			_latestAttacker = WeakReference(attacker);
 		}
 		return true;
 	}

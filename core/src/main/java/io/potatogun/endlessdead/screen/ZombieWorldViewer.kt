@@ -11,6 +11,8 @@ import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Statistics;
 import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.entity.Bullet;
+import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.item.Gun;
@@ -27,9 +29,12 @@ import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.util.getAllOf;
+import io.potatogun.gdxhelper.util.getDistanceSorted;
 import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
 import io.potatogun.gdxhelper.world.World;
+
+import java.lang.ref.WeakReference;
 
 /**
  * WorldViewer 자체는 정말 월드 자체만을 보여주는 기본적인 뷰어이다.
@@ -64,6 +69,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	private var subtitlesColor = Color.WHITE;
 	private val subtitlesVisible: Boolean
 		inline get() = (subtitlesTimer != null);
+	private var attackTarget: WeakReference<LivingEntity>? = null;
 
 	init {
 		// 단색용 텍스처 생성
@@ -75,7 +81,8 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 		};
 
 		// 미터기 추가
-		addWidget("hp_indicator", ProgressBar({ 80f }, { Window.height - 24f }, { 220f }, color = Utils.rgb(73, 186, 73)));
+		addWidget("hp_indicator", ProgressBar({ 9f }, { Window.height - 38f }, { 180f }, color = Utils.rgb(73, 186, 73)));
+		addWidget("attack_target_hp_indicator", ProgressBar({ 210f }, { Window.height - 38f }, { 180f }, color = Utils.rgb(205, 46, 46)).apply { hide() });
 		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, { 130f }, color = Utils.rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() });
 		addWidget("gun_cooldown_indicator", ProgressBar({ Window.width - 215f }, { 10f }, { 60f }, value=0.42f, color = Color.SCARLET).apply { hide() });
 
@@ -171,12 +178,14 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	 */
 	private inline fun updateProgressBars() {
 		val hpIndicator = getWidget("hp_indicator") as ProgressBar;
+		val targetIndicator = getWidget("attack_target_hp_indicator") as ProgressBar;
 		val ammoIndicator = getWidget("gun_ammo_indicator") as ProgressBar;
 		val cooldownIndicator = getWidget("gun_cooldown_indicator") as ProgressBar;
 
 		val world: World? = projectingWorld;
 		if(world !is SinglePlayerWorld) {
 			hpIndicator.hide();
+			targetIndicator.hide();
 			ammoIndicator.hide();
 			cooldownIndicator.hide();
 			return;
@@ -188,6 +197,18 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			value = player.health.toFloat() / player.maxHealth;
 			show();
 		};
+
+		val _attackTarget: LivingEntity? = player.latestAttackVictim?.takeIf { isValidAttackTarget(it, player) } ?: (world.entities.getDistanceSorted(player).firstOrNull { it is LivingEntity && it !is Bullet && it !== player } as? LivingEntity)?.takeIf { isValidAttackTarget(it, player) };
+		attackTarget = _attackTarget?.let { WeakReference(it) };
+		targetIndicator.apply {
+			val target = attackTarget?.get();
+			if(target != null) {
+				value = target.health.toFloat() / target.maxHealth;
+				show();
+			} else {
+				hide();
+			}
+		}
 
 		// 총 관련 미터기 처리
 		val holding: Item? = player.selectedItem;
@@ -218,6 +239,8 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			cooldownIndicator.hide();
 		}
 	}
+
+	private inline fun isValidAttackTarget(target: LivingEntity?, player: Player) = target != null && !target.isInvincible && target.isAlive && target.distanceTo(player) <= 456f;
 
 	/**
 	 * 일시 정지 상태에서 매 프레임 로직
@@ -459,11 +482,11 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			// 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
 			//    카메라가 움직여도 항상 이 위치에 있다.
 			drawText(
-				text = "HP: ${player.health}",
+				text = "${player.name}  [ ${player.health} ]",
 				x = 10f,
-				y = Window.height - 10f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
+				y = Window.height - 8f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
 				color = Utils.rgb(156, 213, 155),
-				scale = 1.2f
+				scale = 1.0f
 			);
 
 			// 현재 플레이어가 들고 있는 아이템
@@ -482,6 +505,16 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 				);
 			};
 		}
+
+		attackTarget?.get()?.let {
+			drawText(
+				text = "${it.name}  [ ${it.health} ]",
+				x = 211f,
+				y = Window.height - 8f,
+				color = Utils.rgb(247, 215, 215),
+				scale = 1.0f
+			);
+		};
 
 		// 점수
 		drawText(

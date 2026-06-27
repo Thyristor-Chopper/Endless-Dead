@@ -23,6 +23,8 @@ import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.world.World;
 
+import java.lang.ref.WeakReference;
+
 /**
  * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  *  플레이어 — player.bmp 이미지, 화살표 키로 조종.
@@ -51,8 +53,9 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	private val timerManager = TimerManager();
 	private val healTimer: RepeatingTimer;
 	override val defaultInvincibleDuration = 0.05f;
-	var latestAttackVictim: LivingEntity? = null
-		private set;
+	private var _latestAttackVictim: WeakReference<LivingEntity>? = null;
+	val latestAttackVictim: LivingEntity?
+		get() = _latestAttackVictim?.get();
 
 	init {
 		// 타이머
@@ -188,7 +191,7 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	}
 
 	override fun onAttack(victim: LivingEntity) {
-		latestAttackVictim = victim;
+		_latestAttackVictim = WeakReference(victim);
 	}
 
 	// ---- 그 외 유틸들 ----
