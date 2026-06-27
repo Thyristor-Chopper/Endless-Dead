@@ -53,7 +53,7 @@ abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Fl
 		settings.fillDefaults();
 		val targetCenterGapFactor = 3f / 4f;
 		approacher = ApproachTarget(this, targetCenterGapFactor = targetCenterGapFactor);
-		meleeAttacker = MeleeAttackTarget(this, targetCenterGapFactor = targetCenterGapFactor);
+		meleeAttacker = MeleeAttackTarget(this, targetCenterGapFactor);
 	}
 
 	protected fun setTargetFetcher(fetcher: () -> LivingEntity?) {

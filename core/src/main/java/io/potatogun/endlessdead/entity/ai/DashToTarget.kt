@@ -79,7 +79,8 @@ class DashToTarget(private val attacker: AttackTargetable, private val dashSpeed
 	}
 
 	/**
-	 * 평상시, 돌진하려고 잠깐 멈춰있음, 돌진, 돌진 쿨
+	 * 현재 AI 상태
+	 *   평상시, 돌진하려고 잠깐 멈춰있음, 돌진, 돌진 쿨
 	 */
 	enum class State {
 		STANDBY,

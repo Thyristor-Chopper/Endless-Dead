@@ -5,7 +5,14 @@ import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Movable;
 import io.potatogun.gdxhelper.entity.Entity;
 
-class ApproachTarget(private val attacker: AttackTargetable, private val minDistance: Float = 0f, private val targetCenterGapFactor: Float = 0f) : Behavior {
+/**
+ * 공격 대상에게 다가간다.
+ *
+ * @property attacker              공격자
+ * @property targetDistance        지정한 거리만큼 좁혀질 때까지 다가간다.
+ * @property targetCenterGapFactor 대상의 크기(변 길이)의 이 곱만큼 간격을 둔다.
+ */
+class ApproachTarget(private val attacker: AttackTargetable, private val targetDistance: Float = 0f, private val targetCenterGapFactor: Float = 0f) : Behavior {
 	var state = State.STANDBY
 		private set;
 
@@ -26,7 +33,7 @@ class ApproachTarget(private val attacker: AttackTargetable, private val minDist
 		val distance = attacker.distanceTo(target);
 		val targetAverageLength = (target.width + target.height) * 0.5f;
 
-		if(distance <= minDistance + targetAverageLength * targetCenterGapFactor) {
+		if(distance <= targetDistance + targetAverageLength * targetCenterGapFactor) {
 			state = State.APPROACHED;
 			return Behavior.Result.REJECTED;
 		} else {
@@ -42,6 +49,9 @@ class ApproachTarget(private val attacker: AttackTargetable, private val minDist
 		}
 	}
 
+	/**
+	 * 현재 AI 상태
+	 */
 	enum class State {
 		STANDBY,
 		APPROACHING,

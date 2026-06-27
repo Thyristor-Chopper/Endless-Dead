@@ -6,7 +6,13 @@ import io.potatogun.endlessdead.entity.MeleeAttacker;
 import io.potatogun.endlessdead.entity.Movable;
 import io.potatogun.gdxhelper.entity.Entity;
 
-class MeleeAttackTarget(private val attacker: AttackTargetable, private val maxDistance: Float = 0f, private val targetCenterGapFactor: Float = 0f) : Behavior {
+/**
+ * 대상을 근접 공격한다.
+ *
+ * @property attacker              공격자
+ * @property targetCenterGapFactor 대상의 크기(변 길이)의 이 곱까지는 간격을 둬도 공격할 수 있다.
+ */
+class MeleeAttackTarget(private val attacker: AttackTargetable, private val targetCenterGapFactor: Float = 0f) : Behavior {
 	var state = State.STANDBY
 		private set;
 	private var attackCooldownTimer = 0f;
@@ -29,7 +35,7 @@ class MeleeAttackTarget(private val attacker: AttackTargetable, private val maxD
 		val distance = attacker.distanceTo(target);
 		val targetAverageLength = (target.width + target.height) * 0.5f;
 
-		if(distance <= maxDistance + targetAverageLength * targetCenterGapFactor) {
+		if(distance <= targetAverageLength * targetCenterGapFactor) {
 			state = State.ATTACKING;
 
 			attackCooldownTimer -= delta;
@@ -45,6 +51,9 @@ class MeleeAttackTarget(private val attacker: AttackTargetable, private val maxD
 		}
 	}
 
+	/**
+	 * 현재 AI 상태
+	 */
 	enum class State {
 		STANDBY,
 		ATTACKING,
