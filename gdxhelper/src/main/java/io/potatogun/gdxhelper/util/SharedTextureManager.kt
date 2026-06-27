@@ -1,7 +1,6 @@
 package io.potatogun.gdxhelper.util;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import io.potatogun.gdxhelper.Utils;
 

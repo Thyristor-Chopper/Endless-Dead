@@ -1,9 +1,11 @@
 package io.potatogun.endlessdead.item;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Timer.Task;
 
 import io.potatogun.endlessdead.GameManager;
+import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.entity.Player;
@@ -38,7 +40,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	/**
 	 * 총알 관통력
 	 */
-	@get:JvmName("getBulletPenetration") val bulletHP: Int;
+	val bulletPenetration: Int;
 	/**
 	 * 총알 관통 가능 여부
 	 */
@@ -55,6 +57,14 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	 * 무한 총알 여부
 	 */
 	@JvmField val infiniteBullets: Boolean;
+	/**
+	 * 총알 지름
+	 */
+	private val bulletSize: Float;
+	/**
+	 * 총알 텍스처
+	 */
+	private val bulletTexture: Texture;
 	private var fireCooldown = 0f
 		set(value) {
 			if(value < 0f) field = 0f;
@@ -90,12 +100,14 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		settings.fillDefaults();
 		bulletDamage = settings.bulletDamage;
 		bulletSpeed = settings.bulletSpeed;
-		bulletHP = settings.bulletHP;
+		bulletPenetration = settings.bulletPenetration;
 		isBulletPenetrable = settings.isBulletPenetrable;
 		fireInterval = settings.fireInterval;
 		maxBullets = settings.maxBullets;
 		remainingBullets = settings.bullets;
 		infiniteBullets = settings.isBulletsInfinite;
+		bulletSize = settings.bulletSize;
+		bulletTexture = settings.bulletFaceTexture;
 	}
 
 	/**
@@ -129,7 +141,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	override fun shoot(target: Position, shooter: Entity): Int {
 		if(!canFire) return 0;
 
-		val bullet = Bullet(shooter.world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletHP).apply { team = shooter.team };
+		val bullet = Bullet(shooter.world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture).apply { team = shooter.team };
 		shooter.world.entities.add(bullet);
 		startFireCooldown();
 
@@ -173,7 +185,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	 * @throws IllegalArgumentException 속성이 잘못된 경우
 	 */
 	open class Properties(@JvmField val bulletDamage: Int, @JvmField val bulletSpeed: Float) : Item.Properties() {
-		@get:JvmName("getBulletHP") internal var bulletHP = 1
+		internal var bulletPenetration = 1
 			private set;
 		internal var isBulletPenetrable = false
 			private set;
@@ -185,6 +197,10 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 			private set;
 		internal var isBulletsInfinite = true
 			private set;
+		internal var bulletSize = 16f
+			private set;
+		internal lateinit var bulletFaceTexture: Texture
+			private set;
 
 		init {
 			if(bulletDamage < 0) throw IllegalArgumentException("invalid bullet damage");
@@ -193,12 +209,12 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		/**
 		 * 총알 관통력을 지정한다. 자동으로 penetrableBullets도 호출된다.
 		 *
-		 * @param bulletHP 총알 관통력
-		 * @return         옵션 객체 자신
+		 * @param penetration 총알 관통력
+		 * @return            옵션 객체 자신
 		 */
-		fun bulletHP(bulletHP: Int): Properties {
-			if(bulletHP <= 0) throw IllegalArgumentException("invalid value");
-			this.bulletHP = bulletHP;
+		fun bulletPenetration(penetration: Int): Properties {
+			if(penetration <= 0) throw IllegalArgumentException("invalid value");
+			this.bulletPenetration = penetration;
 			this.isBulletPenetrable = true;
 			return this;
 		}
@@ -252,6 +268,35 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 			if(this.bullets == 0) this.bullets = bullets;
 			isBulletsInfinite = false;
 			return this;
+		}
+
+		/**
+		 * 총알 크기를 지정한다. 
+		 *
+		 * @param size 총알 지름
+		 * @return     옵션 객체 자신
+		 */
+		fun bulletSize(size: Float): Properties {
+			if(size <= 0) throw IllegalArgumentException("invalid value");
+			this.bulletSize = size;
+			return this;
+		}
+
+		/**
+		 * 총알 텍스처를 지정한다.
+		 *
+		 * @param texture 텍스처
+		 * @return        옵션 객체 자신
+		 */
+		fun bulletTexture(texture: Texture): Properties {
+			bulletFaceTexture = texture;
+			return this;
+		}
+
+		override fun fillDefaults() {
+			super.fillDefaults();
+			if(!::bulletFaceTexture.isInitialized)
+				bulletFaceTexture = Textures.getShared("bullet");
 		}
 	}
 }

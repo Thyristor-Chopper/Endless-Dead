@@ -15,7 +15,7 @@ import kotlin.math.sin;
 /**
  * 샷건
  */
-class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletHP(5).fireInterval(1f).bullets(5)) {
+class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetration(5).fireInterval(1f).bullets(5)) {
 	private val spreadAngles = listOf(-0.2f, -0.1f, 0f, 0.1f, 0.2f) //방향 기준 퍼짐 좌표
 
 	override fun shoot(target: Position, shooter: Entity): Int {
@@ -32,7 +32,7 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletHP(5).f
 				centerX + cos(finalAngle) * 100f,
 				centerY + sin(finalAngle) * 100f  // angle 객체로 각도(방향)을 지정했으니, 그곳의 cos,sin을 이용한 위치 좌표를 구하는 식
 			);
-			shooter.world.entities.add(Bullet(shooter.world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetrable, bulletHP));
+			shooter.world.entities.add(Bullet(shooter.world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration));
 		}
 
 		startFireCooldown();  // 발사간격 함수

@@ -137,9 +137,9 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	private fun generateRandomItem(): Item {
 		val rand = Random.nextInt(100) + 1;  // 1~100
 		return when {
-			rand <= 40	-> MachineGun()		// 40%
-			rand <= 70	-> Shotgun()		// 30%
-			rand <= 85	-> Bandage()		// 15%
+			rand <= 35	-> MachineGun()		// 35%
+			rand <= 65	-> Shotgun()		// 30%
+			rand <= 85	-> Bandage()		// 20%
 			rand <= 95	-> SpeedPotion()	// 10%
 			else		-> TimeStopper()	// 5%
 		};

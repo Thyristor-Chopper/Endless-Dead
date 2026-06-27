@@ -1,5 +1,7 @@
 package io.potatogun.endlessdead.entity;
 
+import com.badlogic.gdx.graphics.Texture;
+
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.item.Shootable;
@@ -21,8 +23,10 @@ import kotlin.math.sqrt;
  * @property damage     총알이 주는 피해량
  * @property penetrable 총알 관통 가능 여부
  * @param    health     총알 체력 (관통 시 감소)
+ * @param    size       총알 지름
+ * @param    texture    총알 텍스처
  */
-class Bullet(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, health: Int) : LivingEntity(world, shooter.position.x, shooter.position.y, 16f, 16f, Textures.getShared("bullet"), health) {
+class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, private val speed: Float, private val damage: Int, private val penetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet")) : LivingEntity(world, shooter.position.x, shooter.position.y, size, size, texture, health) {
 	override val isUpdatableWhileFrozen = (shooter is Player);
 	override val showDamageIndicator = false;
 	override val defaultInvincibleDuration = 0.1f;
@@ -52,6 +56,8 @@ class Bullet(world: World, val gun: Shootable, val shooter: Entity, private val 
 			amountX = 0f;
 			amountY = 0f;
 		}
+
+		if(shooter.position == target) this.kill();  // 안 움직이는 총알 방지
 	}
 
 	override fun update(delta: Float) {
