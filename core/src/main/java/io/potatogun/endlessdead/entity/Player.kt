@@ -3,7 +3,6 @@ package io.potatogun.endlessdead.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Statistics;
 import io.potatogun.endlessdead.entity.Zombie;

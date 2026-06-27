@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Timer.Task;
 
-import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Bullet;
