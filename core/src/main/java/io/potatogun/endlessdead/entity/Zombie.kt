@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.ai.ApproachTarget;
-import io.potatogun.endlessdead.entity.ai.Behavior.Result;
 import io.potatogun.endlessdead.entity.ai.MeleeAttackTarget;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.Entity;

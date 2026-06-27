@@ -1,6 +1,5 @@
 package io.potatogun.endlessdead.entity;
 
-import io.potatogun.endlessdead.entity.ai.Behavior.Result;
 import io.potatogun.endlessdead.entity.ai.DashToTarget;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.world.World;
