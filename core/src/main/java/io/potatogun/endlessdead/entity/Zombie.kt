@@ -32,7 +32,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param    texture  개체 텍스처
  * @property settings 좀비 옵션
  */
-open class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture = Textures.getShared("zombie"), settings: Properties) : LivingEntity(world, x, y, width, height, texture, settings.health), PenetratorDamagable, AttackTargetable {
+abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, texture: Texture = Textures.getShared("zombie"), settings: Properties) : LivingEntity(world, x, y, width, height, texture, settings.health), PenetratorDamagable, AttackTargetable {
 	private val attacker = AutoTargeter(this, targetFetcher = { if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
 	val attackDamage: Int = settings.attackDamage;
 	val speed: Float = settings.speed;
