@@ -279,9 +279,9 @@ abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
  * @return   해당 위젯(없으면 null)
  */
 inline fun Screen.getWidgetOrNull(id: String): Widget? {
-	try {
-		return getWidget(id);
+	return try {
+		getWidget(id)
 	} catch(e: NoSuchElementException) {
-		return null;
-	}
+		null
+	};
 }

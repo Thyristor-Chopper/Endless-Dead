@@ -3,6 +3,5 @@ plugins {
 }
 
 dependencies {
-	api("com.badlogicgames.gdx:gdx:1.12.1")
-	implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.22")
+	api("com.badlogicgames.gdx:gdx:1.14.1")
 }

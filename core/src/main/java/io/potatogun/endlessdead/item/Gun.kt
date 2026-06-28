@@ -288,7 +288,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		 * @param texture 텍스처
 		 * @return        옵션 객체 자신
 		 */
-		@JvmOverloads fun bulletTexture(texture: Texture): Properties {
+		fun bulletTexture(texture: Texture): Properties {
 			bulletFaceTexture = texture;
 			return this;
 		}

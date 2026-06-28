@@ -3,7 +3,6 @@ package io.potatogun.endlessdead.entity;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
-import io.potatogun.gdxhelper.util.getDistanceSorted;
 import io.potatogun.gdxhelper.world.World;
 
 /**

@@ -88,7 +88,7 @@ class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> F
 	/**
 	 * 현재 프레임에서 바로 가기 키 처리
 	 */
-	private inline fun detectAccessKeyPress() {
+	private fun detectAccessKeyPress() {
 		if(accessKey != null && Input.isKeyJustPressed(accessKey.code - 36))
 			onClick();
 	}
@@ -110,7 +110,7 @@ class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> F
 	/**
 	 * 단추 누르기
 	 */
-	private inline fun fireClickEvent() {
+	private fun fireClickEvent() {
 		if(!previouslyPressed) return;
 		onClick();
 		previouslyPressed = false;

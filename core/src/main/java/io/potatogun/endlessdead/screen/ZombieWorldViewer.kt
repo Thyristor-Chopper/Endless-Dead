@@ -28,8 +28,7 @@ import io.potatogun.gdxhelper.screen.WorldViewer;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
-import io.potatogun.gdxhelper.util.getAllOf;
-import io.potatogun.gdxhelper.util.getDistanceSorted;
+import io.potatogun.gdxhelper.util.countOf;
 import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
 import io.potatogun.gdxhelper.world.World;
@@ -160,14 +159,14 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			Window.titleBarStats = null;
 			return;
 		}
-		
+
 		Window.titleBarStats = when(TitleInfoType.byIndex(currentTitleInfo)) {
 			TitleInfoType.OPENED	-> "Opened chests: ${Statistics.openedContainerCount}"
 			TitleInfoType.KILLED	-> "Killed zombies: ${Statistics.killedZombieCount}"
 			TitleInfoType.FIRED		-> "Fired: ${Statistics.fireCount}"
 			TitleInfoType.SURVIVED	-> "Survived duration: ${Utils.parseSeconds(Statistics.survivedDuration, "m", "s")}"
 			TitleInfoType.DAMAGE	-> "Total damage: ${Statistics.totalDamage}"
-			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.entities.getAllOf<Zombie>().size}"
+			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.entities.countOf<Zombie>()}"
 		};
 	}
 

@@ -7,7 +7,6 @@ import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.util.distanceTo;
-import io.potatogun.gdxhelper.util.getRandom;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.random.Random;
@@ -27,17 +26,20 @@ class TriggermanSpawner(world: World, private val spawnInterval: Float = 5f) : S
 		timerManager.tick(delta);
     }
 
+	// 타이머에서 한 번만 쓰이므로 인라인
     private inline fun spawn() {
-		val attackTarget: Player? = if(world is SinglePlayerWorld) world.player else world.entities.getRandom<Player>();
-		if(attackTarget == null) return;
+		val triggerman = Triggerman(world, 0f, 0f);
         var randomX: Float;
         var randomY: Float;
 		var loopCount = 0;
+		val target = triggerman.target;
 		do {
 			randomX = Random.nextFloat() * (world.width - 70f);
 			randomY = Random.nextFloat() * (world.height - 70f);
 			loopCount++;
-		} while(Position(randomX, randomY).distanceTo(attackTarget) < 408f && loopCount < 30);
-        world.entities.add(Triggerman(world, randomX, randomY).apply { target = attackTarget });
+		} while(target != null && Position(randomX, randomY).distanceTo(target) < 408f && loopCount < 30);
+		triggerman.x = randomX;
+		triggerman.y = randomY;
+        world.entities.add(triggerman);
     }
 }

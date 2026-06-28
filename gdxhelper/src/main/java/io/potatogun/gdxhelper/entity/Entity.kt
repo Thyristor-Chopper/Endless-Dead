@@ -288,7 +288,7 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 		world.entities.remove(this);
 	}
 
-	fun isSameTeamWith(entity: Entity): Boolean = (team == entity.team && team != null && entity.team != null);
+	inline fun isSameTeamWith(entity: Entity): Boolean = (team == entity.team && team != null && entity.team != null);
 
 	/**
 	 * 이 객체가 갖고 있는 GPU 자원을 정리한다 — 화면이 닫힐 때 한 번 호출된다.

@@ -27,7 +27,6 @@ import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
-import io.potatogun.gdxhelper.util.getAllOf;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
 
@@ -139,8 +138,9 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		// 10초마다 빈 상자 하나 리필
 		timerManager.register(RepeatingTimer(10f) {
-			val emptyContainers = entities.getAllOf<Container>().filter { it.inventory.isEmpty };
-			emptyContainers.randomOrNull()?.putItem(generateRandomItem(false));
+			val emptyContainers = entities.getAll().filter { it is Container && it.inventory.isEmpty };
+			val randomContainer = emptyContainers.randomOrNull() as Container?;
+			randomContainer?.putItem(generateRandomItem(false));
 		});
 	}
 

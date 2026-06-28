@@ -57,7 +57,7 @@ object Utils {
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	@JvmStatic inline fun setTimeout(delay: Float, noinline condition: (() -> Boolean)? = null, crossinline operation: () -> Unit): Task {
+	@JvmStatic fun setTimeout(delay: Float, condition: (() -> Boolean)? = null, operation: () -> Unit): Task {
 		return object : Task() {
 			override fun run() {
 				if(condition?.invoke() ?: true)
@@ -85,7 +85,7 @@ object Utils {
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	@JvmStatic inline fun setInterval(interval: Float, noinline condition: (() -> Boolean)? = null, crossinline operation: () -> Unit): Task {
+	@JvmStatic fun setInterval(interval: Float, condition: (() -> Boolean)? = null, operation: () -> Unit): Task {
 		return object : Task() {
 			override fun run() {
 				if(condition?.invoke() ?: true)
@@ -139,7 +139,7 @@ object Utils {
 	 * @param y 둘째 수
 	 * @return  최댓값
 	 */
-	@JvmStatic inline fun max2(x: Float, y: Float) = if(x > y) x else y;
+	@JvmStatic inline fun max2(x: Float, y: Float): Float = if(x > y) x else y;
 
 	/**
 	 * 지정한 수의 절댓값을 반환한다.
@@ -147,7 +147,7 @@ object Utils {
 	 * @param n 처리할 수
 	 * @return  절댓값
 	 */
-	@JvmStatic inline fun abs(n: Float) = if(n < 0) -n else n;
+	@JvmStatic inline fun abs(n: Float): Float = if(n < 0) -n else n;
 
 	/**
 	 * 지정한 화일 이름의 텍스처를 가져온다.

@@ -60,4 +60,4 @@ inline fun Position.distanceTo(other: Entity): Float = distanceTo(other.position
  *
  * @return 수정 가능한 위치
  */
-inline fun Position.toMutablePosition(): MutablePosition = MutablePosition(x, y);
+fun Position.toMutablePosition(): MutablePosition = MutablePosition(x, y);

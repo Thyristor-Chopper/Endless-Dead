@@ -6,13 +6,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.WorldViewer;
 import io.potatogun.gdxhelper.util.EntityManager;
-import io.potatogun.gdxhelper.util.SpatialHashGridEntityManager;
+import io.potatogun.gdxhelper.util.SpatialGrid;
 import io.potatogun.gdxhelper.util.weakMutableSetOf;
 import io.potatogun.gdxhelper.world.Freezable;
 
@@ -82,7 +83,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 	 *
 	 * 자바에서도 world.entities.add()로 자연스럽게 호출하기 위해 @JvmField
 	 */
-	@JvmField val entities: EntityManager = SpatialHashGridEntityManager(settings.worldTileSize);
+	@JvmField val entities: EntityManager = SpatialGrid(this, settings.worldTileSize);
 
 	init {
 		settings.fillDefaults();
@@ -94,25 +95,6 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 			camera.setToOrtho(false);  // false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
 
 		instances.add(this);
-	}
-
-	/**
-	 * 월드 내 모든 개체 목록을 가져온다.
-	 */
-	inline fun getEntities(): List<Entity> = entities.getAll();
-
-	/**
-	 * 등록된 모든 개체에게 'update(delta) 한 프레임 진행'을 시킨다.
-	 *   update 내에서만 한 번 쓰이기 때문에 inline이다.
-	 *
-	 * @param delta 직전 프레임과의 시간 간격(초)
-	 */
-	private inline fun updateEntities(delta: Float) {
-		for(entity in getEntities()) {
-			if(this !is Freezable || !this.isFrozen || entity.isUpdatableWhileFrozen)
-				entity.update(delta);
-			entity.forceUpdate(delta);
-		}
 	}
 
 	// ────────────────────────────────────────────────────────
@@ -147,7 +129,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 	 * @param delta 직전 프레임과의 시간 간격(초)
 	 */
 	open fun update(delta: Float) {
-		updateEntities(delta);
+		entities.update(delta);
 	}
 
 	// ────────────────────────────────────────────────────────
@@ -180,31 +162,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 	 * 월드에서 그려야 할 요소(등록된 개체 등)를 그린다.
 	 */
 	protected open fun drawElements() {
-		drawEntities();
-	}
-
-	/**
-	 * 등록된 모든 객체를 그린다.
-	 *
-	 * 이렇게 해야 서브클래스의 draw() 는 '자기 위치에 그냥 그려라'만 구현하면 되고,
-	 *   카메라가 움직이든 말든 신경 쓸 필요가 없다.
-	 *
-	 * drawElements에서만 한 번 쓰이기 때문에 인라인 함수이다.
-	 */
-	private inline fun drawEntities() {
-		val halfScreenWidth = Window.width * 0.5f;
-		val halfScreenHeight = Window.height * 0.5f;
-		val offsetX = this.offsetX;
-		val offsetY = this.offsetY;
-
-		for(entity in getEntities()) {
-			// 보이는 개체만 그리기 (자원 낭비 감소)
-			val maxEntityLength = Utils.max2(entity.width, entity.height);
-			val entityX = entity.x;
-			val entityY = entity.y;
-			if(entityX >= offsetX - halfScreenWidth - maxEntityLength && entityX <= offsetX + halfScreenWidth + maxEntityLength && entityY >= offsetY - halfScreenHeight - maxEntityLength && entityY <= offsetY + halfScreenHeight + maxEntityLength)
-				entity.draw(batch);
-		}
+		entities.draw(batch);
 	}
 
 	/**

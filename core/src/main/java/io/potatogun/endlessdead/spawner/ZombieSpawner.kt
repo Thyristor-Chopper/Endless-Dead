@@ -10,7 +10,6 @@ import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.util.distanceTo;
-import io.potatogun.gdxhelper.util.getRandom;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.random.Random;
@@ -60,24 +59,26 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 	 *   스폰 타이머에서만 한 번 쓰이기 떄문에 inline이다.
 	 */
 	private inline fun spawnRandomZombie() {
-		val attackTarget: Player? = if(world is SinglePlayerWorld) world.player else world.entities.getRandom<Player>();
-		if(attackTarget == null) return;
+		// 주사위를 굴려서 확률로 좀비 종류 뽑기
+		val rand = Random.nextInt(10);
+		val newZombie = when {
+			rand < 6	-> WeakZombie(world, 0f, 0f)		// 60% 확률
+			rand < 9	-> NormalZombie(world, 0f, 0f)		// 30% 확률
+			else		-> StrongZombie(world, 0f, 0f)		// 10% 확률
+		};
+
 		var randomX: Float;
 		var randomY: Float;
 		var loopCount = 0;
+		val target = newZombie.target;
 		do {
 			randomX = Random.nextFloat() * (world.width - 70f);
 			randomY = Random.nextFloat() * (world.height - 70f);
 			loopCount++;
-		} while(Position(randomX, randomY).distanceTo(attackTarget) < 408f && loopCount < 30);
+		} while(target != null && Position(randomX, randomY).distanceTo(target) < 408f && loopCount < 30);
 
-		// 주사위를 굴려서 확률로 좀비 종류 뽑기
-		val rand = Random.nextInt(10);
-		val newZombie = when {
-			rand < 6	-> WeakZombie(world, randomX, randomY)		// 60% 확률
-			rand < 9	-> NormalZombie(world, randomX, randomY)	// 30% 확률
-			else		-> StrongZombie(world, randomX, randomY)	// 10% 확률
-		}.apply { target = attackTarget };
+		newZombie.x = randomX;
+		newZombie.y = randomY;
 
 		world.entities.add(newZombie);
 	}

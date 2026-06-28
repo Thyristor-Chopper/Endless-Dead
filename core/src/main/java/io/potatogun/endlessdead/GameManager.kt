@@ -89,6 +89,8 @@ object GameManager {
 
 	/**
 	 * 일시 중지된 게임을 계속한다.
+	 *
+	 * setPlaying과 로직이 달라지면 inline 해제
 	 */
 	@JvmStatic inline fun resume() {
 		setPlaying();

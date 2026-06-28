@@ -18,7 +18,7 @@ subprojects {
 	tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
 		kotlinOptions {
 			jvmTarget = "1.8"  // Windows XP에서 실행하기 위함
-			freeCompilerArgs += listOf("-Xlambdas=indy", "-Xjvm-default=all", "-Xstring-concat=indy")
+			freeCompilerArgs += listOf("-Xlambdas=indy", "-Xjvm-default=all", "-Xstring-concat=indy")  // -Xstring-concat=indy는 자바 8에서 불필요하지만 일단은 넣어둠.
 		}
 	}
 }

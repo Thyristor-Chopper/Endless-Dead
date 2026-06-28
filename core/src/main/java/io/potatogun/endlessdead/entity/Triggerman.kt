@@ -10,14 +10,14 @@ import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.util.getDistanceSorted;
+import io.potatogun.gdxhelper.util.getClosestOf;
 import io.potatogun.gdxhelper.world.World;
 
 /**
  * 총을 쏘는 적
  */
 class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: SingleItemInventory) : LivingEntity(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, PenetratorDamagable, AttackTargetable, DamageListener, Movable, ItemSelectable by InventoryItemSelector(inventory) {
-	private val targeter = AutoTargeter(this, targetFetcher = { if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
+	private val targeter = AutoTargeter(this, targetFetcher = { if(world is SinglePlayerWorld) world.player else world.entities.getClosestOf<Player>(this) });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
 	private val approacher = ApproachTarget(this, 360f);
 	override val speed = 140f;
 	override val penetrationDamage = 1;

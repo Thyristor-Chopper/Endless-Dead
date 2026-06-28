@@ -8,7 +8,7 @@ import io.potatogun.endlessdead.entity.ai.ApproachTarget;
 import io.potatogun.endlessdead.entity.ai.MeleeAttackTarget;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.util.getDistanceSorted;
+import io.potatogun.gdxhelper.util.getClosestOf;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -33,7 +33,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param settings 좀비 옵션
  */
 abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, settings: Properties) : LivingEntity(world, "Zombie", x, y, width, height, settings.health, Textures.getShared("zombie")), PenetratorDamagable, AttackTargetable, DamageListener, MeleeAttacker, Movable {
-	private val targeter = AutoTargeter(this, targetFetcher = { if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
+	private val targeter = AutoTargeter(this, targetFetcher = { if(world is SinglePlayerWorld) world.player else world.entities.getClosestOf<Player>(this) });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
 	private val approacher: ApproachTarget;
 	private val meleeAttacker: MeleeAttackTarget;
 	private val attackingTexture = Textures.getShared("attacking_zombie");

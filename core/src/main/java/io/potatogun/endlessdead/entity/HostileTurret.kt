@@ -5,7 +5,7 @@ import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.util.getDistanceSorted;
+import io.potatogun.gdxhelper.util.getClosestOf;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -18,7 +18,7 @@ import io.potatogun.gdxhelper.world.World;
  */
 class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : Turret(world, "Turret", x, y, HostileTurretGun(), 600, isPermanent, Textures.getShared("turret_hostile")), DamageListener {
 	init {
-		setTargetFetcher { if(world is SinglePlayerWorld) world.player else world.entities.getDistanceSorted(this).firstOrNull { it is Player } as? Player };
+		setTargetFetcher { if(world is SinglePlayerWorld) world.player else world.entities.getClosestOf<Player>(this) };
 		setFollowRange(384f);
 	}
 
