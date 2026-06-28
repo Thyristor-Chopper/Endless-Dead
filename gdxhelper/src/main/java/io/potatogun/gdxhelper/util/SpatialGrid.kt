@@ -22,11 +22,11 @@ import kotlin.math.floor;
  * @property tileSize 타일 크기
  */
 class SpatialGrid(override val world: World, private val tileSize: Float) : EntityManager {
-	private val allEntities = GdxArray<Entity>(false, 16);
+	private val allEntities = GdxArray<Entity>(false, 128);
 	private val entitiesOfTile = LongMap<GdxArray<Entity>>();
 	private val tilesOfEntity = ObjectMap<Entity, LongSet>();
-	private val addQueue = GdxArray<Entity>();
-	private val removeQueue = GdxArray<Entity>();
+	private val addQueue = GdxArray<Entity>(false, 8);
+	private val removeQueue = GdxArray<Entity>(false, 8);
 	private val hashSetPool = LongSetPool();
 	private val entityArrayPool = EntityArrayPool();
 	private val entitySetPool = EntitySetPool();
@@ -50,7 +50,7 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 		}
 
 		override fun filter(condition: (Entity) -> Boolean): GdxArray<Entity> {
-			val output = GdxArray<Entity>();
+			val output = GdxArray<Entity>(allEntities.size);
 			for(i in 0 until allEntities.size) {
 				val entity = allEntities[i];
 				if(condition(entity))
@@ -69,7 +69,7 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 		}
 
 		override fun clone(): GdxArray<Entity> {
-			val output = GdxArray<Entity>();
+			val output = GdxArray<Entity>(allEntities.size);
 			for(i in 0 until allEntities.size)
 				output.add(allEntities[i]);
 			return output;

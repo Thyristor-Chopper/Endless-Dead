@@ -9,9 +9,9 @@ import io.potatogun.endlessdead.item.Item;
  * 이벤트 핸들러가 있는 인벤토리
  */
 abstract class ObservableInventory : Inventory {
-	private val itemAddObservers = GdxArray<(Item) -> Unit>();
-	private val itemRemoveObservers = GdxArray<(Item) -> Unit>();
-	private val clearObservers = GdxArray<() -> Unit>();
+	private val itemAddObservers = GdxArray<(Item) -> Unit>(false, 4);
+	private val itemRemoveObservers = GdxArray<(Item) -> Unit>(false, 4);
+	private val clearObservers = GdxArray<() -> Unit>(false, 4);
 
 	protected fun invokeItemAddObservers(item: Item) {
 		for(i in 0 until itemAddObservers.size)

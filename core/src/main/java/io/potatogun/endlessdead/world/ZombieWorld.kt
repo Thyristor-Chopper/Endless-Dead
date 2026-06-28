@@ -78,7 +78,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	/**
 	 * 등록된 스포너
 	 */
-	private val spawners = GdxArray<Spawner>();
+	private val spawners = GdxArray<Spawner>(false, 2);
 	// ── 체스판 배경 설정 (drawBackground()에서 사용) ──
 	//   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
 	//   자기 게임에선 다른 배경을 그리거나, 그냥 두면 검은 배경이다.

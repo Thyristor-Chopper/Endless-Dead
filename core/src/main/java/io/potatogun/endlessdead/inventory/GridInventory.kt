@@ -158,7 +158,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	}
 
 	override fun getItems(): GdxArray<Item> {
-		val ret = GdxArray<Item>(itemCount);
+		val ret = GdxArray<Item>(rows * columns);
 		for(i in 0 until rows)
 			for(j in 0 until columns) {
 				val item: Item? = inventory[i][j];
