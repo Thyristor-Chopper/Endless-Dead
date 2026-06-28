@@ -30,7 +30,6 @@ open class Position(open val x: Float, open val y: Float) {
 
 	override fun hashCode(): Int {
 		// return Objects.hash(x, y);
-		// 검색해보니 인텔리제이에서 이런 방식을 쓴다고 함.
 		var hash = x.hashCode();
 		hash = 31 * hash + y.hashCode();
 		return hash;

@@ -92,7 +92,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	// 타이머
 	private val timerManager = TimerManager();
 	private var unfreezer: Timer? = null;
-	private val entityListPool = EntityListPool();
+	private val entityListPool = EntityListPool(autoClear = false);
 
 	/**
 	 * 생성자 본문 — 월드에 플레이어와 적을 등록한다.

@@ -40,8 +40,11 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 
 		override fun sortedWith(comparator: Comparator<Entity>): List<Entity> = allEntities.sortedWith(comparator);
 
-		override fun forEach(callback: (Entity) -> Unit) {
-			allEntities.forEach(callback);
+		override fun sortedWith(comparator: Comparator<Entity>, output: MutableList<Entity>) {
+			output.clear();
+			for(i in 0 until allEntities.size)
+				output.add(allEntities[i]);
+			output.sortWith(comparator);
 		}
 
 		override fun filter(condition: (Entity) -> Boolean): List<Entity> = allEntities.filter(condition);
@@ -53,6 +56,23 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 				if(condition(entity))
 					output.add(entity);
 			}
+		}
+
+		override fun clone(): List<Entity> {
+			val output = mutableListOf<Entity>();
+			for(i in 0 until allEntities.size)
+				output.add(allEntities[i]);
+			return output;
+		}
+
+		override fun clone(output: MutableList<Entity>) {
+			output.clear();
+			for(i in 0 until allEntities.size)
+				output.add(allEntities[i]);
+		}
+
+		override fun forEach(callback: (Entity) -> Unit) {
+			allEntities.forEach(callback);
 		}
 	};
 
@@ -130,11 +150,7 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 				val iterator = hashes.iterator();
 				while(iterator.hasNext) {
 					val hash = iterator.next();
-					var entities = entitiesOfTile[hash];
-					if(entities == null) {
-						entities = entityArrayPool.obtain();
-						entitiesOfTile.put(hash, entities);
-					}
+					val entities = entitiesOfTile[hash] ?: entityArrayPool.obtain().also { entitiesOfTile.put(hash, it) };
 					entities.add(entity);
 				}
 				tilesOfEntity.put(entity, hashes);
@@ -173,11 +189,7 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 		while(newIterator.hasNext) {
 			val hash = newIterator.next();
 			if(oldHashes.contains(hash)) continue;
-			var entities = entitiesOfTile[hash];
-			if(entities == null) {
-				entities = entityArrayPool.obtain();
-				entitiesOfTile.put(hash, entities);
-			}
+			val entities = entitiesOfTile[hash] ?: entityArrayPool.obtain().also { entitiesOfTile.put(hash, it) };
 			entities.add(entity);
 		}
 
@@ -221,6 +233,7 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 		val minTileY = floor((entity.y - maxHalfLength) / tileSize).toInt();
 		val maxTileY = floor((entity.y + maxHalfLength) / tileSize).toInt();
 
+		output.clear();
 		for(tileX in minTileX..maxTileX)
 			for(tileY in minTileY..maxTileY) {
 				val hash = (tileX.toLong() shl 32) or (tileY.toLong() and 0xffffffffL);
@@ -230,10 +243,6 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 
 	private class LongSetPool : Pool<LongSet>() {
 		override fun newObject(): LongSet = LongSet();
-
-		override fun reset(obj: LongSet) {
-			obj.clear();
-		}
 	}
 
 	private class EntityArrayPool : Pool<GdxArray<Entity>>() {

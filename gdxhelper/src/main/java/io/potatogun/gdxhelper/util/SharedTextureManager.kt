@@ -24,7 +24,7 @@ abstract class SharedTextureManager {
 			val texture = Utils.loadTexture(path);
 			sharedTextures.add(texture);
 
-			texture  // return
+			/* return */ texture
 		});
 	}
 

@@ -6,6 +6,7 @@ import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Rarity;
+import io.potatogun.gdxhelper.util.EntityListPool;
 import io.potatogun.gdxhelper.util.getDistanceSorted;
 import io.potatogun.gdxhelper.world.World;
 
@@ -23,8 +24,17 @@ import io.potatogun.gdxhelper.world.World;
  * @param texture     개체 텍스처
  */
 abstract class TeamTurret(world: World, name: String, x: Float, y: Float, team: String?, gun: Item?, health: Int, isPermanent: Boolean = false, texture: Texture) : Turret(world, name, x, y, gun, health, isPermanent, texture) {
+	private val entityListPool = EntityListPool(autoClear = false);
+
 	init {
-		setTargetFetcher { world.entities.getDistanceSorted(this).firstOrNull { it is LivingEntity && !it.isSameTeamWith(this) && it !is Bullet } as? LivingEntity };
+		setTargetFetcher {
+			val distanceSorted = entityListPool.obtain();
+			world.entities.getDistanceSorted(this, distanceSorted);
+			val ret = distanceSorted.firstOrNull { it is LivingEntity && !it.isSameTeamWith(this) && it !is Bullet } as? LivingEntity;
+			entityListPool.free(distanceSorted);
+
+			/* return */ ret
+		};
 		this.team = team;
 	}
 }

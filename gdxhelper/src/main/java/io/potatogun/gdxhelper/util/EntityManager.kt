@@ -78,11 +78,17 @@ interface EntityManager {
 
 		fun sortedWith(comparator: Comparator<Entity>): List<Entity>;
 
-		fun forEach(callback: (Entity) -> Unit);
+		fun sortedWith(comparator: Comparator<Entity>, output: MutableList<Entity>);
 
 		fun filter(condition: (Entity) -> Boolean): List<Entity>;
 
 		fun filter(condition: (Entity) -> Boolean, output: MutableList<Entity>);
+
+		fun clone(): List<Entity>;
+
+		fun clone(output: MutableList<Entity>);
+
+		fun forEach(callback: (Entity) -> Unit);
 	}
 }
 
@@ -192,4 +198,20 @@ fun <T : Entity> EntityManager.getClosestOf(entity: Entity, type: KClass<T>): T?
 	return ret;
 }
 
+/**
+ * 지정한 개체와 가까운 순으로 정렬된 개체 목록을 반환한다.
+ *
+ * @param entity 기준 개체
+ * @return 개체 목록
+ */
 fun EntityManager.getDistanceSorted(entity: Entity): List<Entity> = view.sortedWith(compareBy { it.distanceTo(entity) });
+
+/**
+ * 지정한 개체와 가까운 순으로 정렬된 개체 목록을 반환한다.
+ *
+ * @param entity 기준 개체
+ * @param output 개체 목록
+ */
+fun EntityManager.getDistanceSorted(entity: Entity, output: MutableList<Entity>) {
+	view.sortedWith(compareBy { it.distanceTo(entity) }, output);
+}
