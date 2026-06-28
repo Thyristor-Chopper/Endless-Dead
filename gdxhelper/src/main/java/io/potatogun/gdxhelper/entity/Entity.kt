@@ -83,16 +83,17 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	 * 개체 오버레이 색
 	 *   (color는 mutable 객체이므로 val)
 	 */
-	protected open val color = Color.WHITE;
+	var overlayColor = Color.WHITE
+		protected set;
 	/**
 	 * 개체의 투명도
 	 */
 	protected open var opacity: Float
-		get() = color.a
+		get() = overlayColor.a
 		set(value) {
-			if(value < 0f) color.a = 0f;
-			else if(value > 1f) color.a = 1f;
-			else color.a = value;
+			if(value < 0f) overlayColor.a = 0f;
+			else if(value > 1f) overlayColor.a = 1f;
+			else overlayColor.a = value;
 		};
 	/**
 	 * 충돌 감지용 너비 (캐시)
@@ -102,12 +103,6 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	 * 충돌 감지용 높이 (캐시)
 	 */
 	private var collideCheckHeight = height;
-	/**
-	 * 개체가 속한 그룹 또는 팀 (null: 중립)
-	 *
-	 * 자바에서는 getTeam, setTeam 사용
-	 */
-	var team: String? = null;
 
 	/**
 	 * 매 프레임 호출되어 자신을 그린다.
@@ -131,7 +126,7 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
 		val texture: Texture? = alternateTexture ?: this.texture;
 		texture?.let {
-			if(batch.color == Color.WHITE) batch.color = color;  // 대미지 시 붉게가 작동하게 하기 위해.
+			if(batch.color == Color.WHITE) batch.color = overlayColor;  // 대미지 시 붉게가 작동하게 하기 위해.
 
 			val halfWidth = width * 0.5f;
 			val halfHeight = height * 0.5f;
@@ -254,8 +249,6 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	inline fun remove() {
 		world.entities.remove(this);
 	}
-
-	inline fun isSameTeamWith(entity: Entity): Boolean = (team == entity.team && team != null && entity.team != null);
 
 	/**
 	 * 이 객체가 갖고 있는 GPU 자원을 정리한다 — 화면이 닫힐 때 한 번 호출된다.

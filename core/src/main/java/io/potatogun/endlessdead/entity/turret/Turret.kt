@@ -1,7 +1,11 @@
-package io.potatogun.endlessdead.entity;
+package io.potatogun.endlessdead.entity.turret;
 
 import com.badlogic.gdx.graphics.Texture;
 
+import io.potatogun.endlessdead.entity.InventoryHolder;
+import io.potatogun.endlessdead.entity.LivingEntity;
+import io.potatogun.endlessdead.entity.Mob;
+import io.potatogun.endlessdead.entity.PenetratorDamagable;
 import io.potatogun.endlessdead.inventory.SingleItemInventory;
 import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.endlessdead.item.Item;
@@ -25,27 +29,16 @@ import kotlin.random.Random;
  * @param isPermanent 포탑이 영구적인지의 여부(죽지 못하는지)
  * @param texture     개체 텍스처
  */
-abstract class Turret @JvmOverloads constructor(world: World, name: String, x: Float, y: Float, gun: Item?, health: Int, isPermanent: Boolean = false, texture: Texture) : LivingEntity(world, name, x, y, 83f, 154f, health, texture), InventoryHolder, AttackTargetable, PenetratorDamagable {
-	private val targeter = AutoTargeter(this);  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
+abstract class Turret @JvmOverloads constructor(world: World, name: String, x: Float, y: Float, gun: Item?, health: Int, isPermanent: Boolean = false, texture: Texture) : Mob(world, name, x, y, 83f, 154f, health, texture), InventoryHolder, PenetratorDamagable {
 	final override val inventory = SingleItemInventory();
-	override var target: LivingEntity?
-		get() = targeter.target
-		set(value) { targeter.target = value };
+	override val movementSpeed = 0f;
 	override val penetrationDamage = (health * 0.1f).toInt();
-	override val defaultInvincibleDuration = 0.05f;
+	override val damageInvincibilityDuration = 0.05f;
 
 	init {
 		gun?.let { inventory.addItem(it) };
 		rotate(Random.nextInt(360).toFloat());
 		if(isPermanent) isInvincible = true;
-	}
-
-	protected fun setTargetFetcher(fetcher: () -> LivingEntity?) {
-		targeter.setTargetFetcher(fetcher);
-	}
-
-	protected fun setFollowRange(range: Float) {
-		targeter.setFollowRange(range);
 	}
 
 	final override fun update(delta: Float) {

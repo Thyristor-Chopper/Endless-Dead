@@ -1,4 +1,4 @@
-package io.potatogun.endlessdead.entity;
+package io.potatogun.endlessdead.entity.turret;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.item.Gun;
@@ -14,9 +14,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param isPermanent 포탑이 영구적인지의 여부(죽지 못하는지)
  */
 class FriendlyTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : TeamTurret(world, "Friendly Turret", x, y, "friends", FriendlyTurretGun(), 2000, isPermanent, Textures.getShared("turret_friendly")) {
-	init {
-		setFollowRange(456f);
-	}
+	override val followRange = 456f;
 
 	/**
 	 * 이 터렛의 발사기

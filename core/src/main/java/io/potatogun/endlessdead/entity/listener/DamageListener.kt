@@ -1,4 +1,4 @@
-package io.potatogun.endlessdead.entity;
+package io.potatogun.endlessdead.entity.listener;
 
 import io.potatogun.gdxhelper.entity.Entity;
 

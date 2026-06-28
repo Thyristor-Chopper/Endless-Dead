@@ -2,7 +2,7 @@ package io.potatogun.endlessdead.entity.container;
 
 import com.badlogic.gdx.Gdx;
 
-import io.potatogun.endlessdead.entity.HostileTurret;
+import io.potatogun.endlessdead.entity.turret.HostileTurret;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.world.World;

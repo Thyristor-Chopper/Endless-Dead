@@ -8,6 +8,7 @@ import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.InventoryHolder;
+import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
@@ -141,7 +142,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	override fun shoot(target: Position, shooter: Entity): Int {
 		if(!canFire) return 0;
 
-		val bullet = Bullet(shooter.world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture).apply { team = shooter.team };
+		val bullet = Bullet(shooter.world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture).apply { if(shooter is LivingEntity) team = shooter.team };
 		shooter.world.entities.add(bullet);
 		startFireCooldown();
 

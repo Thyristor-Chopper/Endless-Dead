@@ -7,6 +7,8 @@ import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Statistics;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.container.Container;
+import io.potatogun.endlessdead.entity.listener.AttackListener;
+import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.endlessdead.inventory.LinearInventory;
 import io.potatogun.endlessdead.inventory.ObservableInventory;
 import io.potatogun.endlessdead.item.Gun;
@@ -45,15 +47,15 @@ import java.lang.ref.WeakReference;
  * @param    y         처음 Y 좌표
  * @property inventory 플레이어가 가질 인벤토리
  */
-class Player(world: World, x: Float, y: Float, override val inventory: ObservableInventory = LinearInventory(-1)) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, Utils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable {
+class Player(world: World, x: Float, y: Float, override val inventory: ObservableInventory = LinearInventory(-1)) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, Utils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory) {
 	override val isUpdatableWhileFrozen = true;
 	private val textureWithGun = Utils.loadTexture("entity/player_holding_gun.bmp");
-	override var speed = 200f
-		private set;
+	override val movementSpeed = 200f;
+	private var speedModifier = 0f;
 	// 타이머
 	private val timerManager = TimerManager();
 	private val healTimer: RepeatingTimer;
-	override val defaultInvincibleDuration = 0.01f;
+	override val damageInvincibilityDuration = 0.01f;
 	private var _latestAttackVictim: WeakReference<LivingEntity>? = null;
 	val latestAttackVictim: LivingEntity?
 		get() = _latestAttackVictim?.get();
@@ -126,13 +128,13 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 		val originalY = y;
 
 		if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A))
-			x -= speed * delta;
+			x -= (movementSpeed + speedModifier) * delta;
 		if(Input.isKeyPressed(Input.RIGHT) || Input.isKeyPressed(Input.D))
-			x += speed * delta;
+			x += (movementSpeed + speedModifier) * delta;
 		if(Input.isKeyPressed(Input.UP) || Input.isKeyPressed(Input.W))
-			y += speed * delta;
+			y += (movementSpeed + speedModifier) * delta;
 		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S))
-			y -= speed * delta;
+			y -= (movementSpeed + speedModifier) * delta;
 
 		// 월드 경계 안쪽으로 가두기.
 		x = x.coerceIn(0f, world.width);
@@ -217,8 +219,8 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	 * @param duration 활성 기간
 	 */
 	fun speedUp(amount: Float, duration: Float) {
-		speed += amount;
-		timerManager.register(Timer(duration) { speed -= amount });
+		speedModifier += amount;
+		timerManager.register(Timer(duration) { speedModifier -= amount });
 	}
 
 	// 플레이어를 들고 있는 아이템에 맞게 그린다.

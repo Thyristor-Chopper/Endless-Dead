@@ -4,13 +4,13 @@ import com.badlogic.gdx.graphics.Color;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
-import io.potatogun.endlessdead.entity.FriendlyTurret;
-import io.potatogun.endlessdead.entity.HostileTurret;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
 import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.entity.container.TrapChest;
+import io.potatogun.endlessdead.entity.turret.FriendlyTurret;
+import io.potatogun.endlessdead.entity.turret.HostileTurret;
 import io.potatogun.endlessdead.item.Bandage;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.MachineGun;

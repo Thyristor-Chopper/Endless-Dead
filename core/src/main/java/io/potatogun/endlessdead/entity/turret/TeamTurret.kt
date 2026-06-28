@@ -1,8 +1,10 @@
-package io.potatogun.endlessdead.entity;
+package io.potatogun.endlessdead.entity.turret;
 
 import com.badlogic.gdx.graphics.Texture;
 
 import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.entity.Bullet;
+import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Rarity;
@@ -27,14 +29,15 @@ abstract class TeamTurret(world: World, name: String, x: Float, y: Float, team: 
 	private val entityListPool = EntityListPool(autoClear = false);
 
 	init {
-		setTargetFetcher {
-			val distanceSorted = entityListPool.obtain();
-			world.entities.getDistanceSorted(this, distanceSorted);
-			val ret = distanceSorted.firstOrNull { it is LivingEntity && !it.isSameTeamWith(this) && it !is Bullet } as? LivingEntity;
-			entityListPool.free(distanceSorted);
-
-			/* return */ ret
-		};
 		this.team = team;
+	}
+
+	override fun findNewTarget(): LivingEntity? {
+		val distanceSorted = entityListPool.obtain();
+		world.entities.getDistanceSorted(this, distanceSorted);
+		val ret = distanceSorted.firstOrNull { it is LivingEntity && !it.isSameTeamWith(this) && it !is Bullet } as? LivingEntity;
+		entityListPool.free(distanceSorted);
+
+		return ret;
 	}
 }

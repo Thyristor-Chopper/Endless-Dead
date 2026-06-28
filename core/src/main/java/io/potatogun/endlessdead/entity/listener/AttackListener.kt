@@ -1,4 +1,6 @@
-package io.potatogun.endlessdead.entity;
+package io.potatogun.endlessdead.entity.listener;
+
+import io.potatogun.endlessdead.entity.LivingEntity;
 
 /**
  * 다른 개체를 공격했을 때를 감지하는 개체

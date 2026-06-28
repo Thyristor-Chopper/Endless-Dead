@@ -1,9 +1,10 @@
 package io.potatogun.endlessdead.item;
 
-import io.potatogun.endlessdead.entity.FriendlyTurret;
-import io.potatogun.endlessdead.entity.HostileTurret;
 import io.potatogun.endlessdead.entity.InventoryHolder;
+import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
+import io.potatogun.endlessdead.entity.turret.FriendlyTurret;
+import io.potatogun.endlessdead.entity.turret.HostileTurret;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 
@@ -17,7 +18,7 @@ class TurretInstaller : Item("turret_installer", "Turret Installer", Item.Proper
 		if(!user.inventory.hasItem(this)) return false;
 		if(user !is Entity) return false;
 		user.world.entities.add(
-			if(user.team == "friends") FriendlyTurret(user.world, user.x, user.y)  // 플레이어도 포함
+			if(user is LivingEntity && user.team == "friends") FriendlyTurret(user.world, user.x, user.y)  // 플레이어도 포함
 			else HostileTurret(user.world, user.x, user.y)
 		);
 		val viewer = user.world.viewer;

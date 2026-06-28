@@ -1,11 +1,9 @@
 package io.potatogun.endlessdead.entity.ai;
 
-import io.potatogun.endlessdead.entity.AttackTargetable;
 import io.potatogun.endlessdead.entity.LivingEntity;
-import io.potatogun.endlessdead.entity.Movable;
-import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.endlessdead.entity.Mob;
 
-class DashToTarget(private val attacker: AttackTargetable, private val dashSpeed: Float, private val dashThreshold: Float) : Behavior {
+class DashToTarget(private val attacker: Mob, private val dashDamage: Int, private val dashSpeed: Float, private val dashThreshold: Float) : Behavior {
 	var state = State.STANDBY
 		private set;
 	private var stateTimer = 0f;
@@ -13,16 +11,7 @@ class DashToTarget(private val attacker: AttackTargetable, private val dashSpeed
 	private var dashDirX = 0f;
 	private var dashDirY = 0f;
 
-	init {
-		if(attacker !is Entity)
-			throw IllegalArgumentException("attacker is not an entity");
-		if(attacker !is Movable)
-			throw IllegalArgumentException("attacker is not movable");
-	}
-
 	override fun update(delta: Float): Behavior.Result {
-		if(attacker !is Entity) return Behavior.Result.FAILED;
-		if(attacker !is Movable) return Behavior.Result.FAILED;
 		val target: LivingEntity? = attacker.target;
 		if(target == null) return Behavior.Result.FAILED;
 
@@ -57,7 +46,7 @@ class DashToTarget(private val attacker: AttackTargetable, private val dashSpeed
 
 				// 돌진 중에 플레이어랑 부딪히면 대미지 주고 즉시 쿨타임으로 넘어감
 				if(attacker.collidesWith(target)) {
-					target.takeDamage(20, attacker = attacker);
+					target.takeDamage(dashDamage, attacker = attacker);
 					state = State.COOLDOWN;
 					stateTimer = 5.0f;
 				} else {

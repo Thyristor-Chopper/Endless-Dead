@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.ai.ApproachTarget;
 import io.potatogun.endlessdead.entity.ai.MeleeAttackTarget;
+import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.util.getClosestOf;
@@ -26,41 +27,30 @@ import io.potatogun.gdxhelper.world.World;
  *   ▸ 이동 패턴을 사인파, 원운동 등으로 바꾸기
  *
  * @param world    개체가 속한 세계
+ * @param Zombie   개체 이름
  * @param x        개체의 처음 X 위치
  * @param y        개체의 처음 Y 위치
  * @param width    가로 크기 (픽셀)
  * @param height   세로 크기 (픽셀)
  * @param settings 좀비 옵션
  */
-abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Float, settings: Properties) : LivingEntity(world, "Zombie", x, y, width, height, settings.health, Textures.getShared("zombie")), PenetratorDamagable, AttackTargetable, DamageListener, MeleeAttacker, Movable {
-	private val targeter = AutoTargeter(this, targetFetcher = { if(world is SinglePlayerWorld) world.player else world.entities.getClosestOf<Player>(this) });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
-	private val approacher: ApproachTarget;
-	private val meleeAttacker: MeleeAttackTarget;
+abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Float, height: Float, settings: Properties) : Mob(world, name, x, y, width, height, settings.health, Textures.getShared("zombie")), PenetratorDamagable, DamageListener {
+	private val meleeAttacker = MeleeAttackTarget(this, 3f / 4f);
 	private val attackingTexture = Textures.getShared("attacking_zombie");
 	override val attackDamage = settings.attackDamage;
 	override val attackInterval = 0.3f;
-	override val speed = settings.speed;
+	override val movementSpeed = settings.speed;
 	override val penetrationDamage = 1;
-	override val defaultInvincibleDuration = 0.15f;
+	override val damageInvincibilityDuration = 0.15f;
 	private var attackCooldownTimer = attackInterval;
 	private var attackTextureTimer = 0f;
-	override var target: LivingEntity?
-		get() = targeter.target
-		set(value) { targeter.target = value };
 
-	init {
-		settings.fillDefaults();
-		val targetCenterGapFactor = 3f / 4f;
-		approacher = ApproachTarget(this, targetCenterGapFactor = targetCenterGapFactor);
-		meleeAttacker = MeleeAttackTarget(this, targetCenterGapFactor);
-	}
-
-	protected fun setTargetFetcher(fetcher: () -> LivingEntity?) {
-		targeter.setTargetFetcher(fetcher);
-	}
-
-	protected fun setFollowRange(range: Float) {
-		targeter.setFollowRange(range);
+	override fun findNewTarget(): LivingEntity? {
+		val world = this.world;
+		if(world is SinglePlayerWorld)
+			return world.player;
+		else
+			return world.entities.getClosestOf<Player>(this);
 	}
 
 	override fun update(delta: Float) {
@@ -77,7 +67,6 @@ abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Fl
 	}
 
 	protected open fun updateAI(delta: Float) {
-		approacher.update(delta);
 		meleeAttacker.update(delta);
 	}
 
@@ -107,7 +96,5 @@ abstract class Zombie(world: World, x: Float, y: Float, width: Float, height: Fl
 			if(attackDamage < 0) throw IllegalArgumentException("invalid attack damage");
 			if(health <= 0) throw IllegalArgumentException("invalid health");
 		}
-
-		internal open fun fillDefaults() {}
 	}
 }

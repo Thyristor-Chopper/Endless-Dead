@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.ai.ApproachTarget;
+import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.endlessdead.inventory.SingleItemInventory;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
@@ -16,15 +17,11 @@ import io.potatogun.gdxhelper.world.World;
 /**
  * 총을 쏘는 적
  */
-class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: SingleItemInventory) : LivingEntity(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, PenetratorDamagable, AttackTargetable, DamageListener, Movable, ItemSelectable by InventoryItemSelector(inventory) {
-	private val targeter = AutoTargeter(this, targetFetcher = { if(world is SinglePlayerWorld) world.player else world.entities.getClosestOf<Player>(this) });  // 클래스 정의 시 위임자에게 this만 넘길 수 있었어도 이딴 수동 위임같은 뻘짓 안 나오지...
+class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: SingleItemInventory) : Mob(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, PenetratorDamagable, DamageListener, ItemSelectable by InventoryItemSelector(inventory) {
 	private val approacher = ApproachTarget(this, 360f);
-	override val speed = 140f;
+	override val movementSpeed = 140f;
 	override val penetrationDamage = 1;
-	override val defaultInvincibleDuration = 0.15f;
-	override var target: LivingEntity?
-		get() = targeter.target
-		set(value) { targeter.target = value };
+	override val damageInvincibilityDuration = 0.15f;
 
 	/**
 	 * 총을 쏘는 적을 생성한다.
@@ -39,6 +36,14 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 		val gun = TriggermanGun();
 		inventory.addItem(gun);
 		selectItem(gun);
+	}
+
+	override fun findNewTarget(): LivingEntity? {
+		val world = this.world;
+		if(world is SinglePlayerWorld)
+			return world.player;
+		else
+			return world.entities.getClosestOf<Player>(this);
 	}
 
 	override fun update(delta: Float) {
