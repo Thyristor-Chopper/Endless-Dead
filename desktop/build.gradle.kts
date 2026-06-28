@@ -1,5 +1,6 @@
 plugins {
 	kotlin("jvm") version "1.9.22"
+	id("com.github.johnrengelman.shadow") version "8.1.1"
 	application
 }
 
@@ -11,10 +12,27 @@ dependencies {
 }
 
 application {
-	mainClass.set("io.potatogun.endlessdead.desktop.DesktopLauncherKt")
+	mainClass.set("io.potatogun.endlessdead.desktop.DesktopLauncher")
 
 	// macOS에서 LWJGL3 실행 시 필요
 	if(System.getProperty("os.name").lowercase().contains("mac")) {
 		applicationDefaultJvmArgs = listOf("-XstartOnFirstThread")
 	}
+}
+
+tasks.shadowJar {
+	archiveBaseName.set(rootProject.name)
+	archiveClassifier.set("")
+	archiveVersion.set("")
+
+	mergeServiceFiles()
+
+	manifest {
+		attributes["Main-Class"] = application.mainClass.get()
+	}
+
+	/*val assetsDir = file("../assets")
+	if (assetsDir.exists()) {
+		from(assetsDir)
+	}*/
 }

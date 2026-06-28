@@ -1,3 +1,4 @@
+@file:JvmName("DesktopLauncher")
 package io.potatogun.endlessdead.desktop;
 
 import com.badlogic.gdx.Files.FileType;
@@ -10,9 +11,7 @@ import io.potatogun.gdxhelper.util.MutablePosition;
 import io.potatogun.gdxhelper.util.Position;
 
 /**
- * ════════════════════════════════════════════════════════════
  *  데스크톱에서 게임을 실행시키는 진입점 (main 함수).
- * ════════════════════════════════════════════════════════════
  *
  *  여기서 하는 일은 세 가지뿐:
  *   1. 게임 객체(EndlessDead)를 만든다
