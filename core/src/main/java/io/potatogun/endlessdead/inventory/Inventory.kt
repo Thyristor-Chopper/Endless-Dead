@@ -1,5 +1,7 @@
 package io.potatogun.endlessdead.inventory;
 
+import com.badlogic.gdx.utils.Array as GdxArray;
+
 import io.potatogun.endlessdead.item.Item;
 
 /**
@@ -71,7 +73,7 @@ interface Inventory {
 	 *
 	 * @return 인벤토리 아이템 목록
 	 */
-	fun getItems(): List<Item>;
+	fun getItems(): GdxArray<Item>;
 
 	/**
 	 * 인벤토리 비우기

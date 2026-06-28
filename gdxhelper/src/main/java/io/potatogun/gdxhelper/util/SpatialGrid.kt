@@ -38,18 +38,28 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 
 		override operator fun get(index: Int): Entity = allEntities[index];
 
-		override fun sortedWith(comparator: Comparator<Entity>): List<Entity> = allEntities.sortedWith(comparator);
-
-		override fun sortedWith(comparator: Comparator<Entity>, output: MutableList<Entity>) {
-			output.clear();
-			for(i in 0 until allEntities.size)
-				output.add(allEntities[i]);
-			output.sortWith(comparator);
+		override fun sortedWith(comparator: Comparator<Entity>): GdxArray<Entity> {
+			val output = clone();
+			Utils.sortWith<Entity>(output, comparator);
+			return output;
 		}
 
-		override fun filter(condition: (Entity) -> Boolean): List<Entity> = allEntities.filter(condition);
+		override fun sortedWith(comparator: Comparator<Entity>, output: GdxArray<Entity>) {
+			clone(output);
+			Utils.sortWith<Entity>(output, comparator);
+		}
 
-		override fun filter(condition: (Entity) -> Boolean, output: MutableList<Entity>) {
+		override fun filter(condition: (Entity) -> Boolean): GdxArray<Entity> {
+			val output = GdxArray<Entity>();
+			for(i in 0 until allEntities.size) {
+				val entity = allEntities[i];
+				if(condition(entity))
+					output.add(entity);
+			}
+			return output;
+		}
+
+		override fun filter(condition: (Entity) -> Boolean, output: GdxArray<Entity>) {
 			output.clear();
 			for(i in 0 until allEntities.size) {
 				val entity = allEntities[i];
@@ -58,14 +68,14 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 			}
 		}
 
-		override fun clone(): List<Entity> {
-			val output = mutableListOf<Entity>();
+		override fun clone(): GdxArray<Entity> {
+			val output = GdxArray<Entity>();
 			for(i in 0 until allEntities.size)
 				output.add(allEntities[i]);
 			return output;
 		}
 
-		override fun clone(output: MutableList<Entity>) {
+		override fun clone(output: GdxArray<Entity>) {
 			output.clear();
 			for(i in 0 until allEntities.size)
 				output.add(allEntities[i]);
@@ -243,14 +253,6 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 
 	private class LongSetPool : Pool<LongSet>() {
 		override fun newObject(): LongSet = LongSet();
-	}
-
-	private class EntityArrayPool : Pool<GdxArray<Entity>>() {
-		override fun newObject(): GdxArray<Entity> = GdxArray(false, 8);
-
-		override fun reset(obj: GdxArray<Entity>) {
-			obj.clear();
-		}
 	}
 
 	private class EntitySetPool : Pool<ObjectSet<Entity>>() {

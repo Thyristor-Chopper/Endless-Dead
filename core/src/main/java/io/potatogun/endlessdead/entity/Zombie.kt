@@ -13,18 +13,7 @@ import io.potatogun.gdxhelper.util.getClosestOf;
 import io.potatogun.gdxhelper.world.World;
 
 /**
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *  좀비 — zombie.bmp 이미지, 플레이어를 따라 자동 이동.
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- *
- *  Entity를 상속해 만든 '입력 없이 스스로 움직이는' 객체 예제.
- *
- *  핵심 포인트:
- *   ▸ update()에 입력 처리가 없다 — AI(자율 행동)는 여기서 작성.
- *
- *  응용 아이디어:
- *   ▸ 생성자에서 speed를 받아 FastEnemy, SlowEnemy로 다양화
- *   ▸ 이동 패턴을 사인파, 원운동 등으로 바꾸기
+ * 좀비 — 플레이어를 따라 자동으로 이동하고 손공격하는 몹
  *
  * @param world    개체가 속한 세계
  * @param Zombie   개체 이름

@@ -1,5 +1,7 @@
 package io.potatogun.endlessdead.inventory;
 
+import com.badlogic.gdx.utils.Array as GdxArray;
+
 import io.potatogun.endlessdead.item.Item;
 
 /**
@@ -10,7 +12,13 @@ import io.potatogun.endlessdead.item.Item;
  * @throws IllegalArgumentException 열이나 행 개수가 잘못된 경우
  */
 class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
-	private val inventory: Array<Array<Item?>> = Array(rows) { arrayOfNulls<Item>(columns) };
+	private val inventory = GdxArray<GdxArray<Item?>>(rows).apply {
+		for(i in 0 until rows)
+			add(GdxArray<Item?>(columns).apply {
+				for(j in 0 until columns)
+					add(null);
+			});
+	};
 	override val itemCount: Int
 		get() {
 			var ret = 0;
@@ -149,15 +157,15 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		return -1;
 	}
 
-	override fun getItems(): List<Item> {
-		val ret = mutableListOf<Item>();
+	override fun getItems(): GdxArray<Item> {
+		val ret = GdxArray<Item>(itemCount);
 		for(i in 0 until rows)
 			for(j in 0 until columns) {
 				val item: Item? = inventory[i][j];
 				if(item != null)
 					ret.add(item);
 			}
-		return ret.toList();
+		return ret;
 	}
 
 	override fun clear() {
@@ -178,11 +186,13 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	 *
 	 * @return 인벤토리 행렬
 	 */
-	fun getGrid(): Array<Array<Item?>> {
-		val inventoryClone: Array<Array<Item?>> = Array(rows) { arrayOfNulls<Item>(columns) };
-		for(i in 0 until rows)
+	fun getGrid(): GdxArray<GdxArray<Item?>> {
+		val inventoryClone = GdxArray<GdxArray<Item?>>(rows);
+		for(i in 0 until rows) {
+			inventoryClone.add(GdxArray<Item?>(columns));
 			for(j in 0 until columns)
-				inventoryClone[i][j] = inventory[i][j];
+				inventoryClone[i].add(inventory[i][j]);
+		}
 		return inventoryClone;
 	}
 }

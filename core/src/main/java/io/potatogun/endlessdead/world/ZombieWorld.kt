@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead.world;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
@@ -24,10 +25,11 @@ import io.potatogun.endlessdead.spawner.ZombieSpawner;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
-import io.potatogun.gdxhelper.util.EntityListPool;
+import io.potatogun.gdxhelper.util.EntityArrayPool;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
+import io.potatogun.gdxhelper.util.randomOrNull;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
 
@@ -76,7 +78,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	/**
 	 * 등록된 스포너
 	 */
-	private val spawners = mutableListOf<Spawner>();
+	private val spawners = GdxArray<Spawner>();
 	// ── 체스판 배경 설정 (drawBackground()에서 사용) ──
 	//   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
 	//   자기 게임에선 다른 배경을 그리거나, 그냥 두면 검은 배경이다.
@@ -92,7 +94,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	// 타이머
 	private val timerManager = TimerManager();
 	private var unfreezer: Timer? = null;
-	private val entityListPool = EntityListPool(autoClear = false);
+	private val entityArrayPool = EntityArrayPool(autoClear = false);
 
 	/**
 	 * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -121,13 +123,13 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		// 각각 1% 확률로 좀비 공격 포탑을 임의 위치에 1~3대 설치
 		for(i in 1..3)
-			if(Random.nextInt(100) == i * 24 || true)
+			if(Random.nextInt(100) == i * 24)
 				entities.add(FriendlyTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, true));
 		// 각각 2.5% 확률로 플레이어 공격 포탑을 월드의 각 모퉁이에 설치
-		if(Random.nextInt(40) == 8 || true) entities.add(HostileTurret(this, 100f, 100f, true).apply { rotate(315f) });
-		if(Random.nextInt(40) == 12 || true) entities.add(HostileTurret(this, width - 100f, 100f, true).apply { rotate(45f) });
-		if(Random.nextInt(40) == 15 || true) entities.add(HostileTurret(this, 100f, height - 100f, true).apply { rotate(225f) });
-		if(Random.nextInt(40) == 21 || true) entities.add(HostileTurret(this, width - 100f, height - 100f, true).apply { rotate(135f) });
+		if(Random.nextInt(40) == 8) entities.add(HostileTurret(this, 100f, 100f, true).apply { rotate(315f) });
+		if(Random.nextInt(40) == 12) entities.add(HostileTurret(this, width - 100f, 100f, true).apply { rotate(45f) });
+		if(Random.nextInt(40) == 15) entities.add(HostileTurret(this, 100f, height - 100f, true).apply { rotate(225f) });
+		if(Random.nextInt(40) == 21) entities.add(HostileTurret(this, width - 100f, height - 100f, true).apply { rotate(135f) });
 
 		// 플레이어 등록
 		entities.add(player);
@@ -135,16 +137,16 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this, 3f));
 		// 5% 확률로 총 쏘는 적도 나오는 월드
-		if(Random.nextInt(20) == 7 || true)
+		if(Random.nextInt(20) == 7)
 			spawners.add(TriggermanSpawner(this, 5f));
 
 		// 10초마다 빈 상자 하나 리필
 		timerManager.register(RepeatingTimer(10f) {
-			val emptyContainers = entityListPool.obtain();
+			val emptyContainers = entityArrayPool.obtain();
 			entities.view.filter({ it is Container && it.inventory.isEmpty }, emptyContainers);
 			val randomContainer = emptyContainers.randomOrNull() as Container?;
 			randomContainer?.putItem(generateRandomItem(false));
-			entityListPool.free(emptyContainers);
+			entityArrayPool.free(emptyContainers);
 		});
 	}
 
@@ -206,8 +208,8 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		// 스포너 갱신
 		if(!isFrozen)
-			for(spawner in spawners)
-				spawner.update(delta);
+			for(i in 0 until spawners.size)
+				spawners[i].update(delta);
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
 		if(!player.isAlive)

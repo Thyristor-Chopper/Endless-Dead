@@ -1,5 +1,7 @@
 package io.potatogun.endlessdead.inventory;
 
+import com.badlogic.gdx.utils.Array as GdxArray;
+
 import io.potatogun.endlessdead.item.Item;
 
 /**
@@ -9,7 +11,7 @@ import io.potatogun.endlessdead.item.Item;
  * @throws IllegalArgumentException 최대 아이템 개수가 잘못된 경우
  */
 class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
-	private val inventory = mutableListOf<Item>();
+	private val inventory = GdxArray<Item>();
 	override val itemCount: Int
 		get() = inventory.size;
 	override val isEmpty: Boolean
@@ -34,32 +36,30 @@ class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 	override fun removeItem(index: Int): Boolean {
 		if(index < 0 || index >= inventory.size) return false;
 		val item = inventory[index];
-		inventory.removeAt(index);
+		inventory.removeIndex(index);
 		item.inventory = null;
 		invokeItemRemoveObservers(item);
 		return true;
 	}
 
 	override fun removeItem(item: Item): Boolean {
-		val index = inventory.indexOfFirst({ it === item });
-		if(index == -1) return false;
-		inventory.removeAt(index);
+		if(!inventory.removeValue(item, true)) return false;
 		item.inventory = null;
 		invokeItemRemoveObservers(item);
 		return true;
 	}
 
-	override fun getItem(index: Int): Item = inventory.getOrNull(index) ?: throw IndexOutOfBoundsException("index out of bounds");
+	override fun getItem(index: Int): Item = inventory[index];
 
-	override fun hasItem(item: Item): Boolean = inventory.any { it === item };
+	override fun hasItem(item: Item): Boolean = inventory.contains(item, true);
 
-	override fun indexOf(item: Item): Int = inventory.indexOfFirst({ it === item });
+	override fun indexOf(item: Item): Int = inventory.indexOf(item, true);
 
-	override fun getItems(): List<Item> = inventory.toList();
+	override fun getItems(): GdxArray<Item> = GdxArray(inventory);
 
 	override fun clear() {
-		for(item in inventory)
-			item.inventory = null;
+		for(i in 0 until inventory.size)
+			inventory[i].inventory = null;
 		inventory.clear();
 		invokeClearObservers();
 	}

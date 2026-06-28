@@ -1,5 +1,7 @@
 package io.potatogun.endlessdead.inventory;
 
+import com.badlogic.gdx.utils.Array as GdxArray;
+
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.item.Item;
 
@@ -7,23 +9,23 @@ import io.potatogun.endlessdead.item.Item;
  * 이벤트 핸들러가 있는 인벤토리
  */
 abstract class ObservableInventory : Inventory {
-	private val itemAddObservers = mutableListOf<(Item) -> Unit>();
-	private val itemRemoveObservers = mutableListOf<(Item) -> Unit>();
-	private val clearObservers = mutableListOf<() -> Unit>();
+	private val itemAddObservers = GdxArray<(Item) -> Unit>();
+	private val itemRemoveObservers = GdxArray<(Item) -> Unit>();
+	private val clearObservers = GdxArray<() -> Unit>();
 
 	protected fun invokeItemAddObservers(item: Item) {
-		for(handler in itemAddObservers)
-			handler(item);
+		for(i in 0 until itemAddObservers.size)
+			itemAddObservers[i](item);
 	}
 
 	protected fun invokeItemRemoveObservers(item: Item) {
-		for(handler in itemRemoveObservers)
-			handler(item);
+		for(i in 0 until itemRemoveObservers.size)
+			itemRemoveObservers[i](item);
 	}
 
 	protected fun invokeClearObservers() {
-		for(handler in clearObservers)
-			handler();
+		for(i in 0 until clearObservers.size)
+			clearObservers[i]();
 	}
 
 	/**

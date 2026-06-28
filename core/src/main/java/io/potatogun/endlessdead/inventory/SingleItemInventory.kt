@@ -1,5 +1,7 @@
 package io.potatogun.endlessdead.inventory;
 
+import com.badlogic.gdx.utils.Array as GdxArray;
+
 import io.potatogun.endlessdead.item.Item;
 
 /**
@@ -50,7 +52,7 @@ class SingleItemInventory : ObservableInventory() {
 
 	override fun indexOf(item: Item): Int = if(inventoryItem === item) 0 else -1;
 
-	override fun getItems(): List<Item> = inventoryItem?.let { listOf<Item>(it) } ?: listOf<Item>();
+	override fun getItems(): GdxArray<Item> = inventoryItem?.let { GdxArray<Item>(false, 1).apply { add(it) } } ?: GdxArray<Item>(false, 0);
 
 	override fun clear() {
 		inventoryItem?.let {

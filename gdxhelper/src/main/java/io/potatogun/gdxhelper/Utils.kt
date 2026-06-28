@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array as GdxArray;
+import com.badlogic.gdx.utils.Sort;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
@@ -15,6 +17,8 @@ import io.potatogun.gdxhelper.util.SharedTextureManager;
  * 유용한 함수 모음
  */
 object Utils {
+	private val sorter = Sort.instance();
+
 	// 수동 오버로딩
 	@JvmStatic inline fun parseSeconds(seconds: Int): String = parseSeconds(seconds, " minute(s)", " second(s)");
 
@@ -164,4 +168,8 @@ object Utils {
 	 * @return        성공 여부
 	 */
 	@JvmStatic inline fun safeDispose(texture: Texture): Boolean = texture.takeIf { !SharedTextureManager.isSharedTexture(it) }?.let { it.dispose(); true } ?: false;
+
+	@JvmStatic fun <T> sortWith(array: GdxArray<T>, comparator: Comparator<T>) {
+		sorter.sort(array, comparator);
+	}
 }

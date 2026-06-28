@@ -20,22 +20,11 @@ import io.potatogun.gdxhelper.world.Freezable;
 import java.util.Collections;
 
 /**
- * 게임 내 월드 = '월드 하나' 의 추상 기본 클래스.
- * '월드'의 개념에 맞게 플레이어나 적 등의 개체 등을 추가한다.
+ * 게임 내 월드 = '월드 하나'의 추상 기본 클래스.
+ *   '월드'의 개념에 맞게 플레이어나 적 등의 개체 등을 추가한다.
  *
- * ────────────────────────────────────────────────────────────
- *  왜 이런 게 필요한가?
- * ────────────────────────────────────────────────────────────
- *  게임을 만들 때 다루는 핵심 개념은 '하나의 월드'다:
- *    - 그 안에 어떤 객체들이 있는가
- *    - 객체들이 매 프레임 어떻게 움직이고 상호작용하는가
- *    - 그것을 어떻게 그릴 것인가
- *  World는 이 '월드'를 표현하는 한 클래스에 모든 것을 담는다.
- *
- *  이 클래스를 상속해 자기 게임의 월드를 만든다 (ZombieWorld 참고).
- *
- * @property width    월드 전체 너비 (JvmField이 있지만 빌드 후 Fernflower로 자바로 디컴파일하여 null이 불가능한 원시 float임을 확인함.)
- * @property height   월드 전체 높이 (위와 동일)
+ * @property width    월드 전체 너비
+ * @property height   월드 전체 높이
  * @param    settings 월드 옵션
  */
 abstract class World(@JvmField val width: Float, @JvmField val height: Float, settings: Properties = Properties()) {

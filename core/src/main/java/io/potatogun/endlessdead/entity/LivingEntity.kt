@@ -13,24 +13,24 @@ import io.potatogun.gdxhelper.world.World;
 /**
  * 살아있다는 개념과 피격, 행동이 있는 개체
  *
- * @param world         개체가 속한 세계
- * @param name          개체 표시 이름
- * @param x             개체의 처음 X 위치
- * @param y             개체의 처음 Y 위치
- * @param width         가로 크기 (픽셀)
- * @param height        세로 크기 (픽셀)
- * @param initialHealth 초기(최대) 체력
- * @param texture       개체 텍스처(없을 수도 있음)
+ * @param    world   개체가 속한 세계
+ * @param    name    개체 표시 이름
+ * @param    x       개체의 처음 X 위치
+ * @param    y       개체의 처음 Y 위치
+ * @param    width   가로 크기
+ * @param    height  세로 크기
+ * @property health  최대 체력
+ * @param    texture 개체 텍스처(없을 수도 있음)
  */
-abstract class LivingEntity(world: World, name: String, x: Float, y: Float, width: Float, height: Float, initialHealth: Int, texture: Texture? = null) : Entity(world, name, x, y, width, height, texture) {
+abstract class LivingEntity(world: World, name: String, x: Float, y: Float, width: Float, height: Float, health: Int, texture: Texture?) : Entity(world, name, x, y, width, height, texture) {
 	/**
 	 * 개체의 최대 체력
 	 */
-	open val maxHealth: Int = initialHealth;
+	open val maxHealth: Int = health;
 	/**
 	 * 개체의 현재 체력
 	 */
-	var health = initialHealth
+	var health = health
 		private set(value) {
 			if(value > maxHealth) field = maxHealth;
 			else if(value < 0) field = 0;
@@ -108,7 +108,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 		inline get() = (invincibilityTimer > 0f);
 
 	init {
-		if(initialHealth <= 0) throw IllegalArgumentException("invalid health");
+		if(health <= 0) throw IllegalArgumentException("invalid health");
 	}
 
 	/**

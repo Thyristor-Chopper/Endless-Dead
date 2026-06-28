@@ -25,7 +25,7 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.screen.WorldViewer;
-import io.potatogun.gdxhelper.util.EntityListPool;
+import io.potatogun.gdxhelper.util.EntityArrayPool;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
@@ -71,7 +71,7 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 	private val subtitlesVisible: Boolean
 		inline get() = (subtitlesTimer != null);
 	private var attackTarget: WeakReference<LivingEntity>? = null;
-	private val entityListPool = EntityListPool(autoClear = false);
+	private val entityArrayPool = EntityArrayPool(autoClear = false);
 
 	init {
 		// 단색용 텍스처 생성
@@ -200,15 +200,14 @@ class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), Subtitle
 			show();
 		};
 
-		val distanceSorted = entityListPool.obtain();
 		val _attackTarget: LivingEntity? =
 			player.latestAttackVictim
 				?.takeIf { isValidAttackTarget(it, player) }
 				?: run {
-					val distanceSorted = entityListPool.obtain();
+					val distanceSorted = entityArrayPool.obtain();
 					world.entities.getDistanceSorted(player, distanceSorted);
 					val ret = (distanceSorted.firstOrNull { it is LivingEntity && it !is Bullet && it !== player } as? LivingEntity)?.takeIf { isValidAttackTarget(it, player) };
-					entityListPool.free(distanceSorted);
+					entityArrayPool.free(distanceSorted);
 
 					/* return */ ret
 				};

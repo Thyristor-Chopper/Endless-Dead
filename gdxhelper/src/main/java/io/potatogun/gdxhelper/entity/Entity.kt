@@ -20,33 +20,16 @@ import kotlin.math.atan2;
 /**
  * 게임에 등장하는 모든 '무엇인가'의 공통 부모.
  *
- * ────────────────────────────────────────────────────────────
- *  왜 이런 게 필요한가?
- * ────────────────────────────────────────────────────────────
- *  Player, Enemy, Bullet은 기능은 다르지만
- *    - 화면의 특정 위치(x, y)에 있고
- *    - 어떤 크기(width, height)를 가지고
- *    - 매 프레임 스스로 상태를 갱신(update)하고
- *    - 자신을 그릴 줄(draw) 안다
- *  이 '공통 속성/행동'을 한 곳에 모아둔 것이 Entity이다.
- *
- *  World는 이 Entity 타입으로만 개체들을 관리한다.
- *  즉, 우리가 Player든 Bullet이든 'Entity를 상속'하기만 하면
- *  World가 자동으로 update/draw/제거까지 해준다 (다형성).
- *
- * ────────────────────────────────────────────────────────────
- *  사용법 — 새로운 게임 개체 만들기
- * ────────────────────────────────────────────────────────────
- *    class Bullet(world: World, x: Float, y: Float) : Entity(world, x, y, 8f, 16f, "bullet.png") {
- *        override fun update(delta: Float) { y += 400f * delta }
- *    }
+ * World는 이 Entity 타입으로만 개체들을 관리한다.
+ *   즉, 우리가 Player든 Bullet이든 'Entity를 상속'하기만 하면
+ *   World가 자동으로 update/draw/제거까지 해준다 (다형성).
  *
  * @property world   개체가 속한 세계 - 자바에서는 getWorld() 사용
  * @property name    개체 표시 이름
  * @param    x       개체의 처음 X 위치
  * @param    y       개체의 처음 Y 위치
- * @property width   가로 크기 (픽셀)
- * @property height  세로 크기 (픽셀)
+ * @property width   가로 크기
+ * @property height  세로 크기
  * @property texture 개체 텍스처(없을 수도 있음)
  */
 abstract class Entity(val world: World, val name: String, x: Float, y: Float, @JvmField val width: Float, @JvmField val height: Float, @JvmField protected val texture: Texture? = null) {
