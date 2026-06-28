@@ -69,7 +69,7 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 			this.kill();
 
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지 주고 총알은 소멸.
-		for(entity in world.entities.getNearby(this))
+		world.entities.forEachNearby(this) { entity ->
 			if(entity !== this && entity !== shooter && entity is LivingEntity && !entity.isInvincible && !isSameTeamWith(entity) && (entity !is Bullet || entity.gun !== this.gun) && collidesWith(entity)) {
 				entity.takeDamage(damage, attacker = shooter);  // 무적 시간이 필요하면 추가...
 				if(isPenetrable) {
@@ -79,5 +79,6 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 					this.kill();
 				}
 			}
+		};
 	}
 }

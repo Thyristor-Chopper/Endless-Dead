@@ -147,31 +147,27 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	 * update()에서만 한 번 쓰이기 때문에 inline이다.
 	 */
 	private inline fun interactContainer() {
-		for(entity in world.entities.getNearby(this)) {
-			if(entity !is Container) continue;
-			if(collidesWith(entity))
-				if(entity.inventory.isEmpty) {
-					var putItem = false;
-					selectedItem?.let {
-						(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Put ${it.name} into the container");
-						entity.putItem(it, true);
-						putItem = true;  // 하나씩만
-					} ?: (world.viewer as? SubtitlesDrawable)?.drawSubtitles("Can't take any item; container is empty");
-					if(putItem) break;
+		val viewer = world.viewer as? SubtitlesDrawable;
+		world.entities.forEachNearby(this) { entity ->
+			if(entity !is Container || !collidesWith(entity)) return@forEachNearby;
+			if(entity.inventory.isEmpty) {
+				selectedItem?.let {
+					viewer?.drawSubtitles("Put ${it.name} into the container");
+					entity.putItem(it, true);
+				} ?: viewer?.drawSubtitles("Can't take any item; container is empty");
+			} else {
+				val isPlayerItem = entity.isPlayerItem;
+				val item: Item? = entity.takeItem(this);
+				if(item == null) {
+					viewer?.drawSubtitles("Failed to take the item in the container");
 				} else {
-					val isPlayerItem = entity.isPlayerItem;
-					val item: Item? = entity.takeItem(this);
-					if(item == null) {
-						(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Failed to take the item in the container");
-					} else {
-						selectItem(item);
-						(world.viewer as? SubtitlesDrawable)?.drawSubtitles("Took ${item.name} from the container");
-						if(!isPlayerItem)
-							Statistics.openedContainerCount++;
-						break;  // 하나씩만
-					}
+					selectItem(item);
+					viewer?.drawSubtitles("Took ${item.name} from the container");
+					if(!isPlayerItem)
+						Statistics.openedContainerCount++;
 				}
-		}
+			}
+		};
 	}
 
 	// ---- 콜백(이벤트) 처리 ----

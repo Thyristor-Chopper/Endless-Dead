@@ -166,12 +166,12 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 			damagedIndicatorTimer -= delta;
 
 		// 몸 대미지 처리
-		for(entity in world.entities.getNearby(this)) {
+		world.entities.forEachNearby(this) { entity ->
 			if(entity is BodyDamagable && entity !== this && !isSameTeamWith(entity) && collidesWith(entity)) {
 				val attacker = if(entity is Bullet) entity.shooter else entity;  // 일단 총알은 Bullet 클래스에서 자체적으로 처리하고 bodyDamage는 0이기 때문에 의미는 없지만...
 				takeDamage(entity.bodyDamage, attacker=attacker);
 			}
-		}
+		};
 	}
 
 	/**

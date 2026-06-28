@@ -56,10 +56,7 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	 * 자바에서도 entity.position.getX() 등으로 자연스럽게 접근하기 위해 @JvmField
 	 */
 	@JvmField val position = MutablePosition(x, y).apply {
-		setObserver { _, _ ->
-			isCachedRectValid = false;
-			world.entities.updatePosition(this@Entity);
-		};
+		setObserver { _, _ -> world.entities.updatePosition(this@Entity) };
 	};
 	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)
 	/**
@@ -106,14 +103,6 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	 */
 	private var collideCheckHeight = height;
 	/**
-	 * 개체가 차지하는 사각형 영역 (캐시)
-	 */
-	private var cachedRect = calculateRect();
-	/**
-	 * 개체가 차지하는 사각형 영역의 유효 여부 (캐시용)
-	 */
-	private var isCachedRectValid = true;
-	/**
 	 * 개체가 속한 그룹 또는 팀 (null: 중립)
 	 *
 	 * 자바에서는 getTeam, setTeam 사용
@@ -149,26 +138,6 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 			batch.draw(it, x - halfWidth, y - halfHeight, halfWidth, halfHeight, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
 			batch.color = Color.WHITE;
 		};
-	}
-
-	/**
-	 * 개체가 차지하는 사각형 영역을 새로 계산한다.
-	 *
-	 * @return 사각형
-	 */
-	private inline fun calculateRect(): Rectangle = Rectangle(x - collideCheckWidth * 0.5f, y - collideCheckHeight * 0.5f, collideCheckWidth, collideCheckHeight);
-
-	/**
-	 * 이 객체가 차지하는 사각형 영역
-	 *
-	 * @return 사각형
-	 */
-	fun getBounds(): Rectangle {
-		if(!isCachedRectValid) {
-			cachedRect = calculateRect();
-			isCachedRectValid = true;
-		}
-		return cachedRect;
 	}
 
 	/**
@@ -259,8 +228,6 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 			collideCheckWidth = (width + height) * 0.5f;
 			collideCheckHeight = collideCheckWidth;
 		}
-
-		isCachedRectValid = false;
 	}
 
 	/**

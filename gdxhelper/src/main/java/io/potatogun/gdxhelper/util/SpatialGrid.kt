@@ -15,15 +15,13 @@ import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.floor;
-import kotlin.random.Random;
-import kotlin.reflect.KClass;
 
 /**
  * 좌표 분할 격자식 개체 관리자
  *
  * @property tileSize 타일 크기
  */
-class SpatialGrid(private val world: World, private val tileSize: Float) : EntityManager {
+class SpatialGrid(override val world: World, private val tileSize: Float) : EntityManager {
 	private val allEntities = GdxArray<Entity>(false, 16);
 	private val entitiesOfTile = LongMap<GdxArray<Entity>>();
 	private val tilesOfEntity = ObjectMap<Entity, LongSet>();
@@ -43,7 +41,27 @@ class SpatialGrid(private val world: World, private val tileSize: Float) : Entit
 			obj.clear();
 		}
 	};
-	private val nearbyVisited = ObjectSet<Entity>();
+	private val objectSetPool = object : Pool<ObjectSet<Entity>>() {
+		override fun newObject(): ObjectSet<Entity> = ObjectSet<Entity>();
+
+		override fun reset(obj: ObjectSet<Entity>) {
+			obj.clear();
+		}
+	};
+	override val view = object : EntityManager.View {
+		override val size: Int
+			get() = allEntities.size;
+		override val isEmpty: Boolean
+			get() = allEntities.isEmpty();
+
+		override operator fun get(index: Int): Entity = allEntities[index];
+
+		override fun sortedWith(comparator: Comparator<Entity>): List<Entity> = allEntities.sortedWith(comparator);
+
+		override fun forEach(callback: (Entity) -> Unit) {
+			allEntities.forEach(callback);
+		}
+	};
 
 	override fun add(entity: Entity): Boolean {
 		if(tilesOfEntity.containsKey(entity) || addQueue.contains(entity, true)) return false;
@@ -94,11 +112,11 @@ class SpatialGrid(private val world: World, private val tileSize: Float) : Entit
 					val iterator = hashes.iterator();
 					while(iterator.hasNext) {
 						val hash = iterator.next();
-						val list = entitiesOfTile.get(hash) ?: continue;
-						list.removeValue(entity, true);
-						if(list.isEmpty()) {
+						val entities = entitiesOfTile[hash] ?: continue;
+						entities.removeValue(entity, true);
+						if(entities.isEmpty()) {
 							entitiesOfTile.remove(hash);
-							arrayPool.free(list);
+							arrayPool.free(entities);
 						}
 					}
 					longSetPool.free(hashes);
@@ -119,12 +137,12 @@ class SpatialGrid(private val world: World, private val tileSize: Float) : Entit
 				val iterator = hashes.iterator();
 				while(iterator.hasNext) {
 					val hash = iterator.next();
-					var list = entitiesOfTile.get(hash);
-					if(list == null) {
-						list = arrayPool.obtain();
-						entitiesOfTile.put(hash, list);
+					var entities = entitiesOfTile[hash];
+					if(entities == null) {
+						entities = arrayPool.obtain();
+						entitiesOfTile.put(hash, entities);
 					}
-					list.add(entity);
+					entities.add(entity);
 				}
 				tilesOfEntity.put(entity, hashes);
 				allEntities.add(entity);
@@ -156,7 +174,7 @@ class SpatialGrid(private val world: World, private val tileSize: Float) : Entit
 		while(oldIterator.hasNext) {
 			val hash = oldIterator.next();
 			if(newHashes.contains(hash)) continue;
-			val entities = entitiesOfTile.get(hash);
+			val entities = entitiesOfTile[hash];
 			if(entities == null) continue;
 			entities.removeValue(entity, true);
 			if(entities.isEmpty()) {
@@ -169,7 +187,7 @@ class SpatialGrid(private val world: World, private val tileSize: Float) : Entit
 		while(newIterator.hasNext) {
 			val hash = newIterator.next();
 			if(oldHashes.contains(hash)) continue;
-			var entities = entitiesOfTile.get(hash);
+			var entities = entitiesOfTile[hash];
 			if(entities == null) {
 				entities = arrayPool.obtain();
 				entitiesOfTile.put(hash, entities);
@@ -181,10 +199,7 @@ class SpatialGrid(private val world: World, private val tileSize: Float) : Entit
 		tilesOfEntity.put(entity, newHashes);
 	}
 
-	override fun getNearby(entity: Entity): GdxArray<Entity> {
-		val ret = GdxArray<Entity>(false, 32);
-		nearbyVisited.clear();
-
+	override fun forEachNearby(entity: Entity, callback: (Entity) -> Unit) {
 		val outerRange = 1;
 		val maxHalfLength = Utils.max2(entity.width, entity.height) * 0.5f;
 
@@ -193,18 +208,18 @@ class SpatialGrid(private val world: World, private val tileSize: Float) : Entit
 		val minTileY = floor((entity.y - maxHalfLength) / tileSize).toInt() - outerRange;
 		val maxTileY = floor((entity.y + maxHalfLength) / tileSize).toInt() + outerRange;
 
+		val visited = objectSetPool.obtain();
 		for(tileX in minTileX..maxTileX)
 			for(tileY in minTileY..maxTileY) {
 				val hash = (tileX.toLong() shl 32) or (tileY.toLong() and 0xffffffffL);
-				val entities = entitiesOfTile.get(hash) ?: continue;
+				val entities = entitiesOfTile[hash] ?: continue;
 				for(i in 0 until entities.size) {
-					val entity = entities[i];
-					if(nearbyVisited.add(entity))
-						ret.add(entity);
+					val e = entities[i];
+					if(visited.add(e))
+						callback(e);
 				}
 			}
-
-		return ret;
+		objectSetPool.free(visited);
 	}
 
 	override fun getAll(): GdxArray<Entity> = allEntities;
@@ -228,70 +243,4 @@ class SpatialGrid(private val world: World, private val tileSize: Float) : Entit
 				output.add(hash);
 			}
 	}
-
-	override fun getRandom(): Entity? {
-		if(allEntities.isEmpty()) return null;
-		return allEntities[Random.nextInt(allEntities.size)];
-	}
-
-	override fun <T : Entity> countOf(type: KClass<T>): Int {
-		var ret = 0;
-		for(i in 0 until allEntities.size)
-			if(type.isInstance(allEntities[i]))
-				ret++;
-		return ret;
-	}
-
-	override fun <T : Entity> getFirstOf(type: KClass<T>): T? {
-		for(i in 0 until allEntities.size) {
-			val entity = allEntities[i];
-			if(type.isInstance(entity))
-				return entity as T;
-		}
-		return null;
-	}
-
-	override fun <T : Entity> getRandomOf(type: KClass<T>): T? {
-		var count = 0;
-		var ret: T? = null;
-		for(i in 0 until allEntities.size) {
-			val entity = allEntities[i];
-			if(type.isInstance(entity) && Random.nextInt(++count) == 0)
-				ret = entity as T;
-		}
-		return ret;
-	}
-
-	override fun getClosest(entity: Entity): Entity? {
-		if(allEntities.isEmpty()) return null;
-		var ret = allEntities[0];
-		var min = ret.distanceTo(entity);
-		for(i in 0 until allEntities.size) {
-			val e = allEntities[i];
-			val distance = e.distanceTo(entity);
-			if(distance < min) {
-				min = distance;
-				ret = e;
-			}
-		}
-		return ret;
-	}
-
-	override fun <T : Entity> getClosestOf(entity: Entity, type: KClass<T>): T? {
-		if(allEntities.isEmpty()) return null;
-		var ret: T? = null;
-		var min = Utils.max2(world.width, world.height);
-		for(i in 0 until allEntities.size) {
-			val e = allEntities[i];
-			if(!type.isInstance(e)) continue;
-			val distance = e.distanceTo(entity);
-			if(distance < min) {
-				min = distance;
-				ret = e as T;
-			}
-		}
-		return ret;
-	}
-
-	override fun getDistanceSorted(entity: Entity): List<Entity> = allEntities.sortedWith(compareBy { it.distanceTo(entity) });
 }
