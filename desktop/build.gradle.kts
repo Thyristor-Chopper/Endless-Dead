@@ -7,7 +7,7 @@ plugins {
 dependencies {
 	implementation(project(":gdxhelper"))
 	implementation(project(":core"))
-	implementation("com.badlogicgames.gdx:gdx-backend-lwjgl3:1.10.0")
+	implementation("com.badlogicgames.gdx:gdx-backend-lwjgl3:1.10.0")  // 1.11.0 이상은 Windows XP에서 소리 관련 오류 발생
 	implementation("com.badlogicgames.gdx:gdx-platform:1.12.1:natives-desktop")
 }
 
@@ -30,9 +30,4 @@ tasks.shadowJar {
 	manifest {
 		attributes["Main-Class"] = application.mainClass.get()
 	}
-
-	/*val assetsDir = file("../assets")
-	if (assetsDir.exists()) {
-		from(assetsDir)
-	}*/
 }
