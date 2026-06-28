@@ -121,6 +121,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 */
 	@JvmOverloads open fun takeDamage(damage: Int, attacker: Entity? = null): Boolean {
 		if(damage < 0) throw IllegalArgumentException("damage must not be negative");
+		if(attacker is LivingEntity && isSameTeamWith(attacker)) return false;
 		if(isInvincible) return false;
 		if(!isAlive) return false;
 
@@ -182,9 +183,9 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 */
 	fun damageTarget(target: LivingEntity): Boolean {
 		if(attackCooldownTimer > 0f) return false;
-		target.takeDamage(attackDamage, attacker = this);
-		attackCooldownTimer = attackInterval;
-		return true;
+		val result = target.takeDamage(attackDamage, attacker = this);
+		if(result) attackCooldownTimer = attackInterval;
+		return result;
 	}
 
 	/**

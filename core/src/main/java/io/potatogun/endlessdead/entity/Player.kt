@@ -51,6 +51,8 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 	override val isUpdatableWhileFrozen = true;
 	private val textureWithGun = Utils.loadTexture("entity/player_holding_gun.bmp");
 	override val movementSpeed = 200f;
+	override val attackDamage = 1;
+	override val attackInterval = 0.5f;
 	private var speedModifier = 0f;
 	// 타이머
 	private val timerManager = TimerManager();
@@ -91,10 +93,13 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 		if(Input.isKeyJustPressed(Input.SPACE) || Input.isButtonJustPressed(Input.RIGHT_MOUSE))
 			interactContainer();
 
-		// 아이템 사용
+		// 아이템 사용 및 손공격
 		selectedItem?.let {
 			if(it is Usable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.isContinuousUseAllowed && Input.isButtonPressed(Input.LEFT_MOUSE))))
 				useItem(it);
+		} ?: run {
+			if(Input.isButtonJustPressed(Input.LEFT_MOUSE))
+				meleeAttackNearby();
 		};
 
 		// 아이템 파괴
@@ -169,6 +174,13 @@ class Player(world: World, x: Float, y: Float, override val inventory: Observabl
 						Statistics.openedContainerCount++;
 				}
 			}
+		};
+	}
+
+	private inline fun meleeAttackNearby() {
+		world.entities.forEachNearby(this) { entity ->
+			if(entity is LivingEntity && collidesWith(entity))
+				damageTarget(entity);
 		};
 	}
 
