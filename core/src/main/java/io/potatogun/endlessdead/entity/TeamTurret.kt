@@ -24,7 +24,7 @@ import io.potatogun.gdxhelper.world.World;
  */
 abstract class TeamTurret(world: World, name: String, x: Float, y: Float, team: String?, gun: Item?, health: Int, isPermanent: Boolean = false, texture: Texture) : Turret(world, name, x, y, gun, health, isPermanent, texture) {
 	init {
-		setTargetFetcher { world.entities.getDistanceSorted(this).firstOrNull { it is LivingEntity && !it.isSameTeamWith(this) } as? LivingEntity };
+		setTargetFetcher { world.entities.getDistanceSorted(this).firstOrNull { it is LivingEntity && !it.isSameTeamWith(this) && it !is Bullet } as? LivingEntity };
 		this.team = team;
 	}
 }
