@@ -1,6 +1,7 @@
 package io.potatogun.gdxhelper.util;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.util.WeakMutableSet;
@@ -10,7 +11,7 @@ import io.potatogun.gdxhelper.util.weakMutableSetOf;
  * 공유 자원 관리자
  */
 abstract class SharedTextureManager {
-	private val shared = mutableMapOf<String, Lazy<Texture>>();
+	private val shared = ObjectMap<String, Lazy<Texture>>();
 
 	/**
 	 * 텍스처를 등록한다.
@@ -19,12 +20,12 @@ abstract class SharedTextureManager {
 	 * @param path 텍스처 경로
 	 */
 	protected fun register(id: String, path: String) {
-		shared[id] = lazy {
+		shared.put(id, lazy {
 			val texture = Utils.loadTexture(path);
 			sharedTextures.add(texture);
 
 			texture  // return
-		};
+		});
 	}
 
 	/**
@@ -35,7 +36,7 @@ abstract class SharedTextureManager {
 	 */
 	protected fun register(id: String, texture: Texture) {
 		sharedTextures.add(texture);
-		shared[id] = lazyOf(texture);
+		shared.put(id, lazyOf(texture));
 	}
 
 	/**
@@ -53,9 +54,12 @@ abstract class SharedTextureManager {
 	 * Screen이나 World가 아닌 Game에서 호출해야 한다.
 	 */
 	fun disposeShared() {
-		for(texture in shared.values)
+		val iterator = shared.values().iterator();
+		while(iterator.hasNext()) {
+			val texture = iterator.next();
 			if(texture.isInitialized())
 				texture.value.dispose();
+		}
 	}
 
 	companion object {

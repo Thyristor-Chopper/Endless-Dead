@@ -24,6 +24,7 @@ import io.potatogun.endlessdead.spawner.ZombieSpawner;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
+import io.potatogun.gdxhelper.util.EntityListPool;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
@@ -91,6 +92,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	// 타이머
 	private val timerManager = TimerManager();
 	private var unfreezer: Timer? = null;
+	private val entityListPool = EntityListPool();
 
 	/**
 	 * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -138,9 +140,11 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		// 10초마다 빈 상자 하나 리필
 		timerManager.register(RepeatingTimer(10f) {
-			val emptyContainers = entities.getAll().filter { it is Container && it.inventory.isEmpty };
+			val emptyContainers = entityListPool.obtain();
+			entities.view.filter({ it is Container && it.inventory.isEmpty }, emptyContainers);
 			val randomContainer = emptyContainers.randomOrNull() as Container?;
 			randomContainer?.putItem(generateRandomItem(false));
+			entityListPool.free(emptyContainers);
 		});
 	}
 

@@ -27,27 +27,9 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 	private val tilesOfEntity = ObjectMap<Entity, LongSet>();
 	private val addQueue = GdxArray<Entity>();
 	private val removeQueue = GdxArray<Entity>();
-	private val longSetPool = object : Pool<LongSet>() {
-		override fun newObject(): LongSet = LongSet();
-
-		override fun reset(obj: LongSet) {
-			obj.clear();
-		}
-	};
-	private val arrayPool = object : Pool<GdxArray<Entity>>() {
-		override fun newObject(): GdxArray<Entity> = GdxArray(false, 8);
-
-		override fun reset(obj: GdxArray<Entity>) {
-			obj.clear();
-		}
-	};
-	private val objectSetPool = object : Pool<ObjectSet<Entity>>() {
-		override fun newObject(): ObjectSet<Entity> = ObjectSet<Entity>();
-
-		override fun reset(obj: ObjectSet<Entity>) {
-			obj.clear();
-		}
-	};
+	private val hashSetPool = LongSetPool();
+	private val entityArrayPool = EntityArrayPool();
+	private val entitySetPool = EntitySetPool();
 	override val view = object : EntityManager.View {
 		override val size: Int
 			get() = allEntities.size;
@@ -60,6 +42,17 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 
 		override fun forEach(callback: (Entity) -> Unit) {
 			allEntities.forEach(callback);
+		}
+
+		override fun filter(condition: (Entity) -> Boolean): List<Entity> = allEntities.filter(condition);
+
+		override fun filter(condition: (Entity) -> Boolean, output: MutableList<Entity>) {
+			output.clear();
+			for(i in 0 until allEntities.size) {
+				val entity = allEntities[i];
+				if(condition(entity))
+					output.add(entity);
+			}
 		}
 	};
 
@@ -116,10 +109,10 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 						entities.removeValue(entity, true);
 						if(entities.isEmpty()) {
 							entitiesOfTile.remove(hash);
-							arrayPool.free(entities);
+							entityArrayPool.free(entities);
 						}
 					}
-					longSetPool.free(hashes);
+					hashSetPool.free(hashes);
 				}
 				allEntities.removeValue(entity, true);
 				entity.dispose();
@@ -131,7 +124,7 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 		if(!addQueue.isEmpty()) {
 			for(i in 0 until addQueue.size) {
 				val entity = addQueue[i];
-				val hashes = longSetPool.obtain();
+				val hashes = hashSetPool.obtain();
 				calculateTileHashes(entity, hashes);
 
 				val iterator = hashes.iterator();
@@ -139,7 +132,7 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 					val hash = iterator.next();
 					var entities = entitiesOfTile[hash];
 					if(entities == null) {
-						entities = arrayPool.obtain();
+						entities = entityArrayPool.obtain();
 						entitiesOfTile.put(hash, entities);
 					}
 					entities.add(entity);
@@ -153,21 +146,14 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 
 	override fun updatePosition(entity: Entity) {
 		val oldHashes = tilesOfEntity[entity] ?: return;
-		val newHashes = longSetPool.obtain();
+		val newHashes = hashSetPool.obtain();
 		calculateTileHashes(entity, newHashes);
 
-		if(oldHashes.size == newHashes.size) {
-			var identical = true;
-			val iterator = newHashes.iterator();
-			while(iterator.hasNext)
-				if(!oldHashes.contains(iterator.next())) {
-					identical = false;
-					break;
-				}
-			if(identical) {
-				longSetPool.free(newHashes);
-				return;
-			}
+		// https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/LongSet.java
+		//   먼저 둘의 크기를 먼저 비교하는 최적화를 하고 원소 내용이 같은지를 비교하기 때문에 안전
+		if(oldHashes == newHashes) {
+			hashSetPool.free(newHashes);
+			return;
 		}
 
 		val oldIterator = oldHashes.iterator();
@@ -179,7 +165,7 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 			entities.removeValue(entity, true);
 			if(entities.isEmpty()) {
 				entitiesOfTile.remove(hash);
-				arrayPool.free(entities);
+				entityArrayPool.free(entities);
 			}
 		}
 
@@ -189,13 +175,13 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 			if(oldHashes.contains(hash)) continue;
 			var entities = entitiesOfTile[hash];
 			if(entities == null) {
-				entities = arrayPool.obtain();
+				entities = entityArrayPool.obtain();
 				entitiesOfTile.put(hash, entities);
 			}
 			entities.add(entity);
 		}
 
-		longSetPool.free(oldHashes);
+		hashSetPool.free(oldHashes);
 		tilesOfEntity.put(entity, newHashes);
 	}
 
@@ -208,7 +194,7 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 		val minTileY = floor((entity.y - maxHalfLength) / tileSize).toInt() - outerRange;
 		val maxTileY = floor((entity.y + maxHalfLength) / tileSize).toInt() + outerRange;
 
-		val visited = objectSetPool.obtain();
+		val visited = entitySetPool.obtain();
 		for(tileX in minTileX..maxTileX)
 			for(tileY in minTileY..maxTileY) {
 				val hash = (tileX.toLong() shl 32) or (tileY.toLong() and 0xffffffffL);
@@ -219,10 +205,8 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 						callback(e);
 				}
 			}
-		objectSetPool.free(visited);
+		entitySetPool.free(visited);
 	}
-
-	override fun getAll(): GdxArray<Entity> = allEntities;
 
 	override fun dispose() {
 		for(i in 0 until allEntities.size)
@@ -242,5 +226,29 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 				val hash = (tileX.toLong() shl 32) or (tileY.toLong() and 0xffffffffL);
 				output.add(hash);
 			}
+	}
+
+	private class LongSetPool : Pool<LongSet>() {
+		override fun newObject(): LongSet = LongSet();
+
+		override fun reset(obj: LongSet) {
+			obj.clear();
+		}
+	}
+
+	private class EntityArrayPool : Pool<GdxArray<Entity>>() {
+		override fun newObject(): GdxArray<Entity> = GdxArray(false, 8);
+
+		override fun reset(obj: GdxArray<Entity>) {
+			obj.clear();
+		}
+	}
+
+	private class EntitySetPool : Pool<ObjectSet<Entity>>() {
+		override fun newObject(): ObjectSet<Entity> = ObjectSet<Entity>();
+
+		override fun reset(obj: ObjectSet<Entity>) {
+			obj.clear();
+		}
 	}
 }

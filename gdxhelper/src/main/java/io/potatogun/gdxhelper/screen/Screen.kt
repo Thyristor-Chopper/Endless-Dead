@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.widget.Widget;
@@ -46,7 +47,7 @@ abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
 	/**
 	 * 등록된 위젯들
 	 */
-	private val widgets = mutableMapOf<String, Widget>();
+	private val widgets = ObjectMap<String, Widget>();
 
 	init {
 		settings.fillDefaults();
@@ -66,7 +67,7 @@ abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
 	 */
 	fun addWidget(id: String, widget: Widget): Boolean {
 		if(widgets.containsKey(id)) return false;
-		widgets[id] = widget;
+		widgets.put(id, widget);
 		return true;
 	}
 
@@ -98,7 +99,7 @@ abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
 	 *
 	 * @return 위젯들의 컬렉션
 	 */
-	fun getWidgets(): Collection<Widget> = widgets.values;
+	fun getWidgets(): ObjectMap.Values<Widget> = widgets.values();
 
 	// ────────────────────────────────────────────────────────
 	//  콜백 함수
@@ -181,11 +182,14 @@ abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
 	 */
 	private fun drawWidgets(): Int {
 		var count = 0;
-		for(widget in widgets.values)
+		val iterator = widgets.values().iterator();
+		while(iterator.hasNext()) {
+			val widget = iterator.next();
 			if(widget.isVisible) {
 				widget.draw(batch);
 				count++;
 			}
+		}
 		return count;
 	}
 
@@ -241,8 +245,11 @@ abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
 	override fun dispose() {
 		batch.dispose();
 		font.dispose();
-		for(widget in widgets.values)
+		val iterator = widgets.values().iterator();
+		while(iterator.hasNext()) {
+			val widget = iterator.next();
 			widget.dispose();
+		}
 	}
 
 	/**

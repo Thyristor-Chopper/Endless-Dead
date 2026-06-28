@@ -1,7 +1,6 @@
 package io.potatogun.gdxhelper.util;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
@@ -39,13 +38,6 @@ interface EntityManager {
 	 * @param entity 갱신할 개체
 	 */
 	fun updatePosition(entity: Entity) {}
-
-	/**
-	 * 등록된 모든 개체 목록을 반환한다. 
-	 *
-	 * @return 개체 목록
-	 */
-	fun getAll(): GdxArray<Entity>;
 
 	/**
 	 * 현재 개체의 주변 개체를 순회한다.
@@ -87,6 +79,10 @@ interface EntityManager {
 		fun sortedWith(comparator: Comparator<Entity>): List<Entity>;
 
 		fun forEach(callback: (Entity) -> Unit);
+
+		fun filter(condition: (Entity) -> Boolean): List<Entity>;
+
+		fun filter(condition: (Entity) -> Boolean, output: MutableList<Entity>);
 	}
 }
 
