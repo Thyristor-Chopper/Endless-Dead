@@ -3,7 +3,8 @@ package io.potatogun.endlessdead.entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.Textures;
-import io.potatogun.endlessdead.entity.ai.ApproachTarget;
+import io.potatogun.endlessdead.entity.ai.RotateToTarget;
+import io.potatogun.endlessdead.entity.ai.ShootTarget;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.endlessdead.inventory.SingleItemInventory;
 import io.potatogun.endlessdead.item.Gun;
@@ -17,8 +18,9 @@ import io.potatogun.gdxhelper.world.World;
 /**
  * 총을 쏘는 적
  */
-class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: SingleItemInventory) : Mob(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, PenetratorDamagable, DamageListener, ItemSelectable by InventoryItemSelector(inventory) {
-	private val approacher = ApproachTarget(this, 360f);
+class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: SingleItemInventory) : Mob(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory) {
+	private val rotator = RotateToTarget(this);
+	private val shooter = ShootTarget(this, 360f);
 	override val movementSpeed = 140f;
 	override val penetrationDamage = 1;
 	override val damageInvincibilityDuration = 0.15f;
@@ -48,17 +50,8 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 
 	override fun update(delta: Float) {
 		super.update(delta);
-
-		val target: LivingEntity? = this.target;
-		if(target == null) return;
-		rotateTo(target);
-
-		approacher.update(delta);
-		if(approacher.state == ApproachTarget.State.APPROACHED)
-			selectedItem?.let {
-				if(it !is Shootable) return;
-				it.shoot(target.position, this);
-			};
+		rotator.update(delta);
+		shooter.update(delta);
 	}
 
 	// 누군가가 자신을 공격하면 처치 대상을 그자로 한다.

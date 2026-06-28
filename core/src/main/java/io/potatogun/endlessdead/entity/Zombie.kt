@@ -34,7 +34,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param height   세로 크기 (픽셀)
  * @param settings 좀비 옵션
  */
-abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Float, height: Float, settings: Properties) : Mob(world, name, x, y, width, height, settings.health, Textures.getShared("zombie")), PenetratorDamagable, DamageListener {
+abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Float, height: Float, settings: Properties) : Mob(world, name, x, y, width, height, settings.health, Textures.getShared("zombie")), DamageListener {
 	private val meleeAttacker = MeleeAttackTarget(this, 3f / 4f);
 	private val attackingTexture = Textures.getShared("attacking_zombie");
 	override val attackDamage = settings.attackDamage;
@@ -53,7 +53,7 @@ abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Flo
 			return world.entities.getClosestOf<Player>(this);
 	}
 
-	override fun update(delta: Float) {
+	final override fun update(delta: Float) {
 		super.update(delta);
 
 		updateAI(delta);

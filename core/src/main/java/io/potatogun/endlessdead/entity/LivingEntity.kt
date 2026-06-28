@@ -53,6 +53,10 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 */
 	var team: String? = null;
 	/**
+	 * 관통할 때 관통자에게 주는 대미지
+	 */
+	open val penetrationDamage = 0;
+	/**
 	 * 기본 이동 속도
 	 */
 	abstract val movementSpeed: Float;

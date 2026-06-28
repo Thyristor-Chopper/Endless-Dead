@@ -10,7 +10,7 @@ import io.potatogun.endlessdead.entity.Mob;
  * @property targetCenterGapFactor 대상의 크기(변 길이)의 이 곱까지는 간격을 둬도 공격할 수 있다.
  */
 class MeleeAttackTarget(private val attacker: Mob, private val targetCenterGapFactor: Float = 0f) : Behavior {
-	private val approacher = ApproachTarget(attacker, targetCenterGapFactor);
+	private val approacher = ApproachTarget(attacker, targetCenterGapFactor = targetCenterGapFactor);
 	var state = State.STANDBY
 		private set;
 
