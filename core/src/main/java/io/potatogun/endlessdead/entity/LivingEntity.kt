@@ -119,7 +119,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 * @return         성공 여부
 	 * @throws IllegalArgumentException	피해량이 잘못된 경우
 	 */
-	@JvmOverloads open fun takeDamage(damage: Int, attacker: Entity? = null): Boolean {
+	@JvmOverloads fun takeDamage(damage: Int, attacker: Entity? = null): Boolean {
 		if(damage < 0) throw IllegalArgumentException("damage must not be negative");
 		if(attacker is LivingEntity && isSameTeamWith(attacker)) return false;
 		if(isInvincible) return false;
@@ -154,7 +154,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 * @param amount 회복할 양
 	 * @return       성공 여부
 	 */
-	open fun heal(amount: Int): Boolean {
+	fun heal(amount: Int): Boolean {
 		if(!isAlive) return false;
 		health += amount;
 		return true;
@@ -197,6 +197,8 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	inline fun isSameTeamWith(entity: LivingEntity): Boolean = (team == entity.team && team != null && entity.team != null);
 
 	override fun update(delta: Float) {
+		super.update(delta);
+
 		if(invincibilityTimer > 0f)
 			invincibilityTimer -= delta;
 		if(attackCooldownTimer > 0f)

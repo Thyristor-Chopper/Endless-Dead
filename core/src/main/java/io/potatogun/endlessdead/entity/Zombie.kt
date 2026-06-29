@@ -5,9 +5,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.ai.ApproachTarget;
+import io.potatogun.endlessdead.entity.ai.DashToTarget;
 import io.potatogun.endlessdead.entity.ai.MeleeAttackTarget;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
+import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.util.getClosestOf;
 import io.potatogun.gdxhelper.world.World;
@@ -23,7 +25,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param height   세로 크기 (픽셀)
  * @param settings 좀비 옵션
  */
-abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Float, height: Float, settings: Properties) : Mob(world, name, x, y, width, height, settings.health, Textures.getShared("zombie")), DamageListener {
+sealed class Zombie(world: World, name: String, x: Float, y: Float, width: Float, height: Float, settings: Properties) : Mob(world, name, x, y, width, height, settings.health, Textures.getShared("zombie")), DamageListener {
 	private val meleeAttacker = MeleeAttackTarget(this, 3f / 4f);
 	private val attackingTexture = Textures.getShared("attacking_zombie");
 	override val attackDamage = settings.attackDamage;
@@ -80,10 +82,50 @@ abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Flo
 	 * @property speed        이동 속도 (0이면 멈춤, 음수도 가능하지만 비권장)
 	 * @throws IllegalArgumentException 값 일부가 잘못됐을 때
 	 */
-	open class Properties(@JvmField val health: Int, @JvmField val attackDamage: Int = 0, @JvmField val speed: Float = 0f) {
+	class Properties(@JvmField val health: Int, @JvmField val attackDamage: Int = 0, @JvmField val speed: Float = 0f) {
 		init {
 			if(attackDamage < 0) throw IllegalArgumentException("invalid attack damage");
 			if(health <= 0) throw IllegalArgumentException("invalid health");
+		}
+	}
+
+	/**
+	 * 약한 좀비
+	 *
+	 * @param world 개체가 속한 세계
+	 * @param x     개체의 처음 X 위치
+	 * @param y     개체의 처음 Y 위치
+	 */
+	class Weak(world: World, x: Float, y: Float) : Zombie(world, "Small Zombie", x, y, 21f, 30f, Zombie.Properties(3, 1, 150f));
+
+	/**
+	 * 보통 좀비
+	 *
+	 * @param world 개체가 속한 세계
+	 * @param x     개체의 처음 X 위치
+	 * @param y     개체의 처음 Y 위치
+	 */
+	class Normal(world: World, x: Float, y: Float) : Zombie(world, "Zombie", x, y, 32f, 45f, Zombie.Properties(6, 3, 100f));
+
+	/**
+	 * 강한 좀비
+	 *
+	 * @param world 개체가 속한 세계
+	 * @param x     개체의 처음 X 위치
+	 * @param y     개체의 처음 Y 위치
+	 */
+	class Strong(world: World, x: Float, y: Float) : Zombie(world, "Rabid Zombie", x, y, 49f, 70f, Zombie.Properties(15, 5, 50f)) {
+		private val dasher = DashToTarget(this, 20, 800f, 250f);
+
+		init {
+			// 강한 좀비는 살짝 붉게
+			overlayColor = Utils.rgb(255, 204, 204);
+		}
+
+		override fun updateAI(delta: Float) {
+			dasher.update(delta);
+			if(dasher.state == DashToTarget.State.STANDBY || dasher.state == DashToTarget.State.COOLDOWN)
+				super.updateAI(delta);
 		}
 	}
 }

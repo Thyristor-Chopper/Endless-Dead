@@ -32,6 +32,6 @@ abstract class Game : GdxGame() {
 	override fun dispose() {
 		super.dispose();
 		HelperTextures.disposeShared();
-		World.disposeAllWorlds();
+		World.disposeUndispoed();
 	}
 }

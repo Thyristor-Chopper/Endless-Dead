@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array as GdxArray;
+import com.badlogic.gdx.utils.ObjectSet;
 
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
@@ -83,7 +84,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 		if(camera is OrthographicCamera)
 			camera.setToOrtho(false);  // false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
 
-		instances.add(this);
+		undisposed.add(this);
 	}
 
 	// ────────────────────────────────────────────────────────
@@ -199,6 +200,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 	// ────────────────────────────────────────────────────────
 
 	open fun dispose() {
+		undisposed.remove(this);
 		batch.dispose();
 		font.dispose();
 		entities.dispose();
@@ -259,13 +261,18 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 	companion object {
 		// 생성된 모든 인스턴스를 관리하는 목록이다. 생성자에서 자동으로 추가한다. 누가 설마 자바 unsafe의 allocateInstance를 쓰진 않겠지
 		//   게임 dispose 시 사용된다.
-		private val instances = weakMutableSetOf<World>();
+		private val undisposed = ObjectSet<World>(4);
 
-		internal fun disposeAllWorlds() {
-			for(world in instances)
-				try {
-					world.dispose();
-				} catch(e: IllegalArgumentException) {}
+		/**
+		 * 수동 자원 해제되지 않은 월드들을 일괄 dispose한다.
+		 */
+		internal fun disposeUndispoed() {
+			val iterator = undisposed.iterator();
+			while(iterator.hasNext) {
+				val world = iterator.next();
+				world.dispose();
+				iterator.remove();
+			}
 		}
 	}
 }

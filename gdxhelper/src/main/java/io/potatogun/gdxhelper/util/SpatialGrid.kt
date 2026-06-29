@@ -23,8 +23,8 @@ import kotlin.math.floor;
  */
 class SpatialGrid(override val world: World, private val tileSize: Float) : EntityManager {
 	private val allEntities = GdxArray<Entity>(false, 128);
-	private val entitiesOfTile = LongMap<GdxArray<Entity>>();
-	private val tilesOfEntity = ObjectMap<Entity, LongSet>();
+	private val entitiesOfTile = LongMap<GdxArray<Entity>>(1024);
+	private val tilesOfEntity = ObjectMap<Entity, LongSet>(128);
 	private val addQueue = GdxArray<Entity>(false, 8);
 	private val removeQueue = GdxArray<Entity>(false, 8);
 	private val hashSetPool = LongSetPool();
@@ -252,11 +252,11 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 	}
 
 	private class LongSetPool : Pool<LongSet>() {
-		override fun newObject(): LongSet = LongSet();
+		override fun newObject(): LongSet = LongSet(8);
 	}
 
 	private class EntitySetPool : Pool<ObjectSet<Entity>>() {
-		override fun newObject(): ObjectSet<Entity> = ObjectSet<Entity>();
+		override fun newObject(): ObjectSet<Entity> = ObjectSet<Entity>(16);
 
 		override fun reset(obj: ObjectSet<Entity>) {
 			obj.clear();

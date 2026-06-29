@@ -61,6 +61,8 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 	}
 
 	override fun update(delta: Float) {
+		super.update(delta);
+
 		x += amountX * delta;
 		y += amountY * delta;
 

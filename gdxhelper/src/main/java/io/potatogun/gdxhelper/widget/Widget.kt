@@ -11,13 +11,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  * @property height 컨트롤 높이 계산 함수
  */
 abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> Float) {
-	@get:JvmName("calculateX") protected var x: () -> Float = x
+	@get:JvmName("getLeftCalculator") protected var x: () -> Float = x
 		private set;
-	@get:JvmName("calculateY") protected var y: () -> Float = y
+	@get:JvmName("getBottomCalculator") protected var y: () -> Float = y
 		private set;
-	@get:JvmName("calculateWidth") protected var width: () -> Float = width
+	@get:JvmName("getWidthCalculator") protected var width: () -> Float = width
 		private set;
-	@get:JvmName("calculateHeight") protected var height: () -> Float = height
+	@get:JvmName("getHeightCalculator") protected var height: () -> Float = height
 		private set;
 	/**
 	 * 컨트롤이 화면에 그려지는지의 여부
