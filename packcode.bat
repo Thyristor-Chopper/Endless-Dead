@@ -12,5 +12,6 @@ for /r %%i in (*.kt *.java *.gradle *.kts) do (
     echo(>>src_packed.txt
 )
 
+echo(
 echo Saved to src_packed.txt.
 pause
