@@ -57,14 +57,29 @@ object Utils {
 	 * 우리가 만든 Timer 클래스는 우리 게임의 상태 등에 종속적이지만 이쪽은 게임과는 독립적이기 때문에 libGDX의 Timer 클래스를 직접 사용한다.
 	 * 
 	 * @param delay     지연 시간(초)
+	 * @param operation 실행할 서브루틴
+	 * @return          실행 작업 객체
+	 */
+	@JvmStatic inline fun setTimeout(delay: Float, crossinline operation: () -> Unit): Task {
+		return object : Task() {
+			override fun run() {
+				operation();
+			}
+		}.also { Timer.schedule(it, delay) };
+	}
+
+	/**
+	 * 지정한 시간 후 지정한 조건을 만족하면 특정 서브루틴을 한 번만 실행한다.
+	 *
+	 * @param delay     지연 시간(초)
 	 * @param condition 실행 조건
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	@JvmStatic fun setTimeout(delay: Float, condition: (() -> Boolean)? = null, operation: () -> Unit): Task {
+	@JvmStatic inline fun setTimeout(delay: Float, crossinline condition: () -> Boolean, crossinline operation: () -> Unit): Task {
 		return object : Task() {
 			override fun run() {
-				if(condition?.invoke() ?: true)
+				if(condition())
 					operation();
 			}
 		}.also { Timer.schedule(it, delay) };
@@ -85,14 +100,29 @@ object Utils {
 	 * 우리가 만든 Timer 클래스는 우리 게임의 상태 등에 종속적이지만 이쪽은 게임과는 독립적이기 때문에 libGDX의 Timer 클래스를 직접 사용한다.
 	 * 
 	 * @param interval  실행 간격(초)
+	 * @param operation 실행할 서브루틴
+	 * @return          실행 작업 객체
+	 */
+	@JvmStatic inline fun setInterval(interval: Float, crossinline operation: () -> Unit): Task {
+		return object : Task() {
+			override fun run() {
+				operation();
+			}
+		}.also { Timer.schedule(it, interval, interval) };
+	}
+
+	/**
+	 * 지정한 시간마다 특정 서브루틴을 지정한 조건을 만족하면 실행한다.
+	 *
+	 * @param interval  실행 간격(초)
 	 * @param condition 실행 조건
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	@JvmStatic fun setInterval(interval: Float, condition: (() -> Boolean)? = null, operation: () -> Unit): Task {
+	@JvmStatic inline fun setInterval(interval: Float, crossinline condition: () -> Boolean, crossinline operation: () -> Unit): Task {
 		return object : Task() {
 			override fun run() {
-				if(condition?.invoke() ?: true)
+				if(condition())
 					operation();
 			}
 		}.also { Timer.schedule(it, interval, interval) };

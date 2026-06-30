@@ -21,7 +21,7 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 	override fun shoot(target: Position, shooter: Entity): Int {
 		if(!canFire) return 0;
 
-		val centerX = shooter.x;  //shooter, 즉 발사를 하는 주체인 플레이어의 위치를 중심으로 두는 객체
+		val centerX = shooter.x;  // shooter, 즉 발사를 하는 주체인 플레이어의 위치를 중심으로 두는 객체
 		val centerY = shooter.y;
 
 		val angle = atan2(target.y - centerY, target.x - centerX);  // atan2()으로 사분면(방향)을 확인, -180°부터 +180°까지 정확한 방향 반환
