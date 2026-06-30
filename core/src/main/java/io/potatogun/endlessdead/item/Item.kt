@@ -14,7 +14,7 @@ import io.potatogun.gdxhelper.util.SharedTextureManager;
  * @property id   아이템 식별자 (소문자)
  * @property name 아이템 이름
  */
-abstract class Item(id: String, val name: String, settings: Properties = Properties()) {
+abstract class Item @JvmOverloads constructor(id: String, val name: String, settings: Properties = Properties()) {
 	/**
 	 * 아이템 식별자
 	 */

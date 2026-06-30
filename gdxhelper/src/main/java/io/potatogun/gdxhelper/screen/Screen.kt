@@ -18,7 +18,7 @@ import io.potatogun.gdxhelper.widget.Widget;
  *
  * @param settings 스크린 옵션
  */
-abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
+abstract class Screen @JvmOverloads constructor(settings: Properties = Properties()) : ScreenAdapter() {
 	/**
 	 * 이미지(Texture)와 글자를 화면에 찍어주는 도구.
 	 *   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.

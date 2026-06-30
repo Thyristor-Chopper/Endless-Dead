@@ -28,7 +28,7 @@ import java.util.Collections;
  * @property height   월드 전체 높이
  * @param    settings 월드 옵션
  */
-abstract class World(@JvmField val width: Float, @JvmField val height: Float, settings: Properties = Properties()) {
+abstract class World @JvmOverloads constructor(@JvmField val width: Float, @JvmField val height: Float, settings: Properties = Properties()) {
 	/**
 	 * 월드를 보여주는 카메라
 	 */
