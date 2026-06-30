@@ -77,10 +77,10 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: () -> Float, height: ()
 	}
 
 	override fun draw(batch: SpriteBatch) {
-		val barX = x();
-		val barY = y();
-		val barWidth = this.width();
-		val barHeight = this.height();
+		val barX = calculateX();
+		val barY = calculateY();
+		val barWidth = calculateWidth();
+		val barHeight = calculateHeight();
 		skin.bar.draw(batch, barX, barY, barWidth, barHeight);
 		if(value > 0f) {
 			batch.color = color;
