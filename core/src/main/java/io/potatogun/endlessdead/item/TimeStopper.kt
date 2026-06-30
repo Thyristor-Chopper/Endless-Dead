@@ -21,8 +21,7 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 			viewer?.drawSubtitles("Can't use this item here");
 			return false;
 		}
-		world.freeze(3f) { viewer?.drawSubtitles("Time moves again") };
-		viewer?.drawSubtitles("Time stop!");
+		world.freeze(3f);
 		destroy();
 		return true;
 	}

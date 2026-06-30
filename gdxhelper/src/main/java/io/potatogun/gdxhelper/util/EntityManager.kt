@@ -6,6 +6,9 @@ import com.badlogic.gdx.utils.Array as GdxArray;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.world.World;
 
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 /**
  * 개체 관리자
  */
@@ -35,6 +38,15 @@ interface EntityManager {
 	 * @param entity 갱신할 개체
 	 */
 	fun updatePosition(entity: Entity) {}
+
+	/**
+	 * 현재 개체의 주변 개체를 순회한다 (자바에서 사용).
+	 *
+	 * @param entity 기준 개체
+	 */
+	fun forEachNearby(entity: Entity, callback: Consumer<Entity>) {
+		forEachNearby(entity) { callback.accept(it) };
+	}
 
 	/**
 	 * 현재 개체의 주변 개체를 순회한다.
@@ -68,23 +80,101 @@ interface EntityManager {
 	 * 개체 목록을 읽기 전용으로 상호작용할 수 있는 뷰이다.
 	 */
 	interface View {
+		/**
+		 * 개체 목록 크기
+		 */
 		val size: Int;
+		/**
+		 * 개체 목록이 비어 있는지의 여부
+		 */
 		val isEmpty: Boolean;
 
+		/**
+		 * 지정한 인덱스의 개체를 가져온다.
+		 *
+		 * @param index 인덱스
+		 * @return      개체
+		 */
 		operator fun get(index: Int): Entity;
 
+		/**
+		 * 개체 목록을 지정한 비교기로 정렬한다.
+		 *
+		 * @param comparator 비교기
+		 * @return           정렬된 목록
+		 */
 		fun sortedWith(comparator: Comparator<Entity>): GdxArray<Entity>;
 
+		/**
+		 * 개체 목록을 지정한 비교기로 정렬한다.
+		 *
+		 * @param comparator 비교기
+		 * @param output     정렬 결과를 저장할 목록 (이미 다른 원소가 있다면 덮어씌워짐)
+		 */
 		fun sortedWith(comparator: Comparator<Entity>, output: GdxArray<Entity>);
 
+		/**
+		 * 지정한 조건에 해당하는 개제만 모은다 (자바에서 사용).
+		 *
+		 * @param condition 조건
+		 * @return 결과 목록
+		 */
+		fun filter(condition: Function<Entity, Boolean>): GdxArray<Entity> = filter { condition.apply(it) };
+
+		/**
+		 * 지정한 조건에 해당하는 개제만 모은다.
+		 *
+		 * @param condition 조건
+		 * @return 결과 목록
+		 */
 		fun filter(condition: (Entity) -> Boolean): GdxArray<Entity>;
 
+		/**
+		 * 지정한 조건에 해당하는 개제만 모은다 (자바에서 사용).
+		 *
+		 * @param condition 조건
+		 * @param output    결과를 저장할 목록 (이미 다른 원소가 있다면 덮어씌워짐)
+		 */
+		fun filter(condition: Function<Entity, Boolean>, output: GdxArray<Entity>) {
+			filter({ condition.apply(it) }, output);
+		}
+
+		/**
+		 * 지정한 조건에 해당하는 개제만 모은다.
+		 *
+		 * @param condition 조건
+		 * @param output    결과를 저장할 목록 (이미 다른 원소가 있다면 덮어씌워짐)
+		 */
 		fun filter(condition: (Entity) -> Boolean, output: GdxArray<Entity>);
 
+		/**
+		 * 개체 목록을 새 배열로 복사한다.
+		 *
+		 * @return 복사된 배열
+		 */
 		fun clone(): GdxArray<Entity>;
 
+		/**
+		 * 개체 목록을 지정한 배열로 복사한다.
+		 *
+		 * @param output 대상 배열 (기존 원소는 덮어씌워짐)
+		 */
 		fun clone(output: GdxArray<Entity>);
 
+		/**
+		 * 모든 개체를 순회한다 (자바에서 사용).
+		 *
+		 * @param callback 이번 개체에 대해 실행할 서브루틴
+		 */
+		fun forEach(callback: Consumer<Entity>) {
+			forEach { callback.accept(it) };
+		}
+
+		/**
+		 * 모든 개체를 순회한다.
+		 *
+		 * @param callback 이번 개체에 대해 실행할 서브루틴
+		 */
 		fun forEach(callback: (Entity) -> Unit);
 	}
 }

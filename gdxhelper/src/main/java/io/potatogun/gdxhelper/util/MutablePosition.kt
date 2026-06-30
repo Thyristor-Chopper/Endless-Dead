@@ -2,6 +2,8 @@ package io.potatogun.gdxhelper.util;
 
 import kotlin.properties.Delegates;
 
+import java.util.function.BiConsumer;
+
 /**
  * 위치(평면좌표)를 저장하는 수정 가능한 레코드이다.
  *
@@ -34,6 +36,19 @@ class MutablePosition(x: Float, y: Float) : Position(x, y) {
 	private var changeHandler: ((x: Float, y: Float) -> Unit)? = null;
 	override var x: Float by Delegates.observable(x) { _, _, newX -> changeHandler?.invoke(newX, this.y) };
 	override var y: Float by Delegates.observable(y) { _, _, newY -> changeHandler?.invoke(this.x, newY) };
+
+	/**
+	 * 값이 바뀔 때 콜백 함수를 지정한다 (자바에서 사용).
+	 *
+	 * @param handler 콜백 (없애려면 null 전달)
+	 */
+	fun setObserver(handler: BiConsumer<Float, Float>?) {
+		if(handler == null) {
+			changeHandler = null;
+			return;
+		}
+		changeHandler = { x, y -> handler.accept(x, y) };
+	}
 
 	/**
 	 * 값이 바뀔 때 콜백 함수를 지정한다.

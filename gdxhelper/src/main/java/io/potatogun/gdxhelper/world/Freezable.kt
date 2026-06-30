@@ -18,17 +18,7 @@ interface Freezable {
 	 *
 	 * @param duration 멈춤 지속 시간(초) - 0이면 무기한 정지
 	 */
-	fun freeze(duration: Float) {
-		freeze(duration, null);
-	}
-
-	/**
-	 * 시간을 멈춘고 시간이 지나서 자연 해제될 때 콜백을 실행한다. 멈춤 시간이 무기한이면 무의미.
-	 *
-	 * @param duration         멈춤 지속 시간(초) - 0이면 무기한 정지
-	 * @param unfreezeCallback 자연 해제 후 콜백 (멈춤 시간이 무기한이면 무의미)
-	 */
-	fun freeze(duration: Float, unfreezeCallback: (() -> Unit)?);
+	fun freeze(duration: Float);
 
 	/**
 	 * 시간을 다시 흐르게 한다.

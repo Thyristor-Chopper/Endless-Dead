@@ -5,6 +5,8 @@ import com.badlogic.gdx.utils.Array as GdxArray;
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.item.Item;
 
+import java.util.function.Consumer;
+
 /**
  * 이벤트 핸들러가 있는 인벤토리
  */
@@ -38,6 +40,15 @@ abstract class ObservableInventory : Inventory {
 	}
 
 	/**
+	 * 아이템이 추가될 때 호출되는 콜백 함수를 지정한다 (자바에서 사용).
+	 *
+	 * @param handler 콜백, Item: 추가된 아이템
+	 */
+	fun addItemAddObserver(handler: Consumer<Item>) {
+		itemAddObservers.add { handler.accept(it) };
+	}
+
+	/**
 	 * 아이템이 제거될 때 호출되는 콜백 함수를 지정한다.
 	 *
 	 * @param handler 콜백, Item: 제거된 아이템
@@ -47,11 +58,29 @@ abstract class ObservableInventory : Inventory {
 	}
 
 	/**
+	 * 아이템이 제거될 때 호출되는 콜백 함수를 지정한다 (자바에서 사용).
+	 *
+	 * @param handler 콜백, Item: 제거된 아이템
+	 */
+	fun addItemRemoveObserver(handler: Consumer<Item>) {
+		itemRemoveObservers.add { handler.accept(it) };
+	}
+
+	/**
 	 * 인벤토리가 초기화될 때 콜백 함수를 지정한다.
 	 *
 	 * @param handler 콜백
 	 */
 	fun addClearObserver(handler: () -> Unit) {
 		clearObservers.add(handler);
+	}
+
+	/**
+	 * 인벤토리가 초기화될 때 콜백 함수를 지정한다 (자바에서 사용).
+	 *
+	 * @param handler 콜백
+	 */
+	fun addClearObserver(handler: Runnable) {
+		clearObservers.add { handler.run() };
 	}
 }

@@ -1,9 +1,5 @@
 package io.potatogun.gdxhelper.util;
 
-import java.util.WeakHashMap;
-
-import kotlin.reflect.KClass;
-
 /**
  * 맵의 키를 사용하는 집합
  */

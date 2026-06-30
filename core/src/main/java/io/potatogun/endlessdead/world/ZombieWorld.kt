@@ -141,19 +141,20 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 	// ---- Freezable 구현 -----
 
-	override fun freeze(duration: Float, unfreezeCallback: (() -> Unit)?) {
+	override fun freeze(duration: Float) {
 		isFrozen = true;
 		cancelUnfreezer();  // 기존 타이머 해제
 		if(duration > 0f)
 			unfreezer = Timer(duration) {
 				unfreeze();
-				unfreezeCallback?.invoke();
 			}.also { timerManager.register(it) };
+		(viewer as? SubtitlesDrawable)?.drawSubtitles("Time stop!");
 	}
 
 	override fun unfreeze() {
 		isFrozen = false;
 		cancelUnfreezer();
+		(viewer as? SubtitlesDrawable)?.drawSubtitles("Time moves again");
 	}
 
 	private inline fun cancelUnfreezer() {

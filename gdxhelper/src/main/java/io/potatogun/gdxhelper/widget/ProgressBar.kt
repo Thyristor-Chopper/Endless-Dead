@@ -6,13 +6,16 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.gdxhelper.HelperTextures;
 
+import java.util.function.Supplier;
+
 import kotlin.math.ceil;
 
 /**
- * 진행률 표시기(미터기)
+ * 진행률 표시기(미터기) - 코틀린용 생성자이며 자바 개발자라면 빌더를 사용하면 된다.
  *
  * x과 y 위치는 screenWidth 등이 포함될 경우 창 크기가 바뀔 때마다 값이 달라지므로 람다로 받는다.
  *
+ * @constructor 동적 위치를 사용하는 생성자
  * @param    x      X 좌표 계산 함수
  * @param    y      Y 좌표 계산 함수
  * @param    width  미터기 너비 계산 함수
@@ -23,7 +26,7 @@ import kotlin.math.ceil;
  * @property style  미터기의 스타일
  * @throws IllegalArgumentException 미터기 값이 잘못된 경우
  */
-class ProgressBar(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> Float = { 15f }, value: Float = 0f, private val color: Color = Color.WHITE, skin: Skin? = null, private val style: Style = Style.SMOOTH) : Widget(x, y, width, height) {
+class ProgressBar(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> Float = { 15f }, value: Float = 0f, skin: Skin? = null, private val color: Color = Color.WHITE, private val style: Style = Style.SMOOTH) : Widget(x, y, width, height) {
 	companion object {
 		private const val BAR_VERTICAL_PADDING = 3f;		// 미터기 틀 안쪽 세로 여백
 		private const val BAR_HORIZONTAL_PADDING = 3f;	// 미터기 틀 안쪽 가로 여백
@@ -32,11 +35,11 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: () -> Float, height: ()
 		/**
 		 * 프레임워크에서 제공하는 기본 스킨 (smooth)
 		 */
-		@JvmStatic val defaultSmoothSkin = Skin(HelperTextures.progressBar, HelperTextures.progressSmoothFill);
+		private val defaultSmoothSkin = Skin(HelperTextures.progressBar, HelperTextures.progressSmoothFill);
 		/**
 		 * 프레임워크에서 제공하는 기본 스킨 (chunked)
 		 */
-		@JvmStatic val defaultChunkedSkin = Skin(HelperTextures.progressBar, HelperTextures.progressChunkedFill);
+		private val defaultChunkedSkin = Skin(HelperTextures.progressBar, HelperTextures.progressChunkedFill);
 	}
 
 	var value: Float = value
@@ -46,6 +49,22 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: () -> Float, height: ()
 			else field = value;
 		};
 	private val skin: Skin;
+
+	/**
+	 * 진행률 표시기(미터기) - 코틀린용 생성자이며 자바 개발자라면 빌더를 사용하면 된다.
+	 *
+	 * @constructor 정적 위치를 사용하는 생성자
+	 * @param x      X 좌표
+	 * @param y      Y 좌표
+	 * @param width  미터기 너비
+	 * @param height 미터기 높이
+	 * @param value  미터기의 값(진행률) (0.0~1.0)
+	 * @param color  미터기의 색
+	 * @param skin   미터기의 스킨(텍스처 묶음)
+	 * @param style  미터기의 스타일
+	 * @throws IllegalArgumentException 미터기 값이 잘못된 경우
+	 */
+	constructor(x: Float, y: Float, width: Float, height: Float = 15f, value: Float = 0f, skin: Skin? = null, color: Color = Color.WHITE, style: Style = Style.SMOOTH) : this({ x }, { y }, { width }, { height }, value, skin, color, style);
 
 	init {
 		if(value < 0f || value > 1f)
@@ -112,5 +131,54 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: () -> Float, height: ()
 		 * 윈도우 XP처럼 조각난 스타일
 		 */
 		CHUNKED;
+	}
+
+	/**
+	 * 미터기 빌더 (자바 개발자 전용)
+	 *
+	 * @constructor 동적 크기를 사용하는 위젯
+	 * @param x      X 좌표 계산 함수
+	 * @param y      Y 좌표 계산 함수
+	 * @param width  미터기 너비 계산 함수
+	 * @param height 미터기 높이 계산 함수
+	 */
+	class Builder(private val x: Supplier<Float>, private val y: Supplier<Float>, private val width: Supplier<Float>, private val height: Supplier<Float>) {
+		private var value = 0f;
+		private var skin: Skin? = null;
+		private var color = Color.WHITE;
+		private var style = Style.SMOOTH;
+
+		/**
+		 * 미터기 빌더 (자바 개발자 전용)
+		 *
+		 * @constructor 정적 크기를 사용하는 위젯
+		 * @param x      X 좌표
+		 * @param y      Y 좌표
+		 * @param width  미터기 너비
+		 * @param height 미터기 높이
+		 */
+		constructor(x: Float, y: Float, width: Float, height: Float) : this({ x }, { y }, { width }, { height });
+
+		fun value(value: Float) {
+			this.value = value;
+		}
+
+		fun skin(skin: Skin) {
+			this.skin = skin;
+		}
+
+		fun color(color: Color) {
+			this.color = color;
+		}
+
+		fun style(style: Style) {
+			this.style = style;
+		}
+
+		fun build(): ProgressBar {
+			if(skin == null)
+				skin = if(style == Style.CHUNKED) defaultChunkedSkin else defaultSmoothSkin;
+			return ProgressBar({ x.get() }, { y.get() }, { width.get() }, { height.get() }, value, skin, color, style);
+		}
 	}
 }

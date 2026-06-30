@@ -1,8 +1,12 @@
 package io.potatogun.gdxhelper.util;
 
+import java.util.function.BooleanSupplier;
+import java.util.function.Consumer;
+
 /**
  * 지정된 시간 후 특정 작업을 실행하게 해 주는 클래스
  *
+ * @constructor 코틀린용 생성자
  * @property delay     대기 시간(초)
  * @property condition 실행 조건
  * @property operation 실행할 서브루틴
@@ -18,6 +22,25 @@ open class Timer(private val delay: Float, internal val condition: (() -> Boolea
 	 */
 	var executed = false
 		private set;
+
+	/**
+	 * 반복 타이머를 생성한다 (자바에서 사용).
+	 *
+	 * @constructor 자바용 생성자
+	 * @param delay     대기 시간(초)
+	 * @param operation 실행할 서브루틴
+	 */
+	constructor(delay: Float, operation: Consumer<Timer>) : this(delay, null, { operation.accept(it) });
+
+	/**
+	 * 조건을 가진 반복 타이머를 생성한다 (자바에서 사용).
+	 *
+	 * @constructor 조건을 가진 자바용 생성자
+	 * @param delay     대기 시간(초)
+	 * @param condition 실행 조건
+	 * @param operation 실행할 서브루틴
+	 */
+	constructor(delay: Float, condition: BooleanSupplier, operation: Consumer<Timer>) : this(delay, { condition.getAsBoolean() }, { operation.accept(it) });
 
 	/**
 	 * 타이머를 갱신한다.

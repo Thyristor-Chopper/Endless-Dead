@@ -13,20 +13,32 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 import io.potatogun.gdxhelper.util.SharedTextureManager;
 
+import java.util.function.BooleanSupplier;
+
 /**
  * 유용한 함수 모음
  */
 object Utils {
-	private val sorter = Sort.instance();
-
-	// 수동 오버로딩
-	@JvmStatic inline fun parseSeconds(seconds: Int): String = parseSeconds(seconds, " minute(s)", " second(s)");
+	/**
+	 * libGDX에서 제공하는 정렬기이다.
+	 */
+	@JvmField val sorter = Sort.instance();
 
 	/**
-	 * 초를 X분 X초로 변환한다
+	 * 초를 X' XX''로 변환한다.
 	 *
 	 * @param seconds 초
 	 * @return        변환된 문자열
+	 */
+	@JvmStatic inline fun parseSeconds(seconds: Int): String = parseSeconds(seconds, "'", "\"");
+
+	/**
+	 * 초를 X분 X초로 변환한다.
+	 *
+	 * @param seconds       초
+	 * @param minutesSuffix 분 표기
+	 * @param secondsSuffix 초 표기
+	 * @return              변환된 문자열
 	 */
 	@JvmStatic fun parseSeconds(seconds: Int, minutesSuffix: String, secondsSuffix: String): String {
 		if(seconds < 60) return "${seconds}$secondsSuffix";
@@ -43,9 +55,7 @@ object Utils {
 	 * @return	변환된 색 객체
 	 * @throws IllegalArgumentException 색 값이 잘못된 경우
 	 */
-	@JvmStatic
-	@JvmOverloads
-	inline fun rgb(r: Int, g: Int, b: Int, a: Float = 1.0f): Color {
+	@JvmStatic @JvmOverloads inline fun rgb(r: Int, g: Int, b: Int, a: Float = 1.0f): Color {
 		if(r > 255 || g > 255 || b > 255 || r < 0 || g < 0 || b < 0 || a > 1f || a < 0f)
 			throw IllegalArgumentException("invalid color value");
 		return Color(r / 255f, g / 255f, b / 255f, a);
@@ -60,7 +70,7 @@ object Utils {
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	@JvmStatic inline fun setTimeout(delay: Float, crossinline operation: () -> Unit): Task {
+	inline fun setTimeout(delay: Float, crossinline operation: () -> Unit): Task {
 		return object : Task() {
 			override fun run() {
 				operation();
@@ -76,11 +86,43 @@ object Utils {
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	@JvmStatic inline fun setTimeout(delay: Float, crossinline condition: () -> Boolean, crossinline operation: () -> Unit): Task {
+	inline fun setTimeout(delay: Float, crossinline condition: () -> Boolean, crossinline operation: () -> Unit): Task {
 		return object : Task() {
 			override fun run() {
 				if(condition())
 					operation();
+			}
+		}.also { Timer.schedule(it, delay) };
+	}
+
+	/**
+	 * 지정한 시간 후 특정 서브루틴을 한 번만 실행한다 (자바에서 사용).
+	 *
+	 * @param delay     지연 시간(초)
+	 * @param operation 실행할 서브루틴
+	 * @return          실행 작업 객체
+	 */
+	@JvmStatic fun setTimeout(delay: Float, operation: Runnable): Task {
+		return object : Task() {
+			override fun run() {
+				operation.run();
+			}
+		}.also { Timer.schedule(it, delay) };
+	}
+
+	/**
+	 * 지정한 시간 후 지정한 조건을 만족하면 특정 서브루틴을 한 번만 실행한다 (자바에서 사용).
+	 *
+	 * @param delay     지연 시간(초)
+	 * @param condition 실행 조건
+	 * @param operation 실행할 서브루틴
+	 * @return          실행 작업 객체
+	 */
+	@JvmStatic fun setTimeout(delay: Float, condition: BooleanSupplier, operation: Runnable): Task {
+		return object : Task() {
+			override fun run() {
+				if(condition.getAsBoolean())
+					operation.run();
 			}
 		}.also { Timer.schedule(it, delay) };
 	}
@@ -103,7 +145,7 @@ object Utils {
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	@JvmStatic inline fun setInterval(interval: Float, crossinline operation: () -> Unit): Task {
+	inline fun setInterval(interval: Float, crossinline operation: () -> Unit): Task {
 		return object : Task() {
 			override fun run() {
 				operation();
@@ -119,11 +161,43 @@ object Utils {
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	@JvmStatic inline fun setInterval(interval: Float, crossinline condition: () -> Boolean, crossinline operation: () -> Unit): Task {
+	inline fun setInterval(interval: Float, crossinline condition: () -> Boolean, crossinline operation: () -> Unit): Task {
 		return object : Task() {
 			override fun run() {
 				if(condition())
 					operation();
+			}
+		}.also { Timer.schedule(it, interval, interval) };
+	}
+
+	/**
+	 * 지정한 시간마다 특정 서브루틴을 실행한다 (자바에서 사용).
+	 *
+	 * @param interval  실행 간격(초)
+	 * @param operation 실행할 서브루틴
+	 * @return          실행 작업 객체
+	 */
+	@JvmStatic fun setInterval(interval: Float, operation: Runnable): Task {
+		return object : Task() {
+			override fun run() {
+				operation.run();
+			}
+		}.also { Timer.schedule(it, interval, interval) };
+	}
+
+	/**
+	 * 지정한 시간마다 특정 서브루틴을 지정한 조건을 만족하면 실행한다 (자바에서 사용).
+	 *
+	 * @param interval  실행 간격(초)
+	 * @param condition 실행 조건
+	 * @param operation 실행할 서브루틴
+	 * @return          실행 작업 객체
+	 */
+	@JvmStatic fun setInterval(interval: Float, condition: BooleanSupplier, operation: Runnable): Task {
+		return object : Task() {
+			override fun run() {
+				if(condition.getAsBoolean())
+					operation.run();
 			}
 		}.also { Timer.schedule(it, interval, interval) };
 	}
@@ -138,7 +212,7 @@ object Utils {
 	}
 
 	/**
-	 * 텍스트 그리기.
+	 * 텍스트 그리기
 	 *
 	 * 주의: y 축은 위쪽이 크다. '위쪽'에 글자를 쓰려면 y = screenHeight-10 처럼.
 	 *
@@ -152,9 +226,7 @@ object Utils {
 	 * @param width 텍스트 상자의 크기, 0은 자동 (오른쪽이나 가운데 정렬 시 반드시 필요, 이때는 0 불가)
 	 * @param align 글자 정렬(없으면 왼쪽 정렬)
 	 */
-	@JvmStatic
-	@JvmOverloads
-	fun drawText(batch: SpriteBatch, font: BitmapFont, text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float = 0f, align: Int = Align.left) {
+	@JvmStatic @JvmOverloads fun drawText(batch: SpriteBatch, font: BitmapFont, text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float = 0f, align: Int = Align.left) {
 		val skipBatch = batch.isDrawing();
 		font.color = color;
 		font.data.setScale(scale);
@@ -197,9 +269,21 @@ object Utils {
 	 * @param texture 해제할 텍스처
 	 * @return        성공 여부
 	 */
-	@JvmStatic inline fun safeDispose(texture: Texture): Boolean = texture.takeIf { !SharedTextureManager.isSharedTexture(it) }?.let { it.dispose(); true } ?: false;
+	@JvmStatic inline fun safeDispose(texture: Texture): Boolean {
+		if(SharedTextureManager.isSharedTexture(texture)) {
+			texture.dispose();
+			return true;
+		}
+		return false;
+	}
 
-	@JvmStatic fun <T> sortWith(array: GdxArray<T>, comparator: Comparator<T>) {
+	/**
+	 * 지정한 libGDX 배열을 지정한 비교기를 이용하여 정렬한다.
+	 *
+	 * @param array      정렬할 배열
+	 * @param comparator 비교기
+	 */
+	@JvmStatic inline fun <T> sortWith(array: GdxArray<T>, comparator: Comparator<T>) {
 		sorter.sort(array, comparator);
 	}
 }

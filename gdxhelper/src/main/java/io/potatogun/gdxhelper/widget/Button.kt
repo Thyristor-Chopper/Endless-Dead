@@ -11,27 +11,29 @@ import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 
+import java.util.function.Supplier;
+
 /**
- * 단추
+ * 단추 - 코틀린용 생성자이며 자바 개발자라면 빌더를 사용하면 된다.
  *
  * x과 y 위치는 screenWidth 등이 포함될 경우 창 크기가 바뀔 때마다 값이 달라지므로 람다로 받는다.
  *
- * @param    x         X 좌표 계산 함수
- * @param    y         Y 좌표 계산 함수
- * @param    width     단추 너비 계산 함수
- * @param    height    단추 높이 계산 함수
- * @param    caption   단추 라벨
- * @param    accessKey 단추 바로 가기 ('니모닉')
- * @property color     단추의 색
- * @property skin      단추의 스킨(텍스처 묶음)
- * @property onClick   단추를 눌렀을 때 실행할 서브루틴
+ * @constructor 동적 위치를 사용하는 생성자
+ * @param    x       X 좌표 계산 함수
+ * @param    y       Y 좌표 계산 함수
+ * @param    width   단추 너비 계산 함수
+ * @param    height  단추 높이 계산 함수
+ * @param    caption 단추 라벨
+ * @property skin    단추의 스킨(텍스처 묶음)
+ * @property color   단추의 색
+ * @property onClick 단추를 눌렀을 때 실행할 서브루틴
  */
-class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> Float = { 25f }, caption: String, accessKey: Char? = null, private val color: Color = Color.WHITE, private val skin: Skin = defaultSkin, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
+class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> Float = { 25f }, caption: String, private val skin: Skin = defaultSkin, private val color: Color = Color.WHITE, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
 	companion object {
 		/**
 		 * 프레임워크에서 제공하는 단추의 기본 스킨
 		 */
-		@JvmStatic val defaultSkin = Skin(HelperTextures.button, HelperTextures.buttonHover, HelperTextures.buttonPressed, HelperTextures.buttonDisabled, Color.WHITE, Color.LIGHT_GRAY);
+		private val defaultSkin = Skin(HelperTextures.button, HelperTextures.buttonHover, HelperTextures.buttonPressed, HelperTextures.buttonDisabled, Color.WHITE, Color.LIGHT_GRAY);
 	}
 
 	private val font = BitmapFont();
@@ -40,9 +42,24 @@ class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> F
 	private var previouslyPressed = false;
 	private var isEnabled = true;
 
+	/**
+	 * 단추 - 코틀린용 생성자이며 자바 개발자라면 빌더를 사용하면 된다.
+	 *
+	 * @constructor 정적 위치를 사용하는 생성자
+	 * @param x       X 좌표
+	 * @param y       Y 좌표
+	 * @param width   단추 너비
+	 * @param height  단추 높이
+	 * @param caption 단추 라벨
+	 * @param skin    단추의 스킨(텍스처 묶음)
+	 * @param color   단추의 색
+	 * @param onClick 단추를 눌렀을 때 실행할 서브루틴
+	 */
+	constructor(x: Float, y: Float, width: Float, height: Float = 25f, caption: String, skin: Skin = defaultSkin, color: Color = Color.WHITE, onClick: () -> Unit = {}) : this({ x }, { y }, { width }, { height }, caption, skin, color, onClick);
+
 	init {
 		val accessKeyMatch = Regex("[&]([A-Za-z])");
-		this.accessKey = (accessKey ?: accessKeyMatch.find(caption)?.value?.get(1))?.uppercaseChar();
+		this.accessKey = accessKeyMatch.find(caption)?.value?.get(1)?.uppercaseChar();
 		this.caption = caption.replaceFirst(accessKeyMatch, "$1");
 	}
 
@@ -127,4 +144,49 @@ class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> F
 	 * @property disabledCaptionColor 비활성화된 단추 글자 색
 	 */
 	data class Skin(@JvmField val normal: NinePatch, @JvmField val hover: NinePatch = normal, @JvmField val pressed: NinePatch = normal, @JvmField val disabled: NinePatch = normal, @JvmField val captionColor: Color = Color.BLACK, @JvmField val disabledCaptionColor: Color = Color.GRAY);
+
+	/**
+	 * 단추 빌더 (자바 개발자 전용)
+	 *
+	 * @constructor 동적 크기를 사용하는 위젯
+	 * @param x      X 좌표 계산 함수
+	 * @param y      Y 좌표 계산 함수
+	 * @param width  단추 너비 계산 함수
+	 * @param height 단추 높이 계산 함수
+	 */
+	class Builder(private val x: Supplier<Float>, private val y: Supplier<Float>, private val width: Supplier<Float>, private val height: Supplier<Float>) {
+		private var caption = "";
+		private var skin = defaultSkin;
+		private var color = Color.WHITE;
+		private lateinit var clickHandler: () -> Unit;
+
+		/**
+		 * 단추 빌더 (자바 개발자 전용)
+		 *
+		 * @constructor 정적 크기를 사용하는 위젯
+		 * @param x      X 좌표
+		 * @param y      Y 좌표
+		 * @param width  단추 너비
+		 * @param height 단추 높이
+		 */
+		constructor(x: Float, y: Float, width: Float, height: Float) : this({ x }, { y }, { width }, { height });
+
+		fun caption(caption: String) {
+			this.caption = caption;
+		}
+
+		fun skin(skin: Skin) {
+			this.skin = skin;
+		}
+
+		fun color(color: Color) {
+			this.color = color;
+		}
+
+		fun onClick(handler: Runnable) {
+			this.clickHandler = { handler.run() };
+		}
+
+		fun build(): Button = Button({ x.get() }, { y.get() }, { width.get() }, { height.get() }, caption, skin, color, clickHandler);
+	}
 }

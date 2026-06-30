@@ -2,9 +2,12 @@ package io.potatogun.gdxhelper.widget;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import java.util.function.Supplier;
+
 /**
  * 화면 내의 컨트롤
  *
+ * @constructor 동적 위치를 사용하는 생성자
  * @property x      X 좌표 계산 함수. screenWidth 등이 포함될 경우 창 크기가 바뀔 때마다 값이 달라지므로 람다로 받는다.
  * @property y      Y 좌표 계산 함수
  * @property width  컨트롤 너비 계산 함수
@@ -24,6 +27,28 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 */
 	var isVisible = true
 		private set;
+
+	/**
+	 * 화면 내의 컨트롤
+	 *
+	 * @constructor 정적 위치를 사용하는 생성자
+	 * @param x      X 좌표
+	 * @param y      Y 좌표
+	 * @param width  컨트롤 너비
+	 * @param height 컨트롤 높이
+	 */
+	constructor(x: Float, y: Float, width: Float, height: Float) : this({ x }, { y }, { width }, { height });
+
+	/**
+	 * 화면 내의 컨트롤
+	 *
+	 * @constructor 자바 개발자 전용 생성자
+	 * @param x      X 좌표
+	 * @param y      Y 좌표
+	 * @param width  컨트롤 너비
+	 * @param height 컨트롤 높이
+	 */
+	constructor(x: Supplier<Float>, y: Supplier<Float>, width: Supplier<Float>, height: Supplier<Float>) : this({ x.get() }, { y.get() }, { width.get() }, { height.get() });
 
 	/**
 	 * 컨트롤을 화면에 그리는 로직
@@ -87,10 +112,24 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	}
 
 	/**
+	 * 컨트롤의 X 좌표 식을 지정한다 (자바 개발자용).
+	 */
+	fun setX(fn: Supplier<Float>) {
+		x = { fn.get() };
+	}
+
+	/**
 	 * 컨트롤의 Y 좌표 식을 지정한다.
 	 */
 	fun setY(fn: () -> Float) {
 		y = fn;
+	}
+
+	/**
+	 * 컨트롤의 Y 좌표 식을 지정한다 (자바 개발자용).
+	 */
+	fun setY(fn: Supplier<Float>) {
+		y = { fn.get() };
 	}
 
 	/**
@@ -101,9 +140,23 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	}
 
 	/**
+	 * 컨트롤의 너비 식을 지정한다 (자바 개발자용).
+	 */
+	fun setWidth(fn: Supplier<Float>) {
+		width = { fn.get() };
+	}
+
+	/**
 	 * 컨트롤의 높이 식을 지정한다.
 	 */
 	fun setHeight(fn: () -> Float) {
 		height = fn;
+	}
+
+	/**
+	 * 컨트롤의 높이 식을 지정한다 (자바 개발자용).
+	 */
+	fun setHeight(fn: Supplier<Float>) {
+		height = { fn.get() };
 	}
 }

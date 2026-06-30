@@ -1,3 +1,4 @@
+@file:JvmName("EntityManagerExtensions")
 package io.potatogun.gdxhelper.util;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
@@ -6,7 +7,6 @@ import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 
 import kotlin.random.Random;
-import kotlin.reflect.KClass;
 
 /**
  * 개체 중 아무거나 반환한다.
@@ -23,9 +23,9 @@ fun EntityManager.getRandom(): Entity? {
  *
  * @return 개체 수
  */
-inline fun <reified T : Entity> EntityManager.countOf(): Int = countOf(T::class);
+inline fun <reified T : Entity> EntityManager.countOf(): Int = countOf(T::class.java);
 
-fun <T : Entity> EntityManager.countOf(type: KClass<T>): Int {
+fun <T : Entity> EntityManager.countOf(type: Class<T>): Int {
 	var ret = 0;
 	for(i in 0 until view.size)
 		if(type.isInstance(view[i]))
@@ -38,9 +38,9 @@ fun <T : Entity> EntityManager.countOf(type: KClass<T>): Int {
  *
  * @return 개체 (없으면 null)
  */
-inline fun <reified T : Entity> EntityManager.getFirstOf(): T? = getFirstOf(T::class);
+inline fun <reified T : Entity> EntityManager.getFirstOf(): T? = getFirstOf(T::class.java);
 
-fun <T : Entity> EntityManager.getFirstOf(type: KClass<T>): T? {
+fun <T : Entity> EntityManager.getFirstOf(type: Class<T>): T? {
 	for(i in 0 until view.size) {
 		val entity = view[i];
 		if(type.isInstance(entity))
@@ -54,9 +54,9 @@ fun <T : Entity> EntityManager.getFirstOf(type: KClass<T>): T? {
  *
  * @return 개체 (없으면 null)
  */
-inline fun <reified T : Entity> EntityManager.getRandomOf(): T? = getRandomOf(T::class);
+inline fun <reified T : Entity> EntityManager.getRandomOf(): T? = getRandomOf(T::class.java);
 
-fun <T : Entity> EntityManager.getRandomOf(type: KClass<T>): T? {
+fun <T : Entity> EntityManager.getRandomOf(type: Class<T>): T? {
 	var count = 0;
 	var ret: T? = null;
 	for(i in 0 until view.size) {
@@ -94,9 +94,9 @@ fun EntityManager.getClosest(entity: Entity): Entity? {
  * @param entity 기준 개체
  * @return       개체 (없으면 null)
  */
-inline fun <reified T : Entity> EntityManager.getClosestOf(entity: Entity): T? = getClosestOf(entity, T::class);
+inline fun <reified T : Entity> EntityManager.getClosestOf(entity: Entity): T? = getClosestOf(entity, T::class.java);
 
-fun <T : Entity> EntityManager.getClosestOf(entity: Entity, type: KClass<T>): T? {
+fun <T : Entity> EntityManager.getClosestOf(entity: Entity, type: Class<T>): T? {
 	if(view.isEmpty) return null;
 	var ret: T? = null;
 	var min = Utils.max2(world.width, world.height);
