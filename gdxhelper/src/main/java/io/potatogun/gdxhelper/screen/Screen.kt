@@ -16,21 +16,6 @@ import io.potatogun.gdxhelper.widget.Widget;
  * 게임 내 화면을 구현한다.
  *   안에는 배경과 위젯(컨트롤)을 추가할 수 있다.
  *
- * ────────────────────────────────────────────────────────────
- *  매 프레임의 표준 흐름 (render 안에서)
- * ────────────────────────────────────────────────────────────
- *    ① 화면 clear
- *    ② update(delta) — 각 객체 갱신, 상호작용, 정리 (서브클래스 override 가능)
- *    ③ batch.begin
- *    ④ drawBackground(batch) — 서브클래스가 그리는 배경 (필수 구현)
- *    ⑤ 모든 게임 객체를 carmera offset 적용해 draw
- *    ⑥ batch.end
- *
- *  보통 override 하는 것:
- *   ▸ drawBackground(batch) — 자기 배경 그리기 (필수, abstract)
- *   ▸ update(delta)         — 자기 게임 로직 (대부분 override 함)
- *   ▸ render(delta)         — 객체 위에 텍스트/HUD 추가 그리기 (선택)
- *
  * @param settings 스크린 옵션
  */
 abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
@@ -138,9 +123,6 @@ abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
 	 * LibGDX가 매 프레임 자동으로 호출.
 	 *   기본 흐름: 화면 지우기 → 로직 업데이트 → 배경 → 객체.
 	 *
-	 * 서브클래스는 보통 update(delta)만 override 한다.
-	 * HUD/텍스트를 그리려면 render(delta)도 override해서 super 호출 뒤에 그린다.
-	 *
 	 * @param delta 직전 프레임과의 시간 간격(초)
 	 */
 	internal fun render() {
@@ -164,9 +146,6 @@ abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
 	 *   기본 동작('아무것도 안 함')이 의미 있지 않다. 게임마다 배경은 다르고,
 	 *   '배경이 없다'는 결정도 명시적으로 내려야 한다고 본다. 그래서 강제 구현.
 	 *   (검은 배경을 원하면 그냥 비어있는 함수로 override하면 됨)
-	 *
-	 *   참고: update()는 abstract가 아닌 open이다 — 거기엔 쓸 만한 default가
-	 *   존재하기 때문. 'default가 의미 있는가?'가 abstract / open을 가르는 기준.
 	 */
 	protected abstract fun drawBackground();
 
@@ -240,7 +219,7 @@ abstract class Screen(settings: Properties = Properties()) : ScreenAdapter() {
 
 	/**
 	 * LibGDX가 화면을 바꾸거나 앱을 종료할 때 자원을 해제한다.
-	 * GPU 메모리에 올라간 것들은 수동으로 dispose 해줘야 한다.
+	 *   GPU 메모리에 올라간 것들은 수동으로 dispose 해줘야 한다.
 	 */
 	override fun dispose() {
 		batch.dispose();

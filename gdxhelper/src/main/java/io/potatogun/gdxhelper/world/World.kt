@@ -114,7 +114,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, se
 	 * 매 프레임 게임 로직 — 서브클래스가 override해서 자기 게임 로직을 넣는 곳.
 	 *
 	 * 기본 구현은 가장 단순한 '갱신 → 정리' 시나리오를 보여준다:
-	 *   ① updateEntities(delta) — 각 객체가 자기 위치 갱신
+	 *   ① entities.update(delta) — 각 객체가 자기 위치 갱신
 	 *
 	 * @param delta 직전 프레임과의 시간 간격(초)
 	 */

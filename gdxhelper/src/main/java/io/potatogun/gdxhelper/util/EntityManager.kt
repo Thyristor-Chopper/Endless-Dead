@@ -7,7 +7,7 @@ import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.world.World;
 
 /**
- * 개체 목록 관리자
+ * 개체 관리자
  */
 interface EntityManager {
 	val world: World;

@@ -38,37 +38,7 @@ import kotlin.math.floor;
 import kotlin.random.Random;
 
 /**
- * ════════════════════════════════════════════════════════════
- *  게임 월드 예제 — Player vs Enemy 회피 게임 (이미지 사용).
- * ════════════════════════════════════════════════════════════
- *
- *  World를 상속해 만든 가장 작은 플레이 가능한 예제.
- *  이 파일을 참고해서 자기만의 월드를 만들면 된다.
- *
- *  ── 조작법 ──
- *   ▸ 화살표 키  : 플레이어 이동
- *   ▸ WASD      : 카메라 이동 (월드가 화면보다 커서 탐험 가능)
- *   ▸ ESC       : 게임 오버 후 종료
- *
- *  ── 사용 이미지 (core/src/main/resources/) ──
- *   ▸ player.png  — 30x30 플레이어 스프라이트
- *   ▸ enemy.png   — 40x40 적 스프라이트
- *   ▸ tile.png    — 64x64 흰색 정사각형 (체스판 배경에 색만 입혀 사용)
- *
- *  ── 게임 상태 ──
- *   PLAYING   : 일반 진행 (이동·충돌 체크)
- *   PAUSED    : 일시 중지 상태
- *   GAME_OVER : 충돌 후 정지, ESC 입력 대기
- *
- *  ── 텍스트 데모 ──
- *   ▸ 좌측 상단 "HP: 3"       — 화면 좌표 (카메라 움직여도 고정)
- *   ▸ 월드 중앙 "WORLD CENTER" — 월드 좌표 (카메라와 함께 이동)
- *   두 개를 같이 두어, 두 좌표계의 차이를 눈으로 확인할 수 있게 했다.
- *
- *  ── 배경 ──
- *   tile.png(흰 사각형)를 두 가지 색으로 틴트해 체스판처럼 깐다.
- *   카메라 이동을 눈으로 보여주기 위함이다.
- *   GameWorld.drawBackground(batch)를 override 해서 그린다.
+ * 좀비 파밍 월드 구현체
  */
 class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, World.Properties().tileSize(128f)), Freezable, SinglePlayerWorld {
 	/**
@@ -223,15 +193,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	/**
 	 * 배경 그리기
 	 *
-	 * 부모가 이미 batch.begin()을 호출한 상태에서 이 함수를 부르므로,
-	 * 여기선 batch.draw() 호출만 하면 된다. (begin/end를 또 부르면 안 된다)
-	 *
 	 * 카메라(offset)에 따라 타일 위치가 바뀌어 이동감을 준다.
-	 *
-	 * 색을 입히는 방법:
-	 *   batch.color를 바꾼 뒤 batch.draw 하면 텍스처가 그 색으로 곱해져 그려진다.
-	 *   tile.png가 흰색이라 어떤 색이든 그대로 적용된다.
-	 *   끝에 다시 흰색으로 되돌려두지 않으면 그 다음 그리는 것까지 영향을 받으니 주의.
 	 */
 	override fun drawBackground() {
 		val screenWidth = Window.width;

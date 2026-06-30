@@ -8,6 +8,8 @@ import kotlin.properties.Delegates;
  * 해시 처리 방식이 다르기 때문에 한 해시맵에서 Position과 MutablePosition을
  *   섞어 쓰지 말 것. 그리고 한 해시세트에는 Position은 같은 x, y당 하나만 있지만
  *   MutablePosition은 x, y가 같아도 여러 개가 들어간다. 의도된 동작이다.
+ *   원래 계약상으로는 equals가 참이면 hashCode도 같아야 한다지만 맵 키로써의 안전성과 
+ *   실제 사용 시의 체감과 목적에 기반하여 의도적으로 깬다고 나는 당당히 말한다.
  *
  * ---- 예제 ----
  *   val x = MutablePosition(1f, 2f);
