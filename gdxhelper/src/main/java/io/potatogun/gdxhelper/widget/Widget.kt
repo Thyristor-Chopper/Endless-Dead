@@ -40,7 +40,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	constructor(x: Float, y: Float, width: Float, height: Float) : this({ x }, { y }, { width }, { height });
 
 	/**
-	 * 화면 내의 컨트롤
+	 * 화면 내의 컨트롤 (자바에서 사용하는 생성자)
 	 *
 	 * @constructor 자바 개발자 전용 생성자
 	 * @param x      X 좌표

@@ -53,7 +53,7 @@ interface EntityManager {
 	 *
 	 * @param entity 기준 개체
 	 */
-	fun forEachNearby(entity: Entity, callback: (Entity) -> Unit);
+	@JvmSynthetic fun forEachNearby(entity: Entity, callback: (Entity) -> Unit);
 
 	/**
 	 * 등록된 모든 객체를 그린다.
