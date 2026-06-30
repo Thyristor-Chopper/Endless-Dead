@@ -182,7 +182,7 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: () -> Float, height: ()
 		fun build(): ProgressBar {
 			if(skin == null)
 				skin = if(style == Style.CHUNKED) defaultChunkedSkin else defaultSmoothSkin;
-			return ProgressBar({ x.get() }, { y.get() }, { width.get() }, { height.get() }, value, skin, color, style);
+			return ProgressBar(x::get, y::get, width::get, height::get, value, skin, color, style);
 		}
 	}
 }

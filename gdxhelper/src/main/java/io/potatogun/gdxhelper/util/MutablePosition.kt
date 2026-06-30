@@ -47,7 +47,7 @@ class MutablePosition(x: Float, y: Float) : Position(x, y) {
 	 * @param handler 콜백
 	 */
 	fun addObserver(handler: BiConsumer<Float, Float>) {
-		val ktHandler: (Float, Float) -> Unit = { x, y -> handler.accept(x, y) };
+		val ktHandler: (Float, Float) -> Unit = handler::accept;
 		javaHandlerMap.put(handler, ktHandler);
 		changeHandlers.add(ktHandler);
 	}

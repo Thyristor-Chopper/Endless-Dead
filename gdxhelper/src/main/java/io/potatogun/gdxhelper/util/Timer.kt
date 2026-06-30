@@ -30,7 +30,7 @@ open class Timer(private val delay: Float, internal val condition: (() -> Boolea
 	 * @param delay     대기 시간(초)
 	 * @param operation 실행할 서브루틴
 	 */
-	constructor(delay: Float, operation: Consumer<Timer>) : this(delay, null, { operation.accept(it) });
+	constructor(delay: Float, operation: Consumer<Timer>) : this(delay, null, operation::accept);
 
 	/**
 	 * 조건을 가진 반복 타이머를 생성한다 (자바에서 사용).
@@ -40,7 +40,7 @@ open class Timer(private val delay: Float, internal val condition: (() -> Boolea
 	 * @param condition 실행 조건
 	 * @param operation 실행할 서브루틴
 	 */
-	constructor(delay: Float, condition: BooleanSupplier, operation: Consumer<Timer>) : this(delay, { condition.getAsBoolean() }, { operation.accept(it) });
+	constructor(delay: Float, condition: BooleanSupplier, operation: Consumer<Timer>) : this(delay, condition::getAsBoolean, operation::accept);
 
 	/**
 	 * 타이머를 갱신한다.

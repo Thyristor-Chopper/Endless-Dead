@@ -187,14 +187,14 @@ class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> F
 		}
 
 		fun onClick(handler: Runnable): Builder {
-			this.clickHandler = { handler.run() };
+			this.clickHandler = handler::run;
 			return this;
 		}
 
 		fun build(): Button {
 			if(!::clickHandler.isInitialized)
 				throw IllegalStateException("click handler is not set");
-			return Button({ x.get() }, { y.get() }, { width.get() }, { height.get() }, caption, skin, color, clickHandler);
+			return Button(x::get, y::get, width::get, height::get, caption, skin, color, clickHandler);
 		}
 	}
 }

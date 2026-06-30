@@ -52,7 +52,7 @@ interface EntityManager {
 	 * @param entity 기준 개체
 	 */
 	fun forEachNearby(entity: Entity, callback: Consumer<Entity>) {
-		forEachNearby(entity) { callback.accept(it) };
+		forEachNearby(entity, callback::accept);
 	}
 
 	/**
@@ -174,7 +174,7 @@ interface EntityManager {
 		 * @param callback 이번 개체에 대해 실행할 서브루틴
 		 */
 		fun forEach(callback: Consumer<Entity>) {
-			forEach { callback.accept(it) };
+			forEach(callback::accept);
 		}
 
 		/**

@@ -19,7 +19,7 @@ class RepeatingTimer(interval: Float, condition: (() -> Boolean)? = null, operat
 	 * @param interval  실행 간격(초)
 	 * @param operation 실행할 서브루틴
 	 */
-	constructor(interval: Float, operation: Consumer<Timer>) : this(interval, null, { operation.accept(it) });
+	constructor(interval: Float, operation: Consumer<Timer>) : this(interval, null, operation::accept);
 
 	/**
 	 * 조건을 가진 반복 타이머를 생성한다 (자바에서 사용).
@@ -29,7 +29,7 @@ class RepeatingTimer(interval: Float, condition: (() -> Boolean)? = null, operat
 	 * @param condition 실행 조건
 	 * @param operation 실행할 서브루틴
 	 */
-	constructor(interval: Float, condition: BooleanSupplier, operation: Consumer<Timer>) : this(interval, { condition.getAsBoolean() }, { operation.accept(it) });
+	constructor(interval: Float, condition: BooleanSupplier, operation: Consumer<Timer>) : this(interval, condition::getAsBoolean, operation::accept);
 
 	override fun tick(delta: Float) {
 		super.tick(delta);

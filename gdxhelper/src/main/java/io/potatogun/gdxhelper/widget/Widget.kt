@@ -49,7 +49,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 * @param width  컨트롤 너비
 	 * @param height 컨트롤 높이
 	 */
-	constructor(x: Supplier<Float>, y: Supplier<Float>, width: Supplier<Float>, height: Supplier<Float>) : this({ x.get() }, { y.get() }, { width.get() }, { height.get() });
+	constructor(x: Supplier<Float>, y: Supplier<Float>, width: Supplier<Float>, height: Supplier<Float>) : this(x::get, y::get, width::get, height::get);
 
 	/**
 	 * 컨트롤을 화면에 그리는 로직
@@ -80,22 +80,22 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	/**
 	 * 자바 개발자용 - X 좌표 계산 함수를 받는다. 코틀린에서는 그냥 .calculateX 하면 된다.
 	 */
-	protected fun getXSupplier(): Supplier<Float> = Supplier { calculateX() };
+	protected fun getXSupplier(): Supplier<Float> = Supplier(calculateX::invoke);
 
 	/**
 	 * 자바 개발자용 - Y 좌표 계산 함수를 받는다. 코틀린에서는 그냥 .calculateY 하면 된다.
 	 */
-	protected fun getYSupplier(): Supplier<Float> = Supplier { calculateY() };
+	protected fun getYSupplier(): Supplier<Float> = Supplier(calculateY::invoke);
 
 	/**
 	 * 자바 개발자용 - 너비 계산 함수를 받는다. 코틀린에서는 그냥 .calculateWidth 하면 된다.
 	 */
-	protected fun getWidthSupplier(): Supplier<Float> = Supplier { calculateWidth() };
+	protected fun getWidthSupplier(): Supplier<Float> = Supplier(calculateWidth::invoke);
 
 	/**
 	 * 자바 개발자용 - 높이 계산 함수를 받는다. 코틀린에서는 그냥 .calculateHeight 하면 된다.
 	 */
-	protected fun getHeightSupplier(): Supplier<Float> = Supplier { calculateHeight() };
+	protected fun getHeightSupplier(): Supplier<Float> = Supplier(calculateHeight::invoke);
 
 	/**
 	 * 컨트롤의 현재 계산된 X 좌표
@@ -149,7 +149,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 * @param supplier 계산 식
 	 */
 	fun setX(supplier: Supplier<Float>) {
-		calculateX = { supplier.get() };
+		calculateX = supplier::get;
 	}
 
 	/**
@@ -176,7 +176,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 * @param supplier 계산 식
 	 */
 	fun setY(supplier: Supplier<Float>) {
-		calculateY = { supplier.get() };
+		calculateY = supplier::get;
 	}
 
 	/**
@@ -203,7 +203,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 * @param supplier 계산 식
 	 */
 	fun setWidth(supplier: Supplier<Float>) {
-		calculateWidth = { supplier.get() };
+		calculateWidth = supplier::get;
 	}
 
 	/**
@@ -230,6 +230,6 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 * @param supplier 계산 식
 	 */
 	fun setHeight(supplier: Supplier<Float>) {
-		calculateHeight = { supplier.get() };
+		calculateHeight = supplier::get;
 	}
 }

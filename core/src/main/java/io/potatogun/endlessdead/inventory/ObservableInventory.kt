@@ -49,7 +49,7 @@ abstract class ObservableInventory : Inventory {
 	 * @param handler 콜백, Item: 추가된 아이템
 	 */
 	fun addItemAddObserver(handler: Consumer<Item>) {
-		val ktHandler: (Item) -> Unit = { handler.accept(it) };
+		val ktHandler: (Item) -> Unit = handler::accept;
 		javaAddObserverMap.put(handler, ktHandler);
 		itemAddObservers.add(ktHandler);
 	}
@@ -90,7 +90,7 @@ abstract class ObservableInventory : Inventory {
 	 * @param handler 콜백, Item: 제거된 아이템
 	 */
 	fun addItemRemoveObserver(handler: Consumer<Item>) {
-		val ktHandler: (Item) -> Unit = { handler.accept(it) };
+		val ktHandler: (Item) -> Unit = handler::accept;
 		javaRemoveObserverMap.put(handler, ktHandler);
 		itemRemoveObservers.add(ktHandler);
 	}
@@ -131,7 +131,7 @@ abstract class ObservableInventory : Inventory {
 	 * @param handler 콜백
 	 */
 	fun addClearObserver(handler: Runnable) {
-		val ktHandler: () -> Unit = { handler.run() };
+		val ktHandler: () -> Unit = handler::run;
 		javaClearObserverMap.put(handler, ktHandler);
 		clearObservers.add(ktHandler);
 	}
