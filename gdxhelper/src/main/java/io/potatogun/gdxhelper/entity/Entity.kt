@@ -47,17 +47,17 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	};
 	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)
 	/**
-	 * 개체의 현재 X 좌표
+	 * 개체의 현재 X 좌표. 자바에서는 이걸 쓰면 오버헤드만 더 생기므로(인라인 함수 미지원) .position.getX()로 할 것.
 	 */
 	var x: Float
-		inline get() = position.x
-		inline set(value) { position.x = value };
+		@JvmSynthetic inline get() = position.x
+		@JvmSynthetic inline set(value) { position.x = value };
 	/**
-	 * 개체의 현재 Y 좌표
+	 * 개체의 현재 Y 좌표. 자바에서는 .position.getY()로 할 것.
 	 */
 	var y: Float
-		inline get() = position.y
-		inline set(value) { position.y = value };
+		@JvmSynthetic inline get() = position.y
+		@JvmSynthetic inline set(value) { position.y = value };
 	/**
 	 * Freezable 월드에서 시간 정지 영향을 받는지의 여부
 	 */
