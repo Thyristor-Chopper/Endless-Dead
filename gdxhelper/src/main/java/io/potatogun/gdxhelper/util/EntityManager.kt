@@ -127,7 +127,7 @@ interface EntityManager {
 		 * @param condition 조건
 		 * @return 결과 목록
 		 */
-		fun filter(condition: (Entity) -> Boolean): GdxArray<Entity>;
+		@JvmSynthetic fun filter(condition: (Entity) -> Boolean): GdxArray<Entity>;
 
 		/**
 		 * 지정한 조건에 해당하는 개제만 모은다 (자바에서 사용).
@@ -145,7 +145,7 @@ interface EntityManager {
 		 * @param condition 조건
 		 * @param output    결과를 저장할 목록 (이미 다른 원소가 있다면 덮어씌워짐)
 		 */
-		fun filter(condition: (Entity) -> Boolean, output: GdxArray<Entity>);
+		@JvmSynthetic fun filter(condition: (Entity) -> Boolean, output: GdxArray<Entity>);
 
 		/**
 		 * 개체 목록을 새 배열로 복사한다.
@@ -175,6 +175,6 @@ interface EntityManager {
 		 *
 		 * @param callback 이번 개체에 대해 실행할 서브루틴
 		 */
-		fun forEach(callback: (Entity) -> Unit);
+		@JvmSynthetic fun forEach(callback: (Entity) -> Unit);
 	}
 }

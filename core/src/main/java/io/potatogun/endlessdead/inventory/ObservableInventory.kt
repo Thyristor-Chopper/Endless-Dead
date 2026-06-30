@@ -39,7 +39,7 @@ abstract class ObservableInventory : Inventory {
 	 *
 	 * @param handler 콜백, Item: 추가된 아이템
 	 */
-	fun addItemAddObserver(handler: (Item) -> Unit) {
+	@JvmSynthetic fun addItemAddObserver(handler: (Item) -> Unit) {
 		itemAddObservers.add(handler);
 	}
 
@@ -59,7 +59,7 @@ abstract class ObservableInventory : Inventory {
 	 *
 	 * @param handler 해제할 콜백
 	 */
-	fun removeItemAddObserver(handler: (Item) -> Unit) {
+	@JvmSynthetic fun removeItemAddObserver(handler: (Item) -> Unit) {
 		itemAddObservers.removeValue(handler, true);
 	}
 
@@ -80,7 +80,7 @@ abstract class ObservableInventory : Inventory {
 	 *
 	 * @param handler 콜백, Item: 제거된 아이템
 	 */
-	fun addItemRemoveObserver(handler: (Item) -> Unit) {
+	@JvmSynthetic fun addItemRemoveObserver(handler: (Item) -> Unit) {
 		itemRemoveObservers.add(handler);
 	}
 
@@ -100,7 +100,7 @@ abstract class ObservableInventory : Inventory {
 	 *
 	 * @param handler 해제할 콜백
 	 */
-	fun removeItemRemoveObserver(handler: (Item) -> Unit) {
+	@JvmSynthetic fun removeItemRemoveObserver(handler: (Item) -> Unit) {
 		itemRemoveObservers.removeValue(handler, true);
 	}
 
@@ -121,7 +121,7 @@ abstract class ObservableInventory : Inventory {
 	 *
 	 * @param handler 콜백
 	 */
-	fun addClearObserver(handler: () -> Unit) {
+	@JvmSynthetic fun addClearObserver(handler: () -> Unit) {
 		clearObservers.add(handler);
 	}
 
@@ -141,7 +141,7 @@ abstract class ObservableInventory : Inventory {
 	 *
 	 * @param handler 해제할 콜백
 	 */
-	fun removeClearObserver(handler: () -> Unit) {
+	@JvmSynthetic fun removeClearObserver(handler: () -> Unit) {
 		clearObservers.removeValue(handler, true);
 	}
 

@@ -57,7 +57,7 @@ class MutablePosition(x: Float, y: Float) : Position(x, y) {
 	 *
 	 * @param handler 콜백
 	 */
-	fun addObserver(handler: (x: Float, y: Float) -> Unit) {
+	@JvmSynthetic fun addObserver(handler: (x: Float, y: Float) -> Unit) {
 		changeHandlers.add(handler);
 	}
 
@@ -78,7 +78,7 @@ class MutablePosition(x: Float, y: Float) : Position(x, y) {
 	 *
 	 * @param handler 해제할 콜백
 	 */
-	fun removeObserver(handler: (x: Float, y: Float) -> Unit) {
+	@JvmSynthetic fun removeObserver(handler: (x: Float, y: Float) -> Unit) {
 		changeHandlers.removeValue(handler, true);
 	}
 

@@ -70,7 +70,7 @@ object Utils {
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	inline fun setTimeout(delay: Float, crossinline operation: () -> Unit): Task {
+	@JvmSynthetic inline fun setTimeout(delay: Float, crossinline operation: () -> Unit): Task {
 		return object : Task() {
 			override fun run() {
 				operation();
@@ -86,7 +86,7 @@ object Utils {
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	inline fun setTimeout(delay: Float, crossinline condition: () -> Boolean, crossinline operation: () -> Unit): Task {
+	@JvmSynthetic inline fun setTimeout(delay: Float, crossinline condition: () -> Boolean, crossinline operation: () -> Unit): Task {
 		return object : Task() {
 			override fun run() {
 				if(condition())
@@ -145,7 +145,7 @@ object Utils {
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	inline fun setInterval(interval: Float, crossinline operation: () -> Unit): Task {
+	@JvmSynthetic inline fun setInterval(interval: Float, crossinline operation: () -> Unit): Task {
 		return object : Task() {
 			override fun run() {
 				operation();
@@ -161,7 +161,7 @@ object Utils {
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	inline fun setInterval(interval: Float, crossinline condition: () -> Boolean, crossinline operation: () -> Unit): Task {
+	@JvmSynthetic inline fun setInterval(interval: Float, crossinline condition: () -> Boolean, crossinline operation: () -> Unit): Task {
 		return object : Task() {
 			override fun run() {
 				if(condition())
