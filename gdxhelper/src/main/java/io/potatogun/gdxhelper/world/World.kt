@@ -158,7 +158,7 @@ abstract class World @JvmOverloads constructor(@JvmField val width: Float, @JvmF
 	/**
 	 * 카메라를 갱신한다.
 	 */
-	fun updateCamera() {
+	internal fun updateCamera() {
 		camera.update();
 		batch.projectionMatrix = camera.combined;
 	}
