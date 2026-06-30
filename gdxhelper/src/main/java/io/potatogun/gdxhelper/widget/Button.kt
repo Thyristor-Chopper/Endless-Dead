@@ -171,22 +171,30 @@ class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> F
 		 */
 		constructor(x: Float, y: Float, width: Float, height: Float) : this({ x }, { y }, { width }, { height });
 
-		fun caption(caption: String) {
+		fun caption(caption: String): Builder {
 			this.caption = caption;
+			return this;
 		}
 
-		fun skin(skin: Skin) {
+		fun skin(skin: Skin): Builder {
 			this.skin = skin;
+			return this;
 		}
 
-		fun color(color: Color) {
+		fun color(color: Color): Builder {
 			this.color = color;
+			return this;
 		}
 
-		fun onClick(handler: Runnable) {
+		fun onClick(handler: Runnable): Builder {
 			this.clickHandler = { handler.run() };
+			return this;
 		}
 
-		fun build(): Button = Button({ x.get() }, { y.get() }, { width.get() }, { height.get() }, caption, skin, color, clickHandler);
+		fun build(): Button {
+			if(!::clickHandler.isInitialized)
+				throw IllegalStateException("click handler is not set");
+			return Button({ x.get() }, { y.get() }, { width.get() }, { height.get() }, caption, skin, color, clickHandler);
+		}
 	}
 }

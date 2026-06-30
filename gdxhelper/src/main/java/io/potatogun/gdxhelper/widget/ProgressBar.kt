@@ -159,20 +159,24 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: () -> Float, height: ()
 		 */
 		constructor(x: Float, y: Float, width: Float, height: Float) : this({ x }, { y }, { width }, { height });
 
-		fun value(value: Float) {
+		fun value(value: Float): Builder {
 			this.value = value;
+			return this;
 		}
 
-		fun skin(skin: Skin) {
+		fun skin(skin: Skin): Builder {
 			this.skin = skin;
+			return this;
 		}
 
-		fun color(color: Color) {
+		fun color(color: Color): Builder {
 			this.color = color;
+			return this;
 		}
 
-		fun style(style: Style) {
+		fun style(style: Style): Builder {
 			this.style = style;
+			return this;
 		}
 
 		fun build(): ProgressBar {
