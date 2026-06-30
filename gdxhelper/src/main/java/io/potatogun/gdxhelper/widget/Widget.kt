@@ -14,13 +14,13 @@ import java.util.function.Supplier;
  * @property height 컨트롤 높이 계산 함수
  */
 abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> Float) {
-	@get:JvmName("getLeftCalculator") protected var x: () -> Float = x
+	@get:JvmName("getLeftSupplier") protected var x: () -> Float = x
 		private set;
-	@get:JvmName("getBottomCalculator") protected var y: () -> Float = y
+	@get:JvmName("getBottomSupplier") protected var y: () -> Float = y
 		private set;
-	@get:JvmName("getWidthCalculator") protected var width: () -> Float = width
+	@get:JvmName("getWidthSupplier") protected var width: () -> Float = width
 		private set;
-	@get:JvmName("getHeightCalculator") protected var height: () -> Float = height
+	@get:JvmName("getHeightSupplier") protected var height: () -> Float = height
 		private set;
 	/**
 	 * 컨트롤이 화면에 그려지는지의 여부
@@ -107,7 +107,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	/**
 	 * 컨트롤의 X 좌표 식을 지정한다.
 	 */
-	fun setX(fn: () -> Float) {
+	@JvmSynthetic fun setX(fn: () -> Float) {
 		x = fn;
 	}
 
@@ -121,7 +121,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	/**
 	 * 컨트롤의 Y 좌표 식을 지정한다.
 	 */
-	fun setY(fn: () -> Float) {
+	@JvmSynthetic fun setY(fn: () -> Float) {
 		y = fn;
 	}
 
@@ -135,7 +135,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	/**
 	 * 컨트롤의 너비 식을 지정한다.
 	 */
-	fun setWidth(fn: () -> Float) {
+	@JvmSynthetic fun setWidth(fn: () -> Float) {
 		width = fn;
 	}
 
@@ -149,7 +149,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	/**
 	 * 컨트롤의 높이 식을 지정한다.
 	 */
-	fun setHeight(fn: () -> Float) {
+	@JvmSynthetic fun setHeight(fn: () -> Float) {
 		height = fn;
 	}
 
