@@ -87,6 +87,24 @@ class MutablePosition(x: Float, y: Float) : Position(x, y) {
 			changeHandlers[i](x, y);
 	}
 
+	/**
+	 * X 좌표에 지정한 값만큼 더한다 (자바 전용, 코틀린은 x += ... 사용).
+	 *
+	 * @param toAdd 더할 양
+	 */
+	fun addX(toAdd: Float) {
+		x += toAdd;
+	}
+
+	/**
+	 * Y 좌표에 지정한 값만큼 더한다 (자바 전용, 코틀린은 y += ... 사용).
+	 *
+	 * @param toAdd 더할 양
+	 */
+	fun addY(toAdd: Float) {
+		y += toAdd;
+	}
+
 	// MutablePosition은 의도적으로 메모리 주소 기반으로 동작
 	//   x, y가 같아도 메모리 상에서 서로 다른 객체면 해시맵에서 다른 것으로 취급한다.
 	override fun hashCode(): Int = System.identityHashCode(this);
