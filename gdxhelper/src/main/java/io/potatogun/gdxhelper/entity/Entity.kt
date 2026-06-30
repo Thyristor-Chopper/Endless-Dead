@@ -39,7 +39,7 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	 * 자바에서도 entity.position.getX() 등으로 자연스럽게 접근하기 위해 @JvmField
 	 */
 	@JvmField val position = MutablePosition(x, y).apply {
-		setObserver { _, _ -> world.entities.updatePosition(this@Entity) };
+		addObserver { _, _ -> world.entities.updatePosition(this@Entity) };
 	};
 	// x과 y를 필드로 바로 노출 (내부적으로 position과 상호작용)
 	/**

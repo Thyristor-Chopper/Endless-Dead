@@ -270,7 +270,7 @@ object Utils {
 	 * @return        성공 여부
 	 */
 	@JvmStatic inline fun safeDispose(texture: Texture): Boolean {
-		if(SharedTextureManager.isSharedTexture(texture)) {
+		if(!SharedTextureManager.isSharedTexture(texture)) {
 			texture.dispose();
 			return true;
 		}
