@@ -87,6 +87,8 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 	};
 
 	override fun add(entity: Entity): Boolean {
+		if(entity.world !== world)
+			throw IllegalArgumentException("entity belongs to a different world");
 		if(tilesOfEntity.containsKey(entity) || addQueue.contains(entity, true)) return false;
 		addQueue.add(entity);
 		return true;
@@ -120,7 +122,6 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 		// 매 프레임 개체 갱신
 		for(i in 0 until allEntities.size) {
 			val entity = allEntities[i];
-			val world = entity.world;
 			if(world !is Freezable || !world.isFrozen || entity.isUpdatableWhileFrozen)
 				entity.update(delta);
 			entity.forceUpdate(delta);

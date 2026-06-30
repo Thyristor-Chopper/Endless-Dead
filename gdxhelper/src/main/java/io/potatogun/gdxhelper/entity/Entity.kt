@@ -224,7 +224,7 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	/**
 	 * 개체를 월드에서 제거하고 등록을 해제한다.
 	 */
-	inline fun remove() {
+	fun remove() {
 		world.entities.remove(this);
 	}
 

@@ -13,7 +13,13 @@ import java.util.function.Function;
  * 개체 관리자
  */
 interface EntityManager {
+	/**
+	 * 개체 관리자가 속하는 월드
+	 */
 	val world: World;
+	/**
+	 * 개체 목록 읽기 전용 상호작용 도구
+	 */
 	val view: View;
 
 	/**
@@ -21,6 +27,7 @@ interface EntityManager {
 	 *
 	 * @param entity 등록할 개체
 	 * @return       성공 여부(중복 시 실패)
+	 * @throws IllegalArgumentException 추가하려는 개체가 다른 월드에 속해 있을 때
 	 */
 	fun add(entity: Entity): Boolean;
 
