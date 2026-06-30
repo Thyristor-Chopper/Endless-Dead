@@ -34,6 +34,10 @@ import kotlin.math.atan2;
  */
 abstract class Entity(val world: World, val name: String, x: Float, y: Float, @JvmField val width: Float, @JvmField val height: Float, @JvmField protected val texture: Texture? = null) {
 	/**
+	 * 자바 전용 필드로 자바로 작성된 개체 자식클래스 내에서 getWorld() 대신 사용할 수 있는 거
+	 */
+	@JvmField protected val currentWorld = world;
+	/**
 	 * 개체의 평면좌표 위치
 	 *
 	 * 자바에서도 entity.position.getX() 등으로 자연스럽게 접근하기 위해 @JvmField
