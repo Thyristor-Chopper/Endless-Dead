@@ -14,13 +14,14 @@ import java.util.function.Supplier;
  * @property height 컨트롤 높이 계산 함수
  */
 abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> Float) {
-	@get:JvmName("getLeftSupplier") protected var x: () -> Float = x
+	// 자바에서 좌표나 크기 계산 함수를 구하려면 get*Supplier 메쏘드를 사용할 것.
+	@get:JvmSynthetic protected var x: () -> Float = x
 		private set;
-	@get:JvmName("getBottomSupplier") protected var y: () -> Float = y
+	@get:JvmSynthetic protected var y: () -> Float = y
 		private set;
-	@get:JvmName("getWidthSupplier") protected var width: () -> Float = width
+	@get:JvmSynthetic protected var width: () -> Float = width
 		private set;
-	@get:JvmName("getHeightSupplier") protected var height: () -> Float = height
+	@get:JvmSynthetic protected var height: () -> Float = height
 		private set;
 	/**
 	 * 컨트롤이 화면에 그려지는지의 여부
@@ -75,6 +76,26 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	fun hide() {
 		isVisible = false;
 	}
+
+	/**
+	 * 자바 개발자용 - X 좌표 계산 함수를 받는다. 코틀린에서는 그냥 .x/.x() 하면 된다.
+	 */
+	protected fun getXSupplier(): Supplier<Float> = Supplier { x() };
+
+	/**
+	 * 자바 개발자용 - Y 좌표 계산 함수를 받는다. 코틀린에서는 그냥 .y/.y() 하면 된다.
+	 */
+	protected fun getYSupplier(): Supplier<Float> = Supplier { x() };
+
+	/**
+	 * 자바 개발자용 - X 좌표 계산 함수를 받는다. 코틀린에서는 그냥 .width/.width() 하면 된다.
+	 */
+	protected fun getWidthSupplier(): Supplier<Float> = Supplier { width() };
+
+	/**
+	 * 자바 개발자용 - X 좌표 계산 함수를 받는다. 코틀린에서는 그냥 .height/.height() 하면 된다.
+	 */
+	protected fun getHeightSupplier(): Supplier<Float> = Supplier { height() };
 
 	/**
 	 * 컨트롤의 현재 계산된 X 좌표
