@@ -29,7 +29,7 @@ abstract class Container(world: World, name: String, x: Float, y: Float, width: 
 	/**
 	 * 플레이어가 직접 아이템을 넣었을 때의 텍스처
 	 */
-	open protected val playerItemTexture: Texture? = null;
+	protected open val playerItemTexture: Texture? = null;
 	/**
 	 * 현재 들어있는 아이템
 	 */

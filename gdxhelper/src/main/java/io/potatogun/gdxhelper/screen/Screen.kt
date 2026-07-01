@@ -16,9 +16,11 @@ import io.potatogun.gdxhelper.widget.Widget;
  * 게임 내 화면을 구현한다.
  *   안에는 배경과 위젯(컨트롤)을 추가할 수 있다.
  *
- * @param settings 스크린 옵션
+ * @constructor Named argument를 쓸 수 있는 코틀린용 생성자
+ * @property font   화면 기본 글꼴
+ * @param    _dummy 빌어먹을 코틀린이 Overload resolution ambiguity라면서 귀찮게 해서 (나중에 둘째 매개변수가 생기면 그걸로 대체)
  */
-abstract class Screen @JvmOverloads constructor(settings: Properties = Properties()) : ScreenAdapter() {
+abstract class Screen(font: BitmapFont = BitmapFont(), _dummy: Nothing? = null) : ScreenAdapter() {
 	/**
 	 * 이미지(Texture)와 글자를 화면에 찍어주는 도구.
 	 *   배경 그리기·게임 객체·텍스트 모두 이 batch 하나로 처리한다.
@@ -26,18 +28,20 @@ abstract class Screen @JvmOverloads constructor(settings: Properties = Propertie
 	@JvmField protected val batch = SpriteBatch();
 	/**
 	 * 화면의 기본 글꼴
-	 *   화면 구현체에서 다른 글꼴을 사용할 수도 있으므로 open이다.
 	 */
-	@JvmField protected val font: BitmapFont;
+	@JvmField protected val font = font;
 	/**
 	 * 등록된 위젯들
 	 */
 	private val widgets = ObjectMap<String, Widget>();
 
-	init {
-		settings.fillDefaults();
-		font = settings.screenFont;
-	}
+	/**
+	 * 설정 빌더를 이용하여 화면을 생성한다.
+	 *
+	 * @constructor 자바용 생성자
+	 * @param settings 스크린 옵션
+	 */
+	@JvmOverloads constructor(settings: Properties = Properties()) : this(settings.font!!);
 
 	// ────────────────────────────────────────────────────────
 	//  위젯 객체 관리
@@ -232,10 +236,15 @@ abstract class Screen @JvmOverloads constructor(settings: Properties = Propertie
 	}
 
 	/**
-	 * 스크린 옵션
+	 * 스크린 옵션 (자바용)
 	 */
 	open class Properties {
-		internal lateinit var screenFont: BitmapFont
+		internal var font: BitmapFont? = null
+			get() {
+				if(field == null)
+					field = BitmapFont();
+				return field;
+			}
 			private set;
 
 		/**
@@ -245,13 +254,8 @@ abstract class Screen @JvmOverloads constructor(settings: Properties = Propertie
 		 * @return     옵션 객체 자신
 		 */
 		fun font(font: BitmapFont): Properties {
-			screenFont = font;
+			this.font = font;
 			return this;
-		}
-
-		internal open fun fillDefaults() {
-			if(!::screenFont.isInitialized)
-				screenFont = BitmapFont();
 		}
 	}
 }

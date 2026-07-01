@@ -19,7 +19,8 @@ import kotlin.random.Random;
  * @param    world         소속 세계
  * @property spawnInterval 소환 간격
  */
-class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(world) {
+class ZombieSpawner(world: World) : Spawner(world) {
+	private val spawnInterval = 3f;
 	private var zombiesPerSpawn = 1
 		set(value) {
 			if(value < 0) field = 0;
@@ -36,14 +37,19 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 				spawnRandomZombie();
 		});
 
-		spawnIncreaseTimer = RepeatingTimer(spawnIncreaseInterval) { timer ->
+		spawnIncreaseTimer = RepeatingTimer(spawnIncreaseInterval) {
 			if(zombiesPerSpawn < maxZombiesPerSpawn) {
 				zombiesPerSpawn++;
 				(world.viewer as? SubtitlesDrawable)?.drawSubtitles("More zombies coming...");
 			} else {
-				timerManager.unregister(timer);
+				stopSpawnIncreaser();
 			}
 		}.also { timerManager.register(it) };
+	}
+
+	// RepeatingTimer 실행기 내부에서 직접 호출하면 변수 초기화 안 됐다고 컴파일러가 귀찮게 함
+	private inline fun stopSpawnIncreaser() {
+		timerManager.unregister(spawnIncreaseTimer);
 	}
 
 	/**

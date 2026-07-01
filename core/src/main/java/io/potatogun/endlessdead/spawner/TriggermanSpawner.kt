@@ -12,7 +12,8 @@ import io.potatogun.gdxhelper.world.World;
 
 import kotlin.random.Random;
 
-class TriggermanSpawner(world: World, private val spawnInterval: Float = 5f) : Spawner(world) {
+class TriggermanSpawner(world: World) : Spawner(world) {
+	private val spawnInterval = 5f;
 	private val timerManager = TimerManager();
 
 	init {

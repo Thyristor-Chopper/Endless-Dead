@@ -40,7 +40,7 @@ import kotlin.random.Random;
 /**
  * 좀비 파밍 월드 구현체
  */
-class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, World.Properties().tileSize(128f)), Freezable, SinglePlayerWorld {
+class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, tileSize = 128f), Freezable, SinglePlayerWorld {
 	/**
 	 * 플레이어 — 월드 중앙에서 시작.
 	 */
@@ -104,10 +104,10 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		entities.add(player);
 
 		// 스포너 등록
-		spawners.add(ZombieSpawner(this, 3f));
+		spawners.add(ZombieSpawner(this));
 		// 5% 확률로 총 쏘는 적도 나오는 월드
 		if(Random.nextInt(20) == 7)
-			spawners.add(TriggermanSpawner(this, 5f));
+			spawners.add(TriggermanSpawner(this));
 
 		// 10초마다 빈 상자 하나 리필
 		timerManager.register(RepeatingTimer(10f) {

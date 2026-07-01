@@ -24,24 +24,26 @@ import java.util.Collections;
  * 게임 내 월드 = '월드 하나'의 추상 기본 클래스.
  *   '월드'의 개념에 맞게 플레이어나 적 등의 개체 등을 추가한다.
  *
+ * @constructor Named argument를 쓸 수 있는 코틀린용 생성자
  * @property width    월드 전체 너비
  * @property height   월드 전체 높이
- * @param    settings 월드 옵션
+ * @property camera   월드의 카메라
+ * @property font     월드의 기본 글꼴
+ * @property tileSize 공간 분할 격자 개체 관리자의 격자 크기
  */
-abstract class World @JvmOverloads constructor(@JvmField val width: Float, @JvmField val height: Float, settings: Properties = Properties()) {
+abstract class World(@JvmField val width: Float, @JvmField val height: Float, camera: Camera = OrthographicCamera(), font: BitmapFont = BitmapFont(), tileSize: Float = 64f) {
 	/**
 	 * 월드를 보여주는 카메라
 	 */
-	private val camera: Camera;
+	private val camera = camera;
 	/**
 	 * 이미지(Texture)와 글자를 화면에 찍어주는 도구
 	 */
 	@JvmField protected val batch = SpriteBatch();
 	/**
 	 * 월드의 기본 글꼴
-	 *   월드 구현체에서 다른 글꼴을 사용할 수도 있으므로 open이다.
 	 */
-	@JvmField protected val font: BitmapFont;
+	@JvmField protected val font = font;
 	/**
 	 * 월드를 보여주는 스크린. 만약 이 월드를 띄우는 뷰어가 없으면 null일 수도 있음에 주의
 	 */
@@ -73,13 +75,19 @@ abstract class World @JvmOverloads constructor(@JvmField val width: Float, @JvmF
 	 *
 	 * 자바에서도 world.entities.add()로 자연스럽게 호출하기 위해 @JvmField
 	 */
-	@JvmField val entities: EntityManager = SpatialGrid(this, settings.worldTileSize);
+	@JvmField val entities: EntityManager = SpatialGrid(this, tileSize);
+
+	/**
+	 * 설정 빌더를 사용하여 월드를 생성한다.
+	 *
+	 * @constructor 자바용 생성자
+	 * @param width    월드 전체 너비
+	 * @param height   월드 전체 높이
+	 * @param settings 월드 설정
+	 */
+	@JvmOverloads constructor(width: Float, height: Float, settings: Properties = Properties()) : this(width, height, settings.camera!!, settings.font!!, settings.tileSize);
 
 	init {
-		settings.fillDefaults();
-		camera = settings.worldCamera;
-		font = settings.worldFont;
-
 		updateCameraViewport();
 		if(camera is OrthographicCamera)
 			camera.setToOrtho(false);  // false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
@@ -207,14 +215,24 @@ abstract class World @JvmOverloads constructor(@JvmField val width: Float, @JvmF
 	}
 
 	/**
-	 * 월드 옵션
+	 * 월드 옵션 (자바용)
 	 */
 	open class Properties {
-		internal lateinit var worldCamera: Camera
+		internal var camera: Camera? = null
+			get() {
+				if(field == null)
+					field = OrthographicCamera();
+				return field;
+			}
 			private set;
-		internal lateinit var worldFont: BitmapFont
+		internal var font: BitmapFont? = null
+			get() {
+				if(field == null)
+					field = BitmapFont();
+				return field;
+			}
 			private set;
-		internal var worldTileSize = 64f
+		internal var tileSize = 64f
 			private set;
 
 		/**
@@ -224,7 +242,7 @@ abstract class World @JvmOverloads constructor(@JvmField val width: Float, @JvmF
 		 * @return       옵션 객체 자신
 		 */
 		fun camera(camera: Camera): Properties {
-			worldCamera = camera;
+			this.camera = camera;
 			return this;
 		}
 
@@ -235,7 +253,7 @@ abstract class World @JvmOverloads constructor(@JvmField val width: Float, @JvmF
 		 * @return     옵션 객체 자신
 		 */
 		fun font(font: BitmapFont): Properties {
-			worldFont = font;
+			this.font = font;
 			return this;
 		}
 
@@ -246,15 +264,8 @@ abstract class World @JvmOverloads constructor(@JvmField val width: Float, @JvmF
 		 * @return         옵션 객체 자신
 		 */
 		fun tileSize(tileSize: Float): Properties {
-			worldTileSize = tileSize;
+			this.tileSize = tileSize;
 			return this;
-		}
-
-		internal open fun fillDefaults() {
-			if(!::worldCamera.isInitialized)
-				worldCamera = OrthographicCamera();
-			if(!::worldFont.isInitialized)
-				worldFont = BitmapFont();
 		}
 	}
 
