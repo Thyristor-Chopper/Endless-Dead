@@ -1,6 +1,8 @@
-# Endless Dead
+# Endless Dead & GDX Helper
 
-libGDX 기반의 좀비 사냥 슈팅 게임과 프레임워크가 포함되어 있다.
+코틀린으로 만든 libGDX 기반의 좀비 사냥 슈팅 게임 'Endless Dead'와 libGDX 프레임워크 'GDX helper'가 포함되어 있다.
+
+gdxhelper는 자바와의 상호운용성을 최대한으로 고려하여 작성하고 자바 친화적 API도 별도로(이중으로) 제공하기 때문에 자바에서도 큰 문제 없이 자연스럽게 사용 가능하다.
 
 ---
 

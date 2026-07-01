@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.spawner;
 
+import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
@@ -64,20 +65,17 @@ class ZombieSpawner(world: World, private val spawnInterval: Float) : Spawner(wo
 			rand < 9	-> Zombie.Normal(world, 0f, 0f)	// 30% 확률
 			else		-> Zombie.Strong(world, 0f, 0f)	// 10% 확률
 		};
-
-		var randomX: Float;
-		var randomY: Float;
 		var loopCount = 0;
 		val target = newZombie.target;
+		val position = Pools.position.obtain();
 		do {
-			randomX = Random.nextFloat() * (world.width - 70f);
-			randomY = Random.nextFloat() * (world.height - 70f);
+			position.x = Random.nextFloat() * (world.width - 70f);
+			position.y = Random.nextFloat() * (world.height - 70f);
 			loopCount++;
-		} while(target != null && Position(randomX, randomY).distanceTo(target) < 408f && loopCount < 30);
-
-		newZombie.x = randomX;
-		newZombie.y = randomY;
-
+		} while(target != null && position.distanceTo(target) < 408f && loopCount < 30);
+		newZombie.x = position.x;
+		newZombie.y = position.y;
 		world.entities.add(newZombie);
+		Pools.position.free(position);
 	}
 }

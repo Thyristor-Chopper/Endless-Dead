@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
+import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
@@ -25,7 +26,6 @@ import io.potatogun.endlessdead.spawner.ZombieSpawner;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
-import io.potatogun.gdxhelper.util.EntityArrayPool;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
@@ -64,7 +64,6 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	// 타이머
 	private val timerManager = TimerManager();
 	private var unfreezer: Timer? = null;
-	private val entityArrayPool = EntityArrayPool(autoClear = false);
 
 	/**
 	 * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -112,11 +111,11 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		// 10초마다 빈 상자 하나 리필
 		timerManager.register(RepeatingTimer(10f) {
-			val emptyContainers = entityArrayPool.obtain();
+			val emptyContainers = Pools.entityArray.obtain();
 			entities.view.filter({ it is Container && it.inventory.isEmpty }, emptyContainers);
 			val randomContainer = emptyContainers.randomOrNull() as Container?;
 			randomContainer?.putItem(generateRandomItem(false));
-			entityArrayPool.free(emptyContainers);
+			Pools.entityArray.free(emptyContainers);
 		});
 	}
 

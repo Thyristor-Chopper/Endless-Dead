@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.spawner;
 
+import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Triggerman;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
@@ -29,17 +30,17 @@ class TriggermanSpawner(world: World, private val spawnInterval: Float = 5f) : S
 	// 타이머에서 한 번만 쓰이므로 인라인
     private inline fun spawn() {
 		val triggerman = Triggerman(world, 0f, 0f);
-        var randomX: Float;
-        var randomY: Float;
 		var loopCount = 0;
 		val target = triggerman.target;
+		val position = Pools.position.obtain();
 		do {
-			randomX = Random.nextFloat() * (world.width - 70f);
-			randomY = Random.nextFloat() * (world.height - 70f);
+			position.x = Random.nextFloat() * (world.width - 70f);
+			position.y = Random.nextFloat() * (world.height - 70f);
 			loopCount++;
-		} while(target != null && Position(randomX, randomY).distanceTo(target) < 408f && loopCount < 30);
-		triggerman.x = randomX;
-		triggerman.y = randomY;
+		} while(target != null && position.distanceTo(target) < 408f && loopCount < 30);
+		triggerman.x = position.x;
+		triggerman.y = position.y;
         world.entities.add(triggerman);
+		Pools.position.free(position);
     }
 }
