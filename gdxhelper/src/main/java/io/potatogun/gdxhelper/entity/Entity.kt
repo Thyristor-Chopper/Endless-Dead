@@ -33,6 +33,9 @@ import kotlin.math.atan2;
  * @property texture 개체 텍스처(없을 수도 있음)
  */
 abstract class Entity(val world: World, val name: String, x: Float, y: Float, @JvmField val width: Float, @JvmField val height: Float, @JvmField protected val texture: Texture? = null) {
+	// draw에서 사용하는 절반 길이 캐시
+	private val halfWidth = width * 0.5f;
+	private val halfHeight = height * 0.5f;
 	/**
 	 * 자바 전용 필드로 자바로 작성된 개체 자식클래스 내에서 getWorld() 대신 사용할 수 있는 거
 	 */
@@ -67,7 +70,7 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	 */
 	private var rotation = 0f;
 	/**
-	 * 개체 오버레이 색
+	 * 개체 오버레이 색 - (흰색: 원래 텍스처 색 그대로 사용)
 	 *   (color는 mutable 객체이므로 val)
 	 */
 	var overlayColor = Color.WHITE
@@ -93,29 +96,27 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 
 	/**
 	 * 매 프레임 호출되어 자신을 그린다.
-	 *
-	 * 하위 클래스는 이 함수를 override하여 상황에 따라 텍스처를 달리하여 super.draw(SpriteBatch, Texture)를 호출할 수 있다.
+	 *   하위 클래스는 이 함수를 override하여 상황에 따라 텍스처나 오버레이 색을 달리하여 super.draw(SpriteBatch, Texture, Color)를 호출할 수 있다.
 	 * 
-	 * @param batch 이미지(Texture)를 화면에 찍어주는 도구. GameWorld가 이미 projectionMatrix 를 세팅하고 begin()/end() 안에서 호출해주므로, 서브클래스는 batch.draw(texture, x, y, w, h) 한 줄만 적으면 된다.
+	 * @param batch 이미지(Texture)를 화면에 찍어주는 도구
 	 */
 	open fun draw(batch: SpriteBatch) {
-		draw(batch, null);
+		draw(batch, null, null);
 	}
 
 	/**
 	 * 매 프레임 호출되어 자신을 그린다.
 	 *   자식 클래스에서 draw(SpriteBatch)를 override하여 상황에 맞는 텍스처를 지정하여
-	 *   개체에 등록된 기본 텍스처 대신에 쓸 텍스처를 alternateTexture로 넘길 수 있다.
+	 *   개체에 등록된 기본 텍스처 대신에 쓸 텍스처를 textureOverride로 넘길 수 있다.
 	 *
-	 * @param batch            이미지(Texture)를 화면에 찍어주는 도구
-	 * @param alternateTexture 대신 사용할 텍스처
+	 * @param batch           이미지(Texture)를 화면에 찍어주는 도구
+	 * @param textureOverride 대신 사용할 텍스처 (null: 기본 텍스처 사용)
+	 * @param colorOverride   대신 사용할 오버레이 색 (null: 기본 오버레이 색 사용)
 	 */
-	protected open fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
-		val texture: Texture? = alternateTexture ?: this.texture;
+	protected open fun draw(batch: SpriteBatch, textureOverride: Texture?, colorOverride: Color?) {
+		val texture = textureOverride ?: this.texture;
 		texture?.let {
-			if(batch.color == Color.WHITE) batch.color = overlayColor;  // 대미지 시 붉게가 작동하게 하기 위해.
-			val halfWidth = width * 0.5f;
-			val halfHeight = height * 0.5f;
+			batch.color = colorOverride ?: this.overlayColor;
 			batch.draw(it, x - halfWidth, y - halfHeight, halfWidth, halfHeight, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
 			batch.color = Color.WHITE;
 		};

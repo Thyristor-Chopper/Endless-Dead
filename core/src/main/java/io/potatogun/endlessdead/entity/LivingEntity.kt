@@ -206,13 +206,10 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 		};
 	}
 
-	/**
-	 * 대미지를 입은 경우 붉게 바꾼다.
-	 */
-	override fun draw(batch: SpriteBatch, alternateTexture: Texture?) {
-		val showDamaged = (showDamageIndicator && damagedIndicatorTimer > 0f);
-		if(showDamaged) batch.color = Color.RED;
-		super.draw(batch, alternateTexture);
-		if(showDamaged) batch.color = Color.WHITE;
+	// 대미지를 입은 경우 붉게 바꾼다.
+	override fun draw(batch: SpriteBatch, textureOverride: Texture?, colorOverride: Color?) {
+		val showDamaged = (colorOverride == null && showDamageIndicator && damagedIndicatorTimer > 0f);
+		val color = if(showDamaged) Color.RED else colorOverride;
+		super.draw(batch, textureOverride, color);
 	}
 }

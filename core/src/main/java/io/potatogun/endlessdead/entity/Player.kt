@@ -229,11 +229,11 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 
 	// 플레이어를 들고 있는 아이템에 맞게 그린다.
 	override fun draw(batch: SpriteBatch) {
-		val texture = when(selectedItem) {
+		val textureOverride = when(selectedItem) {
 			is Gun	-> textureWithGun
-			else	-> this.texture
+			else	-> null
 		};
-		super.draw(batch, texture);
+		super.draw(batch, textureOverride, null);
 	}
 
 	// 자원 및 타이머 정리

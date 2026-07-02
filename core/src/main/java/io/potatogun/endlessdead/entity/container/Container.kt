@@ -52,11 +52,11 @@ abstract class Container(world: World, name: String, x: Float, y: Float, width: 
 
 	// 상자를 화면에 그린다. 비어 있을 때와 아닐 때 텍스처가 다르기 때문에 override해서 처리한다.
 	override fun draw(batch: SpriteBatch) {
-		val texture: Texture? = 
+		val textureOverride: Texture? = 
 			if(inventory.isEmpty) emptyTexture
 			else if(isPlayerItem) playerItemTexture
-			else this.texture;
-		super.draw(batch, texture);
+			else null;
+		super.draw(batch, textureOverride, null);
 	}
 
 	/**

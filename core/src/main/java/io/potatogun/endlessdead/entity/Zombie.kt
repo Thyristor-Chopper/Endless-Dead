@@ -63,7 +63,7 @@ sealed class Zombie(world: World, name: String, x: Float, y: Float, width: Float
 
 	override fun draw(batch: SpriteBatch) {
 		if(attackTextureTimer % 0.75f > 0.5f)
-			super.draw(batch, attackingTexture);
+			super.draw(batch, attackingTexture, null);
 		else
 			super.draw(batch);
 	}
