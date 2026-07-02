@@ -1,4 +1,4 @@
-@file:JvmName("EntityManagerExtensions")
+@file:JvmName("EntityQueries")
 package io.potatogun.gdxhelper.util;
 
 import com.badlogic.gdx.utils.Array as GdxArray;

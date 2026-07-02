@@ -6,6 +6,7 @@ import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.LivingEntity;
+import io.potatogun.endlessdead.entity.isSameTeamWith;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Rarity;

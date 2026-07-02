@@ -1,12 +1,5 @@
 package io.potatogun.gdxhelper.util;
 
-import com.badlogic.gdx.utils.Array as GdxArray;
-import com.badlogic.gdx.utils.ObjectMap;
-
-import kotlin.properties.Delegates;
-
-import java.util.function.BiConsumer;
-
 /**
  * 위치(평면좌표)를 저장하는 수정 가능한 레코드이다.
  *
@@ -35,58 +28,7 @@ import java.util.function.BiConsumer;
  * @property x 처음 X 좌표
  * @property y 처음 Y 좌표
  */
-class MutablePosition(x: Float, y: Float) : Position(x, y) {
-	private val changeHandlers = GdxArray<(x: Float, y: Float) -> Unit>(false, 2);
-	private val javaHandlerMap = ObjectMap<BiConsumer<Float, Float>, (x: Float, y: Float) -> Unit>(2);
-	override var x: Float by Delegates.observable(x) { _, _, _ -> invokeObservers() };
-	override var y: Float by Delegates.observable(y) { _, _, _ -> invokeObservers() };
-
-	/**
-	 * 값이 바뀔 때 콜백 함수를 지정한다 (자바에서 사용).
-	 *
-	 * @param handler 콜백
-	 */
-	fun addObserver(handler: BiConsumer<Float, Float>) {
-		val ktHandler: (Float, Float) -> Unit = handler::accept;
-		javaHandlerMap.put(handler, ktHandler);
-		changeHandlers.add(ktHandler);
-	}
-
-	/**
-	 * 값이 바뀔 때 콜백 함수를 지정한다.
-	 *
-	 * @param handler 콜백
-	 */
-	@JvmSynthetic fun addObserver(handler: (x: Float, y: Float) -> Unit) {
-		changeHandlers.add(handler);
-	}
-
-	/**
-	 * 값이 바뀔 때 콜백을 해제한다 (자바에서 사용).
-	 *
-	 * @param handler 해제할 콜백
-	 */
-	fun removeObserver(handler: BiConsumer<Float, Float>) {
-		javaHandlerMap[handler]?.let {
-			changeHandlers.removeValue(it, true);
-			javaHandlerMap.remove(handler);
-		};
-	}
-
-	/**
-	 * 값이 바뀔 때 콜백을 해제한다.
-	 *
-	 * @param handler 해제할 콜백
-	 */
-	@JvmSynthetic fun removeObserver(handler: (x: Float, y: Float) -> Unit) {
-		changeHandlers.removeValue(handler, true);
-	}
-
-	private inline fun invokeObservers() {
-		for(i in 0 until changeHandlers.size)
-			changeHandlers[i](x, y);
-	}
-
+open class MutablePosition(override var x: Float, override var y: Float) : Position(x, y) {
 	/**
 	 * X 좌표에 지정한 값만큼 더한다 (자바 전용, 코틀린은 x += ... 사용).
 	 *

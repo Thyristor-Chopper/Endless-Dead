@@ -82,7 +82,8 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 		}
 
 		override fun forEach(callback: (Entity) -> Unit) {
-			allEntities.forEach(callback);
+			for(i in 0 until allEntities.size)
+				callback(allEntities[i]);
 		}
 	};
 

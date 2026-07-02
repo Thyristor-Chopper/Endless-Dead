@@ -22,7 +22,7 @@ import io.potatogun.gdxhelper.world.World;
  * @property health  최대 체력
  * @param    texture 개체 텍스처(없을 수도 있음)
  */
-abstract class LivingEntity(world: World, name: String, x: Float, y: Float, width: Float, height: Float, health: Int, texture: Texture?) : Entity(world, name, x, y, width, height, texture) {
+abstract class LivingEntity(world: World, name: String, x: Float, y: Float, width: Float, height: Float, health: Int, texture: Texture?) : Entity(world, name, x, y, width, height, texture), TeamMember {
 	/**
 	 * 개체의 최대 체력
 	 */
@@ -46,16 +46,6 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 */
 	var isInvincible = false  // setter는 자바에서는 setInvincible임 디컴파일해서 확인함
 		protected set;
-	/**
-	 * 개체가 속한 그룹 또는 팀 (null: 중립)
-	 *
-	 * 자바에서는 getTeam, setTeam 사용
-	 */
-	var team: String? = null;
-	/**
-	 * 관통할 때 관통자에게 주는 대미지
-	 */
-	open val penetrationDamage = 0;
 	/**
 	 * 기본 이동 속도
 	 */
@@ -106,6 +96,10 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 */
 	private val isInvincibilityTimerActive: Boolean
 		inline get() = (invincibilityTimer > 0f);
+	/**
+	 * 모든 살아있는 개체는 기본적으로 팀이 있으며 기본적으로 중립
+	 */
+	final override var team: String? = null;
 
 	init {
 		if(health <= 0) throw IllegalArgumentException("invalid health");
@@ -121,7 +115,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 */
 	@JvmOverloads fun takeDamage(damage: Int, attacker: Entity? = null): Boolean {
 		if(damage < 0) throw IllegalArgumentException("damage must not be negative");
-		if(attacker is LivingEntity && isSameTeamWith(attacker)) return false;
+		if(attacker != null && isSameTeamWith(attacker)) return false;
 		if(isInvincible) return false;
 		if(!isAlive) return false;
 
@@ -188,14 +182,6 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 		return result;
 	}
 
-	/**
-	 * 지정한 대상과 같은 팀인지 확인한다.
-	 *
-	 * @param entity 비교 대상
-	 * @return       같은 팀 여부
-	 */
-	inline fun isSameTeamWith(entity: LivingEntity): Boolean = (team == entity.team && team != null && entity.team != null);
-
 	override fun update(delta: Float) {
 		super.update(delta);
 
@@ -213,7 +199,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 
 		// 몸 대미지 처리
 		world.entities.forEachNearby(this) { entity ->
-			if(entity is BodyDamagable && entity !== this && (entity !is LivingEntity || !isSameTeamWith(entity)) && collidesWith(entity)) {
+			if(entity is BodyDamagable && entity !== this && !isSameTeamWith(entity) && collidesWith(entity)) {
 				val attacker = if(entity is Bullet) entity.shooter else entity;  // 일단 총알은 Bullet 클래스에서 자체적으로 처리하고 bodyDamage는 0이기 때문에 의미는 없지만...
 				takeDamage(entity.bodyDamage, attacker=attacker);
 			}
