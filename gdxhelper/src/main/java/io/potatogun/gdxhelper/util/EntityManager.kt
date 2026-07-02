@@ -168,17 +168,12 @@ interface EntityManager {
 		 */
 		fun clone(output: GdxArray<Entity>);
 
-		/**
-		 * 모든 개체를 순회한다 (자바에서 사용).
-		 *
-		 * @param callback 이번 개체에 대해 실행할 서브루틴
-		 * @return         항상 null (Unit으로 하면 Accidental override: The following declarations have the same JVM signature 오류 때문에)
-		 *                 컴파일 시 자바에서는 java.lang.Void형으로 바뀜... 디컴파일해서 확인함
-		 */
-		fun forEach(callback: Consumer<Entity>): Nothing? {
-			forEach(callback::accept);
-			return null;
-		}
+		// Consumer를 사용하는 자바판 forEach는 코틀린이 자동으로 생성하기 때문에
+		//   직접 다시 구현하지 안하도 된다.
+		//
+		// fun forEach(callback: Consumer<Entity>) {
+		//     forEach(callback::accept);
+		// }
 
 		/**
 		 * 모든 개체를 순회한다.
