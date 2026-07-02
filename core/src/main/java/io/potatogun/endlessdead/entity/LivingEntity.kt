@@ -129,7 +129,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 			if(attacker is AttackListener) attacker.onKill(this);
 			remove();
 		} else {
-			invincibilityTimer = damageInvincibilityDuration;  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
+			invincibilityTimer = damageInvincibilityDuration;
 			if(this is DamageListener) onDamage(damage, attacker);
 			// 타격 시 붉게 표시 타이머
 			if(showDamageIndicator)
