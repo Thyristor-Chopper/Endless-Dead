@@ -120,12 +120,12 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		fireCooldown = fireInterval;
 
 		// 남은 쿨타임을 갱신한다. update, delta를 쓰지 않은 이유는 이건 게임 프레임과는 독립적이라고 보기 때문.
-		cooldownTimer?.let { Utils.clearInterval(it) };
+		cooldownTimer?.cancel();
 		cooldownTimer = Utils.setInterval(0.01f, { GameManager.isPlaying }) {
 			fireCooldown -= 0.01f;
 			if(fireCooldown == 0f) {
 				cooldownTimer?.let {
-					Utils.clearInterval(it);
+					it.cancel();
 					cooldownTimer = null;
 				};
 			}

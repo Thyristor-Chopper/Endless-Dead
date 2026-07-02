@@ -160,10 +160,11 @@ abstract class Screen(font: BitmapFont = BitmapFont(), _dummy: Nothing? = null) 
 
 	/**
 	 * 스크린에 등록된 위젯(컨트롤)들을 그린다.
+	 *   render에서만 한 번 쓰이므로 인라인이다.
 	 *
 	 * @return 보이는(실제로 그린) 위젯 수
 	 */
-	private fun drawWidgets(): Int {
+	private inline fun drawWidgets(): Int {
 		var count = 0;
 		val iterator = widgets.values().iterator();
 		while(iterator.hasNext()) {

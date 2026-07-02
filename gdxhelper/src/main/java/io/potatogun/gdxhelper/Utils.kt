@@ -102,13 +102,7 @@ object Utils {
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	@JvmStatic fun setTimeout(delay: Float, operation: Runnable): Task {
-		return object : Task() {
-			override fun run() {
-				operation.run();
-			}
-		}.also { Timer.schedule(it, delay) };
-	}
+	@JvmStatic fun setTimeout(delay: Float, operation: Runnable): Task = setTimeout(delay, operation::run);
 
 	/**
 	 * 지정한 시간 후 지정한 조건을 만족하면 특정 서브루틴을 한 번만 실행한다 (자바에서 사용).
@@ -118,23 +112,7 @@ object Utils {
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	@JvmStatic fun setTimeout(delay: Float, condition: BooleanSupplier, operation: Runnable): Task {
-		return object : Task() {
-			override fun run() {
-				if(condition.getAsBoolean())
-					operation.run();
-			}
-		}.also { Timer.schedule(it, delay) };
-	}
-
-	/**
-	 * setTimeout으로 생성한 일회용 타이머를 취소한다.
-	 *
-	 * @param timeout 취소할 작업 객체
-	 */
-	@JvmStatic inline fun clearTimeout(timeout: Task) {
-		timeout.cancel();
-	}
+	@JvmStatic fun setTimeout(delay: Float, condition: BooleanSupplier, operation: Runnable): Task = setTimeout(delay, condition::getAsBoolean, operation::run);
 
 	/**
 	 * 지정한 시간마다 특정 서브루틴을 실행한다.
@@ -177,13 +155,7 @@ object Utils {
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	@JvmStatic fun setInterval(interval: Float, operation: Runnable): Task {
-		return object : Task() {
-			override fun run() {
-				operation.run();
-			}
-		}.also { Timer.schedule(it, interval, interval) };
-	}
+	@JvmStatic fun setInterval(interval: Float, operation: Runnable): Task = setInterval(interval, operation::run);
 
 	/**
 	 * 지정한 시간마다 특정 서브루틴을 지정한 조건을 만족하면 실행한다 (자바에서 사용).
@@ -193,23 +165,7 @@ object Utils {
 	 * @param operation 실행할 서브루틴
 	 * @return          실행 작업 객체
 	 */
-	@JvmStatic fun setInterval(interval: Float, condition: BooleanSupplier, operation: Runnable): Task {
-		return object : Task() {
-			override fun run() {
-				if(condition.getAsBoolean())
-					operation.run();
-			}
-		}.also { Timer.schedule(it, interval, interval) };
-	}
-
-	/**
-	 * setInterval으로 생성한 타이머를 취소한다.
-	 *
-	 * @param timeout 취소할 작업 객체
-	 */
-	@JvmStatic inline fun clearInterval(interval: Task) {
-		interval.cancel();
-	}
+	@JvmStatic fun setInterval(interval: Float, condition: BooleanSupplier, operation: Runnable): Task = setInterval(interval, condition::getAsBoolean, operation::run);
 
 	/**
 	 * 텍스트 그리기
