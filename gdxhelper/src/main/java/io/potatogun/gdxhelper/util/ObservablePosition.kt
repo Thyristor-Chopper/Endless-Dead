@@ -3,9 +3,9 @@ package io.potatogun.gdxhelper.util;
 import com.badlogic.gdx.utils.Array as GdxArray;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import kotlin.properties.Delegates;
-
 import java.util.function.BiConsumer;
+
+import kotlin.properties.Delegates;
 
 /**
  * 위치(평면좌표)를 저장하는 좌표변경을 감지할 수 있는 레코드이다.

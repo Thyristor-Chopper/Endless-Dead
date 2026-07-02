@@ -79,21 +79,29 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 
 	/**
 	 * 자바 개발자용 - X 좌표 계산 함수를 받는다. 코틀린에서는 그냥 .calculateX 하면 된다.
+	 *
+	 * @return 계산 함수
 	 */
 	protected fun getXSupplier(): Supplier<Float> = Supplier(calculateX::invoke);
 
 	/**
 	 * 자바 개발자용 - Y 좌표 계산 함수를 받는다. 코틀린에서는 그냥 .calculateY 하면 된다.
+	 *
+	 * @return 계산 함수
 	 */
 	protected fun getYSupplier(): Supplier<Float> = Supplier(calculateY::invoke);
 
 	/**
 	 * 자바 개발자용 - 너비 계산 함수를 받는다. 코틀린에서는 그냥 .calculateWidth 하면 된다.
+	 *
+	 * @return 계산 함수
 	 */
 	protected fun getWidthSupplier(): Supplier<Float> = Supplier(calculateWidth::invoke);
 
 	/**
 	 * 자바 개발자용 - 높이 계산 함수를 받는다. 코틀린에서는 그냥 .calculateHeight 하면 된다.
+	 *
+	 * @return 계산 함수
 	 */
 	protected fun getHeightSupplier(): Supplier<Float> = Supplier(calculateHeight::invoke);
 
