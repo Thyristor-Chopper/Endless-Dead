@@ -94,9 +94,9 @@ fun EntityManager.getClosest(entity: Entity): Entity? {
  * @param entity 기준 개체
  * @return       개체 (없으면 null)
  */
-inline fun <reified T : Entity> EntityManager.getClosestOf(entity: Entity): T? = getClosestOf(entity, T::class.java);
+inline fun <reified T : Entity> EntityManager.getClosestOf(entity: Entity): T? = getClosestOf(T::class.java, entity);
 
-fun <T : Entity> EntityManager.getClosestOf(entity: Entity, type: Class<T>): T? {
+fun <T : Entity> EntityManager.getClosestOf(type: Class<T>, entity: Entity): T? {
 	if(view.isEmpty) return null;
 	var ret: T? = null;
 	var min = Utils.max2(world.width, world.height);
