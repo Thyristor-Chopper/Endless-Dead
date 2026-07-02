@@ -86,7 +86,7 @@ interface EntityManager {
 	/**
 	 * 개체 목록을 읽기 전용으로 상호작용할 수 있는 뷰이다.
 	 */
-	interface View {
+	interface View : Iterable<Entity> {
 		/**
 		 * 개체 목록 크기
 		 */
@@ -172,9 +172,12 @@ interface EntityManager {
 		 * 모든 개체를 순회한다 (자바에서 사용).
 		 *
 		 * @param callback 이번 개체에 대해 실행할 서브루틴
+		 * @return         항상 null (Unit으로 하면 Accidental override: The following declarations have the same JVM signature 오류 때문에)
+		 *                 컴파일 시 자바에서는 java.lang.Void형으로 바뀜... 디컴파일해서 확인함
 		 */
-		fun forEach(callback: Consumer<Entity>) {
+		fun forEach(callback: Consumer<Entity>): Nothing? {
 			forEach(callback::accept);
+			return null;
 		}
 
 		/**
@@ -183,5 +186,12 @@ interface EntityManager {
 		 * @param callback 이번 개체에 대해 실행할 서브루틴
 		 */
 		@JvmSynthetic fun forEach(callback: (Entity) -> Unit);
+
+		/**
+		 * 순회기를 반환한다.
+		 *
+		 * @return 순회기
+		 */
+		override fun iterator(): Iterator<Entity>;
 	}
 }

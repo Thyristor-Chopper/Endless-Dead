@@ -30,62 +30,7 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 	private val hashSetPool = LongSetPool();
 	private val entityArrayPool = EntityArrayPool();
 	private val entitySetPool = EntitySetPool();
-	override val view = object : EntityManager.View {
-		override val size: Int
-			get() = allEntities.size;
-		override val isEmpty: Boolean
-			get() = allEntities.isEmpty();
-
-		override operator fun get(index: Int): Entity = allEntities[index];
-
-		override fun sortedWith(comparator: Comparator<Entity>): GdxArray<Entity> {
-			val output = clone();
-			Utils.sortWith<Entity>(output, comparator);
-			return output;
-		}
-
-		override fun sortedWith(comparator: Comparator<Entity>, output: GdxArray<Entity>) {
-			clone(output);
-			Utils.sortWith<Entity>(output, comparator);
-		}
-
-		override fun filter(condition: (Entity) -> Boolean): GdxArray<Entity> {
-			val output = GdxArray<Entity>(allEntities.size);
-			for(i in 0 until allEntities.size) {
-				val entity = allEntities[i];
-				if(condition(entity))
-					output.add(entity);
-			}
-			return output;
-		}
-
-		override fun filter(condition: (Entity) -> Boolean, output: GdxArray<Entity>) {
-			output.clear();
-			for(i in 0 until allEntities.size) {
-				val entity = allEntities[i];
-				if(condition(entity))
-					output.add(entity);
-			}
-		}
-
-		override fun clone(): GdxArray<Entity> {
-			val output = GdxArray<Entity>(allEntities.size);
-			for(i in 0 until allEntities.size)
-				output.add(allEntities[i]);
-			return output;
-		}
-
-		override fun clone(output: GdxArray<Entity>) {
-			output.clear();
-			for(i in 0 until allEntities.size)
-				output.add(allEntities[i]);
-		}
-
-		override fun forEach(callback: (Entity) -> Unit) {
-			for(i in 0 until allEntities.size)
-				callback(allEntities[i]);
-		}
-	};
+	override val view: EntityManager.View = EntityView();
 
 	override fun add(entity: Entity): Boolean {
 		if(entity.world !== world)
@@ -264,5 +209,76 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 		override fun reset(obj: ObjectSet<Entity>) {
 			obj.clear();
 		}
+	}
+
+	private inner class EntityIterator : Iterator<Entity> {
+		private var index = -1;
+
+		override fun hasNext(): Boolean = index < allEntities.size - 1;
+
+		override fun next(): Entity {
+			if(index == allEntities.size - 1)
+				throw NoSuchElementException("no more entities to iterate");
+			return allEntities[++index];
+		}
+	}
+
+	private inner class EntityView : EntityManager.View {
+		override val size: Int
+			get() = allEntities.size;
+		override val isEmpty: Boolean
+			get() = allEntities.isEmpty();
+
+		override operator fun get(index: Int): Entity = allEntities[index];
+
+		override fun sortedWith(comparator: Comparator<Entity>): GdxArray<Entity> {
+			val output = clone();
+			Utils.sortWith<Entity>(output, comparator);
+			return output;
+		}
+
+		override fun sortedWith(comparator: Comparator<Entity>, output: GdxArray<Entity>) {
+			clone(output);
+			Utils.sortWith<Entity>(output, comparator);
+		}
+
+		override fun filter(condition: (Entity) -> Boolean): GdxArray<Entity> {
+			val output = GdxArray<Entity>(allEntities.size);
+			for(i in 0 until allEntities.size) {
+				val entity = allEntities[i];
+				if(condition(entity))
+					output.add(entity);
+			}
+			return output;
+		}
+
+		override fun filter(condition: (Entity) -> Boolean, output: GdxArray<Entity>) {
+			output.clear();
+			for(i in 0 until allEntities.size) {
+				val entity = allEntities[i];
+				if(condition(entity))
+					output.add(entity);
+			}
+		}
+
+		override fun clone(): GdxArray<Entity> {
+			val output = GdxArray<Entity>(allEntities.size);
+			for(i in 0 until allEntities.size)
+				output.add(allEntities[i]);
+			return output;
+		}
+
+		override fun clone(output: GdxArray<Entity>) {
+			output.clear();
+			for(i in 0 until allEntities.size)
+				output.add(allEntities[i]);
+		}
+
+		override fun forEach(callback: (Entity) -> Unit) {
+			for(i in 0 until allEntities.size)
+				callback(allEntities[i]);
+		}
+
+		override fun iterator(): Iterator<Entity> = EntityIterator();
 	}
 }
