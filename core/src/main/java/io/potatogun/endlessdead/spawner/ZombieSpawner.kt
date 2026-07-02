@@ -47,7 +47,7 @@ class ZombieSpawner(world: World) : Spawner(world) {
 		}.also { timerManager.register(it) };
 	}
 
-	// RepeatingTimer 실행기 내부에서 직접 호출하면 변수 초기화 안 됐다고 컴파일러가 귀찮게 함
+	// RepeatingTimer 실행기 내부에서 직접 호출하면 변수 초기화 안 됐다고 컴파일러가 귀찮게 함 자바는 내가 알아서 관리하게 냅두는데 코틀린은 '안전'같은 명목 내세우면서 다 막고 진짜 ㅡㅡ;;
 	private inline fun stopSpawnIncreaser() {
 		timerManager.unregister(spawnIncreaseTimer);
 	}

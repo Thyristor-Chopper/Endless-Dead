@@ -10,6 +10,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.widget.Widget;
 
 /**
@@ -94,18 +95,9 @@ abstract class Screen(font: BitmapFont = BitmapFont(), _dummy: Nothing? = null) 
 	//  콜백 함수
 	// ────────────────────────────────────────────────────────
 
-	final override fun resize(width: Int, height: Int) {
-		batch.projectionMatrix.setToOrtho2D(0f, 0f, width.toFloat(), height.toFloat());
-		onResize(width, height);
+	internal fun updateProjectionMatrix() {
+		batch.projectionMatrix.setToOrtho2D(0f, 0f, Window.width, Window.height);
 	}
-
-	/**
-	 * 크기 조절 시 호출된다.
-	 *
-	 * @param width  새 창 너비
-	 * @param height 새 창 높이
-	 */
-	open fun onResize(width: Int, height: Int) {}
 
 	// ────────────────────────────────────────────────────────
 	//  매 프레임 로직

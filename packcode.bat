@@ -3,7 +3,7 @@
 del /q src_packed.txt >nul 2>&1
 
 for /r %%i in (*.kt *.java *.gradle *.gradle.kts) do (
-	echo Packing: %%i
+    echo Packing: %%i
     echo ---- file: %%i ---->>src_packed.txt
     echo(>>src_packed.txt
     type "%%i">>src_packed.txt

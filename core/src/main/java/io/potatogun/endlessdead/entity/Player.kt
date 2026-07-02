@@ -109,7 +109,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 
 		// 이동
 		val moved = updatePosition(delta);
-		if(moved) world.updateCameraOffset();
+		if(moved) world.updateOffset();
 	}
 
 	/**

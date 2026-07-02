@@ -58,7 +58,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 		get() = camera.position.x
 		protected set(value) {
 			camera.position.x = value;
-			updateCamera();
+			updateProjectionMatrix();
 		};
 	/**
 	 * 카메라의 Y 오프셋
@@ -67,7 +67,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 		get() = camera.position.y
 		protected set(value) {
 			camera.position.y = value;
-			updateCamera();
+			updateProjectionMatrix();
 		};
 	/**
 	 * 등록된 개체 목록
@@ -88,7 +88,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 	@JvmOverloads constructor(width: Float, height: Float, settings: Properties = Properties()) : this(width, height, settings.camera!!, settings.font!!, settings.tileSize);
 
 	init {
-		updateCameraViewport();
+		updateViewport();
 		if(camera is OrthographicCamera)
 			camera.setToOrtho(false);  // false 인자는 y 축을 위로(수학 좌표계처럼) 둔다는 뜻.
 
@@ -99,20 +99,11 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 	//  콜백 함수
 	// ────────────────────────────────────────────────────────
 
-	internal fun resize(width: Int, height: Int) {
-		updateCameraViewport();
-		updateCameraOffset();
-		updateCamera();
-		onResize(width, height);
+	internal fun updateCamera() {
+		updateViewport();
+		updateOffset();
+		updateProjectionMatrix();
 	}
-
-	/**
-	 * 창 크기 조절 시 호출된다.
-	 *
-	 * @param width  새 창 너비
-	 * @param height 새 창 높이
-	 */
-	open fun onResize(width: Int, height: Int) {}
 
 	// ────────────────────────────────────────────────────────
 	//  매 프레임 로직
@@ -164,9 +155,9 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 	}
 
 	/**
-	 * 카메라를 갱신한다.
+	 * 카메라를 갱신한다. 여러 번 쓰이지만 두 줄뿐이라 인라인... 나중에 함수가 더 커지면 인라인 해제
 	 */
-	internal fun updateCamera() {
+	private inline fun updateProjectionMatrix() {
 		camera.update();
 		batch.projectionMatrix = camera.combined;
 	}
@@ -174,9 +165,12 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 	/**
 	 * 월드에 따라 override하여 투영 좌표를 의도에 맞는 위치로 이동한다.
 	 */
-	open fun updateCameraOffset() {}
+	open fun updateOffset() {}
 
-	private inline fun updateCameraViewport() {
+	/**
+	 * 화면 크기에 맞게 카메라를 갱신한다.
+	 */
+	private inline fun updateViewport() {
 		camera.viewportWidth = Window.width;
 		camera.viewportHeight = Window.height;
 	}
