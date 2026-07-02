@@ -4,7 +4,7 @@ import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
-import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
+import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.TimerManager;
@@ -40,7 +40,7 @@ class ZombieSpawner(world: World) : Spawner(world) {
 		spawnIncreaseTimer = RepeatingTimer(spawnIncreaseInterval) {
 			if(zombiesPerSpawn < maxZombiesPerSpawn) {
 				zombiesPerSpawn++;
-				(world.projector as? SubtitlesDrawable)?.drawSubtitles("More zombies coming...");
+				world.projector?.drawSubtitles("More zombies coming...");
 			} else {
 				stopSpawnIncreaser();
 			}

@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
+import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.util.Position;
 
 import kotlin.math.atan2;
@@ -21,6 +21,8 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 	override fun shoot(target: Position, shooter: Entity): Int {
 		if(!canFire) return 0;
 
+		val world = shooter.world;
+
 		val centerX = shooter.x;  // shooter, 즉 발사를 하는 주체인 플레이어의 위치를 중심으로 두는 객체
 		val centerY = shooter.y;
 
@@ -32,7 +34,7 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 				centerX + cos(finalAngle) * 100f,
 				centerY + sin(finalAngle) * 100f  // angle 객체로 각도(방향)을 지정했으니, 그곳의 cos,sin을 이용한 위치 좌표를 구하는 식
 			);
-			shooter.world.entities.add(Bullet(shooter.world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration));
+			world.entities.add(Bullet(world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration));
 		}
 
 		startFireCooldown();  // 발사간격 함수
@@ -42,9 +44,8 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 
 			// 남은 탄약이 0이 됐을 떄, 무기가 파괴(destroy())되는 효과
 			if(remainingBullets == 0) {
-				val projector = shooter.world.projector;
-				if(shooter is Player && projector is SubtitlesDrawable)
-					projector.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON);
+				if(shooter is Player)
+					world.projector?.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON);
 				destroy();
 			}
 		}

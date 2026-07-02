@@ -6,7 +6,7 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.turret.FriendlyTurret;
 import io.potatogun.endlessdead.entity.turret.HostileTurret;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
+import io.potatogun.gdxhelper.screen.drawSubtitles;
 
 /**
  * 좀비 공격 포탑 설치기
@@ -17,13 +17,13 @@ class TurretInstaller : Item("turret_installer", "Turret Installer", Item.Proper
 	override fun use(user: InventoryHolder): Boolean {
 		if(!user.inventory.hasItem(this)) return false;
 		if(user !is Entity) return false;
-		user.world.entities.add(
-			if(user is LivingEntity && user.team == "friends") FriendlyTurret(user.world, user.x, user.y)  // 플레이어도 포함
-			else HostileTurret(user.world, user.x, user.y)
+		val world = user.world;
+		world.entities.add(
+			if(user is LivingEntity && user.team == "friends") FriendlyTurret(world, user.x, user.y)  // 플레이어도 포함
+			else HostileTurret(world, user.x, user.y)
 		);
-		val projector = user.world.projector;
-		if(user is Player && projector is SubtitlesDrawable)
-			projector.drawSubtitles("Installed the turret");
+		if(user is Player)
+			world.projector?.drawSubtitles("Installed the turret");
 		destroy();
 		return true;
 	}

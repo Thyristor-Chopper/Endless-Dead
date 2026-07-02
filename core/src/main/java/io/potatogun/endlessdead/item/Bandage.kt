@@ -3,7 +3,7 @@ package io.potatogun.endlessdead.item;
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
+import io.potatogun.gdxhelper.screen.drawSubtitles;
 
 /**
  * 붕대 - 회복 아이템
@@ -16,9 +16,8 @@ class Bandage : Item("bandage", "Bandage"), Usable {
 		if(!user.inventory.hasItem(this)) return false;
 		if(user !is LivingEntity) return false;
 		user.heal(10);
-		val projector = user.world.projector;
-		if(user is Player && projector is SubtitlesDrawable)
-			projector.drawSubtitles("Healed 10 HP");
+		if(user is Player)
+			user.world.projector?.drawSubtitles("Healed 10 HP");
 		destroy();
 		return true;
 	}

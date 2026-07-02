@@ -2,7 +2,7 @@ package io.potatogun.endlessdead.item
 
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
+import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.world.Freezable;
 
 /**
@@ -16,11 +16,11 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 		if(!user.inventory.hasItem(this)) return false;
 		if(user !is Player) return false;
 		val world = user.world;
-		val projector = world.projector as? SubtitlesDrawable;
 		if(world !is Freezable) {
-			projector?.drawSubtitles("Can't use this item here");
+			world.projector?.drawSubtitles("Can't use this item here");
 			return false;
 		}
+		world.projector?.drawSubtitles("Time stop!");
 		world.freeze(3f);
 		destroy();
 		return true;

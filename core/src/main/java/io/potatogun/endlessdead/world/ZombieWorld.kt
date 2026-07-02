@@ -25,7 +25,7 @@ import io.potatogun.endlessdead.spawner.TriggermanSpawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
-import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
+import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
@@ -144,16 +144,12 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		isFrozen = true;
 		cancelUnfreezer();  // 기존 타이머 해제
 		if(duration > 0f)
-			unfreezer = Timer(duration) {
-				unfreeze();
-			}.also { timerManager.register(it) };
-		(projector as? SubtitlesDrawable)?.drawSubtitles("Time stop!");
+			unfreezer = Timer(duration) { unfreeze() }.also { timerManager.register(it) };
 	}
 
 	override fun unfreeze() {
 		isFrozen = false;
 		cancelUnfreezer();
-		(projector as? SubtitlesDrawable)?.drawSubtitles("Time moves again");
 	}
 
 	private inline fun cancelUnfreezer() {

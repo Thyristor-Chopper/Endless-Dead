@@ -18,7 +18,7 @@ import io.potatogun.endlessdead.item.Usable;
 import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
+import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.util.Position;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
@@ -98,7 +98,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		if(Input.isKeyJustPressed(Input.DELETE))
 			selectedItem?.let {
 				if(it.destroy())
-					(world.projector as? SubtitlesDrawable)?.drawSubtitles("${it.name} destroyed");
+					world.projector?.drawSubtitles("${it.name} destroyed");
 			};
 
 		// 휠로 아이템 선택
@@ -146,7 +146,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	 * update()에서만 한 번 쓰이기 때문에 inline이다.
 	 */
 	private inline fun interactContainer() {
-		val projector = world.projector as? SubtitlesDrawable;
+		val projector = world.projector;
 		world.entities.forEachNearby(this) { entity ->
 			if(entity !is Container || !collidesWith(entity)) return@forEachNearby;
 			if(entity.inventory.isEmpty) {

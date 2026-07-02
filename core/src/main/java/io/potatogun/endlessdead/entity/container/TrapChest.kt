@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 
 import io.potatogun.endlessdead.entity.turret.HostileTurret;
 import io.potatogun.endlessdead.item.Item;
-import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
+import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -19,8 +19,7 @@ class TrapChest(world: World, x: Float, y: Float, initialItem: Item? = null): Ch
 	init {
 		inventory.addItemRemoveObserver {
 			Gdx.app.postRunnable {
-				val projector = world.projector as? SubtitlesDrawable;
-				projector?.drawSubtitles("Turret trap activated!");
+				world.projector?.drawSubtitles("Turret trap activated!");
 			};
 			world.entities.add(HostileTurret(world, x, y));
 			remove();

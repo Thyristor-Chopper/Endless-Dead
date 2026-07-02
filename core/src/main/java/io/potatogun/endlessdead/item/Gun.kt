@@ -12,7 +12,7 @@ import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
+import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.util.Position;
 
 import java.lang.Math.toRadians;
@@ -142,8 +142,9 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	override fun shoot(target: Position, shooter: Entity): Int {
 		if(!canFire) return 0;
 
-		val bullet = Bullet(shooter.world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture).apply { if(shooter is LivingEntity) team = shooter.team };
-		shooter.world.entities.add(bullet);
+		val world = shooter.world;
+		val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture).apply { if(shooter is LivingEntity) team = shooter.team };
+		world.entities.add(bullet);
 		startFireCooldown();
 
 		if(!infiniteBullets) {
@@ -151,9 +152,8 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 
 			// ammo가 다 떨어진 총은 파괴
 			if(remainingBullets == 0) {
-				val projector = shooter.world.projector;
-				if(shooter is Player && projector is SubtitlesDrawable)
-					projector.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
+				if(shooter is Player)
+					world.projector?.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
 				destroy();
 			}
 		}

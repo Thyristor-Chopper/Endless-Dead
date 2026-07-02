@@ -2,7 +2,7 @@ package io.potatogun.endlessdead.item;
 
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
+import io.potatogun.gdxhelper.screen.drawSubtitles;
 
 /**
  * 속도 포션 - 속도 증가 아이템
@@ -15,7 +15,7 @@ class SpeedPotion : Item("speed_potion", "Speed Potion", Item.Properties().rarit
 		if(!user.inventory.hasItem(this)) return false;
 		if(user !is Player) return false;
 		user.speedUp(20f, 30f);
-		(user.world.projector as? SubtitlesDrawable)?.drawSubtitles("SPEED UP");
+		user.world.projector?.drawSubtitles("SPEED UP");
 		destroy();
 		return true;
 	}
