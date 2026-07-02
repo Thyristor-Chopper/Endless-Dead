@@ -169,7 +169,7 @@ interface EntityManager {
 		fun clone(output: GdxArray<Entity>);
 
 		// Consumer를 사용하는 자바판 forEach는 코틀린이 자동으로 생성하기 때문에
-		//   직접 다시 구현하지 안하도 된다.
+		//   직접 다시 구현하지 않아도 된다.
 		//
 		// fun forEach(callback: Consumer<Entity>) {
 		//     forEach(callback::accept);
