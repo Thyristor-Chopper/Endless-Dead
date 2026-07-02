@@ -147,13 +147,13 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 			unfreezer = Timer(duration) {
 				unfreeze();
 			}.also { timerManager.register(it) };
-		(viewer as? SubtitlesDrawable)?.drawSubtitles("Time stop!");
+		(projector as? SubtitlesDrawable)?.drawSubtitles("Time stop!");
 	}
 
 	override fun unfreeze() {
 		isFrozen = false;
 		cancelUnfreezer();
-		(viewer as? SubtitlesDrawable)?.drawSubtitles("Time moves again");
+		(projector as? SubtitlesDrawable)?.drawSubtitles("Time moves again");
 	}
 
 	private inline fun cancelUnfreezer() {

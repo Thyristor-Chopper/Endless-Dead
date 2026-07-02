@@ -19,8 +19,8 @@ class TrapChest(world: World, x: Float, y: Float, initialItem: Item? = null): Ch
 	init {
 		inventory.addItemRemoveObserver {
 			Gdx.app.postRunnable {
-				val viewer = world.viewer as? SubtitlesDrawable;
-				viewer?.drawSubtitles("Turret trap activated!");
+				val projector = world.projector as? SubtitlesDrawable;
+				projector?.drawSubtitles("Turret trap activated!");
 			};
 			world.entities.add(HostileTurret(world, x, y));
 			remove();

@@ -16,9 +16,9 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 		if(!user.inventory.hasItem(this)) return false;
 		if(user !is Player) return false;
 		val world = user.world;
-		val viewer = world.viewer as? SubtitlesDrawable;
+		val projector = world.projector as? SubtitlesDrawable;
 		if(world !is Freezable) {
-			viewer?.drawSubtitles("Can't use this item here");
+			projector?.drawSubtitles("Can't use this item here");
 			return false;
 		}
 		world.freeze(3f);

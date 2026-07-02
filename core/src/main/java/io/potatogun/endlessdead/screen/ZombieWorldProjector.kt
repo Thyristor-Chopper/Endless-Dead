@@ -25,7 +25,7 @@ import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
-import io.potatogun.gdxhelper.screen.WorldViewer;
+import io.potatogun.gdxhelper.screen.WorldProjector;
 import io.potatogun.gdxhelper.util.RepeatingTimer;
 import io.potatogun.gdxhelper.util.Timer;
 import io.potatogun.gdxhelper.util.TimerManager;
@@ -38,13 +38,13 @@ import io.potatogun.gdxhelper.world.World;
 import java.lang.ref.WeakReference;
 
 /**
- * WorldViewer 자체는 정말 월드 자체만을 보여주는 기본적인 뷰어이다.
+ * WorldProjector 자체는 정말 월드 자체만을 보여주는 기본적인 뷰어이다.
  *   이를 확장하여 HUD나 다채로운 화면을 구현해보자.
  *   이쪽에는 우리 게임의 목적에 맞게 HP 미터기, 일시 정지 처리, 게임 오버 화면 등이 모두 구현되어 있다.
  *
  * @property game 게임 인스턴스
  */
-class ZombieWorldViewer(private val game: EndlessDead) : WorldViewer(), SubtitlesDrawable {
+class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), SubtitlesDrawable {
 	private val noWorldOverlay = Utils.rgb(255, 255, 255, 0.5f);
 	private val frozenOverlay = Utils.rgb(0, 0, 0, 0.5f);
 	private val solidColor: Texture;

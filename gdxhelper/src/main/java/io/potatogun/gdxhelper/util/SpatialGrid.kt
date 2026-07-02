@@ -103,6 +103,7 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 
 	override fun draw(batch: SpriteBatch) {
 		if(allEntities.isEmpty()) return;
+
 		val halfScreenWidth = Window.width * 0.5f;
 		val halfScreenHeight = Window.height * 0.5f;
 		val offsetX = world.offsetX;

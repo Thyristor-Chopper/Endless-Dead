@@ -14,7 +14,7 @@ import io.potatogun.gdxhelper.world.World;
  *
  * @param settings 스크린 옵션
  */
-open class WorldViewer(settings: Screen.Properties = Screen.Properties()) : Screen(settings) {
+open class WorldProjector(settings: Screen.Properties = Screen.Properties()) : Screen(settings) {
 	/**
 	 * 현재 보여주고 있는 월드를 반환한다.
 	 */
@@ -35,7 +35,7 @@ open class WorldViewer(settings: Screen.Properties = Screen.Properties()) : Scre
 	@JvmOverloads fun loadWorld(world: World, disposePreviousWorld: Boolean = false) {
 		if(projectingWorld === world) return;  // 아무 작업도 할 필요 없음
 		if(instances.any { it.projectingWorld === world })
-			throw IllegalStateException("another viewer is already projecting that world");
+			throw IllegalStateException("another projector is already projecting that world");
 		val previousWorld: World? = projectingWorld;
 		projectingWorld = world;
 		world.updateCamera();
@@ -82,7 +82,7 @@ open class WorldViewer(settings: Screen.Properties = Screen.Properties()) : Scre
 
 	companion object {
 		// 생성된 모든 인스턴스를 관리하는 목록이다. 생성자에서 자동으로 추가한다. 누가 설마 자바 unsafe의 allocateInstance를 쓰진 않겠지
-		private val instances = weakMutableSetOf<WorldViewer>();
+		private val instances = weakMutableSetOf<WorldProjector>();
 
 		/**
 		 * 지정한 월드를 보여주고 있는 뷰어를 찾는다.
@@ -91,6 +91,6 @@ open class WorldViewer(settings: Screen.Properties = Screen.Properties()) : Scre
 		 * @param world 찾을 대상 월드
 		 * @return      찾은 월드 뷰어 (없으면 null)
 		 */
-		@JvmStatic fun getViewerByWorld(world: World): WorldViewer? = instances.firstOrNull { it.projectingWorld === world };
+		@JvmStatic fun getProjectorByWorld(world: World): WorldProjector? = instances.firstOrNull { it.projectingWorld === world };
 	}
 }

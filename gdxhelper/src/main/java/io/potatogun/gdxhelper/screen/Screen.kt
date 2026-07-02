@@ -136,12 +136,7 @@ abstract class Screen(font: BitmapFont = BitmapFont(), _dummy: Nothing? = null) 
 	}
 
 	/**
-	 * 배경을 그리는 자리 — 모든 서브클래스가 반드시 구현해야 한다.
-	 *
-	 * 'abstract'인 이유:
-	 *   기본 동작('아무것도 안 함')이 의미 있지 않다. 게임마다 배경은 다르고,
-	 *   '배경이 없다'는 결정도 명시적으로 내려야 한다고 본다. 그래서 강제 구현.
-	 *   (검은 배경을 원하면 그냥 비어있는 함수로 override하면 됨)
+	 * 배경을 그리는 자리 — 모든 서브클래스가 반드시 구현해야 한다. (검은 배경을 원하면 그냥 비어있는 함수로 override하면 됨)
 	 */
 	protected abstract fun drawBackground();
 

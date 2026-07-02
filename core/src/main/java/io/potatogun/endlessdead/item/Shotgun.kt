@@ -42,9 +42,9 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 
 			// 남은 탄약이 0이 됐을 떄, 무기가 파괴(destroy())되는 효과
 			if(remainingBullets == 0) {
-				val viewer = shooter.world.viewer;
-				if(shooter is Player && viewer is SubtitlesDrawable)
-					viewer.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON);
+				val projector = shooter.world.projector;
+				if(shooter is Player && projector is SubtitlesDrawable)
+					projector.drawSubtitles("Shotgun destroyed; no more bullets left", color = Color.SALMON);
 				destroy();
 			}
 		}

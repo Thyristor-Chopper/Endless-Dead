@@ -12,7 +12,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.screen.WorldViewer;
+import io.potatogun.gdxhelper.screen.WorldProjector;
 import io.potatogun.gdxhelper.util.EntityManager;
 import io.potatogun.gdxhelper.util.SpatialGrid;
 import io.potatogun.gdxhelper.util.weakMutableSetOf;
@@ -47,8 +47,8 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 	/**
 	 * 월드를 보여주는 스크린. 만약 이 월드를 띄우는 뷰어가 없으면 null일 수도 있음에 주의
 	 */
-	val viewer: WorldViewer?
-		inline get() = WorldViewer.getViewerByWorld(this);
+	val projector: WorldProjector?
+		inline get() = WorldProjector.getProjectorByWorld(this);
 	// 카메라 오프셋 — 월드의 어느 지점이 화면 중앙에 오는지.
 	//   이 두 값만 바꾸면 카메라가 움직이는 효과가 난다.
 	/**
@@ -135,20 +135,13 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 	}
 
 	/**
-	 * 배경을 그리는 자리 — 모든 서브클래스가 반드시 구현해야 한다.
-	 *
-	 * 'abstract'인 이유:
-	 *   기본 동작('아무것도 안 함')이 의미 있지 않다. 게임마다 배경은 다르고,
-	 *   '배경이 없다'는 결정도 명시적으로 내려야 한다고 본다. 그래서 강제 구현.
-	 *   (검은 배경을 원하면 그냥 비어있는 함수로 override하면 됨)
-	 *
-	 *   참고: update()는 abstract가 아닌 open이다 — 거기엔 쓸 만한 default가
-	 *   존재하기 때문. 'default가 의미 있는가?' 가 abstract / open을 가르는 기준.
+	 * 배경을 그리는 자리 — 모든 서브클래스가 반드시 구현해야 한다. (월드 뷰어의 배경을 그대로 쓰려면 그냥 비어있는 함수로 override하면 됨)
 	 */
 	protected abstract fun drawBackground();
 
 	/**
 	 * 월드에서 그려야 할 요소(등록된 개체 등)를 그린다.
+	 *   월드에 벽이나 그런 걸 그릴 때도 여기서 override해서 그리면 된다.
 	 */
 	protected open fun drawElements() {
 		entities.draw(batch);

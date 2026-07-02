@@ -98,7 +98,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		if(Input.isKeyJustPressed(Input.DELETE))
 			selectedItem?.let {
 				if(it.destroy())
-					(world.viewer as? SubtitlesDrawable)?.drawSubtitles("${it.name} destroyed");
+					(world.projector as? SubtitlesDrawable)?.drawSubtitles("${it.name} destroyed");
 			};
 
 		// 휠로 아이템 선택
@@ -146,22 +146,22 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	 * update()에서만 한 번 쓰이기 때문에 inline이다.
 	 */
 	private inline fun interactContainer() {
-		val viewer = world.viewer as? SubtitlesDrawable;
+		val projector = world.projector as? SubtitlesDrawable;
 		world.entities.forEachNearby(this) { entity ->
 			if(entity !is Container || !collidesWith(entity)) return@forEachNearby;
 			if(entity.inventory.isEmpty) {
 				selectedItem?.let {
-					viewer?.drawSubtitles("Put ${it.name} into the container");
+					projector?.drawSubtitles("Put ${it.name} into the container");
 					entity.putItem(it, true);
-				} ?: viewer?.drawSubtitles("Can't take any item; container is empty");
+				} ?: projector?.drawSubtitles("Can't take any item; container is empty");
 			} else {
 				val isPlayerItem = entity.isPlayerItem;
 				val item: Item? = entity.takeItem(this);
 				if(item == null) {
-					viewer?.drawSubtitles("Failed to take the item in the container");
+					projector?.drawSubtitles("Failed to take the item in the container");
 				} else {
 					selectItem(item);
-					viewer?.drawSubtitles("Took ${item.name} from the container");
+					projector?.drawSubtitles("Took ${item.name} from the container");
 					if(!isPlayerItem)
 						Statistics.openedContainerCount++;
 				}

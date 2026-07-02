@@ -21,9 +21,9 @@ class TurretInstaller : Item("turret_installer", "Turret Installer", Item.Proper
 			if(user is LivingEntity && user.team == "friends") FriendlyTurret(user.world, user.x, user.y)  // 플레이어도 포함
 			else HostileTurret(user.world, user.x, user.y)
 		);
-		val viewer = user.world.viewer;
-		if(user is Player && viewer is SubtitlesDrawable)
-			viewer.drawSubtitles("Installed the turret");
+		val projector = user.world.projector;
+		if(user is Player && projector is SubtitlesDrawable)
+			projector.drawSubtitles("Installed the turret");
 		destroy();
 		return true;
 	}

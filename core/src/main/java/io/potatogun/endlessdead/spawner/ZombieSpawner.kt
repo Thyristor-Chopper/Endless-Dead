@@ -40,7 +40,7 @@ class ZombieSpawner(world: World) : Spawner(world) {
 		spawnIncreaseTimer = RepeatingTimer(spawnIncreaseInterval) {
 			if(zombiesPerSpawn < maxZombiesPerSpawn) {
 				zombiesPerSpawn++;
-				(world.viewer as? SubtitlesDrawable)?.drawSubtitles("More zombies coming...");
+				(world.projector as? SubtitlesDrawable)?.drawSubtitles("More zombies coming...");
 			} else {
 				stopSpawnIncreaser();
 			}

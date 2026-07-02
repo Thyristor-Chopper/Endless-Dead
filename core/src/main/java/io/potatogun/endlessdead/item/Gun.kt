@@ -151,9 +151,9 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 
 			// ammo가 다 떨어진 총은 파괴
 			if(remainingBullets == 0) {
-				val viewer = shooter.world.viewer;
-				if(shooter is Player && viewer is SubtitlesDrawable)
-					viewer.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
+				val projector = shooter.world.projector;
+				if(shooter is Player && projector is SubtitlesDrawable)
+					projector.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
 				destroy();
 			}
 		}

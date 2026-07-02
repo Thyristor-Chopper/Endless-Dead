@@ -114,7 +114,6 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 		val texture: Texture? = alternateTexture ?: this.texture;
 		texture?.let {
 			if(batch.color == Color.WHITE) batch.color = overlayColor;  // 대미지 시 붉게가 작동하게 하기 위해.
-
 			val halfWidth = width * 0.5f;
 			val halfHeight = height * 0.5f;
 			batch.draw(it, x - halfWidth, y - halfHeight, halfWidth, halfHeight, width, height, 1.0f, 1.0f, rotation, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
