@@ -13,15 +13,3 @@ import java.util.WeakHashMap;
 class WeakMutableSet<T> : MapKeyMutableSet<T>() {
 	override val map = WeakHashMap<T, Unit>();
 }
-
-/**
- * 지정한 요소들을 담아서 약참조 집합을 만든다.
- *
- * @param items 담을 요소들
- * @return      만들어진 집합
- */
-fun <T> weakMutableSetOf(vararg items: T): WeakMutableSet<T> {
-	val mutableSet = WeakMutableSet<T>();
-	mutableSet.addAll(items);
-	return mutableSet;
-}
