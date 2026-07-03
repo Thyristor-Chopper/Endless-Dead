@@ -6,16 +6,16 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
- * 순회 가능한 목록/배열/컬렉션 등을 읽기 전용으로 상호작용할 수 있는 뷰이다.
+ * 리스트, 배열, 컬렉션 등을 '읽기 전용'으로 상호작용할 수 있는 뷰이다.
  */
 interface View<T> : Iterable<T> {
 	/**
-	 * 총 개체 수 - 자바에서는 view.size()로 접근
+	 * 총 개체 수 - 자바에서는 view.size()
 	 */
 	@Suppress("INAPPLICABLE_JVM_NAME")
 	@get:JvmName("size") val size: Int;
 	/**
-	 * 개체 목록이 비어 있는지의 여부 - 자바에서는 view.isEmpty()로
+	 * 개체 목록이 비어 있는지의 여부 - 자바에서는 view.isEmpty()
 	 */
 	val isEmpty: Boolean;
 
