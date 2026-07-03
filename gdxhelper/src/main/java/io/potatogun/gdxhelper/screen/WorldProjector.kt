@@ -3,7 +3,7 @@ package io.potatogun.gdxhelper.screen;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
-import io.potatogun.gdxhelper.util.weakMutableSetOf;
+import io.potatogun.gdxhelper.collections.weakMutableSetOf;
 import io.potatogun.gdxhelper.world.World;
 
 /**

@@ -23,12 +23,13 @@ import io.potatogun.endlessdead.item.TurretInstaller;
 import io.potatogun.endlessdead.spawner.Spawner;
 import io.potatogun.endlessdead.spawner.TriggermanSpawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
-import io.potatogun.gdxhelper.util.RepeatingTimer;
-import io.potatogun.gdxhelper.util.Timer;
-import io.potatogun.gdxhelper.util.TimerManager;
+import io.potatogun.gdxhelper.timer.RepeatingTimer;
+import io.potatogun.gdxhelper.timer.Timer;
+import io.potatogun.gdxhelper.timer.TimerManager;
+import io.potatogun.gdxhelper.util.TextureUtils;
+import io.potatogun.gdxhelper.util.Utils;
 import io.potatogun.gdxhelper.util.randomOrNull;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
@@ -53,7 +54,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	//   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
 	//   tile.bmp는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color를
 	//   바꿔가며 두 가지 색으로 그리는 트릭(틴트)으로 체스판을 만든다.
-	private val tileTexture = Utils.loadTexture("world/tile.bmp");
+	private val tileTexture = TextureUtils.loadTexture("world/tile.bmp");
 	private val bgColorDark = Utils.rgb(38, 92, 38);
 	private val bgColorLight = Utils.rgb(38, 107, 38);
 	private val tileSize = 64f;
@@ -194,8 +195,8 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		val screenHeight = Window.height;
 
 		// 현재 카메라 시작점이 속한 타일 인덱스
-		val startCol = floor((offsetX - screenWidth * 0.5f) / tileSize).toInt();
-		val startRow = floor((offsetY - screenHeight * 0.5f) / tileSize).toInt();
+		val startCol = floor((cameraX - screenWidth * 0.5f) / tileSize).toInt();
+		val startRow = floor((cameraY - screenHeight * 0.5f) / tileSize).toInt();
 		// 화면을 채우는 데 필요한 타일 개수 (여유분으로 1)
 		val cols = ceil(screenWidth / tileSize).toInt() + 1;
 		val rows = ceil(screenHeight / tileSize).toInt() + 1;
@@ -223,8 +224,8 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		val halfScreenWidth = Window.width * 0.5f;
 		val halfScreenHeight = Window.height * 0.5f;
-		offsetX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);
-		offsetY = player.y.coerceIn(halfScreenHeight, height - halfScreenHeight);
+		cameraX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);
+		cameraY = player.y.coerceIn(halfScreenHeight, height - halfScreenHeight);
 	}
 
 	// 화면이 닫힐 때 — 부모도 dispose한 뒤 우리만의 자원도 해제.

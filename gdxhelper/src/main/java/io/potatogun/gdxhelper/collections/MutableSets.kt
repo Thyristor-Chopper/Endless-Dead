@@ -1,5 +1,5 @@
 @file:JvmName("MutableSets")
-package io.potatogun.gdxhelper.util;
+package io.potatogun.gdxhelper.collections;
 
 /**
  * 지정한 요소들을 담아서 약참조 집합을 만든다.

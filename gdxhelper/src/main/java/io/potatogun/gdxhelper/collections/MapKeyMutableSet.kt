@@ -1,4 +1,4 @@
-package io.potatogun.gdxhelper.util;
+package io.potatogun.gdxhelper.collections;
 
 /**
  * 맵의 키를 사용하는 집합

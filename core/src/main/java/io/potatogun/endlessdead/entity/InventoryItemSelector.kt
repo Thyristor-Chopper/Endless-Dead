@@ -24,7 +24,7 @@ class InventoryItemSelector(private val inventory: ObservableInventory) : ItemSe
 			if(value == -1) {
 				field = -1;
 			} else {
-				val inventorySize = inventory.itemCount;
+				val inventorySize = inventory.size;
 				val newIndex = 
 					if(value < 0) 0
 					else if(value >= inventorySize) inventorySize - 1  // 비었다면 -1
@@ -37,7 +37,7 @@ class InventoryItemSelector(private val inventory: ObservableInventory) : ItemSe
 		inventory.addItemRemoveObserver {
 			if(inventory.isEmpty)
 				selectedItemIndex = -1;
-			else if(selectedItemIndex >= inventory.itemCount)
+			else if(selectedItemIndex >= inventory.size)
 				selectedItemIndex = 0;
 		};
 	}
@@ -47,7 +47,7 @@ class InventoryItemSelector(private val inventory: ObservableInventory) : ItemSe
 		val newIndex = 
 			if(inventory.isEmpty)
 				-1
-			else if(index == -1 || index == inventory.itemCount - 1)
+			else if(index == -1 || index == inventory.size - 1)
 				0
 			else
 				index + 1;
@@ -61,7 +61,7 @@ class InventoryItemSelector(private val inventory: ObservableInventory) : ItemSe
 			if(inventory.isEmpty)
 				-1
 			else if(index == -1 || index == 0)
-				inventory.itemCount - 1
+				inventory.size - 1
 			else
 				index - 1;
 		selectedItemIndex = newIndex;
@@ -76,7 +76,7 @@ class InventoryItemSelector(private val inventory: ObservableInventory) : ItemSe
 	}
 
 	override fun selectItem(index: Int): Boolean {
-		if(index < 0 || index >= inventory.itemCount) return false;
+		if(index < 0 || index >= inventory.size) return false;
 		selectedItemIndex = index;
 		return true;
 	}

@@ -5,8 +5,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.inventory.Inventory;
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.util.SharedTextureManager;
+import io.potatogun.gdxhelper.util.TextureUtils;
 
 /**
  * 아이템 추상 클래스
@@ -102,7 +102,7 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 				return getShared(itemID);
 			} catch(e: NoSuchElementException) {
 				try {
-					val texture = Utils.loadTexture("item/${itemID}.bmp");
+					val texture = TextureUtils.loadTexture("item/${itemID}.bmp");
 					register(itemID, texture);
 					return getShared(itemID);
 				} catch(e: GdxRuntimeException) {

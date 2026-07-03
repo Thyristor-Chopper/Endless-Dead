@@ -4,15 +4,15 @@ import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Triggerman;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
-import io.potatogun.gdxhelper.util.Position;
-import io.potatogun.gdxhelper.util.RepeatingTimer;
-import io.potatogun.gdxhelper.util.TimerManager;
-import io.potatogun.gdxhelper.util.distanceTo;
+import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.position.distanceTo;
+import io.potatogun.gdxhelper.timer.RepeatingTimer;
+import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.random.Random;
 
-class TriggermanSpawner(world: World) : Spawner(world) {
+class TriggermanSpawner(private val world: World) : Spawner {
 	private val spawnInterval = 5f;
 	private val timerManager = TimerManager();
 

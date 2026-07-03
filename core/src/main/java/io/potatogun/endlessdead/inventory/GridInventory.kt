@@ -19,7 +19,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 					add(null);
 			});
 	};
-	override val itemCount: Int
+	override val size: Int
 		get() {
 			var ret = 0;
 			for(i in 0 until rows)

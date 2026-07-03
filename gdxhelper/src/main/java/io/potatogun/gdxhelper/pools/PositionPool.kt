@@ -1,6 +1,9 @@
-package io.potatogun.gdxhelper.util;
+package io.potatogun.gdxhelper.pools;
 
 import com.badlogic.gdx.utils.Pool;
+
+import io.potatogun.gdxhelper.position.MutablePosition;
+import io.potatogun.gdxhelper.position.Position;
 
 // 의도적으로 내부적으로는 MutablePosition 사용. 일반 Position으로 풀을 만드는 건 말이 안 된다.
 class PositionPool() : Pool<Position>() {

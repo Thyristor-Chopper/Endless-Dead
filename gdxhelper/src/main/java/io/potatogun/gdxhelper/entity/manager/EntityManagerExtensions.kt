@@ -1,10 +1,10 @@
 @file:JvmName("EntityQueries")
-package io.potatogun.gdxhelper.util;
+package io.potatogun.gdxhelper.entity.manager;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
 
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.util.Utils;
 
 import kotlin.random.Random;
 
@@ -123,8 +123,9 @@ fun EntityManager.getClosest(entity: Entity): Entity? {
  */
 fun <T : Entity> EntityManager.getClosestOf(type: Class<T>, entity: Entity): T? {
 	if(view.isEmpty) return null;
-	var ret: T? = null;
-	var min = Utils.max2(world.width, world.height);
+	var min: Float = 0f;  // X같은코틀린
+	var ret: T? = getFirstOf(type)?.also { min = it.distanceTo(entity) };
+	if(ret == null) return null;
 	for(i in 0 until view.size) {
 		val e = view[i];
 		if(!type.isInstance(e)) continue;

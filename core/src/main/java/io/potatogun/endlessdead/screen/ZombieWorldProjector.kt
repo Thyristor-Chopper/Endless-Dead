@@ -21,21 +21,20 @@ import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.endlessdead.world.ZombieWorld;
-import io.potatogun.gdxhelper.Input;
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.entity.manager.countOf;
+import io.potatogun.gdxhelper.entity.manager.getDistanceSorted;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.screen.WorldProjector;
-import io.potatogun.gdxhelper.util.RepeatingTimer;
-import io.potatogun.gdxhelper.util.Timer;
-import io.potatogun.gdxhelper.util.TimerManager;
-import io.potatogun.gdxhelper.util.countOf;
-import io.potatogun.gdxhelper.util.getDistanceSorted;
+import io.potatogun.gdxhelper.timer.RepeatingTimer;
+import io.potatogun.gdxhelper.timer.Timer;
+import io.potatogun.gdxhelper.timer.TimerManager;
+import io.potatogun.gdxhelper.util.Input;
+import io.potatogun.gdxhelper.util.TextureUtils;
+import io.potatogun.gdxhelper.util.Utils;
 import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
 import io.potatogun.gdxhelper.world.World;
-
-import java.lang.ref.WeakReference;
 
 /**
  * WorldProjector 자체는 정말 월드 자체만을 보여주는 기본적인 뷰어이다.
@@ -61,7 +60,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	private val titleButton: Button;
 	private val quitButton: Button;
 	// 로드된 월드가 없을 때 보일 placeholder 배경
-	private val lazyStillCut = lazy { Utils.loadTexture("title/still_cut.bmp") };
+	private val lazyStillCut = lazy { TextureUtils.loadTexture("title/still_cut.bmp") };
 	// 타이머
 	private val timerManager = TimerManager();
 	// 자막 관련 필드들.
@@ -70,7 +69,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	private var subtitlesColor = Color.WHITE;
 	private val subtitlesVisible: Boolean
 		inline get() = (subtitlesTimer != null);
-	private var attackTarget: WeakReference<LivingEntity>? = null;
+	private var attackTarget: LivingEntity? = null;  // 매 업데이트 시 개체가 죽으면 초기화되므로 굳이 WeakReference 쓸 필요 없음
 
 	init {
 		// 단색용 텍스처 생성
@@ -145,6 +144,20 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 
 		super.update(delta);
 
+		val world: World? = projectingWorld;
+		if(world is SinglePlayerWorld) {
+			val player = world.player;
+			attackTarget = player.latestAttackVictim?.takeIf { isValidAttackTarget(it, player) }
+				?: run {
+					val distanceSorted = Pools.entityArray.obtain();
+					world.entities.getDistanceSorted(player, distanceSorted);
+					val ret = (distanceSorted.firstOrNull { it is LivingEntity && it !is Bullet && it !== player } as? LivingEntity)?.takeIf { isValidAttackTarget(it, player) };
+					Pools.entityArray.free(distanceSorted);
+
+					/* return */ ret
+				};
+		}
+
 		// 미터기 정보 갱신
 		updateProgressBars();
 
@@ -199,20 +212,8 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			show();
 		};
 
-		val _attackTarget: LivingEntity? =
-			player.latestAttackVictim
-				?.takeIf { isValidAttackTarget(it, player) }
-				?: run {
-					val distanceSorted = Pools.entityArray.obtain();
-					world.entities.getDistanceSorted(player, distanceSorted);
-					val ret = (distanceSorted.firstOrNull { it is LivingEntity && it !is Bullet && it !== player } as? LivingEntity)?.takeIf { isValidAttackTarget(it, player) };
-					Pools.entityArray.free(distanceSorted);
-
-					/* return */ ret
-				};
-		attackTarget = _attackTarget?.let { WeakReference(it) };
 		targetIndicator.apply {
-			val target = attackTarget?.get();
+			val target = attackTarget;
 			if(target != null) {
 				value = target.health.toFloat() / target.maxHealth;
 				show();
@@ -504,7 +505,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			player.selectedItem?.let {
 				batch.draw(it.texture, 8f, 4f, 24f, 24f);
 				drawText(
-					text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.itemCount}]",
+					text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.size}]",
 					x = 40f,
 					y = 22f,
 					color = when(it.rarity) {
@@ -517,7 +518,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			};
 		}
 
-		attackTarget?.get()?.let {
+		attackTarget?.let {
 			drawText(
 				text = "${it.name}  [ ${it.health} ]",
 				x = 211f,

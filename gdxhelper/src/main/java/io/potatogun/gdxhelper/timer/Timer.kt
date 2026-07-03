@@ -1,4 +1,4 @@
-package io.potatogun.gdxhelper.util;
+package io.potatogun.gdxhelper.timer;
 
 import java.util.function.BooleanSupplier;
 

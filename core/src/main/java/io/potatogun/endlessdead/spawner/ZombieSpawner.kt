@@ -5,10 +5,10 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
-import io.potatogun.gdxhelper.util.Position;
-import io.potatogun.gdxhelper.util.RepeatingTimer;
-import io.potatogun.gdxhelper.util.TimerManager;
-import io.potatogun.gdxhelper.util.distanceTo;
+import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.position.distanceTo;
+import io.potatogun.gdxhelper.timer.RepeatingTimer;
+import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.random.Random;
@@ -16,10 +16,10 @@ import kotlin.random.Random;
 /**
  * 좀비 소환기
  *
- * @param    world         소속 세계
+ * @property world         소속 세계
  * @property spawnInterval 소환 간격
  */
-class ZombieSpawner(world: World) : Spawner(world) {
+class ZombieSpawner(private val world: World) : Spawner {
 	private val spawnInterval = 3f;
 	private var zombiesPerSpawn = 1
 		set(value) {

@@ -2,8 +2,6 @@ package io.potatogun.endlessdead.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 
-import io.potatogun.gdxhelper.util.Timer;
-import io.potatogun.gdxhelper.util.TimerManager;
 import io.potatogun.gdxhelper.world.World;
 
 /**

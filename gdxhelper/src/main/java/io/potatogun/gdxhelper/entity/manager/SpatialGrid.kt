@@ -1,4 +1,4 @@
-package io.potatogun.gdxhelper.util;
+package io.potatogun.gdxhelper.entity.manager;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array as GdxArray;
@@ -8,9 +8,12 @@ import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ObjectSet;
 import com.badlogic.gdx.utils.Pool;
 
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.pools.EntityArrayPool;
+import io.potatogun.gdxhelper.pools.EntitySetPool;
+import io.potatogun.gdxhelper.pools.LongSetPool;
+import io.potatogun.gdxhelper.util.Math.max2;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
 
@@ -19,18 +22,18 @@ import kotlin.math.floor;
 /**
  * 좌표 분할 격자식 개체 관리자
  *
+ * @param    world    소속 월드
+ * @param    capacity 처음 개체 목록 크기
  * @property tileSize 타일 크기
  */
-class SpatialGrid(override val world: World, private val capacity: Int, private val tileSize: Float) : EntityManager {
-	private val allEntities = GdxArray<Entity>(false, capacity);
+class SpatialGrid(world: World, capacity: Int, private val tileSize: Float) : ArrayEntityManager(world, capacity) {
 	private val entitiesOfTile = LongMap<GdxArray<Entity>>(capacity * 8);
 	private val tilesOfEntity = ObjectMap<Entity, LongSet>(capacity);
 	private val addQueue = GdxArray<Entity>(false, 8);
 	private val removeQueue = GdxArray<Entity>(false, 8);
-	private val hashPool = LongSetPool();
-	private val tileEntityPool = EntityArrayPool();
+	private val hashPool = LongSetPool(8);
+	private val tileEntityPool = EntityArrayPool(capacity);
 	private val visitedPool = EntitySetPool(capacity / 4);
-	override val view: EntityManager.View = EntityView(allEntities);
 
 	override fun add(entity: Entity): Boolean {
 		if(entity.world !== world)
@@ -46,33 +49,9 @@ class SpatialGrid(override val world: World, private val capacity: Int, private 
 		return true;
 	}
 
-	override fun draw(batch: SpriteBatch) {
-		if(allEntities.isEmpty()) return;
-
-		val halfScreenWidth = Window.width * 0.5f;
-		val halfScreenHeight = Window.height * 0.5f;
-		val offsetX = world.offsetX;
-		val offsetY = world.offsetY;
-
-		for(i in 0 until allEntities.size) {
-			val entity = allEntities[i];
-			// 보이는 개체만 그리기 (자원 낭비 감소)
-			val maxEntityLength = Utils.max2(entity.width, entity.height);
-			val entityX = entity.x;
-			val entityY = entity.y;
-			if(entityX >= offsetX - halfScreenWidth - maxEntityLength && entityX <= offsetX + halfScreenWidth + maxEntityLength && entityY >= offsetY - halfScreenHeight - maxEntityLength && entityY <= offsetY + halfScreenHeight + maxEntityLength)
-				entity.draw(batch);
-		}
-	}
-
 	override fun update(delta: Float) {
 		// 매 프레임 개체 갱신
-		for(i in 0 until allEntities.size) {
-			val entity = allEntities[i];
-			if(world !is Freezable || !world.isFrozen || entity.isUpdatableWhileFrozen)
-				entity.update(delta);
-			entity.forceUpdate(delta);
-		}
+		super.update(delta);
 
 		// 제거 큐 처리
 		if(!removeQueue.isEmpty()) {
@@ -157,7 +136,7 @@ class SpatialGrid(override val world: World, private val capacity: Int, private 
 
 	override fun forEachNearby(entity: Entity, callback: (Entity) -> Unit) {
 		val outerRange = 1;
-		val maxHalfLength = Utils.max2(entity.width, entity.height) * 0.5f;
+		val maxHalfLength = max2(entity.width, entity.height) * 0.5f;
 
 		val minTileX = floor((entity.x - maxHalfLength) / tileSize).toInt() - outerRange;
 		val maxTileX = floor((entity.x + maxHalfLength) / tileSize).toInt() + outerRange;
@@ -178,13 +157,8 @@ class SpatialGrid(override val world: World, private val capacity: Int, private 
 		visitedPool.free(visited);
 	}
 
-	override fun dispose() {
-		for(i in 0 until allEntities.size)
-			allEntities[i].dispose();
-	}
-
 	private fun calculateTileHashes(entity: Entity, output: LongSet) {
-		val maxHalfLength = Utils.max2(entity.width, entity.height) * 0.5f;
+		val maxHalfLength = max2(entity.width, entity.height) * 0.5f;
 
 		val minTileX = floor((entity.x - maxHalfLength) / tileSize).toInt();
 		val maxTileX = floor((entity.x + maxHalfLength) / tileSize).toInt();
@@ -197,91 +171,5 @@ class SpatialGrid(override val world: World, private val capacity: Int, private 
 				val hash = (tileX.toLong() shl 32) or (tileY.toLong() and 0xffffffffL);
 				output.add(hash);
 			}
-	}
-
-	private class LongSetPool : Pool<LongSet>() {
-		override fun newObject(): LongSet = LongSet(8);
-	}
-
-	private class EntitySetPool(private val capacity: Int) : Pool<ObjectSet<Entity>>() {
-		override fun newObject(): ObjectSet<Entity> = ObjectSet<Entity>(capacity);
-
-		override fun reset(obj: ObjectSet<Entity>) {
-			obj.clear();
-		}
-	}
-
-	// inner class로 하면 SpatialGrid.access$getAllEntities$p(this.this$0)로 또 메쏘드 호출 오버헤드 있음
-	private class EntityIterator(private val allEntities: GdxArray<Entity>) : Iterator<Entity> {
-		private var index = -1;
-
-		override fun hasNext(): Boolean = index < allEntities.size - 1;
-
-		override fun next(): Entity {
-			if(index == allEntities.size - 1)
-				throw NoSuchElementException("no more entities to iterate");
-			return allEntities[++index];
-		}
-	}
-
-	private class EntityView(private val allEntities: GdxArray<Entity>) : EntityManager.View {
-		override val size: Int
-			get() = allEntities.size;
-		override val isEmpty: Boolean
-			get() = allEntities.isEmpty();
-
-		override operator fun get(index: Int): Entity = allEntities[index];
-
-		override fun size(): Int = allEntities.size;
-
-		override fun sortedWith(comparator: Comparator<Entity>): GdxArray<Entity> {
-			val output = clone();
-			Utils.sortWith<Entity>(output, comparator);
-			return output;
-		}
-
-		override fun sortedWith(comparator: Comparator<Entity>, output: GdxArray<Entity>) {
-			clone(output);
-			Utils.sortWith<Entity>(output, comparator);
-		}
-
-		override fun filter(condition: (Entity) -> Boolean): GdxArray<Entity> {
-			val output = GdxArray<Entity>(allEntities.size);
-			for(i in 0 until allEntities.size) {
-				val entity = allEntities[i];
-				if(condition(entity))
-					output.add(entity);
-			}
-			return output;
-		}
-
-		override fun filter(condition: (Entity) -> Boolean, output: GdxArray<Entity>) {
-			output.clear();
-			for(i in 0 until allEntities.size) {
-				val entity = allEntities[i];
-				if(condition(entity))
-					output.add(entity);
-			}
-		}
-
-		override fun clone(): GdxArray<Entity> {
-			val output = GdxArray<Entity>(allEntities.size);
-			for(i in 0 until allEntities.size)
-				output.add(allEntities[i]);
-			return output;
-		}
-
-		override fun clone(output: GdxArray<Entity>) {
-			output.clear();
-			for(i in 0 until allEntities.size)
-				output.add(allEntities[i]);
-		}
-
-		override fun forEach(callback: (Entity) -> Unit) {
-			for(i in 0 until allEntities.size)
-				callback(allEntities[i]);
-		}
-
-		override fun iterator(): Iterator<Entity> = EntityIterator(allEntities);
 	}
 }

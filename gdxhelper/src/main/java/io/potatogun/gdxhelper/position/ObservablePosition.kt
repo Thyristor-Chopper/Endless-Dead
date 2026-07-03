@@ -1,4 +1,4 @@
-package io.potatogun.gdxhelper.util;
+package io.potatogun.gdxhelper.position;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
 import com.badlogic.gdx.utils.ObjectMap;

@@ -10,7 +10,7 @@ import io.potatogun.endlessdead.entity.isSameTeamWith;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Rarity;
-import io.potatogun.gdxhelper.util.getDistanceSorted;
+import io.potatogun.gdxhelper.entity.manager.getDistanceSorted;
 import io.potatogun.gdxhelper.world.World;
 
 /**

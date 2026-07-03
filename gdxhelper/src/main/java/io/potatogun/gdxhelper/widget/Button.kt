@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.gdxhelper.HelperTextures;
-import io.potatogun.gdxhelper.Input;
-import io.potatogun.gdxhelper.Utils;
+import io.potatogun.gdxhelper.util.Input;
+import io.potatogun.gdxhelper.util.Utils;
 import io.potatogun.gdxhelper.Window;
 
 import java.util.function.Supplier;

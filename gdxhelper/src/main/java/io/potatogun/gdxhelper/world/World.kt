@@ -9,13 +9,13 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array as GdxArray;
 import com.badlogic.gdx.utils.ObjectSet;
 
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.collections.weakMutableSetOf;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.entity.manager.EntityManager;
+import io.potatogun.gdxhelper.entity.manager.SpatialGrid;
 import io.potatogun.gdxhelper.screen.WorldProjector;
-import io.potatogun.gdxhelper.util.EntityManager;
-import io.potatogun.gdxhelper.util.SpatialGrid;
-import io.potatogun.gdxhelper.util.weakMutableSetOf;
+import io.potatogun.gdxhelper.util.Utils;
 import io.potatogun.gdxhelper.world.Freezable;
 
 import java.util.Collections;
@@ -54,7 +54,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 	/**
 	 * 카메라의 X 오프셋
 	 */
-	var offsetX: Float
+	var cameraX: Float
 		get() = camera.position.x
 		protected set(value) {
 			camera.position.x = value;
@@ -63,7 +63,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 	/**
 	 * 카메라의 Y 오프셋
 	 */
-	var offsetY: Float
+	var cameraY: Float
 		get() = camera.position.y
 		protected set(value) {
 			camera.position.y = value;

@@ -9,7 +9,7 @@ import io.potatogun.endlessdead.item.Item;
  */
 class SingleItemInventory : ObservableInventory() {
 	private var inventoryItem: Item? = null;
-	override val itemCount: Int
+	override val size: Int
 		get() = if(inventoryItem != null) 1 else 0;
 	override val isEmpty: Boolean
 		get() = (inventoryItem == null);

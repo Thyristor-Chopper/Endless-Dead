@@ -1,5 +1,5 @@
 @file:JvmName("PositionExtensions")
-package io.potatogun.gdxhelper.util;
+package io.potatogun.gdxhelper.position;
 
 import io.potatogun.gdxhelper.entity.Entity;
 

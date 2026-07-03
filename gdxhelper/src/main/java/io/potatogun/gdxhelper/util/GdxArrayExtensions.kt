@@ -1,4 +1,4 @@
-@file:JvmName("GdxArrayExtensions")
+@file:JvmName("ArrayUtils")
 package io.potatogun.gdxhelper.util;
 
 import com.badlogic.gdx.utils.Array as GdxArray;

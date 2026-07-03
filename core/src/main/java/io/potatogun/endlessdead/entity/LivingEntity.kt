@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.entity.listener.AttackListener;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.world.World;
 
@@ -66,6 +65,8 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	/**
 	 * 대미지를 입었을 때 붉게 표시할지의 여부
 	 */
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("canShowDamageIndicator")
 	protected open val showDamageIndicator = true;
 	/**
 	 * 대미지를 입었을 때 붉게 표시되는 기간

@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.item.Shootable;
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.util.Position;
+import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.util.Math.max2;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.sqrt;
@@ -67,7 +67,7 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 		y += amountY * delta;
 
 		// 화면 밖으로 나가면 소멸
-		val maxHalfLength = Utils.max2(width, height) * 0.5f;
+		val maxHalfLength = max2(width, height) * 0.5f;
 		if(x < 0f - maxHalfLength || x > world.width + maxHalfLength || y < 0f - maxHalfLength || y > world.height + maxHalfLength)
 			this.kill();
 

@@ -6,14 +6,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 
-import io.potatogun.gdxhelper.Input;
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
-import io.potatogun.gdxhelper.util.ObservablePosition;
-import io.potatogun.gdxhelper.util.Position;
+import io.potatogun.gdxhelper.position.ObservablePosition;
+import io.potatogun.gdxhelper.position.Position;
+import io.potatogun.gdxhelper.util.Input;
+import io.potatogun.gdxhelper.util.Math.abs;
+import io.potatogun.gdxhelper.util.TextureUtils;
 import io.potatogun.gdxhelper.world.World;
 
-import java.lang.Math;
+import java.lang.Math.toDegrees;
 
 import kotlin.math.atan2;
 
@@ -71,16 +72,14 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	private var rotation = 0f;
 	/**
 	 * 개체 오버레이 색 - (흰색: 원래 텍스처 색 그대로 사용)
-	 *   (color는 mutable 객체이므로 val)
 	 */
-	var overlayColor = Color.WHITE
-		protected set;
+	protected open val overlayColor = Color.WHITE;
 	/**
 	 * 개체의 투명도
 	 */
-	protected open var opacity: Float
-		get() = overlayColor.a
-		set(value) {
+	protected var opacity: Float
+		inline get() = overlayColor.a
+		inline set(value) {
 			if(value < 0f) overlayColor.a = 0f;
 			else if(value > 1f) overlayColor.a = 1f;
 			else overlayColor.a = value;
@@ -137,7 +136,7 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 		//   좀비처럼 게속 움직이는 개체는 매번 새 사각형 객체를 만들어서 확인하여 오버헤드도 상당하고
 		//   update() 내에서 collidesWith하는 경우도 많아 GC할 거리도 매 프레임 엄청나게 불어난다.
 
-		return Utils.abs(x - other.x) < (collideCheckWidth + other.collideCheckWidth) * 0.5f && Utils.abs(y - other.y) < (collideCheckHeight + other.collideCheckHeight) * 0.5f;
+		return abs(x - other.x) < (collideCheckWidth + other.collideCheckWidth) * 0.5f && abs(y - other.y) < (collideCheckHeight + other.collideCheckHeight) * 0.5f;
 	}
 
 	/**
@@ -171,7 +170,7 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	 */
 	fun rotateTo(position: Position) {
 		// 샷건 내 360도 구현 참고함
-		rotate(Math.toDegrees(atan2(position.y - y.toDouble(), position.x - x.toDouble())).toFloat() - 90f);
+		rotate(toDegrees(atan2(position.y - y.toDouble(), position.x - x.toDouble())).toFloat() - 90f);
 	}
 
 	/**
@@ -181,7 +180,7 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 		// 샷건 내 360도 구현 참고함
 		val x = Input.mouseX.toFloat();
 		val y = Input.mouseY.toFloat();
-		rotate(Math.toDegrees(atan2((Window.height - y) - (this.y - world.offsetY + Window.height * 0.5f), x - (this.x - world.offsetX + Window.width * 0.5f)).toDouble()).toFloat() - 90f);
+		rotate(toDegrees(atan2((Window.height - y) - (this.y - world.cameraY + Window.height * 0.5f), x - (this.x - world.cameraX + Window.width * 0.5f)).toDouble()).toFloat() - 90f);
 	}
 
 	/**
@@ -236,6 +235,6 @@ abstract class Entity(val world: World, val name: String, x: Float, y: Float, @J
 	 * 이 객체가 갖고 있는 GPU 자원을 정리한다 — 화면이 닫힐 때 한 번 호출된다.
 	 */
 	open fun dispose() {
-		texture?.let { Utils.safeDispose(it) };
+		texture?.let { TextureUtils.safeDispose(it) };
 	}
 }

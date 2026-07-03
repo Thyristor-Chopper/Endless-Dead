@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.util.Utils;
 import io.potatogun.gdxhelper.widget.Widget;
 
 /**

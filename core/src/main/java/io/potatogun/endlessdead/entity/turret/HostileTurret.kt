@@ -8,7 +8,7 @@ import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.util.getClosestOf;
+import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.world.World;
 
 /**

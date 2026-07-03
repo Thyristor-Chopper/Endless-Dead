@@ -15,14 +15,14 @@ import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.endlessdead.item.Usable;
-import io.potatogun.gdxhelper.Input;
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
-import io.potatogun.gdxhelper.util.Position;
-import io.potatogun.gdxhelper.util.RepeatingTimer;
-import io.potatogun.gdxhelper.util.Timer;
-import io.potatogun.gdxhelper.util.TimerManager;
+import io.potatogun.gdxhelper.timer.RepeatingTimer;
+import io.potatogun.gdxhelper.timer.Timer;
+import io.potatogun.gdxhelper.timer.TimerManager;
+import io.potatogun.gdxhelper.util.Input;
+import io.potatogun.gdxhelper.util.TextureUtils;
 import io.potatogun.gdxhelper.world.World;
 
 import java.lang.ref.WeakReference;
@@ -30,9 +30,9 @@ import java.lang.ref.WeakReference;
 /**
  * 플레이어 — 화살표로 조종.
  */
-class Player private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, Utils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory) {
+class Player private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, TextureUtils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory) {
 	override val isUpdatableWhileFrozen = true;
-	private val textureWithGun = Utils.loadTexture("entity/player_holding_gun.bmp");
+	private val textureWithGun = TextureUtils.loadTexture("entity/player_holding_gun.bmp");
 	override val movementSpeed = 200f;
 	override val attackDamage = 1;
 	override val attackInterval = 0.5f;

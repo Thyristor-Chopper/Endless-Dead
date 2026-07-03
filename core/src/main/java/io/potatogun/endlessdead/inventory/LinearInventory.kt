@@ -12,7 +12,7 @@ import io.potatogun.endlessdead.item.Item;
  */
 class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 	private val inventory = GdxArray<Item>();
-	override val itemCount: Int
+	override val size: Int
 		get() = inventory.size;
 	override val isEmpty: Boolean
 		get() = inventory.isEmpty();

@@ -1,9 +1,10 @@
-package io.potatogun.gdxhelper.util;
+package io.potatogun.gdxhelper.entity.manager;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.util.Utils;
 import io.potatogun.gdxhelper.world.World;
 
 import java.util.function.Consumer;
@@ -14,13 +15,10 @@ import java.util.function.Function;
  */
 interface EntityManager {
 	/**
-	 * 개체 관리자가 속하는 월드
+	 * 개체 목록 읽기 전용 상호작용 도구 - 자바에서는 .view()로 접근
 	 */
-	val world: World;
-	/**
-	 * 개체 목록 읽기 전용 상호작용 도구
-	 */
-	val view: View;
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("view") val view: View;
 
 	/**
 	 * 개체를 등록한다.
@@ -88,9 +86,10 @@ interface EntityManager {
 	 */
 	interface View : Iterable<Entity> {
 		/**
-		 * 개체 목록 크기 (코틀린 전용)
+		 * 총 개체 수 - 자바에서는 .size()로 접근
 		 */
-		@get:JvmSynthetic val size: Int;
+		@Suppress("INAPPLICABLE_JVM_NAME")
+		@get:JvmName("size") val size: Int;
 		/**
 		 * 개체 목록이 비어 있는지의 여부
 		 */
@@ -103,14 +102,6 @@ interface EntityManager {
 		 * @return      개체
 		 */
 		operator fun get(index: Int): Entity;
-
-		/**
-		 * 개체 목록 크기 (자바 전용)
-		 *   빌어먹을 코틀린이 @get:JvmName 쓸 수 있게 했으면 이딴 뻘짓 안 나온다 ㅡㅡ;
-		 *
-		 * @return 개체 수
-		 */
-		fun size(): Int = size;
 
 		/**
 		 * 개체 목록을 지정한 비교기로 정렬한다.
@@ -215,5 +206,76 @@ interface EntityManager {
 		 * @return 순회기
 		 */
 		override fun iterator(): Iterator<Entity>;
+	}
+
+	class ArrayIterator(private val allEntities: GdxArray<Entity>) : Iterator<Entity> {
+		private var index = -1;
+
+		override fun hasNext(): Boolean = index < allEntities.size - 1;
+
+		override fun next(): Entity {
+			if(index == allEntities.size - 1)
+				throw NoSuchElementException("no more entities to iterate");
+			return allEntities[++index];
+		}
+	}
+
+	class ArrayView(private val allEntities: GdxArray<Entity>) : EntityManager.View {
+		override val size: Int
+			get() = allEntities.size;
+		override val isEmpty: Boolean
+			get() = allEntities.isEmpty();
+
+		override operator fun get(index: Int): Entity = allEntities[index];
+
+		override fun sortedWith(comparator: Comparator<Entity>): GdxArray<Entity> {
+			val output = clone();
+			Utils.sortWith<Entity>(output, comparator);
+			return output;
+		}
+
+		override fun sortedWith(comparator: Comparator<Entity>, output: GdxArray<Entity>) {
+			clone(output);
+			Utils.sortWith<Entity>(output, comparator);
+		}
+
+		override fun filter(condition: (Entity) -> Boolean): GdxArray<Entity> {
+			val output = GdxArray<Entity>(allEntities.size);
+			for(i in 0 until allEntities.size) {
+				val entity = allEntities[i];
+				if(condition(entity))
+					output.add(entity);
+			}
+			return output;
+		}
+
+		override fun filter(condition: (Entity) -> Boolean, output: GdxArray<Entity>) {
+			output.clear();
+			for(i in 0 until allEntities.size) {
+				val entity = allEntities[i];
+				if(condition(entity))
+					output.add(entity);
+			}
+		}
+
+		override fun clone(): GdxArray<Entity> {
+			val output = GdxArray<Entity>(allEntities.size);
+			for(i in 0 until allEntities.size)
+				output.add(allEntities[i]);
+			return output;
+		}
+
+		override fun clone(output: GdxArray<Entity>) {
+			output.clear();
+			for(i in 0 until allEntities.size)
+				output.add(allEntities[i]);
+		}
+
+		override fun forEach(callback: (Entity) -> Unit) {
+			for(i in 0 until allEntities.size)
+				callback(allEntities[i]);
+		}
+
+		override fun iterator(): Iterator<Entity> = ArrayIterator(allEntities);
 	}
 }

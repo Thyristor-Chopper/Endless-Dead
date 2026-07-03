@@ -10,10 +10,11 @@ import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
-import io.potatogun.gdxhelper.util.Position;
+import io.potatogun.gdxhelper.timer.Tasks;
+import io.potatogun.gdxhelper.util.Math.max2;
 
 import java.lang.Math.toRadians;
 
@@ -121,7 +122,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 
 		// 남은 쿨타임을 갱신한다. update, delta를 쓰지 않은 이유는 이건 게임 프레임과는 독립적이라고 보기 때문.
 		cooldownTimer?.cancel();
-		cooldownTimer = Utils.setInterval(0.01f, { GameManager.isPlaying }) {
+		cooldownTimer = Tasks.setInterval(0.01f, { GameManager.isPlaying }) {
 			fireCooldown -= 0.01f;
 			if(fireCooldown == 0f) {
 				cooldownTimer?.let {
@@ -172,7 +173,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 
 		// 개체 회전 각도에 맞는 임의의 위치를 생성한다.
 		val radians = toRadians(user.getRotationAngle() + 90.0);
-		val distance = Utils.max2(user.world.width, user.world.height);  // 그냥 100f 이상 가능한 한 큰 수면 된다.
+		val distance = max2(user.world.width, user.world.height);  // 그냥 100f 이상 가능한 한 큰 수면 된다.
 		val targetX = cos(radians) * distance + user.x;
 		val targetY = sin(radians) * distance + user.y;
 		return shoot(Position(targetX.toFloat(), targetY.toFloat()), user) > 0;

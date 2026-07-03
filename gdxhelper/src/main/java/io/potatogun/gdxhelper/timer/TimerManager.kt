@@ -1,4 +1,6 @@
-package io.potatogun.gdxhelper.util;
+package io.potatogun.gdxhelper.timer;
+
+import io.potatogun.gdxhelper.collections.identityMutableSetOf;
 
 /**
  * 타이머 객체들을 관리한다.

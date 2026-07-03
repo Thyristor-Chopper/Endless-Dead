@@ -7,8 +7,8 @@ import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.inventory.SingleItemInventory;
 import io.potatogun.endlessdead.item.Item;
-import io.potatogun.gdxhelper.Utils;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.util.TextureUtils;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -93,7 +93,7 @@ abstract class Container(world: World, name: String, x: Float, y: Float, width: 
 	// 추가적인 두 텍스처도 비운다.
 	override fun dispose() {
 		super.dispose();
-		playerItemTexture?.let { Utils.safeDispose(it) };
-		emptyTexture?.let { Utils.safeDispose(it) };
+		playerItemTexture?.let { TextureUtils.safeDispose(it) };
+		emptyTexture?.let { TextureUtils.safeDispose(it) };
 	}
 }

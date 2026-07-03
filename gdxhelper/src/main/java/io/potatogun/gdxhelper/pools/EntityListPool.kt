@@ -1,4 +1,4 @@
-package io.potatogun.gdxhelper.util;
+package io.potatogun.gdxhelper.pools;
 
 import com.badlogic.gdx.utils.Pool;
 
