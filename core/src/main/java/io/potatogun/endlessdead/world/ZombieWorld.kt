@@ -40,7 +40,7 @@ import kotlin.random.Random;
 /**
  * 좀비 파밍 월드 구현체
  */
-class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, tileSize = 128f), Freezable, SinglePlayerWorld {
+class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, entityCapacity = 256, tileSize = 128f), Freezable, SinglePlayerWorld {
 	/**
 	 * 플레이어 — 월드 중앙에서 시작.
 	 */
@@ -49,11 +49,9 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	 * 등록된 스포너
 	 */
 	private val spawners = GdxArray<Spawner>(false, 2);
-	// ── 체스판 배경 설정 (drawBackground()에서 사용) ──
+	// 체스판 배경 설정 (drawBackground()에서 사용)
 	//   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
-	//   자기 게임에선 다른 배경을 그리거나, 그냥 두면 검은 배경이다.
-	//
-	//   tile.png는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color를
+	//   tile.bmp는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color를
 	//   바꿔가며 두 가지 색으로 그리는 트릭(틴트)으로 체스판을 만든다.
 	private val tileTexture = Utils.loadTexture("world/tile.bmp");
 	private val bgColorDark = Utils.rgb(38, 92, 38);

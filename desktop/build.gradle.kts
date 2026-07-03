@@ -1,6 +1,6 @@
 plugins {
-	kotlin("jvm") version "1.9.22"
-	id("com.github.johnrengelman.shadow") version "8.1.1"
+	kotlin("jvm")
+	id("com.gradleup.shadow") version "8.3.11"  // 자바 8을 지원하는 마지막 버전
 	application
 }
 

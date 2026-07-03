@@ -7,5 +7,5 @@ interface PenetratorDamagable {
 	/**
 	 * 관통할 때 관통자에게 주는 대미지
 	 */
-	open val penetrationDamage: Int;
+	val penetrationDamage: Int;
 }

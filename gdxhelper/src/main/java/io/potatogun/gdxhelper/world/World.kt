@@ -24,14 +24,14 @@ import java.util.Collections;
  * 게임 내 월드 = '월드 하나'의 추상 기본 클래스.
  *   '월드'의 개념에 맞게 플레이어나 적 등의 개체 등을 추가한다.
  *
- * @constructor Named argument를 쓸 수 있는 코틀린용 생성자
+ * @constructor Named argument를 쓸 수 있는 코틀린 전용 생성자
  * @property width    월드 전체 너비
  * @property height   월드 전체 높이
  * @property camera   월드의 카메라
  * @property font     월드의 기본 글꼴
  * @property tileSize 공간 분할 격자 개체 관리자의 격자 크기
  */
-abstract class World(@JvmField val width: Float, @JvmField val height: Float, camera: Camera = OrthographicCamera(), font: BitmapFont = BitmapFont(), tileSize: Float = 64f) {
+abstract class World(@JvmField val width: Float, @JvmField val height: Float, camera: Camera = OrthographicCamera(), font: BitmapFont = BitmapFont(), entityCapacity: Int = DEFAULT_ENTITY_CAPACITY, tileSize: Float = DEFAULT_TILE_SIZE) {
 	/**
 	 * 월드를 보여주는 카메라
 	 */
@@ -75,17 +75,17 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 	 *
 	 * 자바에서도 world.entities.add()로 자연스럽게 호출하기 위해 @JvmField
 	 */
-	@JvmField val entities: EntityManager = SpatialGrid(this, tileSize);
+	@JvmField val entities: EntityManager = SpatialGrid(this, entityCapacity, tileSize);
 
 	/**
 	 * 설정 빌더를 사용하여 월드를 생성한다.
 	 *
-	 * @constructor 자바용 생성자
+	 * @constructor 자바 전용 생성자
 	 * @param width    월드 전체 너비
 	 * @param height   월드 전체 높이
 	 * @param settings 월드 설정
 	 */
-	@JvmOverloads constructor(width: Float, height: Float, settings: Properties = Properties()) : this(width, height, settings.camera!!, settings.font!!, settings.tileSize);
+	@JvmOverloads constructor(width: Float, height: Float, settings: Properties = Properties()) : this(width, height, settings.camera!!, settings.font!!, settings.entityCapacity, settings.tileSize);
 
 	init {
 		updateViewport();
@@ -202,7 +202,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 	}
 
 	/**
-	 * 월드 옵션 (자바용)
+	 * 월드 옵션 (자바 전용)
 	 */
 	open class Properties {
 		internal var camera: Camera? = null
@@ -219,7 +219,9 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 				return field;
 			}
 			private set;
-		internal var tileSize = 64f
+		internal var tileSize = DEFAULT_TILE_SIZE
+			private set;
+		internal var entityCapacity = DEFAULT_ENTITY_CAPACITY
 			private set;
 
 		/**
@@ -254,9 +256,22 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 			this.tileSize = tileSize;
 			return this;
 		}
+
+		/**
+		 * 개체 관리자의 처음 크기를 지정한다.
+		 *
+		 * @param capacity 크기
+		 * @return         옵션 객체 자신
+		 */
+		fun entityCapacity(capacity: Int): Properties {
+			this.entityCapacity = capacity;
+			return this;
+		}
 	}
 
 	companion object {
+		private const val DEFAULT_TILE_SIZE = 64f;
+		private const val DEFAULT_ENTITY_CAPACITY = 64;
 		// 생성된 모든 인스턴스를 관리하는 목록이다. 생성자에서 자동으로 추가한다. 누가 설마 자바 unsafe의 allocateInstance를 쓰진 않겠지
 		//   게임 dispose 시 사용된다.
 		private val undisposed = ObjectSet<World>(4);

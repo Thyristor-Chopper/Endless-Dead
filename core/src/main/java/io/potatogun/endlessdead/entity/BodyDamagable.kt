@@ -7,5 +7,5 @@ interface BodyDamagable {
 	/**
 	 * 다른 개체에 닿았을 때 몸 대미지
 	 */
-	open val bodyDamage: Int;
+	val bodyDamage: Int;
 }

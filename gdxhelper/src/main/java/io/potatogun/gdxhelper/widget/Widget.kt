@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 /**
  * 화면 내의 컨트롤
  *
- * @constructor 동적 위치를 사용하는 생성자
+ * @constructor 동적 위치를 사용하는 코틀린 전용 생성자
  * @param x      X 좌표 계산 함수. screenWidth 등이 포함될 경우 창 크기가 바뀔 때마다 값이 달라지므로 람다로 받는다.
  * @param y      Y 좌표 계산 함수
  * @param width  컨트롤 너비 계산 함수
@@ -41,7 +41,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	constructor(x: Float, y: Float, width: Float, height: Float) : this({ x }, { y }, { width }, { height });
 
 	/**
-	 * 화면 내의 컨트롤 (자바에서 사용하는 생성자)
+	 * 화면 내의 컨트롤 (자바 전용 생성자)
 	 *
 	 * @constructor 자바 개발자 전용 생성자
 	 * @param x      X 좌표
@@ -143,7 +143,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	}
 
 	/**
-	 * 컨트롤의 X 좌표 식을 지정한다.
+	 * 컨트롤의 X 좌표 식을 지정한다. (코틀린 전용)
 	 *
 	 * @param supplier 계산 식
 	 */
@@ -152,7 +152,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	}
 
 	/**
-	 * 컨트롤의 X 좌표 식을 지정한다 (자바 개발자용).
+	 * 컨트롤의 X 좌표 식을 지정한다 (자바 전용).
 	 *
 	 * @param supplier 계산 식
 	 */
@@ -170,7 +170,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	}
 
 	/**
-	 * 컨트롤의 Y 좌표 식을 지정한다.
+	 * 컨트롤의 Y 좌표 식을 지정한다. (코틀린 전용)
 	 *
 	 * @param supplier 계산 식
 	 */
@@ -179,7 +179,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	}
 
 	/**
-	 * 컨트롤의 Y 좌표 식을 지정한다 (자바 개발자용).
+	 * 컨트롤의 Y 좌표 식을 지정한다 (자바 전용).
 	 *
 	 * @param supplier 계산 식
 	 */
@@ -197,7 +197,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	}
 
 	/**
-	 * 컨트롤의 너비 식을 지정한다.
+	 * 컨트롤의 너비 식을 지정한다. (코틀린 전용)
 	 *
 	 * @param supplier 계산 식
 	 */
@@ -206,7 +206,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	}
 
 	/**
-	 * 컨트롤의 너비 식을 지정한다 (자바 개발자용).
+	 * 컨트롤의 너비 식을 지정한다 (자바 전용).
 	 *
 	 * @param supplier 계산 식
 	 */
@@ -224,7 +224,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	}
 
 	/**
-	 * 컨트롤의 높이 식을 지정한다.
+	 * 컨트롤의 높이 식을 지정한다. (코틀린 전용)
 	 *
 	 * @param supplier 계산 식
 	 */
@@ -233,7 +233,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	}
 
 	/**
-	 * 컨트롤의 높이 식을 지정한다 (자바 개발자용).
+	 * 컨트롤의 높이 식을 지정한다 (자바 전용).
 	 *
 	 * @param supplier 계산 식
 	 */

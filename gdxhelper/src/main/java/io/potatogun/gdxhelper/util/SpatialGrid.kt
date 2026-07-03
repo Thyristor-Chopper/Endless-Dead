@@ -21,16 +21,16 @@ import kotlin.math.floor;
  *
  * @property tileSize 타일 크기
  */
-class SpatialGrid(override val world: World, private val tileSize: Float) : EntityManager {
-	private val allEntities = GdxArray<Entity>(false, 128);
-	private val entitiesOfTile = LongMap<GdxArray<Entity>>(1024);
-	private val tilesOfEntity = ObjectMap<Entity, LongSet>(128);
+class SpatialGrid(override val world: World, private val capacity: Int, private val tileSize: Float) : EntityManager {
+	private val allEntities = GdxArray<Entity>(false, capacity);
+	private val entitiesOfTile = LongMap<GdxArray<Entity>>(capacity * 8);
+	private val tilesOfEntity = ObjectMap<Entity, LongSet>(capacity);
 	private val addQueue = GdxArray<Entity>(false, 8);
 	private val removeQueue = GdxArray<Entity>(false, 8);
-	private val hashSetPool = LongSetPool();
-	private val entityArrayPool = EntityArrayPool();
-	private val entitySetPool = EntitySetPool();
-	override val view: EntityManager.View = EntityView();
+	private val hashPool = LongSetPool();
+	private val tileEntityPool = EntityArrayPool();
+	private val visitedPool = EntitySetPool(capacity / 4);
+	override val view: EntityManager.View = EntityView(allEntities);
 
 	override fun add(entity: Entity): Boolean {
 		if(entity.world !== world)
@@ -87,10 +87,10 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 						entities.removeValue(entity, true);
 						if(entities.isEmpty()) {
 							entitiesOfTile.remove(hash);
-							entityArrayPool.free(entities);
+							tileEntityPool.free(entities);
 						}
 					}
-					hashSetPool.free(hashes);
+					hashPool.free(hashes);
 				}
 				allEntities.removeValue(entity, true);
 				entity.dispose();
@@ -102,13 +102,13 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 		if(!addQueue.isEmpty()) {
 			for(i in 0 until addQueue.size) {
 				val entity = addQueue[i];
-				val hashes = hashSetPool.obtain();
+				val hashes = hashPool.obtain();
 				calculateTileHashes(entity, hashes);
 
 				val iterator = hashes.iterator();
 				while(iterator.hasNext) {
 					val hash = iterator.next();
-					val entities = entitiesOfTile[hash] ?: entityArrayPool.obtain().also { entitiesOfTile.put(hash, it) };
+					val entities = entitiesOfTile[hash] ?: tileEntityPool.obtain().also { entitiesOfTile.put(hash, it) };
 					entities.add(entity);
 				}
 				tilesOfEntity.put(entity, hashes);
@@ -120,13 +120,13 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 
 	override fun updatePosition(entity: Entity) {
 		val oldHashes = tilesOfEntity[entity] ?: return;
-		val newHashes = hashSetPool.obtain();
+		val newHashes = hashPool.obtain();
 		calculateTileHashes(entity, newHashes);
 
 		// https://github.com/libgdx/libgdx/blob/master/gdx/src/com/badlogic/gdx/utils/LongSet.java
 		//   먼저 둘의 크기를 먼저 비교하는 최적화를 하고 원소 내용이 같은지를 비교하기 때문에 안전
 		if(oldHashes == newHashes) {
-			hashSetPool.free(newHashes);
+			hashPool.free(newHashes);
 			return;
 		}
 
@@ -139,7 +139,7 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 			entities.removeValue(entity, true);
 			if(entities.isEmpty()) {
 				entitiesOfTile.remove(hash);
-				entityArrayPool.free(entities);
+				tileEntityPool.free(entities);
 			}
 		}
 
@@ -147,11 +147,11 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 		while(newIterator.hasNext) {
 			val hash = newIterator.next();
 			if(oldHashes.contains(hash)) continue;
-			val entities = entitiesOfTile[hash] ?: entityArrayPool.obtain().also { entitiesOfTile.put(hash, it) };
+			val entities = entitiesOfTile[hash] ?: tileEntityPool.obtain().also { entitiesOfTile.put(hash, it) };
 			entities.add(entity);
 		}
 
-		hashSetPool.free(oldHashes);
+		hashPool.free(oldHashes);
 		tilesOfEntity.put(entity, newHashes);
 	}
 
@@ -164,7 +164,7 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 		val minTileY = floor((entity.y - maxHalfLength) / tileSize).toInt() - outerRange;
 		val maxTileY = floor((entity.y + maxHalfLength) / tileSize).toInt() + outerRange;
 
-		val visited = entitySetPool.obtain();
+		val visited = visitedPool.obtain();
 		for(tileX in minTileX..maxTileX)
 			for(tileY in minTileY..maxTileY) {
 				val hash = (tileX.toLong() shl 32) or (tileY.toLong() and 0xffffffffL);
@@ -175,7 +175,7 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 						callback(e);
 				}
 			}
-		entitySetPool.free(visited);
+		visitedPool.free(visited);
 	}
 
 	override fun dispose() {
@@ -203,15 +203,16 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 		override fun newObject(): LongSet = LongSet(8);
 	}
 
-	private class EntitySetPool : Pool<ObjectSet<Entity>>() {
-		override fun newObject(): ObjectSet<Entity> = ObjectSet<Entity>(16);
+	private class EntitySetPool(private val capacity: Int) : Pool<ObjectSet<Entity>>() {
+		override fun newObject(): ObjectSet<Entity> = ObjectSet<Entity>(capacity);
 
 		override fun reset(obj: ObjectSet<Entity>) {
 			obj.clear();
 		}
 	}
 
-	private inner class EntityIterator : Iterator<Entity> {
+	// inner class로 하면 SpatialGrid.access$getAllEntities$p(this.this$0)로 또 메쏘드 호출 오버헤드 있음
+	private class EntityIterator(private val allEntities: GdxArray<Entity>) : Iterator<Entity> {
 		private var index = -1;
 
 		override fun hasNext(): Boolean = index < allEntities.size - 1;
@@ -223,13 +224,15 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 		}
 	}
 
-	private inner class EntityView : EntityManager.View {
+	private class EntityView(private val allEntities: GdxArray<Entity>) : EntityManager.View {
 		override val size: Int
 			get() = allEntities.size;
 		override val isEmpty: Boolean
 			get() = allEntities.isEmpty();
 
 		override operator fun get(index: Int): Entity = allEntities[index];
+
+		override fun size(): Int = allEntities.size;
 
 		override fun sortedWith(comparator: Comparator<Entity>): GdxArray<Entity> {
 			val output = clone();
@@ -279,6 +282,6 @@ class SpatialGrid(override val world: World, private val tileSize: Float) : Enti
 				callback(allEntities[i]);
 		}
 
-		override fun iterator(): Iterator<Entity> = EntityIterator();
+		override fun iterator(): Iterator<Entity> = EntityIterator(allEntities);
 	}
 }

@@ -19,12 +19,18 @@ fun EntityManager.getRandom(): Entity? {
 }
 
 /**
- * 지정한 종류의 개체들의 수를 반환한다.
+ * 지정한 종류의 개체들의 수를 반환한다. (코틀린 전용)
  *
  * @return 개체 수
  */
-inline fun <reified T : Entity> EntityManager.countOf(): Int = countOf(T::class.java);
+@JvmSynthetic inline fun <reified T : Entity> EntityManager.countOf(): Int = countOf(T::class.java);
 
+/**
+ * 지정한 종류의 개체들의 수를 반환한다. (자바 전용)
+ *
+ * @param type 개체 종류
+ * @return 개체 수
+ */
 fun <T : Entity> EntityManager.countOf(type: Class<T>): Int {
 	var ret = 0;
 	for(i in 0 until view.size)
@@ -34,12 +40,18 @@ fun <T : Entity> EntityManager.countOf(type: Class<T>): Int {
 }
 
 /**
- * 지정한 종류의 개체 중 처음으로 등록된 것을 반환한다.
+ * 지정한 종류의 개체 중 처음으로 등록된 것을 반환한다. (코틀린 전용)
  *
  * @return 개체 (없으면 null)
  */
-inline fun <reified T : Entity> EntityManager.getFirstOf(): T? = getFirstOf(T::class.java);
+@JvmSynthetic inline fun <reified T : Entity> EntityManager.getFirstOf(): T? = getFirstOf(T::class.java);
 
+/**
+ * 지정한 종류의 개체 중 처음으로 등록된 것을 반환한다. (자바 전용)
+ *
+ * @param type 개체 종류
+ * @return     개체 (없으면 null)
+ */
 fun <T : Entity> EntityManager.getFirstOf(type: Class<T>): T? {
 	for(i in 0 until view.size) {
 		val entity = view[i];
@@ -50,12 +62,18 @@ fun <T : Entity> EntityManager.getFirstOf(type: Class<T>): T? {
 }
 
 /**
- * 지정한 종류의 개체를 아무거나 반환한다. reified의 요구조건 때문에 inline이다.
+ * 지정한 종류의 개체를 아무거나 반환한다. (코틀린 전용)
  *
  * @return 개체 (없으면 null)
  */
-inline fun <reified T : Entity> EntityManager.getRandomOf(): T? = getRandomOf(T::class.java);
+@JvmSynthetic inline fun <reified T : Entity> EntityManager.getRandomOf(): T? = getRandomOf(T::class.java);
 
+/**
+ * 지정한 종류의 개체를 아무거나 반환한다. (자바 전용)
+ *
+ * @param type 개체 종류
+ * @return     개체 (없으면 null)
+ */
 fun <T : Entity> EntityManager.getRandomOf(type: Class<T>): T? {
 	var count = 0;
 	var ret: T? = null;
@@ -89,13 +107,20 @@ fun EntityManager.getClosest(entity: Entity): Entity? {
 }
 
 /**
- * 지정한 종류의 개체들 중 지정한 개체로부터 가장 가까운 것을 반환한다.
+ * 지정한 종류의 개체들 중 지정한 개체로부터 가장 가까운 것을 반환한다. (코틀린 전용)
  *
  * @param entity 기준 개체
  * @return       개체 (없으면 null)
  */
-inline fun <reified T : Entity> EntityManager.getClosestOf(entity: Entity): T? = getClosestOf(T::class.java, entity);
+@JvmSynthetic inline fun <reified T : Entity> EntityManager.getClosestOf(entity: Entity): T? = getClosestOf(T::class.java, entity);
 
+/**
+ * 지정한 종류의 개체들 중 지정한 개체로부터 가장 가까운 것을 반환한다. (자바 전용)
+ *
+ * @param type   개체 종류
+ * @param entity 기준 개체
+ * @return       개체 (없으면 null)
+ */
 fun <T : Entity> EntityManager.getClosestOf(type: Class<T>, entity: Entity): T? {
 	if(view.isEmpty) return null;
 	var ret: T? = null;

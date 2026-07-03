@@ -47,7 +47,7 @@ interface EntityManager {
 	fun updatePosition(entity: Entity) {}
 
 	/**
-	 * 현재 개체의 주변 개체를 순회한다 (자바에서 사용).
+	 * 현재 개체의 주변 개체를 순회한다 (자바 전용).
 	 *
 	 * @param entity 기준 개체
 	 */
@@ -56,7 +56,7 @@ interface EntityManager {
 	}
 
 	/**
-	 * 현재 개체의 주변 개체를 순회한다.
+	 * 현재 개체의 주변 개체를 순회한다. (코틀린 전용)
 	 *
 	 * @param entity 기준 개체
 	 */
@@ -88,9 +88,9 @@ interface EntityManager {
 	 */
 	interface View : Iterable<Entity> {
 		/**
-		 * 개체 목록 크기
+		 * 개체 목록 크기 (코틀린 전용)
 		 */
-		val size: Int;
+		@get:JvmSynthetic val size: Int;
 		/**
 		 * 개체 목록이 비어 있는지의 여부
 		 */
@@ -105,12 +105,24 @@ interface EntityManager {
 		operator fun get(index: Int): Entity;
 
 		/**
+		 * 개체 목록 크기 (자바 전용)
+		 *   빌어먹을 코틀린이 @get:JvmName 쓸 수 있게 했으면 이딴 뻘짓 안 나온다 ㅡㅡ;
+		 *
+		 * @return 개체 수
+		 */
+		fun size(): Int = size;
+
+		/**
 		 * 개체 목록을 지정한 비교기로 정렬한다.
 		 *
 		 * @param comparator 비교기
 		 * @return           정렬된 목록
 		 */
-		fun sortedWith(comparator: Comparator<Entity>): GdxArray<Entity>;
+		fun sortedWith(comparator: Comparator<Entity>): GdxArray<Entity> {
+			val output = GdxArray<Entity>(false, size);
+			sortedWith(comparator, output);
+			return output;
+		}
 
 		/**
 		 * 개체 목록을 지정한 비교기로 정렬한다.
@@ -121,33 +133,41 @@ interface EntityManager {
 		fun sortedWith(comparator: Comparator<Entity>, output: GdxArray<Entity>);
 
 		/**
-		 * 지정한 조건에 해당하는 개제만 모은다 (자바에서 사용).
+		 * 지정한 조건에 해당하는 개제만 모은다 (자바 전용).
 		 *
 		 * @param condition 조건
 		 * @return 결과 목록
 		 */
-		fun filter(condition: Function<Entity, Boolean>): GdxArray<Entity> = filter { condition.apply(it) };
+		fun filter(condition: Function<Entity, Boolean>): GdxArray<Entity> {
+			val output = GdxArray<Entity>(false, size);
+			filter(condition::apply, output);
+			return output;
+		}
 
 		/**
-		 * 지정한 조건에 해당하는 개제만 모은다.
+		 * 지정한 조건에 해당하는 개제만 모은다. (코틀린 전용)
 		 *
 		 * @param condition 조건
 		 * @return 결과 목록
 		 */
-		@JvmSynthetic fun filter(condition: (Entity) -> Boolean): GdxArray<Entity>;
+		@JvmSynthetic fun filter(condition: (Entity) -> Boolean): GdxArray<Entity> {
+			val output = GdxArray<Entity>(false, size);
+			filter(condition, output);
+			return output;
+		}
 
 		/**
-		 * 지정한 조건에 해당하는 개제만 모은다 (자바에서 사용).
+		 * 지정한 조건에 해당하는 개제만 모은다 (자바 전용).
 		 *
 		 * @param condition 조건
 		 * @param output    결과를 저장할 목록 (이미 다른 원소가 있다면 덮어씌워짐)
 		 */
 		fun filter(condition: Function<Entity, Boolean>, output: GdxArray<Entity>) {
-			filter({ condition.apply(it) }, output);
+			filter(condition::apply, output);
 		}
 
 		/**
-		 * 지정한 조건에 해당하는 개제만 모은다.
+		 * 지정한 조건에 해당하는 개제만 모은다. (코틀린 전용)
 		 *
 		 * @param condition 조건
 		 * @param output    결과를 저장할 목록 (이미 다른 원소가 있다면 덮어씌워짐)
@@ -159,7 +179,11 @@ interface EntityManager {
 		 *
 		 * @return 복사된 배열
 		 */
-		fun clone(): GdxArray<Entity>;
+		fun clone(): GdxArray<Entity> {
+			val output = GdxArray<Entity>(false, size);
+			clone(output);
+			return output;
+		}
 
 		/**
 		 * 개체 목록을 지정한 배열로 복사한다.
@@ -168,15 +192,18 @@ interface EntityManager {
 		 */
 		fun clone(output: GdxArray<Entity>);
 
-		// Consumer를 사용하는 자바판 forEach는 코틀린이 자동으로 생성하기 때문에
-		//   직접 다시 구현하지 않아도 된다.
-		//
-		// fun forEach(callback: Consumer<Entity>) {
-		//     forEach(callback::accept);
-		// }
+		/**
+		 * 모든 개체를 순회한다 (자바 전용).
+		 *
+		 * @param callback 이번 개체에 대해 실행할 서브루틴
+		 */
+		override fun forEach(callback: Consumer<in Entity>?) {
+			if(callback == null) return;
+			forEach(callback::accept);
+		}
 
 		/**
-		 * 모든 개체를 순회한다.
+		 * 모든 개체를 순회한다. (코틀린 전용)
 		 *
 		 * @param callback 이번 개체에 대해 실행할 서브루틴
 		 */
