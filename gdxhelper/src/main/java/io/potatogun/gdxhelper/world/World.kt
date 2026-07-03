@@ -279,7 +279,7 @@ abstract class World(@JvmField val width: Float, @JvmField val height: Float, ca
 		/**
 		 * 수동 자원 해제되지 않은 월드들을 일괄 dispose한다.
 		 */
-		internal fun disposeUndispoed() {
+		@JvmStatic internal fun disposeUndispoed() {
 			val iterator = undisposed.iterator();
 			while(iterator.hasNext) {
 				val world = iterator.next();

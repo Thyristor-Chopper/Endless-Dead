@@ -15,6 +15,13 @@ import io.potatogun.gdxhelper.util.TextureUtils;
  * @property name 아이템 이름
  */
 abstract class Item @JvmOverloads constructor(id: String, val name: String, settings: Properties = Properties()) {
+	companion object {
+		/**
+		 * 재사용하기 위한 아이템 텍스처들이다.
+		 */
+		@JvmField val textures = ItemTextures();
+	}
+
 	/**
 	 * 아이템 식별자
 	 */
@@ -79,13 +86,6 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 		}
 
 		internal open fun fillDefaults() {}
-	}
-
-	companion object {
-		/**
-		 * 재사용하기 위한 아이템 텍스처들이다.
-		 */
-		@JvmStatic val textures = ItemTextures();
 	}
 
 	class ItemTextures internal constructor() : SharedTextureManager() {

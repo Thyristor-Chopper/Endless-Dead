@@ -566,7 +566,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			private val enumEntries = TitleInfoType.entries;
 			val size = enumEntries.size;
 
-			fun byIndex(index: Int) = enumEntries[index];
+			@JvmStatic fun byIndex(index: Int) = enumEntries[index];
 		}
 	}
 }
