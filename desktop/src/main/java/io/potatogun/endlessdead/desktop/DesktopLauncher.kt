@@ -25,12 +25,12 @@ fun main() {
 
 	// 2) 창(Window) 설정
 	val config = Lwjgl3ApplicationConfiguration().apply {
-		setTitle("${Constants.GAME_TITLE} - Loading...");		// 창 제목
-		setWindowedMode(800, 600);								// 창 크기
-		setResizable(true);									// 크기 조절 가능
+		setTitle("${Constants.GAME_TITLE} - Loading...");
+		setWindowedMode(800, 600);
+		setResizable(true);
 		setWindowSizeLimits(320, 240, Constants.ZOMBIE_WORLD_WIDTH.toInt(), Constants.ZOMBIE_WORLD_HEIGHT.toInt());
-		useVsync(false);										// 수직동기화를 꺼야 랙이 줄어듦
-		setForegroundFPS(Constants.PASSIVE_FPS);				// 타이틀 화면에서는 낮은 fps로
+		useVsync(false);  // 수직동기화를 꺼야 랙이 줄어듦
+		setForegroundFPS(Constants.PASSIVE_FPS);  // 타이틀 화면에서는 낮은 fps로
 		setIdleFPS(Constants.PASSIVE_FPS);
 		setWindowIcon(FileType.Internal, "assets/icon_16.png", "assets/icon_32.png", "assets/icon_128.png");
 	};

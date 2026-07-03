@@ -4,7 +4,6 @@ package io.potatogun.gdxhelper.entity.manager;
 import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.util.Utils;
 
 import kotlin.random.Random;
 

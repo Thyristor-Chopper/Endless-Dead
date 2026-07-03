@@ -4,21 +4,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.util.Utils;
+import io.potatogun.gdxhelper.util.View;
 import io.potatogun.gdxhelper.world.World;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
- * 개체 관리자
+ * 개체 관리자 - API만 지키면 쿼드트리같은 것도 만들 수 있다.
  */
 interface EntityManager {
 	/**
 	 * 개체 목록 읽기 전용 상호작용 도구 - 자바에서는 .view()로 접근
 	 */
 	@Suppress("INAPPLICABLE_JVM_NAME")
-	@get:JvmName("view") val view: View;
+	@get:JvmName("view") val view: View<Entity>;
 
 	/**
 	 * 개체를 등록한다.
@@ -80,202 +79,4 @@ interface EntityManager {
 	 * 등록된 개체들의 자원을 해제한다.
 	 */
 	fun dispose();
-
-	/**
-	 * 개체 목록을 읽기 전용으로 상호작용할 수 있는 뷰이다.
-	 */
-	interface View : Iterable<Entity> {
-		/**
-		 * 총 개체 수 - 자바에서는 .size()로 접근
-		 */
-		@Suppress("INAPPLICABLE_JVM_NAME")
-		@get:JvmName("size") val size: Int;
-		/**
-		 * 개체 목록이 비어 있는지의 여부
-		 */
-		val isEmpty: Boolean;
-
-		/**
-		 * 지정한 인덱스의 개체를 가져온다.
-		 *
-		 * @param index 인덱스
-		 * @return      개체
-		 */
-		operator fun get(index: Int): Entity;
-
-		/**
-		 * 개체 목록을 지정한 비교기로 정렬한다.
-		 *
-		 * @param comparator 비교기
-		 * @return           정렬된 목록
-		 */
-		fun sortedWith(comparator: Comparator<Entity>): GdxArray<Entity> {
-			val output = GdxArray<Entity>(false, size);
-			sortedWith(comparator, output);
-			return output;
-		}
-
-		/**
-		 * 개체 목록을 지정한 비교기로 정렬한다.
-		 *
-		 * @param comparator 비교기
-		 * @param output     정렬 결과를 저장할 목록 (이미 다른 원소가 있다면 덮어씌워짐)
-		 */
-		fun sortedWith(comparator: Comparator<Entity>, output: GdxArray<Entity>);
-
-		/**
-		 * 지정한 조건에 해당하는 개제만 모은다 (자바 전용).
-		 *
-		 * @param condition 조건
-		 * @return 결과 목록
-		 */
-		fun filter(condition: Function<Entity, Boolean>): GdxArray<Entity> {
-			val output = GdxArray<Entity>(false, size);
-			filter(condition::apply, output);
-			return output;
-		}
-
-		/**
-		 * 지정한 조건에 해당하는 개제만 모은다. (코틀린 전용)
-		 *
-		 * @param condition 조건
-		 * @return 결과 목록
-		 */
-		@JvmSynthetic fun filter(condition: (Entity) -> Boolean): GdxArray<Entity> {
-			val output = GdxArray<Entity>(false, size);
-			filter(condition, output);
-			return output;
-		}
-
-		/**
-		 * 지정한 조건에 해당하는 개제만 모은다 (자바 전용).
-		 *
-		 * @param condition 조건
-		 * @param output    결과를 저장할 목록 (이미 다른 원소가 있다면 덮어씌워짐)
-		 */
-		fun filter(condition: Function<Entity, Boolean>, output: GdxArray<Entity>) {
-			filter(condition::apply, output);
-		}
-
-		/**
-		 * 지정한 조건에 해당하는 개제만 모은다. (코틀린 전용)
-		 *
-		 * @param condition 조건
-		 * @param output    결과를 저장할 목록 (이미 다른 원소가 있다면 덮어씌워짐)
-		 */
-		@JvmSynthetic fun filter(condition: (Entity) -> Boolean, output: GdxArray<Entity>);
-
-		/**
-		 * 개체 목록을 새 배열로 복사한다.
-		 *
-		 * @return 복사된 배열
-		 */
-		fun clone(): GdxArray<Entity> {
-			val output = GdxArray<Entity>(false, size);
-			clone(output);
-			return output;
-		}
-
-		/**
-		 * 개체 목록을 지정한 배열로 복사한다.
-		 *
-		 * @param output 대상 배열 (기존 원소는 덮어씌워짐)
-		 */
-		fun clone(output: GdxArray<Entity>);
-
-		/**
-		 * 모든 개체를 순회한다 (자바 전용).
-		 *
-		 * @param callback 이번 개체에 대해 실행할 서브루틴
-		 */
-		override fun forEach(callback: Consumer<in Entity>?) {
-			if(callback == null) return;
-			forEach(callback::accept);
-		}
-
-		/**
-		 * 모든 개체를 순회한다. (코틀린 전용)
-		 *
-		 * @param callback 이번 개체에 대해 실행할 서브루틴
-		 */
-		@JvmSynthetic fun forEach(callback: (Entity) -> Unit);
-
-		/**
-		 * 순회기를 반환한다.
-		 *
-		 * @return 순회기
-		 */
-		override fun iterator(): Iterator<Entity>;
-	}
-
-	class ArrayIterator(private val allEntities: GdxArray<Entity>) : Iterator<Entity> {
-		private var index = -1;
-
-		override fun hasNext(): Boolean = index < allEntities.size - 1;
-
-		override fun next(): Entity {
-			if(index == allEntities.size - 1)
-				throw NoSuchElementException("no more entities to iterate");
-			return allEntities[++index];
-		}
-	}
-
-	class ArrayView(private val allEntities: GdxArray<Entity>) : EntityManager.View {
-		override val size: Int
-			get() = allEntities.size;
-		override val isEmpty: Boolean
-			get() = allEntities.isEmpty();
-
-		override operator fun get(index: Int): Entity = allEntities[index];
-
-		override fun sortedWith(comparator: Comparator<Entity>): GdxArray<Entity> {
-			val output = clone();
-			Utils.sortWith<Entity>(output, comparator);
-			return output;
-		}
-
-		override fun sortedWith(comparator: Comparator<Entity>, output: GdxArray<Entity>) {
-			clone(output);
-			Utils.sortWith<Entity>(output, comparator);
-		}
-
-		override fun filter(condition: (Entity) -> Boolean): GdxArray<Entity> {
-			val output = GdxArray<Entity>(allEntities.size);
-			for(i in 0 until allEntities.size) {
-				val entity = allEntities[i];
-				if(condition(entity))
-					output.add(entity);
-			}
-			return output;
-		}
-
-		override fun filter(condition: (Entity) -> Boolean, output: GdxArray<Entity>) {
-			output.clear();
-			for(i in 0 until allEntities.size) {
-				val entity = allEntities[i];
-				if(condition(entity))
-					output.add(entity);
-			}
-		}
-
-		override fun clone(): GdxArray<Entity> {
-			val output = GdxArray<Entity>(allEntities.size);
-			for(i in 0 until allEntities.size)
-				output.add(allEntities[i]);
-			return output;
-		}
-
-		override fun clone(output: GdxArray<Entity>) {
-			output.clear();
-			for(i in 0 until allEntities.size)
-				output.add(allEntities[i]);
-		}
-
-		override fun forEach(callback: (Entity) -> Unit) {
-			for(i in 0 until allEntities.size)
-				callback(allEntities[i]);
-		}
-
-		override fun iterator(): Iterator<Entity> = ArrayIterator(allEntities);
-	}
 }

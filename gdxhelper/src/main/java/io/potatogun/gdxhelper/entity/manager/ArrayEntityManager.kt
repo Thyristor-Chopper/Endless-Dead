@@ -6,6 +6,8 @@ import com.badlogic.gdx.utils.Array as GdxArray;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.util.Math.max2;
+import io.potatogun.gdxhelper.util.View;
+import io.potatogun.gdxhelper.util.createView;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
 
@@ -19,7 +21,7 @@ abstract class ArrayEntityManager(@JvmField protected val world: World, capacity
 	 * 모든 개체 목록을 담는 배열
 	 */
 	@JvmField protected val allEntities = GdxArray<Entity>(false, capacity);
-	override val view: EntityManager.View = EntityManager.ArrayView(allEntities);
+	override val view: View<Entity> = allEntities.createView();
 
 	override fun draw(batch: SpriteBatch) {
 		if(allEntities.isEmpty()) return;
