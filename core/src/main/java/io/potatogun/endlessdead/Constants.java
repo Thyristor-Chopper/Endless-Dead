@@ -4,6 +4,8 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * 게임에서 필요한 상수들이다.
+ *
+ * 불필요한 INSTANCE 필드와 인스턴스를 만드는 오버헤드를 없애기 위해서 그냥 자바로 바꿨음
  */
 public final class Constants {
 	private Constants() {

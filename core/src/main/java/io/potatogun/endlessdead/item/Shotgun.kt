@@ -27,14 +27,12 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 
 		val centerX = shooter.x;  // shooter, 즉 발사를 하는 주체인 플레이어의 위치를 중심으로 두는 객체
 		val centerY = shooter.y;
-
 		val angle = atan2(target.y - centerY, target.x - centerX);  // atan2()으로 사분면(방향)을 확인, -180°부터 +180°까지 정확한 방향 반환
-
-		for(spread in spreadAngles) {
-			val finalAngle = angle + spread;  // atan2로 반환한 방향에 list로 저장한 다섯가지 방향으로 퍼짐 구현
-			val pelletTarget = Position(
+		for(spread in spreadAngles) {  // 디컴파일해서 확인한 결과 C언어 스타일의 인덱스 기반 iteration으로 바뀜
+			val finalAngle = angle + spread;  // atan2로 반환한 방향에 배열로 저장한 다섯 가지 방향으로 퍼짐 구현
+			val pelletTarget = Position(  // angle로 각도(방향)을 지정했으니, 그곳의 cos,sin을 이용한 위치 좌표를 구하는 식
 				centerX + cos(finalAngle) * 100f,
-				centerY + sin(finalAngle) * 100f  // angle 객체로 각도(방향)을 지정했으니, 그곳의 cos,sin을 이용한 위치 좌표를 구하는 식
+				centerY + sin(finalAngle) * 100f
 			);
 			world.entities.add(Bullet(world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration));
 		}
