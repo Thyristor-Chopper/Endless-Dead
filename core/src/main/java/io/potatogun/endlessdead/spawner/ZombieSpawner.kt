@@ -52,9 +52,7 @@ class ZombieSpawner(private val world: World) : Spawner {
 		timerManager.unregister(spawnIncreaseTimer);
 	}
 
-	/**
-	 * 매 프레임 실행해서 타이머를 갱신하여 소환할 시간이 되면 좀비를 스폰한다
-	 */
+	// 매 프레임 실행해서 타이머를 갱신하여 소환할 시간이 되면 좀비를 스폰한다
 	override fun update(delta: Float) {
 		timerManager.tick(delta);
 	}
