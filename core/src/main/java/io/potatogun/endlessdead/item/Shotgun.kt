@@ -21,7 +21,8 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 	}
 
 	override fun shoot(target: Position, shooter: Entity): Int {
-		val world = shooter.getWorld();
+		val world = shooter.position.world;
+		if(target.world !== world) return 0;
 		val centerX = shooter.x;  // shooter, 즉 발사를 하는 주체인 플레이어의 위치를 중심으로 두는 객체
 		val centerY = shooter.y;
 		val angle = atan2(target.y - centerY, target.x - centerX);  // atan2()으로 사분면(방향)을 확인, -180°부터 +180°까지 정확한 방향 반환
@@ -29,6 +30,7 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 			if(!canFire) break;
 			val finalAngle = angle + spread;  // atan2로 반환한 방향에 배열로 저장한 다섯 가지 방향으로 퍼짐 구현
 			val pelletTarget = Position(  // angle로 각도(방향)을 지정했으니, 그곳의 cos,sin을 이용한 위치 좌표를 구하는 식
+				world,
 				centerX + cos(finalAngle) * 100f,
 				centerY + sin(finalAngle) * 100f
 			);

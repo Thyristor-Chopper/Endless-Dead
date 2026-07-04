@@ -15,7 +15,7 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 	override fun use(user: InventoryHolder): Boolean {
 		if(!user.inventory.hasItem(this)) return false;
 		if(user !is Player) return false;
-		val world = user.getWorld();
+		val world = user.position.world;
 		if(world !is Freezable) {
 			world.projector?.drawSubtitles("Can't use this item here");
 			return false;

@@ -38,7 +38,7 @@ class TriggermanSpawner(private val world: World) : Spawner {
 		val triggerman = Triggerman(world, 0f, 0f);
 		var loopCount = 0;
 		val target = triggerman.target;
-		val position = Pools.position.obtain();
+		val position = world.mutablePositionPool.obtain();
 		do {
 			position.x = Random.nextFloat() * (world.width - 70f);
 			position.y = Random.nextFloat() * (world.height - 70f);
@@ -47,6 +47,6 @@ class TriggermanSpawner(private val world: World) : Spawner {
 		triggerman.x = position.x;
 		triggerman.y = position.y;
         world.entities.add(triggerman);
-		Pools.position.free(position);
+		world.mutablePositionPool.free(position);
     }
 }

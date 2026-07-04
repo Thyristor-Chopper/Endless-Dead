@@ -8,5 +8,4 @@ import io.potatogun.gdxhelper.pools.MutablePositionPool;
  */
 object Pools {
 	@JvmField val entityArray = EntityArrayPool(128, autoClear = false);
-	@JvmField val position = MutablePositionPool();
 }

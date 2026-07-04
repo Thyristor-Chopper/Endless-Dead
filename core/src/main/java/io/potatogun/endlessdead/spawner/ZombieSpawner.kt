@@ -69,7 +69,7 @@ class ZombieSpawner(private val world: World) : Spawner {
 		};
 		var loopCount = 0;
 		val target = newZombie.target;
-		val position = Pools.position.obtain();
+		val position = world.mutablePositionPool.obtain();
 		do {
 			position.x = Random.nextFloat() * (world.width - 70f);
 			position.y = Random.nextFloat() * (world.height - 70f);
@@ -78,6 +78,6 @@ class ZombieSpawner(private val world: World) : Spawner {
 		newZombie.x = position.x;
 		newZombie.y = position.y;
 		world.entities.add(newZombie);
-		Pools.position.free(position);
+		world.mutablePositionPool.free(position);
 	}
 }
