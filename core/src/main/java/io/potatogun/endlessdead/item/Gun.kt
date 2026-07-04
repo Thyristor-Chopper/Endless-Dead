@@ -71,11 +71,16 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	 */
 	@get:JvmName("canFire")
 	val canFire: Boolean
-		get() = (fireInterval == 0f || Utils.getTime() >= lastShoot + fireInterval) && (infiniteBullets || remainingBullets > 0);
+		get() = (fireInterval == 0f || Utils.getTime() >= lastShoot + fireInterval) && (infiniteBullets || bullets > 0);
 	/**
-	 * 남은 총탄 개수
+	 * 남은 총탄 개수 (내부용)
 	 */
-	@JvmField protected var remainingBullets = 0;  // 생성자에서 다시 초기화됨
+	@JvmField protected var bullets = 0;  // 생성자에서 다시 초기화됨
+	/**
+	 * 남은 총탄 개수 (외부용 API)
+	 */
+	val remainingBullets: Int
+		get() = bullets;
 	/**
 	 * 남은 쿨타임을 전체 공격 간격에 비례하여 0.0~1.0로 정규화하여 반환한다.
 	 * 
@@ -96,16 +101,11 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		isBulletPenetrable = settings.isBulletPenetrable;
 		fireInterval = settings.fireInterval;
 		maxBullets = settings.maxBullets;
-		remainingBullets = settings.bullets;
+		bullets = settings.bullets;
 		infiniteBullets = settings.isBulletsInfinite;
 		bulletSize = settings.bulletSize;
 		bulletTexture = settings.bulletFaceTexture;
 	}
-
-	/**
-	 * 남은 총탄 개수를 구한다.
-	 */
-	fun getRemainingBullets(): Int = remainingBullets;  // 외부용 API
 
 	/**
 	 * 총 쏘기
@@ -127,11 +127,11 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 				lastShoot = Utils.getTime();
 
 			if(!infiniteBullets)
-				remainingBullets--;
+				bullets--;
 		}
 
 		// ammo가 다 떨어진 총은 파괴
-		if(!infiniteBullets && remainingBullets <= 0) {
+		if(!infiniteBullets && bullets <= 0) {
 			if(shooter is Player)
 				world.projector?.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
 			destroy();

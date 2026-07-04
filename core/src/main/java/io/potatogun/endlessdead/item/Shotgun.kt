@@ -34,7 +34,7 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 			);
 			world.entities.add(Bullet(world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration));
 			if(!infiniteBullets)
-				remainingBullets--;  // 탄약 수 차감
+				bullets--;  // 탄약 수 차감
 		}
 
 		val defaultShoot = super.shoot(target, shooter);
