@@ -13,15 +13,14 @@ import io.potatogun.gdxhelper.function.FloatSupplier;
  * @param width  컨트롤 너비 계산 함수
  * @param height 컨트롤 높이 계산 함수
  */
-abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> Float) {
-	// 자바에서 좌표나 크기 계산 함수를 구하려면 get*Supplier 메쏘드를 사용할 것.
-	@get:JvmSynthetic protected var calculateX: () -> Float = x
+abstract class Widget(x: FloatSupplier, y: FloatSupplier, width: FloatSupplier, height: FloatSupplier) {
+	protected var xSupplier: FloatSupplier = x
 		private set;
-	@get:JvmSynthetic protected var calculateY: () -> Float = y
+	protected var ySupplier: FloatSupplier = y
 		private set;
-	@get:JvmSynthetic protected var calculateWidth: () -> Float = width
+	protected var widthSupplier: FloatSupplier = width
 		private set;
-	@get:JvmSynthetic protected var calculateHeight: () -> Float = height
+	protected var heightSupplier: FloatSupplier = height
 		private set;
 	/**
 	 * 컨트롤이 화면에 그려지는지의 여부
@@ -39,17 +38,6 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 * @param height 컨트롤 높이
 	 */
 	constructor(x: Float, y: Float, width: Float, height: Float) : this({ x }, { y }, { width }, { height });
-
-	/**
-	 * 화면 내의 컨트롤 (자바 전용 생성자)
-	 *
-	 * @constructor 자바 개발자 전용 생성자
-	 * @param x      X 좌표
-	 * @param y      Y 좌표
-	 * @param width  컨트롤 너비
-	 * @param height 컨트롤 높이
-	 */
-	constructor(x: FloatSupplier, y: FloatSupplier, width: FloatSupplier, height: FloatSupplier) : this(x::getAsFloat, y::getAsFloat, width::getAsFloat, height::getAsFloat);
 
 	/**
 	 * 컨트롤을 화면에 그리는 로직
@@ -78,60 +66,32 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	}
 
 	/**
-	 * 자바 개발자용 - X 좌표 계산 함수를 받는다. 코틀린에서는 그냥 .calculateX 하면 된다.
-	 *
-	 * @return 계산 함수
-	 */
-	protected fun getXSupplier(): FloatSupplier = FloatSupplier(calculateX::invoke);
-
-	/**
-	 * 자바 개발자용 - Y 좌표 계산 함수를 받는다. 코틀린에서는 그냥 .calculateY 하면 된다.
-	 *
-	 * @return 계산 함수
-	 */
-	protected fun getYSupplier(): FloatSupplier = FloatSupplier(calculateY::invoke);
-
-	/**
-	 * 자바 개발자용 - 너비 계산 함수를 받는다. 코틀린에서는 그냥 .calculateWidth 하면 된다.
-	 *
-	 * @return 계산 함수
-	 */
-	protected fun getWidthSupplier(): FloatSupplier = FloatSupplier(calculateWidth::invoke);
-
-	/**
-	 * 자바 개발자용 - 높이 계산 함수를 받는다. 코틀린에서는 그냥 .calculateHeight 하면 된다.
-	 *
-	 * @return 계산 함수
-	 */
-	protected fun getHeightSupplier(): FloatSupplier = FloatSupplier(calculateHeight::invoke);
-
-	/**
 	 * 컨트롤의 현재 계산된 X 좌표
 	 * 
 	 * @return X 좌표
 	 */
-	fun getX(): Float = calculateX();
+	fun getX(): Float = xSupplier.getAsFloat();
 
 	/**
 	 * 컨트롤의 현재 계산된 Y 좌표
 	 * 
 	 * @return Y 좌표
 	 */
-	fun getY(): Float = calculateY();
+	fun getY(): Float = ySupplier.getAsFloat();
 
 	/**
 	 * 컨트롤의 현재 계산된 너비
 	 * 
 	 * @return 너비
 	 */
-	fun getWidth(): Float = calculateWidth();
+	fun getWidth(): Float = widthSupplier.getAsFloat();
 
 	/**
 	 * 컨트롤의 현재 계산된 높이
 	 * 
 	 * @return 높이
 	 */
-	fun getHeight(): Float = calculateHeight();
+	fun getHeight(): Float = heightSupplier.getAsFloat();
 
 	/**
 	 * 컨트롤의 X 좌표를 지정한다.
@@ -139,25 +99,16 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 * @param x 새 X 좌표
 	 */
 	fun setX(x: Float) {
-		calculateX = { x };
+		xSupplier = { x };
 	}
 
 	/**
-	 * 컨트롤의 X 좌표 식을 지정한다. (코틀린 전용)
-	 *
-	 * @param supplier 계산 식
-	 */
-	@JvmSynthetic fun setX(supplier: () -> Float) {
-		calculateX = supplier;
-	}
-
-	/**
-	 * 컨트롤의 X 좌표 식을 지정한다 (자바 전용).
+	 * 컨트롤의 X 좌표 식을 지정한다.
 	 *
 	 * @param supplier 계산 식
 	 */
 	fun setX(supplier: FloatSupplier) {
-		calculateX = supplier::getAsFloat;
+		xSupplier = supplier;
 	}
 
 	/**
@@ -166,25 +117,16 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 * @param y 새 Y 좌표
 	 */
 	fun setY(y: Float) {
-		calculateY = { y };
+		ySupplier = { y };
 	}
 
 	/**
-	 * 컨트롤의 Y 좌표 식을 지정한다. (코틀린 전용)
-	 *
-	 * @param supplier 계산 식
-	 */
-	@JvmSynthetic fun setY(supplier: () -> Float) {
-		calculateY = supplier;
-	}
-
-	/**
-	 * 컨트롤의 Y 좌표 식을 지정한다 (자바 전용).
+	 * 컨트롤의 Y 좌표 식을 지정한다.
 	 *
 	 * @param supplier 계산 식
 	 */
 	fun setY(supplier: FloatSupplier) {
-		calculateY = supplier::getAsFloat;
+		ySupplier = supplier;
 	}
 
 	/**
@@ -193,25 +135,16 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 * @param width 새 너비
 	 */
 	fun setWidth(width: Float) {
-		calculateWidth = { width };
+		widthSupplier = { width };
 	}
 
 	/**
-	 * 컨트롤의 너비 식을 지정한다. (코틀린 전용)
-	 *
-	 * @param supplier 계산 식
-	 */
-	@JvmSynthetic fun setWidth(supplier: () -> Float) {
-		calculateWidth = supplier;
-	}
-
-	/**
-	 * 컨트롤의 너비 식을 지정한다 (자바 전용).
+	 * 컨트롤의 너비 식을 지정한다.
 	 *
 	 * @param supplier 계산 식
 	 */
 	fun setWidth(supplier: FloatSupplier) {
-		calculateWidth = supplier::getAsFloat;
+		widthSupplier = supplier;
 	}
 
 	/**
@@ -220,24 +153,15 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 * @param height 새 높이
 	 */
 	fun setHeight(height: Float) {
-		calculateHeight = { height };
+		heightSupplier = { height };
 	}
 
 	/**
-	 * 컨트롤의 높이 식을 지정한다. (코틀린 전용)
-	 *
-	 * @param supplier 계산 식
-	 */
-	@JvmSynthetic fun setHeight(supplier: () -> Float) {
-		calculateHeight = supplier;
-	}
-
-	/**
-	 * 컨트롤의 높이 식을 지정한다 (자바 전용).
+	 * 컨트롤의 높이 식을 지정한다.
 	 *
 	 * @param supplier 계산 식
 	 */
 	fun setHeight(supplier: FloatSupplier) {
-		calculateHeight = supplier::getAsFloat;
+		heightSupplier = supplier;
 	}
 }

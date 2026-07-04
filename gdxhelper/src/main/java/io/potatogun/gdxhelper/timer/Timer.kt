@@ -10,7 +10,7 @@ import java.util.function.BooleanSupplier;
  * @property condition 실행 조건
  * @property operation 실행할 서브루틴
  */
-open class Timer(private val delay: Float, internal val condition: (() -> Boolean)? = null, private val operation: () -> Unit) {
+open class Timer @JvmOverloads constructor(private val delay: Float, internal val condition: BooleanSupplier? = null, private val operation: Runnable) {
 	private var timer = delay
 		set(value) {
 			if(value < 0f) field = 0f;
@@ -23,25 +23,6 @@ open class Timer(private val delay: Float, internal val condition: (() -> Boolea
 		private set;
 
 	/**
-	 * 반복 타이머를 생성한다 (자바에서 사용).
-	 *
-	 * @constructor 자바용 생성자
-	 * @param delay     대기 시간(초)
-	 * @param operation 실행할 서브루틴
-	 */
-	constructor(delay: Float, operation: Runnable) : this(delay, null, operation::run);
-
-	/**
-	 * 조건을 가진 반복 타이머를 생성한다 (자바에서 사용).
-	 *
-	 * @constructor 조건을 가진 자바용 생성자
-	 * @param delay     대기 시간(초)
-	 * @param condition 실행 조건
-	 * @param operation 실행할 서브루틴
-	 */
-	constructor(delay: Float, condition: BooleanSupplier, operation: Runnable) : this(delay, condition::getAsBoolean, operation::run);
-
-	/**
 	 * 타이머를 갱신한다.
 	 *
 	 * @param delta 직전 프레임과의 시간 간격(초)
@@ -49,7 +30,7 @@ open class Timer(private val delay: Float, internal val condition: (() -> Boolea
 	internal open fun tick(delta: Float) {
 		timer -= delta;
 		if(timer == 0f) {
-			operation();
+			operation.run();
 			executed = true;
 		}
 	}

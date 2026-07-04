@@ -22,7 +22,7 @@ object Window {
 	/**
 	 * 제목 표시줄 제목의 base
 	 */
-	private var titleBarBase: String? by Delegates.observable("Game") { _, _, _ -> updateTitle() };
+	private var titleBarBase: String by Delegates.observable("") { _, _, _ -> updateTitle() };
 	/**
 	 * 제목 표시줄 제목에 표시할 상태 정보
 	 */
@@ -49,8 +49,11 @@ object Window {
 	 *
 	 * @param value base title
 	 */
-	@JvmStatic fun setBaseTitle(value: String) {
-		titleBarBase = value;
+	@JvmStatic fun setBaseTitle(value: String?) {
+		if(value == null)
+			titleBarBase = "";
+		else
+			titleBarBase = value;
 	}
 
 	/**

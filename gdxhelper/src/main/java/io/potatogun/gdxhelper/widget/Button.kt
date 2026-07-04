@@ -27,7 +27,7 @@ import io.potatogun.gdxhelper.Window;
  * @property color   단추의 색
  * @property onClick 단추를 눌렀을 때 실행할 서브루틴
  */
-class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> Float = { 25f }, caption: String, private val skin: Skin = defaultSkin, private val color: Color = Color.WHITE, private val onClick: () -> Unit = {}) : Widget(x, y, width, height) {
+class Button(x: FloatSupplier, y: FloatSupplier, width: FloatSupplier, height: FloatSupplier = { 25f }, caption: String, private val skin: Skin = defaultSkin, private val color: Color = Color.WHITE, private val onClick: Runnable = {}) : Widget(x, y, width, height) {
 	companion object {
 		/**
 		 * 프레임워크에서 제공하는 단추의 기본 스킨
@@ -54,7 +54,7 @@ class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> F
 	 * @param color   단추의 색
 	 * @param onClick 단추를 눌렀을 때 실행할 서브루틴
 	 */
-	constructor(x: Float, y: Float, width: Float, height: Float = 25f, caption: String, skin: Skin = defaultSkin, color: Color = Color.WHITE, onClick: () -> Unit = {}) : this({ x }, { y }, { width }, { height }, caption, skin, color, onClick);
+	constructor(x: Float, y: Float, width: Float, height: Float = 25f, caption: String, skin: Skin = defaultSkin, color: Color = Color.WHITE, onClick: Runnable = {}) : this({ x }, { y }, { width }, { height }, caption, skin, color, onClick);
 
 	init {
 		val accessKeyMatch = Regex("[&]([A-Za-z])");
@@ -63,10 +63,10 @@ class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> F
 	}
 
 	override fun draw(batch: SpriteBatch) {
-		val x = calculateX();
-		val y = calculateY();
-		val width = calculateWidth();
-		val height = calculateHeight();
+		val x = xSupplier.getAsFloat();
+		val y = ySupplier.getAsFloat();
+		val width = widthSupplier.getAsFloat();
+		val height = heightSupplier.getAsFloat();
 
 		val mouseX = Input.mouseX.toFloat();
 		val mouseY = Window.height - Input.mouseY;
@@ -106,7 +106,7 @@ class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> F
 	 */
 	private fun detectAccessKeyPress() {
 		if(accessKey != null && Input.isKeyJustPressed(accessKey.code - 36))
-			onClick();
+			onClick.run();
 	}
 
 	/**
@@ -128,7 +128,7 @@ class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> F
 	 */
 	private fun fireClickEvent() {
 		if(!previouslyPressed) return;
-		onClick();
+		onClick.run();
 		previouslyPressed = false;
 	}
 
@@ -157,7 +157,7 @@ class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> F
 		private var caption = "";
 		private var skin = defaultSkin;
 		private var color = Color.WHITE;
-		private lateinit var clickHandler: () -> Unit;
+		private lateinit var clickHandler: Runnable;
 
 		/**
 		 * 단추 빌더 (자바 개발자 전용)
@@ -186,14 +186,14 @@ class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> F
 		}
 
 		fun onClick(handler: Runnable): Builder {
-			this.clickHandler = handler::run;
+			this.clickHandler = handler;
 			return this;
 		}
 
 		fun build(): Button {
 			if(!::clickHandler.isInitialized)
 				throw IllegalStateException("click handler is not set");
-			return Button(x::getAsFloat, y::getAsFloat, width::getAsFloat, height::getAsFloat, caption, skin, color, clickHandler);
+			return Button(x, y, width, height, caption, skin, color, clickHandler);
 		}
 	}
 }

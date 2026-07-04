@@ -25,7 +25,7 @@ import kotlin.math.ceil;
  * @property style  미터기의 스타일
  * @throws IllegalArgumentException 미터기 값이 잘못된 경우
  */
-class ProgressBar(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> Float = { 15f }, value: Float = 0f, skin: Skin? = null, private val color: Color = Color.WHITE, private val style: Style = Style.SMOOTH) : Widget(x, y, width, height) {
+class ProgressBar(x: FloatSupplier, y: FloatSupplier, width: FloatSupplier, height: FloatSupplier = { 15f }, value: Float = 0f, skin: Skin? = null, private val color: Color = Color.WHITE, private val style: Style = Style.SMOOTH) : Widget(x, y, width, height) {
 	companion object {
 		private const val BAR_VERTICAL_PADDING = 3f;		// 미터기 틀 안쪽 세로 여백
 		private const val BAR_HORIZONTAL_PADDING = 3f;	// 미터기 틀 안쪽 가로 여백
@@ -76,10 +76,10 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: () -> Float, height: ()
 	}
 
 	override fun draw(batch: SpriteBatch) {
-		val barX = calculateX();
-		val barY = calculateY();
-		val barWidth = calculateWidth();
-		val barHeight = calculateHeight();
+		val barX = xSupplier.getAsFloat();
+		val barY = ySupplier.getAsFloat();
+		val barWidth = widthSupplier.getAsFloat();
+		val barHeight = heightSupplier.getAsFloat();
 		skin.bar.draw(batch, barX, barY, barWidth, barHeight);
 		if(value > 0f) {
 			batch.color = color;
@@ -181,7 +181,7 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: () -> Float, height: ()
 		fun build(): ProgressBar {
 			if(skin == null)
 				skin = if(style == Style.CHUNKED) defaultChunkedSkin else defaultSmoothSkin;
-			return ProgressBar(x::getAsFloat, y::getAsFloat, width::getAsFloat, height::getAsFloat, value, skin, color, style);
+			return ProgressBar(x, y, width, height, value, skin, color, style);
 		}
 	}
 }
