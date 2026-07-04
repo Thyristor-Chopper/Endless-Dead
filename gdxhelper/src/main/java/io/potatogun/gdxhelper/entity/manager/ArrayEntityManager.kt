@@ -21,7 +21,8 @@ abstract class ArrayEntityManager(@JvmField protected val world: World, capacity
 	 * 모든 개체 목록을 담는 배열
 	 */
 	@JvmField protected val allEntities = GdxArray<Entity>(false, capacity);
-	override val view: View<Entity> = allEntities.createView();
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("view") override val view: View<Entity> = allEntities.createView();
 
 	override fun draw(batch: SpriteBatch) {
 		if(allEntities.isEmpty()) return;
