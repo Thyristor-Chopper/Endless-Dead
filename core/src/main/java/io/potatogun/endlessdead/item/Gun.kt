@@ -2,7 +2,6 @@ package io.potatogun.endlessdead.item;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.Timer.Task;
 
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Textures;
@@ -13,7 +12,6 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
-import io.potatogun.gdxhelper.timer.Tasks;
 import io.potatogun.gdxhelper.util.Math.max2;
 import io.potatogun.gdxhelper.util.Utils;
 

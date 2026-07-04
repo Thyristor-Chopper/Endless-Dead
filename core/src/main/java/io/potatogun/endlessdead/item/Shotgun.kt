@@ -15,7 +15,7 @@ import kotlin.math.sin;
 /**
  * 샷건
  */
-class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetration(5).fireInterval(1f).bullets(17)) {
+class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetration(5).fireInterval(1f).bullets(5)) {
 	companion object {
 		private val spreadAngles = floatArrayOf(-0.2f, -0.1f, 0.1f, 0.2f);  // 방향 기준 퍼짐 좌표
 	}
