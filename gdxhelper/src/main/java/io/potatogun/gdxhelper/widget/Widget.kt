@@ -14,14 +14,10 @@ import io.potatogun.gdxhelper.function.FloatSupplier;
  * @param height 컨트롤 높이 계산 함수
  */
 abstract class Widget(x: FloatSupplier, y: FloatSupplier, width: FloatSupplier, height: FloatSupplier) {
-	protected var xSupplier: FloatSupplier = x
-		private set;
-	protected var ySupplier: FloatSupplier = y
-		private set;
-	protected var widthSupplier: FloatSupplier = width
-		private set;
-	protected var heightSupplier: FloatSupplier = height
-		private set;
+	private var xSupplier: FloatSupplier = x;
+	private var ySupplier: FloatSupplier = y;
+	private var widthSupplier: FloatSupplier = width;
+	private var heightSupplier: FloatSupplier = height;
 	/**
 	 * 컨트롤이 화면에 그려지는지의 여부
 	 */

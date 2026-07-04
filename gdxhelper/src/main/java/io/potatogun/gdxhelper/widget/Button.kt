@@ -63,10 +63,10 @@ class Button(x: FloatSupplier, y: FloatSupplier, width: FloatSupplier, height: F
 	}
 
 	override fun draw(batch: SpriteBatch) {
-		val x = xSupplier.getAsFloat();
-		val y = ySupplier.getAsFloat();
-		val width = widthSupplier.getAsFloat();
-		val height = heightSupplier.getAsFloat();
+		val x = getX();
+		val y = getY();
+		val width = getWidth();
+		val height = getHeight();
 
 		val mouseX = Input.mouseX.toFloat();
 		val mouseY = Window.height - Input.mouseY;
