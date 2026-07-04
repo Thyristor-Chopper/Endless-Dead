@@ -72,7 +72,7 @@ interface View<T> : Iterable<T> {
 	}
 
 	/**
-	 * 지정한 조건에 해당하는 개제만 모은다 (자바 전용).
+	 * 지정한 조건에 해당하는 개제만 모은다 (자바 전용) - 아래 함수나 이 함수 중 하나는 '반드시' 실제 로직으로 구현해야 한다.
 	 *
 	 * @param condition 조건
 	 * @param output    결과를 저장할 목록 (이미 다른 원소가 있다면 덮어씌워짐)
@@ -82,12 +82,14 @@ interface View<T> : Iterable<T> {
 	}
 
 	/**
-	 * 지정한 조건에 해당하는 개제만 모은다. (코틀린 전용)
+	 * 지정한 조건에 해당하는 개제만 모은다. (코틀린 전용) - 위 함수나 이 함수 중 하나는 '반드시' 실제 로직으로 구현해야 한다.
 	 *
 	 * @param condition 조건
 	 * @param output    결과를 저장할 목록 (이미 다른 원소가 있다면 덮어씌워짐)
 	 */
-	@JvmSynthetic fun filter(condition: (T) -> Boolean, output: GdxArray<T>);
+	@JvmSynthetic fun filter(condition: (T) -> Boolean, output: GdxArray<T>) {
+		filter(Predicate(condition::invoke), output);
+	}
 
 	/**
 	 * 개체 목록을 새 배열로 복사한다.
@@ -108,7 +110,7 @@ interface View<T> : Iterable<T> {
 	fun clone(output: GdxArray<T>);
 
 	/**
-	 * 모든 개체를 순회한다 (자바 전용).
+	 * 모든 개체를 순회한다 (자바 전용) - 아래 함수나 이 함수 중 하나는 '반드시' 실제 로직으로 구현해야 한다.
 	 *
 	 * @param callback 이번 개체에 대해 실행할 서브루틴
 	 */
@@ -118,11 +120,13 @@ interface View<T> : Iterable<T> {
 	}
 
 	/**
-	 * 모든 개체를 순회한다. (코틀린 전용)
+	 * 모든 개체를 순회한다. (코틀린 전용) - 위 함수나 이 함수 중 하나는 '반드시' 실제 로직으로 구현해야 한다.
 	 *
 	 * @param callback 이번 개체에 대해 실행할 서브루틴
 	 */
-	@JvmSynthetic fun forEach(callback: (T) -> Unit);
+	@JvmSynthetic fun forEach(callback: (T) -> Unit) {
+		forEach(Consumer(callback::invoke));
+	}
 
 	/**
 	 * 순회기를 반환한다.
