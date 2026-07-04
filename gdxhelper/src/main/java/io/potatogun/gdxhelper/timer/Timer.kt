@@ -19,6 +19,7 @@ open class Timer @JvmOverloads constructor(private val delay: Float, internal va
 	/**
 	 * 타이머가 실행되었는지의 여부
 	 */
+	@get:JvmName("hasExecuted")
 	var executed = false
 		private set;
 
