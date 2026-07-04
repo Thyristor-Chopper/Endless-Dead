@@ -7,7 +7,7 @@ import io.potatogun.gdxhelper.function.FloatSupplier;
 /**
  * 화면 내의 컨트롤
  *
- * @constructor 동적 위치를 사용하는 코틀린 전용 생성자
+ * @constructor 동적 위치를 사용하는 생성자
  * @param x      X 좌표 계산 함수. screenWidth 등이 포함될 경우 창 크기가 바뀔 때마다 값이 달라지므로 람다로 받는다.
  * @param y      Y 좌표 계산 함수
  * @param width  컨트롤 너비 계산 함수
