@@ -9,7 +9,7 @@ import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 
 /**
- * 데스크톱에서 게임을 실행시키는 진입점 (main 함수)
+ * 데스크톱에서 게임을 실행시키는 진입점(main 함수)이다.
  *
  * 여기서 하는 일은 세 가지뿐:
  *   1. 게임 객체(EndlessDead)를 만든다

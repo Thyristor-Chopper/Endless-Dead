@@ -59,9 +59,8 @@ class ZombieSpawner(private val world: World) : Spawner {
 
 	/**
 	 * 무작위로 좀비 종류를 골라서 월드에 추가한다.
-	 *   스폰 타이머에서만 한 번 쓰이기 떄문에 inline이다.
 	 */
-	private inline fun spawnRandomZombie() {
+	private inline fun spawnRandomZombie() {  // 스폰 타이머에서만 한 번 쓰이기 떄문에 inline이다.
 		// 주사위를 굴려서 확률로 좀비 종류 뽑기
 		val rand = Random.nextInt(10);
 		val newZombie = when {

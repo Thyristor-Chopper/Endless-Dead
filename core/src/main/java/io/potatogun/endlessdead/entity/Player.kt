@@ -115,12 +115,10 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	/**
 	 * 자판 방향 글쇠 눌림 상태에 따라 위치 변경
 	 *
-	 * update()에서만 한 번 쓰이기 때문에 inline이다.
-	 *
 	 * @param delta 직전 프레임과의 시간 간격(초)
 	 * @return 조금이라도 이동했는지 여부
 	 */
-	private inline fun updatePosition(delta: Float): Boolean {
+	private inline fun updatePosition(delta: Float): Boolean {  // update()에서만 한 번 쓰이기 때문에 inline이다.
 		val originalX = x;
 		val originalY = y;
 
@@ -142,10 +140,8 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 
 	/**
 	 * 닿아 있는 상자와 상호작용한다.
-	 *
-	 * update()에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-	private inline fun interactContainer() {
+	private inline fun interactContainer() {  // update()에서만 한 번 쓰이기 때문에 inline이다.
 		val projector = world.projector;
 		world.entities.forEachNearby(this) { entity ->
 			if(entity !is Container || !collidesWith(entity)) return@forEachNearby;

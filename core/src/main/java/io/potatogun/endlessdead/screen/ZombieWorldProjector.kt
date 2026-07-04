@@ -134,11 +134,11 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	}
 
 	/**
-	 * PLAYING 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크.
+	 * PLAYING 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크
 	 *
-	 * update에서만 한 번 쓰이기 때문에 inline이다.
+	 * @param delta 직전 프레임과의 간격 (초)
 	 */
-	private inline fun updatePlaying(delta: Float) {
+	private inline fun updatePlaying(delta: Float) {  // update에서만 한 번 쓰이기 때문에 inline이다.
 		// 제목 표시줄에 통계 표시
 		updateTitleBarInfo();
 
@@ -187,10 +187,8 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 
 	/**
 	 * 미터기 정보를 갱신한다.
-	 *
-	 * updateInPlay에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-	private inline fun updateProgressBars() {
+	private inline fun updateProgressBars() {  // updateInPlay에서만 한 번 쓰이기 때문에 inline이다.
 		val hpIndicator = getWidget("hp_indicator") as ProgressBar;
 		val targetIndicator = getWidget("attack_target_hp_indicator") as ProgressBar;
 		val ammoIndicator = getWidget("gun_ammo_indicator") as ProgressBar;
@@ -258,11 +256,11 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	 * 일시 정지 상태에서 매 프레임 로직
 	 *
 	 * 객체 업데이트(super.update)나 타이머(spawner.tick)를 호출하지 않음.
-	 *   세상이 그대로 멈춰있는 상태가 됨
+	 *   세상이 그대로 멈춰있는 상태가 됨.
 	 *
-	 * update에서만 한 번 쓰이기 때문에 inline이다.
+	 * @param 직전 프레임과의 간격(초)
 	 */
-	private inline fun updatePaused(delta: Float) {
+	private inline fun updatePaused(delta: Float) {  // update에서만 한 번 쓰이기 때문에 inline이다.
 		// 제목 표시줄에 통계 표시
 		updateTitleBarInfo();
 		
@@ -272,10 +270,8 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 
 	/**
 	 * 게임 오버 상태에서 매 프레임 처리
-	 *
-	 * update에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-	private inline fun updateGameOver() {
+	private inline fun updateGameOver() {  // update에서만 한 번 쓰이기 때문에 inline이다.
 		// ESC 키가 '막 눌린 순간' 앱 종료.
 		//   isKeyJustPressed로 한 이유: 누르고 있는 동안 매 프레임 exit이 호출되지 않게.
 		if(Input.isKeyJustPressed(Input.ESCAPE))
@@ -322,21 +318,17 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 
 	/**
 	 * 화면에 어두운 오버레이(주로 모달용)를 만든다.
-	 *
-	 * render에서만 한 번 쓰이기 때문에 inline이다.
 	 */
-	private inline fun drawFrozenOverlay() {
+	private inline fun drawFrozenOverlay() {  // render에서만 한 번 쓰이기 때문에 inline이다.
 		batch.color = frozenOverlay;
 		batch.draw(solidColor, 0f, 0f, Window.width, Window.height);
 		batch.color = Color.WHITE;
 	}
 
 	/**
-	 * 일시 정지 시 띄우는 메시지
-	 *
-	 * render에서만 한 번 쓰이기 때문에 inline이다.
+	 * 일시 정지 시 띄우는 메시지를 그린다.
 	 */
-	private inline fun drawPausedMessage() {
+	private inline fun drawPausedMessage() {  // render에서만 한 번 쓰이기 때문에 inline이다.
 		drawText(
 			text = "PAUSED",
 			x = 0f,
@@ -362,11 +354,9 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	}
 
 	/**
-	 * 게임 오버 시 화면 중앙에 띄우는 안내 메시지
-	 *
-	 * render에서만 한 번 쓰이기 때문에 inline이다.
+	 * 게임 오버 시 화면 중앙에 띄우는 안내 메시지를 그린다.
 	 */
-	private inline fun drawGameOverMessage() {
+	private inline fun drawGameOverMessage() {  // render에서만 한 번 쓰이기 때문에 inline이다.
 		drawText(
 			text = "YOU DIED!",
 			x = 0f,
@@ -482,10 +472,9 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	}
 
 	/**
-	 * 항상 화면에 표시되는 정보 — HP 표시와 월드 중앙 표지.
-	 * drawElements에서만 한 번 쓰이기 때문에 inline이다.
+	 * 항상 화면에 표시되는 정보 — HP 표시와 월드 중앙 표지를 그린다.
 	 */
-	private inline fun drawHud() {
+	private inline fun drawHud() {  // drawElements에서만 한 번 쓰이기 때문에 inline이다.
 		val world: World? = projectingWorld;
 		if(world == null) return;
 
