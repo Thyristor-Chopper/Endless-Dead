@@ -1,6 +1,4 @@
-package io.potatogun.gdxhelper.util;
-
-import org.jetbrains.annotations.NotNull;
+package io.potatogun.gdxhelper.function;
 
 /**
  * '원시' float 반환형을 사용하는 람다함수

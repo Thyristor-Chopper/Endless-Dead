@@ -2,7 +2,7 @@ package io.potatogun.gdxhelper.widget;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.potatogun.gdxhelper.util.FloatSupplier;
+import io.potatogun.gdxhelper.function.FloatSupplier;
 
 /**
  * 화면 내의 컨트롤

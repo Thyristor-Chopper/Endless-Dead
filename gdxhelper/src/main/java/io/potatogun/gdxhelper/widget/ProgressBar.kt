@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.gdxhelper.HelperTextures;
-import io.potatogun.gdxhelper.util.FloatSupplier;
+import io.potatogun.gdxhelper.function.FloatSupplier;
 
 import kotlin.math.ceil;
 

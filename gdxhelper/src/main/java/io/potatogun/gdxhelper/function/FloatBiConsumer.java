@@ -1,4 +1,4 @@
-package io.potatogun.gdxhelper.util;
+package io.potatogun.gdxhelper.function;
 
 /**
  * '원시' float 매개변수 두 개를 사용하는 람다함수

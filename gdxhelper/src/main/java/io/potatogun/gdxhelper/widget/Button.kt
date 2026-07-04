@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.gdxhelper.HelperTextures;
-import io.potatogun.gdxhelper.util.FloatSupplier;
+import io.potatogun.gdxhelper.function.FloatSupplier;
 import io.potatogun.gdxhelper.util.Input;
 import io.potatogun.gdxhelper.util.Utils;
 import io.potatogun.gdxhelper.Window;

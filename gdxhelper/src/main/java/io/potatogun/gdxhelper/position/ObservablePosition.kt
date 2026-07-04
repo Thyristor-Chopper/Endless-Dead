@@ -3,7 +3,7 @@ package io.potatogun.gdxhelper.position;
 import com.badlogic.gdx.utils.Array as GdxArray;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import io.potatogun.gdxhelper.util.FloatBiConsumer;
+import io.potatogun.gdxhelper.function.FloatBiConsumer;
 
 import kotlin.properties.Delegates;
 
