@@ -1,0 +1,3 @@
+[submodule "gdxhelper"]
+	path = gdxhelper
+	url = https://github.com/Thyristor-Chopper/gdxhelper.git
