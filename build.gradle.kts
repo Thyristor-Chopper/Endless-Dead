@@ -1,5 +1,6 @@
 plugins {
 	kotlin("jvm") version "2.4.0" apply false
+	id("org.jetbrains.dokka") version "1.9.0" apply false  // 최신 버전 2.2.0은 힙을 2기가나 쳐먹으려고 하는데 32비트 OS에서 2기가 이상 할당 불가하고 아무도 최대 힙크기를 제대로 제한하는 방법을 안 알려주고 생성형 AI들은 다 작동도 하지 않는 이상한 세팅 알려주고...
 }
 
 allprojects {
@@ -30,6 +31,12 @@ subprojects {
 			// 자바 인터페이스의 default void f() { ... }문법을 쓴다. 디컴파일해서 비교하니까 DefaultImpls 내부 클래스를 만드는 것보다
 			//   훨씬 깔끔하고 효율적이다. (코틀린 1.x은 -Xjvm-default=all)
 			jvmDefault = org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode.NO_COMPATIBILITY
+		}
+	}
+
+	tasks.withType<org.jetbrains.dokka.gradle.DokkaTask>().configureEach {
+		dokkaSourceSets.configureEach {
+			noJdkLink.set(true)
 		}
 	}
 }

@@ -1,5 +1,6 @@
 plugins {
 	kotlin("jvm")
+	id("org.jetbrains.dokka")
 	id("com.gradleup.shadow") version "8.3.11"  // 자바 8을 지원하는 마지막 버전
 	application
 }
@@ -29,12 +30,5 @@ tasks.shadowJar {
 
 	manifest {
 		attributes["Main-Class"] = application.mainClass.get()
-	}
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-	compilerOptions {
-		// 외부 API 없음
-		freeCompilerArgs.addAll(listOf("-Xno-param-assertions"))
 	}
 }
