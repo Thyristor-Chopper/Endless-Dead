@@ -13,14 +13,4 @@ public interface FloatSupplier {
 	 * @return 함수의 반환값
 	 */
 	float getAsFloat();
-
-	/**
-	 * 지정한 정적 값을 반환하는 함수를 생성한다.
-	 *
-	 * @param value 값
-	 * @return      람다 함수
-	 */
-	@NotNull static FloatSupplier of(float value) {
-		return () -> value;
-	}
 }
