@@ -228,7 +228,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			// 총의 ammo를 미터기로 표시
 			ammoIndicator.apply {
 				if(!holding.infiniteBullets) {
-					value = holding.remainingBullets.toFloat() / holding.maxBullets;
+					value = holding.getRemainingBullets().toFloat() / holding.maxBullets;
 					show();
 				} else {
 					hide();

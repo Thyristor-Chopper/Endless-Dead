@@ -15,6 +15,7 @@ import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.timer.Tasks;
 import io.potatogun.gdxhelper.util.Math.max2;
+import io.potatogun.gdxhelper.util.Utils;
 
 import java.lang.Math.toRadians;
 
@@ -67,36 +68,27 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	 * 총알 텍스처
 	 */
 	private val bulletTexture: Texture;
-	private var fireCooldown = 0f
-		set(value) {
-			if(value < 0f) field = 0f;
-			else field = value;
-		};
 	/**
 	 * 현재 쏘기 가능 여부
 	 */
 	@get:JvmName("canFire")
 	val canFire: Boolean
-		get() = fireCooldown == 0f && (infiniteBullets || remainingBullets > 0);
+		get() = (fireInterval == 0f || Utils.getTime() >= lastShoot + fireInterval) && (infiniteBullets || remainingBullets > 0);
 	/**
 	 * 남은 총탄 개수
 	 */
-	var remainingBullets: Int = 0  // 생성자에서 다시 초기화됨
-		protected set(value) {
-			if(value < 0) field = 0;
-			else field = value;
-		};  // 샷건이라는 하위클래스에서도 사용해야할 것 같아 private를 protected로 변경
-	/**
-	 * 총 쏘기 쿨타임
-	 */
-	private var cooldownTimer: Task? = null;
+	@JvmField protected var remainingBullets = 0;  // 생성자에서 다시 초기화됨
 	/**
 	 * 남은 쿨타임을 전체 공격 간격에 비례하여 0.0~1.0로 정규화하여 반환한다.
 	 * 
 	 * @return 정규화된 값
 	 */
 	val remainingCooldownPercentage: Float
-		get() = if(fireInterval == 0f) 0f else fireCooldown / fireInterval;
+		get() = if(fireInterval == 0f) 0f else max2((lastShoot + fireInterval - Utils.getTime()) / fireInterval, 0.0).toFloat();
+	/**
+	 * 마지막으로 총을 쏜 시간
+	 */
+	private var lastShoot = 0.0;
 
 	init {
 		settings.fillDefaults();
@@ -113,25 +105,9 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	}
 
 	/**
-	 * 총에 쿨타임을 건다.
+	 * 남은 총탄 개수를 구한다. (외부에서 사용)
 	 */
-	protected fun startFireCooldown() {
-		if(fireInterval == 0f) return;
-
-		fireCooldown = fireInterval;
-
-		// 남은 쿨타임을 갱신한다. update, delta를 쓰지 않은 이유는 이건 게임 프레임과는 독립적이라고 보기 때문.
-		cooldownTimer?.cancel();
-		cooldownTimer = Tasks.setInterval(0.01f, { GameManager.isPlaying }) {
-			fireCooldown -= 0.01f;
-			if(fireCooldown == 0f) {
-				cooldownTimer?.let {
-					it.cancel();
-					cooldownTimer = null;
-				};
-			}
-		};
-	}
+	fun getRemainingBullets(): Int = remainingBullets;
 
 	/**
 	 * 총 쏘기
@@ -141,25 +117,29 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	 * @return        쏜 총알 개수 (실패하면 0)
 	 */
 	override fun shoot(target: Position, shooter: Entity): Int {
-		if(!canFire) return 0;
-
 		val world = shooter.world;
-		val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture).apply { if(shooter is LivingEntity) team = shooter.team };
-		world.entities.add(bullet);
-		startFireCooldown();
+		var shooted = 0;
 
-		if(!infiniteBullets) {
-			remainingBullets--;
+		if(canFire) {
+			val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture).apply { if(shooter is LivingEntity) team = shooter.team };
+			world.entities.add(bullet);
+			shooted = 1;
 
-			// ammo가 다 떨어진 총은 파괴
-			if(remainingBullets == 0) {
-				if(shooter is Player)
-					world.projector?.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
-				destroy();
-			}
+			if(fireInterval != 0f)
+				lastShoot = Utils.getTime();
+
+			if(!infiniteBullets)
+				remainingBullets--;
 		}
 
-		return 1;
+		// ammo가 다 떨어진 총은 파괴
+		if(!infiniteBullets && remainingBullets <= 0) {
+			if(shooter is Player)
+				world.projector?.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
+			destroy();
+		}
+
+		return shooted;
 	}
 
 	/**
