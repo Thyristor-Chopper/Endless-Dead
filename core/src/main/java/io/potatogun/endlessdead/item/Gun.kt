@@ -112,7 +112,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	 *
 	 * @param target  총알이 향할 좌표
 	 * @param shooter 총알을 쏜 개체
-	 * @return        쏜 총알 개수 (실패하면 0)
+	 * @return 쏜 총알 개수 (실패하면 0)
 	 */
 	override fun shoot(target: Position, shooter: Entity): Int {
 		val world = shooter.world;
@@ -190,7 +190,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		 * 총알 관통력을 지정한다. 자동으로 penetrableBullets도 호출된다.
 		 *
 		 * @param penetration 총알 관통력
-		 * @return            옵션 객체 자신
+		 * @return 옵션 객체 자신
 		 */
 		fun bulletPenetration(penetration: Int): Properties {
 			if(penetration <= 0) throw IllegalArgumentException("invalid value");
@@ -213,7 +213,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		 * 발사 속도를 지정한다.
 		 *
 		 * @param fireInterval 발사 속도
-		 * @return             옵션 객체 자신
+		 * @return 옵션 객체 자신
 		 */
 		fun fireInterval(fireInterval: Float): Properties {
 			if(fireInterval < 0f) throw IllegalArgumentException("invalid value");
@@ -225,7 +225,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		 * 처음 총알 개수를 지정하고 발사 가능한 총알 수를 제한한다.
 		 *
 		 * @param bullets 총알 개수
-		 * @return        옵션 객체 자신
+		 * @return 옵션 객체 자신
 		 */
 		fun bullets(bullets: Int): Properties {
 			if(bullets <= 0) throw IllegalArgumentException("invalid value");
@@ -240,7 +240,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		 * 최대 총알 개수를 지정한다.
 		 *
 		 * @param bullets 최대 총알 개수
-		 * @return        옵션 객체 자신
+		 * @return 옵션 객체 자신
 		 */
 		fun maxBullets(bullets: Int): Properties {
 			if(bullets <= 0) throw IllegalArgumentException("invalid value");
@@ -254,7 +254,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		 * 총알 크기를 지정한다. 
 		 *
 		 * @param size 총알 지름
-		 * @return     옵션 객체 자신
+		 * @return 옵션 객체 자신
 		 */
 		fun bulletSize(size: Float): Properties {
 			if(size <= 0) throw IllegalArgumentException("invalid value");
@@ -266,7 +266,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		 * 총알 텍스처를 지정한다.
 		 *
 		 * @param texture 텍스처
-		 * @return        옵션 객체 자신
+		 * @return 옵션 객체 자신
 		 */
 		fun bulletTexture(texture: Texture): Properties {
 			bulletFaceTexture = texture;

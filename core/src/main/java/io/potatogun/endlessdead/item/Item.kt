@@ -79,7 +79,7 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 		 * 희귀도를 지정한다.
 		 *
 		 * @param rarity 아이템 희귀도
-		 * @return       옵션 객체 자신
+		 * @return 옵션 객체 자신
 		 */
 		fun rarity(rarity: Rarity): Properties {
 			this.rarity = rarity;

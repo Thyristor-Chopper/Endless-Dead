@@ -33,7 +33,7 @@ interface ItemSelectable {
 	 * 지정한 아이템을 갖고 있다면 선택한다.
 	 *
 	 * @param item 선택할 아이템
-	 * @return     성공 여부
+	 * @return 성공 여부
 	 */
 	fun selectItem(item: Item): Boolean;
 
@@ -41,7 +41,7 @@ interface ItemSelectable {
 	 * 지정한 인덱스의 아이템을 선택한다.
 	 *
 	 * @param index 아이템 인벤토리 인덱스
-	 * @return      성공 여부
+	 * @return 성공 여부
 	 */
 	fun selectItem(index: Int): Boolean;
 

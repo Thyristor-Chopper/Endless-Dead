@@ -63,7 +63,7 @@ abstract class Container(world: World, name: String, x: Float, y: Float, width: 
 	 * 아이템 가져가기
 	 *
 	 * @param taker 아이템을 가져가는 인벤토리를 가진 개체
-	 * @return      성공하면 들어있는 아이템, 실패하면 null
+	 * @return 성공하면 들어있는 아이템, 실패하면 null
 	 * @throws IllegalArgumentException	taker가 자기 자신인 경우
 	 */
 	fun takeItem(taker: InventoryHolder): Item? {
@@ -80,7 +80,7 @@ abstract class Container(world: World, name: String, x: Float, y: Float, width: 
 	 *
 	 * @param item         넣을 아이템
 	 * @param isPlayerItem 플레이어가 직접 아이템을 넣었는지의 여부
-	 * @return             성공 여부
+	 * @return 성공 여부
 	 */
 	@JvmOverloads fun putItem(item: Item, isPlayerItem: Boolean = false): Boolean {
 		if(inventory.addItem(item)) {

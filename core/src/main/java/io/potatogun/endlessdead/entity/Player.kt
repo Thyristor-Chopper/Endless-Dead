@@ -118,7 +118,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	 * update()에서만 한 번 쓰이기 때문에 inline이다.
 	 *
 	 * @param delta 직전 프레임과의 시간 간격(초)
-	 * @return      조금이라도 이동했는지 여부
+	 * @return 조금이라도 이동했는지 여부
 	 */
 	private inline fun updatePosition(delta: Float): Boolean {
 		val originalX = x;
@@ -205,7 +205,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	 * 들고 있지 않은 아이템이거나 사용 가능한 아이템이 아니라면 실패한다.
 	 *
 	 * @param item 사용할 아이템
-	 * @return     성공 여부
+	 * @return 성공 여부
 	 */
 	fun useItem(item: Item): Boolean {
 		if(!inventory.hasItem(item) || item !is Usable) return false;

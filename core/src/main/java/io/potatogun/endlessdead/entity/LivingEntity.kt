@@ -111,7 +111,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 *
 	 * @param damage   피해량
 	 * @param attacker 공격자
-	 * @return         성공 여부
+	 * @return 성공 여부
 	 * @throws IllegalArgumentException	피해량이 잘못된 경우
 	 */
 	@JvmOverloads fun takeDamage(damage: Int, attacker: Entity? = null): Boolean {
@@ -147,7 +147,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 * 체력을 회복한다.
 	 *
 	 * @param amount 회복할 양
-	 * @return       성공 여부
+	 * @return 성공 여부
 	 */
 	fun heal(amount: Int): Boolean {
 		if(!isAlive) return false;
@@ -159,7 +159,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 * 개체를 isInvincible와 관계 없이 즉시 죽인다.
 	 *
 	 * @param attacker 공격자
-	 * @return         성공 여부
+	 * @return 성공 여부
 	 */
 	@JvmOverloads fun kill(attacker: Entity? = null): Boolean {
 		if(!isAlive) return false;
@@ -174,7 +174,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 * 공격 대상에게 대미지를 입힌다.
 	 *
 	 * @param target 대상
-	 * @return       성공 여부
+	 * @return 성공 여부
 	 */
 	fun damageTarget(target: LivingEntity): Boolean {
 		if(attackCooldownTimer > 0f) return false;

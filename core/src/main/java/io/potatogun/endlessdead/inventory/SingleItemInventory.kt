@@ -74,7 +74,7 @@ class SingleItemInventory : ObservableInventory() {
 	 * 아이템을 교체한다.
 	 *
 	 * @param item 새 아이템
-	 * @return     성공 여부
+	 * @return 성공 여부
 	 */
 	fun replaceItem(item: Item): Boolean {
 		if(inventoryItem == null) return false;

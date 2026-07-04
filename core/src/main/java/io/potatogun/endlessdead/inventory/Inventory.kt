@@ -27,7 +27,7 @@ interface Inventory {
 	 * 인벤토리에 아이템 넣기
 	 *
 	 * @param item 추가할 아이템
-	 * @return     성공 여부 (이미 있으면 실패)
+	 * @return 성공 여부 (이미 있으면 실패)
 	 */
 	fun addItem(item: Item): Boolean;
 
@@ -43,7 +43,7 @@ interface Inventory {
 	 * 인벤토리에서 아이템 빼기
 	 *
 	 * @param item 제거할 아이템
-	 * @return     성공 여부
+	 * @return 성공 여부
 	 */
 	fun removeItem(item: Item): Boolean;
 
@@ -51,7 +51,7 @@ interface Inventory {
 	 * 지정한 아이템 가져오기
 	 *
 	 * @param index 아이템 인벤토리 인덱스
-	 * @return      해당하는 아이템
+	 * @return 해당하는 아이템
 	 * @throws IndexOutOfBoundsException 인덱스가 범위를 벗어난 경우
 	 */
 	fun getItem(index: Int): Item;
