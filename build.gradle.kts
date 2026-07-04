@@ -27,7 +27,7 @@ subprojects {
 
 			// 자바 인터페이스의 default void f() { ... }문법을 쓴다. 디컴파일해서 비교하니까 DefaultImpls 내부 클래스를 만드는 것보다
 			//   훨씬 깔끔하고 효율적이다. (코틀린 1.x은 -Xjvm-default=all)
-			jvmDefault = org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode.ENABLE
+			jvmDefault = org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode.NO_COMPATIBILITY
 		}
 	}
 }

@@ -31,3 +31,10 @@ tasks.shadowJar {
 		attributes["Main-Class"] = application.mainClass.get()
 	}
 }
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+	compilerOptions {
+		// 외부 API 없음
+		freeCompilerArgs.addAll(listOf("-Xno-param-assertions"))
+	}
+}

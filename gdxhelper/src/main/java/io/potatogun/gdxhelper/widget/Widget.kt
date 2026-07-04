@@ -2,7 +2,7 @@ package io.potatogun.gdxhelper.widget;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import java.util.function.Supplier;
+import io.potatogun.gdxhelper.util.FloatSupplier;
 
 /**
  * 화면 내의 컨트롤
@@ -49,7 +49,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 * @param width  컨트롤 너비
 	 * @param height 컨트롤 높이
 	 */
-	constructor(x: Supplier<Float>, y: Supplier<Float>, width: Supplier<Float>, height: Supplier<Float>) : this(x::get, y::get, width::get, height::get);
+	constructor(x: FloatSupplier, y: FloatSupplier, width: FloatSupplier, height: FloatSupplier) : this(x::getAsFloat, y::getAsFloat, width::getAsFloat, height::getAsFloat);
 
 	/**
 	 * 컨트롤을 화면에 그리는 로직
@@ -82,28 +82,28 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 *
 	 * @return 계산 함수
 	 */
-	protected fun getXSupplier(): Supplier<Float> = Supplier(calculateX::invoke);
+	protected fun getXSupplier(): FloatSupplier = FloatSupplier(calculateX::invoke);
 
 	/**
 	 * 자바 개발자용 - Y 좌표 계산 함수를 받는다. 코틀린에서는 그냥 .calculateY 하면 된다.
 	 *
 	 * @return 계산 함수
 	 */
-	protected fun getYSupplier(): Supplier<Float> = Supplier(calculateY::invoke);
+	protected fun getYSupplier(): FloatSupplier = FloatSupplier(calculateY::invoke);
 
 	/**
 	 * 자바 개발자용 - 너비 계산 함수를 받는다. 코틀린에서는 그냥 .calculateWidth 하면 된다.
 	 *
 	 * @return 계산 함수
 	 */
-	protected fun getWidthSupplier(): Supplier<Float> = Supplier(calculateWidth::invoke);
+	protected fun getWidthSupplier(): FloatSupplier = FloatSupplier(calculateWidth::invoke);
 
 	/**
 	 * 자바 개발자용 - 높이 계산 함수를 받는다. 코틀린에서는 그냥 .calculateHeight 하면 된다.
 	 *
 	 * @return 계산 함수
 	 */
-	protected fun getHeightSupplier(): Supplier<Float> = Supplier(calculateHeight::invoke);
+	protected fun getHeightSupplier(): FloatSupplier = FloatSupplier(calculateHeight::invoke);
 
 	/**
 	 * 컨트롤의 현재 계산된 X 좌표
@@ -156,8 +156,8 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 *
 	 * @param supplier 계산 식
 	 */
-	fun setX(supplier: Supplier<Float>) {
-		calculateX = supplier::get;
+	fun setX(supplier: FloatSupplier) {
+		calculateX = supplier::getAsFloat;
 	}
 
 	/**
@@ -183,8 +183,8 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 *
 	 * @param supplier 계산 식
 	 */
-	fun setY(supplier: Supplier<Float>) {
-		calculateY = supplier::get;
+	fun setY(supplier: FloatSupplier) {
+		calculateY = supplier::getAsFloat;
 	}
 
 	/**
@@ -210,8 +210,8 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 *
 	 * @param supplier 계산 식
 	 */
-	fun setWidth(supplier: Supplier<Float>) {
-		calculateWidth = supplier::get;
+	fun setWidth(supplier: FloatSupplier) {
+		calculateWidth = supplier::getAsFloat;
 	}
 
 	/**
@@ -237,7 +237,7 @@ abstract class Widget(x: () -> Float, y: () -> Float, width: () -> Float, height
 	 *
 	 * @param supplier 계산 식
 	 */
-	fun setHeight(supplier: Supplier<Float>) {
-		calculateHeight = supplier::get;
+	fun setHeight(supplier: FloatSupplier) {
+		calculateHeight = supplier::getAsFloat;
 	}
 }

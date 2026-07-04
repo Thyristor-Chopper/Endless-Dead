@@ -58,5 +58,5 @@ class ArrayView<T>(private val array: GdxArray<T>) : View<T> {
 			callback(array[i]);
 	}
 
-	override fun iterator(): Iterator<T> = array.iterator();
+	override fun iterator(): Iterator<T> = GdxArray.ArrayIterator<T>(array, false);
 }

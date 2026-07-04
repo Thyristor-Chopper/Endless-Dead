@@ -7,11 +7,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.gdxhelper.HelperTextures;
+import io.potatogun.gdxhelper.util.FloatSupplier;
 import io.potatogun.gdxhelper.util.Input;
 import io.potatogun.gdxhelper.util.Utils;
 import io.potatogun.gdxhelper.Window;
-
-import java.util.function.Supplier;
 
 /**
  * 단추 - 코틀린용 생성자이며 자바 개발자라면 빌더를 사용하면 된다.
@@ -154,7 +153,7 @@ class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> F
 	 * @param width  단추 너비 계산 함수
 	 * @param height 단추 높이 계산 함수
 	 */
-	class Builder(private val x: Supplier<Float>, private val y: Supplier<Float>, private val width: Supplier<Float>, private val height: Supplier<Float>) {
+	class Builder(private val x: FloatSupplier, private val y: FloatSupplier, private val width: FloatSupplier, private val height: FloatSupplier) {
 		private var caption = "";
 		private var skin = defaultSkin;
 		private var color = Color.WHITE;
@@ -194,7 +193,7 @@ class Button(x: () -> Float, y: () -> Float, width: () -> Float, height: () -> F
 		fun build(): Button {
 			if(!::clickHandler.isInitialized)
 				throw IllegalStateException("click handler is not set");
-			return Button(x::get, y::get, width::get, height::get, caption, skin, color, clickHandler);
+			return Button(x::getAsFloat, y::getAsFloat, width::getAsFloat, height::getAsFloat, caption, skin, color, clickHandler);
 		}
 	}
 }

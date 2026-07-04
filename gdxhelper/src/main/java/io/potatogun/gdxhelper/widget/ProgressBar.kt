@@ -5,8 +5,7 @@ import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.gdxhelper.HelperTextures;
-
-import java.util.function.Supplier;
+import io.potatogun.gdxhelper.util.FloatSupplier;
 
 import kotlin.math.ceil;
 
@@ -142,7 +141,7 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: () -> Float, height: ()
 	 * @param width  미터기 너비 계산 함수
 	 * @param height 미터기 높이 계산 함수
 	 */
-	class Builder(private val x: Supplier<Float>, private val y: Supplier<Float>, private val width: Supplier<Float>, private val height: Supplier<Float>) {
+	class Builder(private val x: FloatSupplier, private val y: FloatSupplier, private val width: FloatSupplier, private val height: FloatSupplier) {
 		private var value = 0f;
 		private var skin: Skin? = null;
 		private var color = Color.WHITE;
@@ -182,7 +181,7 @@ class ProgressBar(x: () -> Float, y: () -> Float, width: () -> Float, height: ()
 		fun build(): ProgressBar {
 			if(skin == null)
 				skin = if(style == Style.CHUNKED) defaultChunkedSkin else defaultSmoothSkin;
-			return ProgressBar(x::get, y::get, width::get, height::get, value, skin, color, style);
+			return ProgressBar(x::getAsFloat, y::getAsFloat, width::getAsFloat, height::getAsFloat, value, skin, color, style);
 		}
 	}
 }

@@ -14,17 +14,45 @@ import io.potatogun.gdxhelper.world.World;
  * @property nearbyThreshold getNearby에서 사용할 가깝다의 기준
  */
 class LinearEntityManager(world: World, capacity: Int, private val nearbyThreshold: Float) : ArrayEntityManager(world, capacity) {
+	private val addQueue = GdxArray<Entity>(false, 8);
+	private val removeQueue = GdxArray<Entity>(false, 8);
+
 	override fun add(entity: Entity): Boolean {
 		if(entity.world !== world)
 			throw IllegalArgumentException("entity belongs to a different world");
-		if(allEntities.any { it === entity }) return false;
-		allEntities.add(entity);
+		if(allEntities.contains(entity, true) || addQueue.contains(entity, true)) return false;
+		addQueue.add(entity);
 		return true;
 	}
 
 	override fun remove(entity: Entity): Boolean {
-		entity.dispose();
-		return allEntities.removeValue(entity, true);
+		if(!allEntities.contains(entity, true) || removeQueue.contains(entity, true)) return false;
+		removeQueue.add(entity);
+		return true;
+	}
+
+	override fun update(delta: Float) {
+		// 매 프레임 개체 갱신
+		super.update(delta);
+
+		// 제거 큐 처리
+		if(!removeQueue.isEmpty()) {
+			for(i in 0 until removeQueue.size) {
+				val entity = removeQueue[i];
+				allEntities.removeValue(entity, true);
+				entity.dispose();
+			}
+			removeQueue.clear();
+		}
+
+		// 추가 큐 처리
+		if(!addQueue.isEmpty()) {
+			for(i in 0 until addQueue.size) {
+				val entity = addQueue[i];
+				allEntities.add(entity);
+			}
+			addQueue.clear();
+		}
 	}
 
 	override fun forEachNearby(entity: Entity, callback: (Entity) -> Unit) {
