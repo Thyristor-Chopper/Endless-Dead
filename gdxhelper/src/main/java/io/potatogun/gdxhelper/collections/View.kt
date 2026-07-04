@@ -1,4 +1,4 @@
-package io.potatogun.gdxhelper.util;
+package io.potatogun.gdxhelper.collections;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
 

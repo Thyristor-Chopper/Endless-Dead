@@ -3,8 +3,8 @@ package io.potatogun.gdxhelper.entity.manager;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array as GdxArray;
 
+import io.potatogun.gdxhelper.collections.View;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.util.View;
 import io.potatogun.gdxhelper.world.World;
 
 import java.util.function.Consumer;

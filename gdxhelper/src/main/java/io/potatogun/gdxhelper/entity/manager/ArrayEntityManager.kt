@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.collections.View;
+import io.potatogun.gdxhelper.collections.createView;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.util.Math.max2;
-import io.potatogun.gdxhelper.util.View;
-import io.potatogun.gdxhelper.util.createView;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
 

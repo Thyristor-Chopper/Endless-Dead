@@ -1,6 +1,8 @@
-package io.potatogun.gdxhelper.util;
+package io.potatogun.gdxhelper.collections;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
+
+import io.potatogun.gdxhelper.util.Utils;
 
 import java.util.function.Predicate;
 

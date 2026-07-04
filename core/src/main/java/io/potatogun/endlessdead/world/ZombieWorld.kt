@@ -24,13 +24,13 @@ import io.potatogun.endlessdead.spawner.Spawner;
 import io.potatogun.endlessdead.spawner.TriggermanSpawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
 import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.collections.randomOrNull;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.TextureUtils;
 import io.potatogun.gdxhelper.util.Utils;
-import io.potatogun.gdxhelper.util.randomOrNull;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
 
