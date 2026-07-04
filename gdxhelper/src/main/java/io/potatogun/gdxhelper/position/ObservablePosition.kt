@@ -3,7 +3,7 @@ package io.potatogun.gdxhelper.position;
 import com.badlogic.gdx.utils.Array as GdxArray;
 import com.badlogic.gdx.utils.ObjectMap;
 
-import java.util.function.BiConsumer;
+import io.potatogun.gdxhelper.util.FloatBiConsumer;
 
 import kotlin.properties.Delegates;
 
@@ -15,7 +15,7 @@ import kotlin.properties.Delegates;
  */
 class ObservablePosition(x: Float, y: Float) : MutablePosition(x, y) {
 	private val changeHandlers = GdxArray<(x: Float, y: Float) -> Unit>(false, 2);
-	private val javaHandlerMap = ObjectMap<BiConsumer<Float, Float>, (x: Float, y: Float) -> Unit>(2);
+	private val javaHandlerMap = ObjectMap<FloatBiConsumer, (x: Float, y: Float) -> Unit>(2);
 	override var x: Float by Delegates.observable(x) { _, _, _ -> invokeObservers() };
 	override var y: Float by Delegates.observable(y) { _, _, _ -> invokeObservers() };
 
@@ -24,7 +24,7 @@ class ObservablePosition(x: Float, y: Float) : MutablePosition(x, y) {
 	 *
 	 * @param handler 콜백
 	 */
-	fun addObserver(handler: BiConsumer<Float, Float>) {
+	fun addObserver(handler: FloatBiConsumer) {
 		val ktHandler: (Float, Float) -> Unit = handler::accept;
 		javaHandlerMap.put(handler, ktHandler);
 		changeHandlers.add(ktHandler);
@@ -44,7 +44,7 @@ class ObservablePosition(x: Float, y: Float) : MutablePosition(x, y) {
 	 *
 	 * @param handler 해제할 콜백
 	 */
-	fun removeObserver(handler: BiConsumer<Float, Float>) {
+	fun removeObserver(handler: FloatBiConsumer) {
 		javaHandlerMap[handler]?.let {
 			changeHandlers.removeValue(it, true);
 			javaHandlerMap.remove(handler);

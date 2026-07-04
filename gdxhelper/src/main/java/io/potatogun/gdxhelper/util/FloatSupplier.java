@@ -1,7 +1,9 @@
 package io.potatogun.gdxhelper.util;
 
+import org.jetbrains.annotations.NotNull;
+
 /**
- * 원시 float 반환형을 사용하는 람다함수
+ * '원시' float 반환형을 사용하는 람다함수
  */
 @FunctionalInterface
 public interface FloatSupplier {
@@ -15,10 +17,10 @@ public interface FloatSupplier {
 	/**
 	 * 지정한 정적 값을 반환하는 함수를 생성한다.
 	 *
-	 * @param 반환 값
-	 * @return 람다 함수
+	 * @param value 값
+	 * @return      람다 함수
 	 */
-	static FloatSupplier of(float value) {
+	@NotNull static FloatSupplier of(float value) {
 		return () -> value;
 	}
 }

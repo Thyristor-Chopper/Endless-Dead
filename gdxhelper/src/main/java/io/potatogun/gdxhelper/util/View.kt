@@ -3,7 +3,7 @@ package io.potatogun.gdxhelper.util;
 import com.badlogic.gdx.utils.Array as GdxArray;
 
 import java.util.function.Consumer;
-import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * 리스트, 배열, 컬렉션 등을 '읽기 전용'으로 상호작용할 수 있는 뷰이다.
@@ -53,9 +53,9 @@ interface View<T> : Iterable<T> {
 	 * @param condition 조건
 	 * @return 결과 목록
 	 */
-	fun filter(condition: Function<T, Boolean>): GdxArray<T> {
+	fun filter(condition: Predicate<T>): GdxArray<T> {
 		val output = GdxArray<T>(false, size);
-		filter(condition::apply, output);
+		filter(condition::test, output);
 		return output;
 	}
 
@@ -77,8 +77,8 @@ interface View<T> : Iterable<T> {
 	 * @param condition 조건
 	 * @param output    결과를 저장할 목록 (이미 다른 원소가 있다면 덮어씌워짐)
 	 */
-	fun filter(condition: Function<T, Boolean>, output: GdxArray<T>) {
-		filter(condition::apply, output);
+	fun filter(condition: Predicate<T>, output: GdxArray<T>) {
+		filter(condition::test, output);
 	}
 
 	/**
