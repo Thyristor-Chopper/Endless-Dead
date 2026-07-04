@@ -6,6 +6,8 @@ import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
 
+import java.util.function.Consumer;
+
 /**
  * 선형 목록에서 모두 관리하는 기초적인 관리자
  *
@@ -55,9 +57,9 @@ class LinearEntityManager(world: World, capacity: Int, private val nearbyThresho
 		}
 	}
 
-	override fun forEachNearby(entity: Entity, callback: (Entity) -> Unit) {
+	override fun forEachNearby(entity: Entity, callback: Consumer<Entity>) {
 		for(it in allEntities)
 			if(it.distanceTo(entity) <= nearbyThreshold)
-				callback(it);
+				callback.accept(it);
 	}
 }

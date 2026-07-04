@@ -44,22 +44,12 @@ interface EntityManager {
 	fun updatePosition(entity: Entity) {}
 
 	/**
-	 * 현재 개체의 주변 개체를 순회한다 (자바 전용) - 아래 함수나 이 함수 중 하나는 '반드시' 실제 로직으로 구현해야 한다.
+	 * 현재 개체의 주변 개체를 순회한다 - 자바 개발자도 편하게 구현할 수 있도록 Consumer를 사용하며 코틀린에서 호출할 때는 일반 { x -> ... } 람다로 여전히 호출 가능하다.
 	 *
-	 * @param entity 기준 개체
+	 * @param entity   기준 개체
+	 * @param callback 실행할 서브루틴
 	 */
-	fun forEachNearby(entity: Entity, callback: Consumer<Entity>) {
-		forEachNearby(entity, callback::accept);
-	}
-
-	/**
-	 * 현재 개체의 주변 개체를 순회한다. (코틀린 전용) - 위 함수나 이 함수 중 하나는 '반드시' 실제 로직으로 구현해야 한다.
-	 *
-	 * @param entity 기준 개체
-	 */
-	@JvmSynthetic fun forEachNearby(entity: Entity, callback: (Entity) -> Unit) {
-		forEachNearby(entity, Consumer(callback::invoke));
-	}
+	fun forEachNearby(entity: Entity, callback: Consumer<Entity>);
 
 	/**
 	 * 등록된 모든 객체를 그린다.

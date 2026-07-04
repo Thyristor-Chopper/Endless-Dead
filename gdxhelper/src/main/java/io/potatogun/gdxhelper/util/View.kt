@@ -2,11 +2,12 @@ package io.potatogun.gdxhelper.util;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
 
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
  * 리스트, 배열, 컬렉션 등을 '읽기 전용'으로 상호작용할 수 있는 뷰이다.
+ *
+ * 참고: forEach는 코틀린이 자동으로 제공한다.
  */
 interface View<T> : Iterable<T> {
 	/**
@@ -48,48 +49,24 @@ interface View<T> : Iterable<T> {
 	fun sortedWith(comparator: Comparator<T>, output: GdxArray<T>);
 
 	/**
-	 * 지정한 조건에 해당하는 개제만 모은다 (자바 전용).
+	 * 지정한 조건에 해당하는 개제만 모은다.
 	 *
 	 * @param condition 조건
 	 * @return 결과 목록
 	 */
 	fun filter(condition: Predicate<T>): GdxArray<T> {
 		val output = GdxArray<T>(false, size);
-		filter(condition::test, output);
-		return output;
-	}
-
-	/**
-	 * 지정한 조건에 해당하는 개제만 모은다. (코틀린 전용)
-	 *
-	 * @param condition 조건
-	 * @return 결과 목록
-	 */
-	@JvmSynthetic fun filter(condition: (T) -> Boolean): GdxArray<T> {
-		val output = GdxArray<T>(false, size);
 		filter(condition, output);
 		return output;
 	}
 
 	/**
-	 * 지정한 조건에 해당하는 개제만 모은다 (자바 전용) - 아래 함수나 이 함수 중 하나는 '반드시' 실제 로직으로 구현해야 한다.
+	 * 지정한 조건에 해당하는 개제만 모은다 - 자바 개발자도 편하게 구현할 수 있도록 Predicate를 사용하며 코틀린에서 호출할 때는 일반 { x -> ... } 람다로 여전히 호출 가능하다.
 	 *
 	 * @param condition 조건
 	 * @param output    결과를 저장할 목록 (이미 다른 원소가 있다면 덮어씌워짐)
 	 */
-	fun filter(condition: Predicate<T>, output: GdxArray<T>) {
-		filter(condition::test, output);
-	}
-
-	/**
-	 * 지정한 조건에 해당하는 개제만 모은다. (코틀린 전용) - 위 함수나 이 함수 중 하나는 '반드시' 실제 로직으로 구현해야 한다.
-	 *
-	 * @param condition 조건
-	 * @param output    결과를 저장할 목록 (이미 다른 원소가 있다면 덮어씌워짐)
-	 */
-	@JvmSynthetic fun filter(condition: (T) -> Boolean, output: GdxArray<T>) {
-		filter(Predicate(condition::invoke), output);
-	}
+	fun filter(condition: Predicate<T>, output: GdxArray<T>);
 
 	/**
 	 * 개체 목록을 새 배열로 복사한다.
@@ -108,25 +85,6 @@ interface View<T> : Iterable<T> {
 	 * @param output 대상 배열 (기존 원소는 덮어씌워짐)
 	 */
 	fun clone(output: GdxArray<T>);
-
-	/**
-	 * 모든 개체를 순회한다 (자바 전용) - 아래 함수나 이 함수 중 하나는 '반드시' 실제 로직으로 구현해야 한다.
-	 *
-	 * @param callback 이번 개체에 대해 실행할 서브루틴
-	 */
-	override fun forEach(callback: Consumer<in T>?) {
-		if(callback == null) return;
-		forEach(callback::accept);
-	}
-
-	/**
-	 * 모든 개체를 순회한다. (코틀린 전용) - 위 함수나 이 함수 중 하나는 '반드시' 실제 로직으로 구현해야 한다.
-	 *
-	 * @param callback 이번 개체에 대해 실행할 서브루틴
-	 */
-	@JvmSynthetic fun forEach(callback: (T) -> Unit) {
-		forEach(Consumer(callback::invoke));
-	}
 
 	/**
 	 * 순회기를 반환한다.

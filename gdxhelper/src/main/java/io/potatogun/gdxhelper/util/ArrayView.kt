@@ -2,6 +2,8 @@ package io.potatogun.gdxhelper.util;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
 
+import java.util.function.Predicate;
+
 class ArrayView<T>(private val array: GdxArray<T>) : View<T> {
 	override val size: Int
 		get() = array.size;
@@ -21,21 +23,21 @@ class ArrayView<T>(private val array: GdxArray<T>) : View<T> {
 		Utils.sortWith<T>(output, comparator);
 	}
 
-	override fun filter(condition: (T) -> Boolean): GdxArray<T> {
+	override fun filter(condition: Predicate<T>): GdxArray<T> {
 		val output = GdxArray<T>(array.size);
 		for(i in 0 until array.size) {
 			val element = array[i];
-			if(condition(element))
+			if(condition.test(element))
 				output.add(element);
 		}
 		return output;
 	}
 
-	override fun filter(condition: (T) -> Boolean, output: GdxArray<T>) {
+	override fun filter(condition: Predicate<T>, output: GdxArray<T>) {
 		output.clear();
 		for(i in 0 until array.size) {
 			val element = array[i];
-			if(condition(element))
+			if(condition.test(element))
 				output.add(element);
 		}
 	}
@@ -51,11 +53,6 @@ class ArrayView<T>(private val array: GdxArray<T>) : View<T> {
 		output.clear();
 		for(i in 0 until array.size)
 			output.add(array[i]);
-	}
-
-	override fun forEach(callback: (T) -> Unit) {
-		for(i in 0 until array.size)
-			callback(array[i]);
 	}
 
 	override fun iterator(): Iterator<T> = GdxArray.ArrayIterator<T>(array, false);

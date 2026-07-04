@@ -17,6 +17,8 @@ import io.potatogun.gdxhelper.util.Math.max2;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
 
+import java.util.function.Consumer;
+
 import kotlin.math.floor;
 
 /**
@@ -134,7 +136,7 @@ class SpatialGrid(world: World, capacity: Int, private val tileSize: Float) : Ar
 		tilesOfEntity.put(entity, newHashes);
 	}
 
-	override fun forEachNearby(entity: Entity, callback: (Entity) -> Unit) {
+	override fun forEachNearby(entity: Entity, callback: Consumer<Entity>) {
 		val outerRange = 1;
 		val maxHalfLength = max2(entity.width, entity.height) * 0.5f;
 
@@ -151,7 +153,7 @@ class SpatialGrid(world: World, capacity: Int, private val tileSize: Float) : Ar
 				for(i in 0 until entities.size) {
 					val e = entities[i];
 					if(visited.add(e))
-						callback(e);
+						callback.accept(e);
 				}
 			}
 		visitedPool.free(visited);
