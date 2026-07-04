@@ -18,7 +18,7 @@ import io.potatogun.gdxhelper.world.World;
  * 좀비 — 플레이어를 따라 자동으로 이동하고 손공격하는 몹
  *
  * @param world    개체가 속한 세계
- * @param Zombie   개체 이름
+ * @param name     개체 이름
  * @param x        개체의 처음 X 위치
  * @param y        개체의 처음 Y 위치
  * @param width    가로 크기 (픽셀)

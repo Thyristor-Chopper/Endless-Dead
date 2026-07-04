@@ -22,7 +22,7 @@ import kotlin.math.atan2;
 import kotlin.random.Random;
 
 /**
- * 포탑 (자동 총알 발사 기계)
+ * 포탑 - 자동 총알 발사 기계
  */
 abstract class Turret private constructor(world: World, name: String, x: Float, y: Float, gun: Item?, health: Int, isPermanent: Boolean, texture: Texture, final override val inventory: SingleItemInventory) : Mob(world, name, x, y, 83f, 154f, health, texture), InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable {
 	private val rotator = RotateToTarget(this);

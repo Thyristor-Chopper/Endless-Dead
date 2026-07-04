@@ -9,7 +9,7 @@ import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 
 /**
- * 좀비 공격 포탑 설치기
+ * 좀비 공격 포탑 설치기 아이템
  */
 class TurretInstaller : Item("turret_installer", "Turret Installer", Item.Properties().rarity(Rarity.RARE)), Usable {
 	override val isContinuousUseAllowed = false;
@@ -17,7 +17,7 @@ class TurretInstaller : Item("turret_installer", "Turret Installer", Item.Proper
 	override fun use(user: InventoryHolder): Boolean {
 		if(!user.inventory.hasItem(this)) return false;
 		if(user !is Entity) return false;
-		val world = user.world;
+		val world = user.getWorld();
 		world.entities.add(
 			if(user is LivingEntity && user.team == "friends") FriendlyTurret(world, user.x, user.y)  // 플레이어도 포함
 			else HostileTurret(world, user.x, user.y)

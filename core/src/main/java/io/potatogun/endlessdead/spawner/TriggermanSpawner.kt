@@ -12,6 +12,11 @@ import io.potatogun.gdxhelper.world.World;
 
 import kotlin.random.Random;
 
+/**
+ * 총잡이 소환기
+ *
+ * @property world 소속 월드
+ */
 class TriggermanSpawner(private val world: World) : Spawner {
 	private val spawnInterval = 5f;
 	private val timerManager = TimerManager();

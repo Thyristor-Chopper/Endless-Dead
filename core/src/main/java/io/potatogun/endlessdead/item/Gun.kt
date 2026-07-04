@@ -21,12 +21,12 @@ import kotlin.math.cos;
 import kotlin.math.sin;
 
 /**
- * 총 아이템 추상 클래스
+ * 총 추상 클래스
  *
  * @param id       총 식별자
  * @param name     총 이름
  * @param settings 총 옵션
- * @throws IllegalArgumentException	총 옵션이 잘못된 경우
+ * @throws IllegalArgumentException 총 옵션이 잘못된 경우
  */
 abstract class Gun(id: String, name: String, settings: Properties) : Item(id, name, settings), Shootable, Usable {
 	override val isContinuousUseAllowed = false;
@@ -103,9 +103,9 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	}
 
 	/**
-	 * 남은 총탄 개수를 구한다. (외부에서 사용)
+	 * 남은 총탄 개수를 구한다.
 	 */
-	fun getRemainingBullets(): Int = remainingBullets;
+	fun getRemainingBullets(): Int = remainingBullets;  // 외부용 API
 
 	/**
 	 * 총 쏘기
@@ -115,7 +115,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	 * @return 쏜 총알 개수 (실패하면 0)
 	 */
 	override fun shoot(target: Position, shooter: Entity): Int {
-		val world = shooter.world;
+		val world = shooter.getWorld();
 		var shooted = 0;
 
 		if(canFire) {
@@ -150,8 +150,9 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		if(user !is Entity) return false;
 
 		// 개체 회전 각도에 맞는 임의의 위치를 생성한다.
+		val world = user.getWorld();
 		val radians = toRadians(user.getRotationAngle() + 90.0);
-		val distance = max2(user.world.width, user.world.height);  // 그냥 100f 이상 가능한 한 큰 수면 된다.
+		val distance = max2(world.width, world.height);  // 그냥 100f 이상 가능한 한 큰 수면 된다.
 		val targetX = cos(radians) * distance + user.x;
 		val targetY = sin(radians) * distance + user.y;
 		return shoot(Position(targetX.toFloat(), targetY.toFloat()), user) > 0;

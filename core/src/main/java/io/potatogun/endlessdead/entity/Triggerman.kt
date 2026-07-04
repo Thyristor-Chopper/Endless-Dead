@@ -16,7 +16,7 @@ import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.world.World;
 
 /**
- * 총을 쏘는 적
+ * 총잡이 - 총을 쏘는 적
  */
 class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: SingleItemInventory) : Mob(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable {
 	private val rotator = RotateToTarget(this);
@@ -26,7 +26,7 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	override val damageInvincibilityDuration = 0.15f;
 
 	/**
-	 * 총을 쏘는 적을 생성한다.
+	 * 총잡이를 생성한다.
 	 *
 	 * @param world 개체가 속한 세계
 	 * @param x     개체의 처음 X 위치

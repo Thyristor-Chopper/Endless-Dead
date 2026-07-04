@@ -3,7 +3,18 @@ package io.potatogun.endlessdead.entity.ai;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Mob;
 
-class DashToTarget(private val attacker: Mob, private val dashDamage: Int, private val dashSpeed: Float, private val dashThreshold: Float) : Behavior {
+/**
+ * 대상에게 돌진한다.
+ *
+ * @property attacker    공격자
+ * @property dashDamage  돌진 시 피해량
+ * @property dashSpeed   돌진 속도
+ * @property minDistance 돌진하기 위해 접근해야 할 최소 거리
+ */
+class DashToTarget(private val attacker: Mob, private val dashDamage: Int, private val dashSpeed: Float, private val minDistance: Float) : Behavior {
+	/**
+	 * 현재 AI 상태
+	 */
 	var state = State.STANDBY
 		private set;
 	private var stateTimer = 0f;
@@ -18,7 +29,7 @@ class DashToTarget(private val attacker: Mob, private val dashDamage: Int, priva
 		when(state) {
 			State.STANDBY -> {
 				val distance = attacker.distanceTo(target);
-				if(distance < dashThreshold) {
+				if(distance < minDistance) {
 					state = State.PREPARING;
 					stateTimer = 0.5f;
 

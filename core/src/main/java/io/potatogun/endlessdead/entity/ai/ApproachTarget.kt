@@ -11,6 +11,9 @@ import io.potatogun.endlessdead.entity.Mob;
  * @property targetCenterGapFactor 대상의 크기(변 길이)의 이 곱만큼 간격을 둔다.
  */
 class ApproachTarget(private val attacker: Mob, private val targetDistance: Float = 0f, private val targetCenterGapFactor: Float = 0f) : Behavior {
+	/**
+	 * 현재 AI 상태
+	 */
 	var state = State.STANDBY
 		private set;
 

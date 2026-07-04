@@ -37,7 +37,8 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 	val rarity: Rarity;
 	/**
 	 * 아이템 텍스처 (인벤토리용)
-	 *   ID가 텍스처 화일명이 된다.
+	 *
+	 * 아이템 식별자가 텍스처 화일명이 된다.
 	 */
 	val texture = textures.get(this);
 
@@ -45,10 +46,6 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 		settings.fillDefaults();
 		rarity = settings.rarity;
 	}
-
-	override fun equals(other: Any?): Boolean = other is Item && other.id == this.id;
-
-	override fun hashCode(): Int = id.hashCode();
 
 	/**
 	 * 아이템을 파괴한다.
@@ -89,6 +86,9 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 		internal open fun fillDefaults() {}
 	}
 
+	/**
+	 * 아이템 텍스처 관리자
+	 */
 	class ItemTextures internal constructor() : SharedTextureManager() {
 		init {
 			register("default", "item/default.bmp");

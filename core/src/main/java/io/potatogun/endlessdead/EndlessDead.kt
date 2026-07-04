@@ -7,7 +7,7 @@ import io.potatogun.gdxhelper.Game;
 import io.potatogun.gdxhelper.Window;
 
 /**
- * 이 게임의 메인 본체
+ * 좀비 파밍 게임의 메인 본체
  */
 class EndlessDead : Game() {
 	// 미리 등록된 스크린. val은 lateinit이 불가하여 lazy 위임 사용.
@@ -15,7 +15,7 @@ class EndlessDead : Game() {
 	internal val worldViewer: ZombieWorldProjector by lazy { ZombieWorldProjector(this) };
 
 	/**
-	 * LibGDX가 게임 시작 시 한 번 호출하는 메쏘드
+	 * 게임 시작 시 한 번 호출되는 메쏘드
 	 */
 	override fun create() {
 		setScreen(titleScreen);  // 부모 Game이 제공하는 메서드

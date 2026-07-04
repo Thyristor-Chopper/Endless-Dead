@@ -30,6 +30,9 @@ class Title(private val game: EndlessDead) : Screen() {
 		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, { 120f }, caption = "Quit", color = Utils.rgb(225, 247, 231)) { Gdx.app.exit() });
 	}
 
+	/**
+	 * 게임을 시작한다.
+	 */
 	private fun startGame() {
 		GameManager.resetAll();
 		GameManager.setPlaying();
@@ -51,9 +54,10 @@ class Title(private val game: EndlessDead) : Screen() {
 		batch.draw(stillCut, 0f, 0f, Window.width, Window.height);
 	}
 
-	// 아무 키나 누르시오. 구현,
-	//   titleBlinkTimer로 깜박이는 간격 구현
 	override fun drawElements() {
+		// 아무 키나 누르시오. 구현,
+		//   titleBlinkTimer로 깜박이는 간격 구현
+
 		val titleWidth = Window.width * 0.75f;
 		val titleHeight = titleWidth / 6f;
 		val titleX = (Window.width - titleWidth) * 0.5f;

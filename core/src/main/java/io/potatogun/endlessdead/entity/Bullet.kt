@@ -15,8 +15,6 @@ import kotlin.math.sqrt;
 /**
  * 총알 개체
  *
- * MeleeAttacker로 분류해야 할지가 애매하지만 일단은 아닌 것으로 본다.
- *
  * @param    world        총알이 있는 세계
  * @property gun          쏜 발사기
  * @property shooter      쏜 개체

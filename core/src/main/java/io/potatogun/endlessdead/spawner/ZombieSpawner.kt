@@ -16,8 +16,7 @@ import kotlin.random.Random;
 /**
  * 좀비 소환기
  *
- * @property world         소속 세계
- * @property spawnInterval 소환 간격
+ * @property world 소속 월드
  */
 class ZombieSpawner(private val world: World) : Spawner {
 	private val spawnInterval = 3f;

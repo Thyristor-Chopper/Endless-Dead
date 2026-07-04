@@ -7,7 +7,9 @@ import io.potatogun.endlessdead.inventory.Inventory;
  */
 interface InventoryHolder {
 	/**
-	 * 할당되는 인벤토리 (자바에서는 getInventory()가 되겠지)
+	 * 할당되는 인벤토리
+	 *
+	 * 자바에서는 getInventory() 사용
 	 */
 	val inventory: Inventory;
 }

@@ -37,8 +37,7 @@ import io.potatogun.gdxhelper.widget.ProgressBar;
 import io.potatogun.gdxhelper.world.World;
 
 /**
- * WorldProjector 자체는 정말 월드 자체만을 보여주는 기본적인 뷰어이다.
- *   이를 확장하여 HUD나 다채로운 화면을 구현해보자.
+ * 게임 목적에 맞게 HUD와 체력 정보, 총 정보 등을 표시해주는 월드 뷰어.
  *   이쪽에는 우리 게임의 목적에 맞게 HP 미터기, 일시 정지 처리, 게임 오버 화면 등이 모두 구현되어 있다.
  *
  * @property game 게임 인스턴스
@@ -115,26 +114,18 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			GameManager.pause();
 	}
 
-	/**
-	 * 매 프레임 게임 로직 — 모든 '입력 처리·상태 변경'은 이 안에서.
-	 *
-	 * 상태별로 해야 할 일이 완전히 다르므로 when으로 분기한다.
-	 * (입력 처리가 render()가 아닌 update() 에 있는 이유:
-	 *  '로직과 그리기의 분리' — render는 매 프레임 그리는 일에만 집중하고,
-	 *  상태 변화·입력은 update가 책임진다.)
-	 */
 	override fun update(delta: Float) {
 		timerManager.tick(delta);
 
 		when {
 			GameManager.isPlaying	-> updatePlaying(delta);
-			GameManager.isPaused	-> updatePaused(delta);
+			GameManager.isPaused	-> updatePaused();
 			GameManager.isGameOver	-> updateGameOver();
 		}
 	}
 
 	/**
-	 * PLAYING 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크
+	 * 게임 진행 중 상태에서 매 프레임 처리 — 카메라 이동, 객체 갱신, 충돌 체크
 	 *
 	 * @param delta 직전 프레임과의 간격 (초)
 	 */
@@ -257,10 +248,8 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	 *
 	 * 객체 업데이트(super.update)나 타이머(spawner.tick)를 호출하지 않음.
 	 *   세상이 그대로 멈춰있는 상태가 됨.
-	 *
-	 * @param 직전 프레임과의 간격(초)
 	 */
-	private inline fun updatePaused(delta: Float) {  // update에서만 한 번 쓰이기 때문에 inline이다.
+	private inline fun updatePaused() {  // update에서만 한 번 쓰이기 때문에 inline이다.
 		// 제목 표시줄에 통계 표시
 		updateTitleBarInfo();
 		
@@ -282,6 +271,9 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			restartGame();
 	}
 
+	/**
+	 * 다음 라운드로 게임을 재시작한다.
+	 */
 	private fun restartGame() {
 		GameManager.resetAll();
 		GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
@@ -302,7 +294,9 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		}
 	}
 
-	// 일시 정지 시 맨 위에 메시지와 컨트롤 표시
+	/**
+	 * 일시 정지 시나 게임 오버 시 메시지와 컨트롤 표시
+	 */
 	override fun drawOverlay() {
 		// 일시 정지 시 어둡게 변경
 		if(!GameManager.isPlaying)

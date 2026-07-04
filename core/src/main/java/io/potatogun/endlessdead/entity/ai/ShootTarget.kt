@@ -6,13 +6,16 @@ import io.potatogun.endlessdead.entity.Mob;
 import io.potatogun.endlessdead.item.Shootable;
 
 /**
- * 대상에게 발사체를 쏜다.
+ * 대상에게 일정 거리까지 접근하고 발사체를 쏜다.
  *
  * @property attacker       공격자
  * @property targetDistance 얼만큼 다가갈지의 값 (0: 쏘기 전에 굳이 다가가지 않음)
  */
 class ShootTarget(private val attacker: Mob, private val targetDistance: Float = 0f) : Behavior {
 	private val approacher: ApproachTarget? = if(targetDistance > 0f) ApproachTarget(attacker, targetDistance) else null;
+	/**
+	 * 현재 AI 상태
+	 */
 	var state = State.STANDBY
 		private set;
 

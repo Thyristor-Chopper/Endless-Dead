@@ -16,16 +16,25 @@ abstract class ObservableInventory : Inventory {
 	private val itemRemoveObservers = GdxArray<Consumer<Item>>(false, 2);
 	private val clearObservers = GdxArray<Runnable>(false, 2);
 
+	/**
+	 * 아이템 추가 이벤트 핸들러를 실행한다.
+	 */
 	protected fun invokeItemAddObservers(item: Item) {
 		for(i in 0 until itemAddObservers.size)
 			itemAddObservers[i].accept(item);
 	}
 
+	/**
+	 * 아이템 제거 이벤트 핸들러를 실행한다.
+	 */
 	protected fun invokeItemRemoveObservers(item: Item) {
 		for(i in 0 until itemRemoveObservers.size)
 			itemRemoveObservers[i].accept(item);
 	}
 
+	/**
+	 * 인벤토리 초기화 이벤트 핸들러를 실행한다.
+	 */
 	protected fun invokeClearObservers() {
 		for(i in 0 until clearObservers.size)
 			clearObservers[i].run();

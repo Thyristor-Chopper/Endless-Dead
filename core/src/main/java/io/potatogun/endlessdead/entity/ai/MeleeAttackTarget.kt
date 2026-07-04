@@ -11,6 +11,9 @@ import io.potatogun.endlessdead.entity.Mob;
  */
 class MeleeAttackTarget(private val attacker: Mob, private val targetCenterGapFactor: Float = 0f) : Behavior {
 	private val approacher = ApproachTarget(attacker, targetCenterGapFactor = targetCenterGapFactor);
+	/**
+	 * 현재 AI 상태
+	 */
 	var state = State.STANDBY
 		private set;
 

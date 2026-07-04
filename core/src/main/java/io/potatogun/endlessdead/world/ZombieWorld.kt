@@ -43,11 +43,13 @@ import kotlin.random.Random;
  */
 class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, entityCapacity = 256, tileSize = 128f), Freezable, SinglePlayerWorld {
 	/**
-	 * 플레이어 — 월드 중앙에서 시작.
+	 * 플레이어
+	 *
+	 * 월드 중앙에서 시작.
 	 */
 	override val player = Player(this, width * 0.5f, height * 0.5f);
 	/**
-	 * 등록된 스포너
+	 * 등록된 스포너 목록
 	 */
 	private val spawners = GdxArray<Spawner>(false, 2);
 	// 체스판 배경 설정 (drawBackground()에서 사용)
@@ -120,6 +122,8 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 	/**
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다.
+	 *
+	 * @param allowRare 희귀 아이템 생성 가능 여부
 	 */
 	private fun generateRandomItem(allowRare: Boolean = true): Item {
 		val rand = Random.nextInt(1000) + 1;  // 1~1000
@@ -162,9 +166,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	//  매 프레임 로직
 	// ────────────────────────────────────────────────────────
 
-	/**
-	 * 매 프레임 처리 — 개체, 스포너 및 타이머 갱신
-	 */
+	// 개체, 스포너 및 타이머를 갱신한다.
 	override fun update(delta: Float) {
 		timerManager.tick(delta);
 
@@ -185,11 +187,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	//  매 프레임 그리기
 	// ────────────────────────────────────────────────────────
 
-	/**
-	 * 배경 그리기
-	 *
-	 * 카메라(offset)에 따라 타일 위치가 바뀌어 이동감을 준다.
-	 */
+	// 배경 그리기 - 카메라(offset)에 따라 타일 위치가 바뀌어 이동감을 준다.
 	override fun drawBackground() {
 		val screenWidth = Window.width;
 		val screenHeight = Window.height;
