@@ -9,7 +9,7 @@ allprojects {
 }
 
 subprojects {
-	// gdxhelper에서도 내용이 중복되지만 그건 원래 아예 분리된 (다른 프로젝트에서 재사용 가능한) 레파지토리이기 때문에 그렇다.
+	// gdxhelper의 build.gradle.kts에서도 내용이 중복되지만 그건 원래 아예 분리된 (다른 프로젝트에서 재사용 가능한) 레파지토리이기 때문에 그렇다.
 
 	tasks.withType<JavaCompile>().configureEach {
 		// package-info.java 한글 깨짐 방지
