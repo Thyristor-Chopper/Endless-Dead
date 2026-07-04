@@ -25,7 +25,8 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 	/**
 	 * 아이템 식별자
 	 */
-	@get:JvmName("getID") val id = id.lowercase();
+	@get:JvmName("getID")
+	val id = id.lowercase();
 	/**
 	 * 아이템을 들고 있는 인벤토리 (캐시)
 	 */

@@ -17,12 +17,13 @@ import io.potatogun.gdxhelper.world.World;
  * @property world 소속 월드
  */
 abstract class ArrayEntityManager(@JvmField protected val world: World, capacity: Int) : EntityManager {
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("view")
+	override val view: View<Entity> = allEntities.createView();
 	/**
 	 * 모든 개체 목록을 담는 배열
 	 */
 	@JvmField protected val allEntities = GdxArray<Entity>(false, capacity);
-	@Suppress("INAPPLICABLE_JVM_NAME")
-	@get:JvmName("view") override val view: View<Entity> = allEntities.createView();
 
 	override fun draw(batch: SpriteBatch) {
 		if(allEntities.isEmpty()) return;

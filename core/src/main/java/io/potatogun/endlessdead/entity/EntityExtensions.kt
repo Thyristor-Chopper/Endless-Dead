@@ -9,4 +9,4 @@ import io.potatogun.gdxhelper.entity.Entity;
  * @param entity 비교 대상
  * @return       같은 팀 여부
  */
-inline fun Entity.isSameTeamWith(entity: Entity): Boolean = (this is TeamMember && entity is TeamMember && team != null && entity.team != null && team == entity.team);
+@JvmName("isSameTeam") inline fun Entity.isSameTeamWith(entity: Entity): Boolean = (this is TeamMember && entity is TeamMember && team != null && entity.team != null && team == entity.team);

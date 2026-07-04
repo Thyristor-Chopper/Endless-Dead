@@ -14,7 +14,8 @@ interface View<T> : Iterable<T> {
 	 * 총 개체 수 - 자바에서는 view.size()
 	 */
 	@Suppress("INAPPLICABLE_JVM_NAME")
-	@get:JvmName("size") val size: Int;
+	@get:JvmName("size")
+	val size: Int;
 	/**
 	 * 개체 목록이 비어 있는지의 여부 - 자바에서는 view.isEmpty()
 	 */

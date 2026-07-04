@@ -12,7 +12,8 @@ interface Inventory {
 	 * 인벤토리 내 아이템 개수
 	 */
 	@Suppress("INAPPLICABLE_JVM_NAME")
-	@get:JvmName("size") val size: Int;
+	@get:JvmName("size")
+	val size: Int;
 	/**
 	 * 인벤토리가 비어 있는지의 여부
 	 */

@@ -47,7 +47,9 @@ object Utils {
 	 * @return	변환된 색 객체
 	 * @throws IllegalArgumentException 색 값이 잘못된 경우
 	 */
-	@JvmStatic @JvmOverloads inline fun rgb(r: Int, g: Int, b: Int, a: Float = 1.0f): Color {
+	@JvmStatic
+	@JvmOverloads
+	inline fun rgb(r: Int, g: Int, b: Int, a: Float = 1.0f): Color {
 		if(r > 255 || g > 255 || b > 255 || r < 0 || g < 0 || b < 0 || a > 1f || a < 0f)
 			throw IllegalArgumentException("invalid color value");
 		return Color(r / 255f, g / 255f, b / 255f, a);
@@ -68,7 +70,9 @@ object Utils {
 	 * @param width 텍스트 상자의 크기, 0은 자동 (오른쪽이나 가운데 정렬 시 반드시 필요, 이때는 0 불가)
 	 * @param align 글자 정렬(없으면 왼쪽 정렬)
 	 */
-	@JvmStatic @JvmOverloads fun drawText(batch: SpriteBatch, font: BitmapFont, text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float = 0f, align: Int = Align.left) {
+	@JvmStatic
+	@JvmOverloads
+	fun drawText(batch: SpriteBatch, font: BitmapFont, text: String, x: Float, y: Float, color: Color = Color.WHITE, scale: Float = 1f, width: Float = 0f, align: Int = Align.left) {
 		val skipBatch = batch.isDrawing();
 		font.color = color;
 		font.data.setScale(scale);

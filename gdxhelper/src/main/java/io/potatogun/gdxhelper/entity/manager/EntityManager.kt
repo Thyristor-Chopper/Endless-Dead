@@ -17,7 +17,8 @@ interface EntityManager {
 	 * 개체 목록 읽기 전용 상호작용 도구 - 자바에서는 .view()로 접근
 	 */
 	@Suppress("INAPPLICABLE_JVM_NAME")
-	@get:JvmName("view") val view: View<Entity>;
+	@get:JvmName("view")
+	val view: View<Entity>;
 
 	/**
 	 * 개체를 등록한다.
