@@ -33,4 +33,8 @@ public final class Constants {
 	 * 게임 제목
 	 */
 	@NotNull public static final String GAME_TITLE = "Endless Dead";
+	/**
+	 * 아이템 텍스처의 한 변 크기
+	 */
+	public static final float ITEM_SIZE = 24f;
 }

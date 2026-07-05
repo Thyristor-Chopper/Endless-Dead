@@ -4,6 +4,8 @@ import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.endlessdead.item.Item;
 
+import java.util.function.Consumer;
+
 /**
  * 하나의 아이템만 가질 수 있는 인벤토리 구현체
  */
@@ -53,6 +55,10 @@ class SingleItemInventory : ObservableInventory() {
 	override fun indexOf(item: Item): Int = if(inventoryItem === item) 0 else -1;
 
 	override fun getItems(): GdxArray<Item> = inventoryItem?.let { GdxArray<Item>(false, 1).apply { add(it) } } ?: GdxArray<Item>(false, 0);
+
+	override fun forEachItems(callback: Consumer<Item>) {
+		inventoryItem?.let { callback.accept(it) };
+	}
 
 	override fun clear() {
 		inventoryItem?.let {

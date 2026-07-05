@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Align;
 
+import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
@@ -486,7 +487,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 
 			// 현재 플레이어가 들고 있는 아이템
 			player.selectedItem?.let {
-				batch.draw(it.texture, 8f, 4f, 24f, 24f);
+				batch.draw(it.texture, 8f, 4f, Constants.ITEM_SIZE, Constants.ITEM_SIZE);
 				drawText(
 					text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.size}]",
 					x = 40f,

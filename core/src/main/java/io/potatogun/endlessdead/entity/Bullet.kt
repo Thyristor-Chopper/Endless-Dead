@@ -54,7 +54,7 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 		} else {
 			amountX = 0f;
 			amountY = 0f;
-			this.kill();  // 안 움직이는 총알 방지
+			this.remove();  // 안 움직이는 총알 방지
 		}
 
 		if(shooter is TeamMember)
@@ -70,7 +70,7 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 		// 화면 밖으로 나가면 소멸
 		val maxHalfLength = max2(width, height) * 0.5f;
 		if(x < 0f - maxHalfLength || x > world.width + maxHalfLength || y < 0f - maxHalfLength || y > world.height + maxHalfLength)
-			this.kill();
+			this.remove();
 
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지 주고 총알은 소멸.
 		world.entities.forEachNearby(this) { entity ->
@@ -80,7 +80,7 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 					if(entity is PenetratorDamagable)
 						this.takeDamage(entity.penetrationDamage, attacker = entity);
 				} else {
-					this.kill();
+					this.remove();
 				}
 			}
 		};

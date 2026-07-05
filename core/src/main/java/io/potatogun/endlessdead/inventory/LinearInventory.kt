@@ -4,6 +4,8 @@ import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.endlessdead.item.Item;
 
+import java.util.function.Consumer;
+
 /**
  * 인벤토리의 기본적인 구현체
  *
@@ -56,6 +58,11 @@ class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 	override fun indexOf(item: Item): Int = inventory.indexOf(item, true);
 
 	override fun getItems(): GdxArray<Item> = GdxArray(inventory);
+
+	override fun forEachItems(callback: Consumer<Item>) {
+		for(i in 0 until inventory.size)
+			callback.accept(inventory[i]);
+	}
 
 	override fun clear() {
 		for(i in 0 until inventory.size)

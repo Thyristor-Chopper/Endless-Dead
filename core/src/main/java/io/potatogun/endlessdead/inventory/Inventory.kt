@@ -4,6 +4,8 @@ import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.endlessdead.item.Item;
 
+import java.util.function.Consumer;
+
 /**
  * 인벤토리 인터페이스
  */
@@ -76,6 +78,13 @@ interface Inventory {
 	 * @return 인벤토리 아이템 목록
 	 */
 	fun getItems(): GdxArray<Item>;
+
+	/**
+	 * 모든 아이템을 순회한다.
+	 *
+	 * @param callback 실행할 서브루틴
+	 */
+	fun forEachItems(callback: Consumer<Item>);
 
 	/**
 	 * 인벤토리 비우기

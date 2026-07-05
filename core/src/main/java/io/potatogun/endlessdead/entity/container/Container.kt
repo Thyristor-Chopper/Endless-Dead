@@ -16,8 +16,8 @@ import io.potatogun.gdxhelper.world.World;
  *
  * @param    world        개체가 속한 세계
  * @param    name         개체 표시 이름
- * @param    x            개체의 처음 X 위치
- * @param    y            개체의 처음 Y 위치
+ * @param    x            개체의 X 위치
+ * @param    y            개체의 Y 위치
  * @param    width        개체 너비
  * @param    height       개체 높이
  * @param    texture      개체 텍스처

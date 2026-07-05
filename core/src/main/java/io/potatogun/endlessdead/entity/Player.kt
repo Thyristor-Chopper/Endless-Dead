@@ -30,7 +30,7 @@ import java.lang.ref.WeakReference;
 /**
  * 플레이어 — 화살표로 조종
  */
-class Player private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, TextureUtils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory) {
+class Player private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, TextureUtils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), ItemPickupable, ItemDroppable {
 	override val isUpdatableWhileFrozen = true;
 	private val textureWithGun = TextureUtils.loadTexture("entity/player_holding_gun.bmp");
 	override val movementSpeed = 200f;
@@ -44,6 +44,8 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	private var _latestAttackVictim: WeakReference<LivingEntity>? = null;
 	val latestAttackVictim: LivingEntity?
 		get() = _latestAttackVictim?.get();
+	override val canPickupItems = true;
+	override val canDropItems = true;
 
 	/**
 	 * 플레이어를 생성한다.
@@ -107,7 +109,14 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		if(Input.isScrolledUp())
 			selectPreviousItem();
 
-		// 이동
+		// 주변 아이템 줍기
+		pickupNearbyItems();
+
+		// 현재 아이템 버리기
+		if(Input.isKeyJustPressed(Input.BACKTICK))
+			selectedItem?.let { dropItem(it) };
+
+		// 이동 (총 쏜 이후에 처리할 것.)
 		val moved = updatePosition(delta);
 		if(moved) world.updateOffset();
 	}

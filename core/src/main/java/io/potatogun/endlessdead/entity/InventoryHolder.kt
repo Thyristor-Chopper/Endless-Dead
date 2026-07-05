@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead.entity;
 
 import io.potatogun.endlessdead.inventory.Inventory;
+import io.potatogun.endlessdead.item.Item;
 
 /**
  * 인벤토리가 있는 객체에 대한 인터페이스

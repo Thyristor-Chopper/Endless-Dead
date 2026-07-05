@@ -4,6 +4,8 @@ import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.endlessdead.item.Item;
 
+import java.util.function.Consumer;
+
 /**
  * 2차원 인벤토리 구현체
  *
@@ -166,6 +168,15 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 					ret.add(item);
 			}
 		return ret;
+	}
+
+	override fun forEachItems(callback: Consumer<Item>) {
+		for(i in 0 until rows)
+			for(j in 0 until columns) {
+				val item = inventory[i][j];
+				if(item != null)
+					callback.accept(item);
+			}
 	}
 
 	override fun clear() {

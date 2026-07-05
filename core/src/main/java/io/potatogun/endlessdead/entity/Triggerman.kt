@@ -15,15 +15,18 @@ import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.world.World;
 
+import kotlin.random.Random;
+
 /**
  * 총잡이 - 총을 쏘는 적
  */
-class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: SingleItemInventory) : Mob(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable {
+class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: SingleItemInventory) : Mob(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, ItemDroppable {
 	private val rotator = RotateToTarget(this);
 	private val shooter = ShootTarget(this, 360f);
 	override val movementSpeed = 140f;
 	override val penetrationDamage = 1;
 	override val damageInvincibilityDuration = 0.15f;
+	override val canDropItems = (Random.nextInt(1000) + 1 <= 1);  // 0.1% 확률로 총을 떨굴 수 있음
 
 	/**
 	 * 총잡이를 생성한다.
