@@ -44,7 +44,11 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	private var _latestAttackVictim: WeakReference<LivingEntity>? = null;
 	val latestAttackVictim: LivingEntity?
 		get() = _latestAttackVictim?.get();
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("canPickupItems")
 	override val canPickupItems = true;
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("canDropItems")
 	override val canDropItems = true;
 
 	/**

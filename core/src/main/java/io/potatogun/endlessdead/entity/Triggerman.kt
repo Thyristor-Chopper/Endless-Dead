@@ -26,6 +26,8 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	override val movementSpeed = 140f;
 	override val penetrationDamage = 1;
 	override val damageInvincibilityDuration = 0.15f;
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("canDropItems")
 	override val canDropItems = (Random.nextInt(1000) + 1 <= 1);  // 0.1% 확률로 총을 떨굴 수 있음
 
 	/**
