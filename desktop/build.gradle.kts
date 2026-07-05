@@ -1,6 +1,6 @@
 plugins {
 	kotlin("jvm")
-	id("org.jetbrains.dokka")
+	id("org.jetbrains.dokka-javadoc")
 	id("com.gradleup.shadow") version "8.3.11"  // 자바 8을 지원하는 마지막 버전
 	application
 }
@@ -18,6 +18,12 @@ application {
 	// macOS에서 LWJGL3 실행 시 필요
 	if(System.getProperty("os.name").lowercase().contains("mac")) {
 		applicationDefaultJvmArgs = listOf("-XstartOnFirstThread")
+	}
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+	compilerOptions {
+		freeCompilerArgs.addAll(listOf("-Xno-param-assertions"))
 	}
 }
 

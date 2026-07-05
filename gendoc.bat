@@ -1,1 +1,1 @@
-@gradlew dokkaJavadoc
+@gradlew dokkaGenerateJavadoc
