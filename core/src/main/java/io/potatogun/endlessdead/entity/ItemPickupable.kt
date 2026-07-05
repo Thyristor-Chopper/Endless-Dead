@@ -25,7 +25,7 @@ interface ItemPickupable {
 		if(this !is Entity) return false;
 		if(this !is InventoryHolder) return false;
 		var pickedUp = false;
-		getWorld().entities.forEachNearby(this) { entity ->
+		forEachNearby { entity ->
 			if(entity !is DroppedItem) return@forEachNearby;
 			if(!collidesWith(entity)) return@forEachNearby;
 			val item = entity.item;
@@ -48,7 +48,7 @@ interface ItemPickupable {
 		if(this !is InventoryHolder) return false;
 		val canSelectItem = this is ItemSelectable;
 		var found = false;
-		getWorld().entities.forEachNearby(this) { entity ->
+		forEachNearby { entity ->
 			if(entity !is DroppedItem) return@forEachNearby;
 			if(!collidesWith(entity)) return@forEachNearby;
 			val droppedItem = entity.item;

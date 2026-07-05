@@ -169,6 +169,16 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 		return result;
 	}
 
+	/**
+	 * 주변 개체를 손공격한다.
+	 */
+	protected fun meleeAttackNearby() {
+		forEachNearby { entity ->
+			if(entity is LivingEntity && collidesWith(entity))
+				damageTarget(entity);
+		};
+	}
+
 	override fun update(delta: Float) {
 		super.update(delta);
 
@@ -185,7 +195,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 			damagedIndicatorTimer -= delta;
 
 		// 몸 대미지 처리
-		world.entities.forEachNearby(this) { entity ->
+		forEachNearby { entity ->
 			if(entity is BodyDamagable && entity !== this && !isSameTeamWith(entity) && collidesWith(entity)) {
 				takeDamage(entity.bodyDamage, attacker = entity);
 			}

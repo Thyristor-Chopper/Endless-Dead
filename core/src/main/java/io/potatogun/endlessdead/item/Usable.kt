@@ -12,10 +12,10 @@ interface Usable {
 	val isContinuousUseAllowed: Boolean;
 
 	/**
-	 * 아이템 사용 처리
+	 * 아이템을 사용한다.
 	 *
 	 * @param user 아이템 사용자 (이 아이템을 실제로 들고 있어야 함)
-	 * @return 사용 성공 여부 (사용자가 이 아이템을 가지고 있지 않은 경우 실패)
+	 * @return 사용 성공 여부 (사용자가 이 아이템을 들고 있지 않은 경우 실패)
 	 */
 	fun use(user: ItemSelectable): Boolean;
 }

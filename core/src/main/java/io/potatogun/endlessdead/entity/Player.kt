@@ -156,7 +156,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	 */
 	private inline fun interactContainer() {  // update()에서만 한 번 쓰이기 때문에 inline이다.
 		val projector = world.projector;
-		world.entities.forEachNearby(this) { entity ->
+		forEachNearby { entity ->
 			if(entity !is Container || !collidesWith(entity)) return@forEachNearby;
 			if(entity.inventory.isEmpty) {
 				selectedItem?.let {
@@ -175,13 +175,6 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 						Statistics.openedContainerCount++;
 				}
 			}
-		};
-	}
-
-	private inline fun meleeAttackNearby() {
-		world.entities.forEachNearby(this) { entity ->
-			if(entity is LivingEntity && collidesWith(entity))
-				damageTarget(entity);
 		};
 	}
 

@@ -6,14 +6,11 @@ import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.ai.RotateToTarget;
 import io.potatogun.endlessdead.entity.ai.ShootTarget;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
-import io.potatogun.endlessdead.inventory.LinearInventory;
 import io.potatogun.endlessdead.inventory.ObservableInventory;
+import io.potatogun.endlessdead.inventory.SingleItemInventory;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.item.Shootable;
-import io.potatogun.endlessdead.item.SpeedPotion;
-import io.potatogun.endlessdead.item.TimeStopper;
-import io.potatogun.endlessdead.item.Usable;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
@@ -44,7 +41,7 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	 * @param x     개체의 처음 X 위치
 	 * @param y     개체의 처음 Y 위치
 	 */
-	constructor(world: World, x: Float, y: Float) : this(world, x, y, LinearInventory(2));
+	constructor(world: World, x: Float, y: Float) : this(world, x, y, SingleItemInventory());
 
 	init {
 		val gun = TriggermanGun();
@@ -63,36 +60,27 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	override fun update(delta: Float) {
 		super.update(delta);
 		pickupNearbyItems();
-		if(selectedItem !is Shootable)
-			inventory.forEachItems { if(it is Shootable) selectItem(it) };
 		rotator.update(delta);
 		shooter.update(delta);
 	}
 
-	// 총이 떨어져 있을 때 자신의 총보다 좋으면 갈아끼운다.
 	override fun pickupNearbyItems(): Boolean {
+		// 총이 떨어져 있을 때 자신의 총보다 좋으면 갈아끼운다.
 		if(!canPickupItems) return false;
 		var pickedUp = false;
-		world.entities.forEachNearby(this) { entity ->
+		forEachNearby { entity ->
 			if(entity !is DroppedItem) return@forEachNearby;
 			if(!collidesWith(entity)) return@forEachNearby;
 			val item = entity.item;
 			val selected = selectedItem;
-			if(item is Gun) {
-				if(selected !is Gun || item.bulletDamage > selected.bulletDamage) {
-					selected?.let {
-						if(canDropItems && Random.nextInt(2) == 0) dropItem(it);
-						else it.destroy();
-					};
-					entity.pickup(this);
-					pickedUp = true;
-					selectItem(item);
-				}
-			} else if(item is Usable && item !is TimeStopper && item !is SpeedPotion) {
+			if(item is Gun && (selected !is Gun || item.bulletDamage > selected.bulletDamage)) {
+				selected?.let {
+					if(canDropItems && Random.nextInt(2) == 0) dropItem(it);
+					else it.destroy();
+				};
 				entity.pickup(this);
 				pickedUp = true;
 				selectItem(item);
-				item.use(this);
 			}
 		};
 		return pickedUp;
