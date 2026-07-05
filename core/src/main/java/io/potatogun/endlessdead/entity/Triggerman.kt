@@ -74,7 +74,7 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 			val selected = selectedItem;
 			if(item is Gun && (selected !is Gun || item.bulletDamage > selected.bulletDamage)) {
 				selected?.let {
-					if(canDropItems) dropItem(it);
+					if(canDropItems && Random.nextInt(2) == 0) dropItem(it);
 					else it.destroy();
 				};
 				entity.pickup(this);
