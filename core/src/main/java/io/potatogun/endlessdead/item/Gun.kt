@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Bullet;
-import io.potatogun.endlessdead.entity.InventoryHolder;
+import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.entity.Entity;
@@ -145,8 +145,8 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	 *
 	 * @return 성공 여부
 	 */
-	override fun use(user: InventoryHolder): Boolean {
-		if(!user.inventory.hasItem(this)) return false;
+	override fun use(user: ItemSelectable): Boolean {
+		if(user.selectedItem !== this) return false;
 		if(user !is Entity) return false;
 
 		// 개체 회전 각도에 맞는 임의의 위치를 생성한다.

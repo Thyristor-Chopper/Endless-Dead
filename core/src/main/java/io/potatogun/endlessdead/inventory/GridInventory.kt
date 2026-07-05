@@ -160,19 +160,33 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	}
 
 	override fun getItems(): GdxArray<Item> {
-		val ret = GdxArray<Item>(rows * columns);
+		val output = GdxArray<Item>(rows * columns);
+		getItems(output);
+		return output;
+	}
+
+	override fun getItems(output: GdxArray<Item>) {
+		output.clear();
 		for(i in 0 until rows)
 			for(j in 0 until columns) {
 				val item: Item? = inventory[i][j];
 				if(item != null)
-					ret.add(item);
+					output.add(item);
 			}
-		return ret;
 	}
 
 	override fun forEachItems(callback: Consumer<Item>) {
 		for(i in 0 until rows)
 			for(j in 0 until columns) {
+				val item = inventory[i][j];
+				if(item != null)
+					callback.accept(item);
+			}
+	}
+
+	override fun forEachItemsReverse(callback: Consumer<Item>) {
+		for(i in (rows - 1)..0)
+			for(j in (columns - 1)..0) {
 				val item = inventory[i][j];
 				if(item != null)
 					callback.accept(item);

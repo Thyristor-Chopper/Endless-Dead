@@ -1,6 +1,6 @@
 package io.potatogun.endlessdead.item;
 
-import io.potatogun.endlessdead.entity.InventoryHolder;
+import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.TeamMember;
 import io.potatogun.endlessdead.entity.turret.FriendlyTurret;
@@ -14,8 +14,8 @@ import io.potatogun.gdxhelper.screen.drawSubtitles;
 class TurretInstaller : Item("turret_installer", "Turret Installer", Item.Properties().rarity(Rarity.RARE)), Usable {
 	override val isContinuousUseAllowed = false;
 
-	override fun use(user: InventoryHolder): Boolean {
-		if(!user.inventory.hasItem(this)) return false;
+	override fun use(user: ItemSelectable): Boolean {
+		if(user.selectedItem !== this) return false;
 		if(user !is Entity) return false;
 		val world = user.getWorld();
 		world.entities.add(

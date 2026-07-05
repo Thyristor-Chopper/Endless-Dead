@@ -56,7 +56,16 @@ class SingleItemInventory : ObservableInventory() {
 
 	override fun getItems(): GdxArray<Item> = inventoryItem?.let { GdxArray<Item>(false, 1).apply { add(it) } } ?: GdxArray<Item>(false, 0);
 
+	override fun getItems(output: GdxArray<Item>) {
+		output.clear();
+		inventoryItem?.let { output.add(it) };
+	}
+
 	override fun forEachItems(callback: Consumer<Item>) {
+		inventoryItem?.let { callback.accept(it) };
+	}
+
+	override fun forEachItemsReverse(callback: Consumer<Item>) {
 		inventoryItem?.let { callback.accept(it) };
 	}
 

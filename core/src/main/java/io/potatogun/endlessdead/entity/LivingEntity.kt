@@ -161,7 +161,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 */
 	private inline fun _onDeath() {  // 현재 한 곳에서만 쓰여서 인라인이며 두 곳 이상에서 쓰이게 되면 인라인 해제
 		if(this is InventoryHolder && this is ItemDroppable)
-			inventory.forEachItems { dropItem(it) };
+			inventory.forEachItemsReverse { dropItem(it) };
 	}
 
 	/**

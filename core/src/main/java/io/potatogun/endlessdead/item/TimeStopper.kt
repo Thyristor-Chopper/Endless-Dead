@@ -1,6 +1,6 @@
 package io.potatogun.endlessdead.item
 
-import io.potatogun.endlessdead.entity.InventoryHolder;
+import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.world.Freezable;
@@ -12,8 +12,8 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 	override val isContinuousUseAllowed = false;
 
 	// 타이머를 사용해서 시간을 3초 멈춘다.
-	override fun use(user: InventoryHolder): Boolean {
-		if(!user.inventory.hasItem(this)) return false;
+	override fun use(user: ItemSelectable): Boolean {
+		if(user.selectedItem !== this) return false;
 		if(user !is Player) return false;
 		val world = user.getWorld();
 		if(world !is Freezable) {

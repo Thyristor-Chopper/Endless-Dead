@@ -42,7 +42,7 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	 * @param x     개체의 처음 X 위치
 	 * @param y     개체의 처음 Y 위치
 	 */
-	constructor(world: World, x: Float, y: Float) : this(world, x, y, LinearInventory(3));
+	constructor(world: World, x: Float, y: Float) : this(world, x, y, LinearInventory(2));
 
 	init {
 		val gun = TriggermanGun();
@@ -87,6 +87,7 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 			} else if(item is TurretInstaller) {
 				entity.pickup(this);
 				pickedUp = true;
+				selectItem(item);
 				item.use(this);
 			}
 		};

@@ -17,6 +17,7 @@ import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Zombie;
+import io.potatogun.endlessdead.entity.isSameTeamWith;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Rarity;
@@ -70,6 +71,8 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	private val subtitlesVisible: Boolean
 		inline get() = (subtitlesTimer != null);
 	private var attackTarget: LivingEntity? = null;  // 매 업데이트 시 개체가 죽으면 초기화되므로 굳이 WeakReference 쓸 필요 없음
+	private val enemyBarColor = Utils.rgb(205, 46, 46);
+	private val friendBarColor = Utils.rgb(132, 208, 132);
 
 	init {
 		// 단색용 텍스처 생성
@@ -82,7 +85,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 
 		// 미터기 추가
 		addWidget("hp_indicator", ProgressBar({ 9f }, { Window.height - 38f }, { 180f }, color = Utils.rgb(73, 186, 73)));
-		addWidget("attack_target_hp_indicator", ProgressBar({ 210f }, { Window.height - 38f }, { 180f }, color = Utils.rgb(205, 46, 46)).apply { hide() });
+		addWidget("attack_target_hp_indicator", ProgressBar({ 210f }, { Window.height - 38f }, { 180f }, color = enemyBarColor).apply { hide() });
 		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, { 130f }, color = Utils.rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() });
 		addWidget("gun_cooldown_indicator", ProgressBar({ Window.width - 215f }, { 10f }, { 60f }, value=0.42f, color = Color.SCARLET).apply { hide() });
 
@@ -205,12 +208,13 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		targetIndicator.apply {
 			val target = attackTarget;
 			if(target != null) {
+				color = if(target.isSameTeamWith(player)) friendBarColor else enemyBarColor;
 				value = target.health.toFloat() / target.maxHealth;
 				show();
 			} else {
 				hide();
 			}
-		}
+		};
 
 		// 총 관련 미터기 처리
 		val holding: Item? = player.selectedItem;
@@ -500,17 +504,17 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 					scale = 1.0f
 				);
 			};
-		}
 
-		attackTarget?.let {
-			drawText(
-				text = "${it.name}  [ ${it.health} ]",
-				x = 211f,
-				y = Window.height - 8f,
-				color = Utils.rgb(247, 215, 215),
-				scale = 1.0f
-			);
-		};
+			attackTarget?.let {
+				drawText(
+					text = "${it.name}  [ ${it.health} ]",
+					x = 211f,
+					y = Window.height - 8f,
+					color = if(player.isSameTeamWith(it)) Utils.rgb(215, 247, 215) else Utils.rgb(247, 215, 215),
+					scale = 1.0f
+				);
+			};
+		}
 
 		// 점수
 		drawText(

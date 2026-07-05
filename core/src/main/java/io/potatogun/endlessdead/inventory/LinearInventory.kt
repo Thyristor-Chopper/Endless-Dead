@@ -57,10 +57,25 @@ class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 
 	override fun indexOf(item: Item): Int = inventory.indexOf(item, true);
 
-	override fun getItems(): GdxArray<Item> = GdxArray(inventory);
+	override fun getItems(): GdxArray<Item> {
+		val output = GdxArray<Item>(inventory.size);
+		getItems(output);
+		return output;
+	}
+
+	override fun getItems(output: GdxArray<Item>) {
+		output.clear();
+		for(i in 0 until inventory.size)
+			output.add(inventory[i]);
+	}
 
 	override fun forEachItems(callback: Consumer<Item>) {
 		for(i in 0 until inventory.size)
+			callback.accept(inventory[i]);
+	}
+
+	override fun forEachItemsReverse(callback: Consumer<Item>) {
+		for(i in (inventory.size - 1)..0)
 			callback.accept(inventory[i]);
 	}
 
