@@ -29,8 +29,7 @@ interface ItemPickupable {
 			if(entity !is DroppedItem) return@forEachNearby;
 			if(!collidesWith(entity)) return@forEachNearby;
 			val item = entity.item;
-			inventory.addItem(item);
-			entity.remove();
+			entity.pickup(this);
 			pickedUp = true;
 			if(this is ItemSelectable && selectedItem == null)
 				selectItem(item);
@@ -54,8 +53,7 @@ interface ItemPickupable {
 			if(!collidesWith(entity)) return@forEachNearby;
 			val droppedItem = entity.item;
 			if(item === droppedItem) {
-				inventory.addItem(droppedItem);
-				entity.remove();
+				entity.pickup(this);
 				found = true;
 				if(this is ItemSelectable && selectedItem == null)
 					selectItem(droppedItem);

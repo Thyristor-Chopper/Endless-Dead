@@ -20,7 +20,7 @@ import kotlin.random.Random;
 /**
  * 총잡이 - 총을 쏘는 적
  */
-class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: SingleItemInventory) : Mob(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, ItemDroppable {
+class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: SingleItemInventory) : Mob(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, ItemDroppable, ItemPickupable {
 	private val rotator = RotateToTarget(this);
 	private val shooter = ShootTarget(this, 360f);
 	override val movementSpeed = 140f;
@@ -29,6 +29,9 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	@Suppress("INAPPLICABLE_JVM_NAME")
 	@get:JvmName("canDropItems")
 	override val canDropItems = (Random.nextInt(1000) + 1 <= 1);  // 0.1% 확률로 총을 떨굴 수 있음
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("canPickupItems")
+	override val canPickupItems = (Random.nextInt(10) + 1 <= 3);  // 30% 확률
 
 	/**
 	 * 총잡이를 생성한다.
@@ -55,8 +58,31 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 
 	override fun update(delta: Float) {
 		super.update(delta);
+		pickupNearbyItems();
 		rotator.update(delta);
 		shooter.update(delta);
+	}
+
+	// 총이 떨어져 있을 때 자신의 총보다 좋으면 갈아끼운다.
+	override fun pickupNearbyItems(): Boolean {
+		if(!canPickupItems) return false;
+		var pickedUp = false;
+		world.entities.forEachNearby(this) { entity ->
+			if(entity !is DroppedItem) return@forEachNearby;
+			if(!collidesWith(entity)) return@forEachNearby;
+			val item = entity.item;
+			val selected = selectedItem;
+			if(item is Gun && (selected !is Gun || item.bulletDamage > selected.bulletDamage)) {
+				selected?.let {
+					if(canDropItems) dropItem(it);
+					else it.destroy();
+				};
+				entity.pickup(this);
+				pickedUp = true;
+				selectItem(item);
+			}
+		};
+		return pickedUp;
 	}
 
 	// 누군가가 자신을 공격하면 처치 대상을 그자로 한다.

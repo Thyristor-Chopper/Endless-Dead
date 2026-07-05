@@ -23,4 +23,12 @@ import io.potatogun.gdxhelper.world.World;
 class DroppedItem(world: World, x: Float, y: Float, val item: Item) : Entity(world, item.name, x, y, Constants.ITEM_SIZE, Constants.ITEM_SIZE, item.texture) {
 	// 개체가 텍스처를 갖지 않고 아이템의 텍스처를 빌려 쓸 뿐이라 dispose하면 안 됨
 	override fun dispose() {}
+
+	/**
+	 * 아이템을 줍는다.
+	 * 
+	 * @param collector 줍는 개체
+	 * @return 성공 여부
+	 */
+	fun pickup(collector: InventoryHolder): Boolean = collector.inventory.addItem(item).also { this.remove() };
 }
