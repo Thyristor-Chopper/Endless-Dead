@@ -119,7 +119,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		var shooted = 0;
 
 		if(canFire) {
-			val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture).apply { if(shooter is LivingEntity) team = shooter.team };
+			val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture);
 			world.entities.add(bullet);
 			shooted = 1;
 

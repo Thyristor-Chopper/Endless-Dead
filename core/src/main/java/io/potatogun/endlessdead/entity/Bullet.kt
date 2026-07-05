@@ -56,6 +56,9 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 			amountY = 0f;
 			this.kill();  // 안 움직이는 총알 방지
 		}
+
+		if(shooter is TeamMember)
+			team = shooter.team;
 	}
 
 	override fun update(delta: Float) {
