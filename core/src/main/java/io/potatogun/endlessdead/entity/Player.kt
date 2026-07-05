@@ -116,9 +116,9 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		// 주변 아이템 줍기
 		pickupNearbyItems();
 
-		// 현재 아이템 버리기
+		// 현재 선택한 아이템 버리기
 		if(Input.isKeyJustPressed(Input.BACKTICK))
-			selectedItem?.let { dropItem(it) };
+			dropSelected();
 
 		// 이동 (총 쏜 이후에 처리할 것.)
 		val moved = updatePosition(delta);

@@ -20,7 +20,7 @@ interface ItemDroppable {
 	val canDropItems: Boolean;
 
 	/**
-	 * 아이템을 버린다.
+	 * 인벤토리의 아이템을 버린다.
 	 *
 	 * @param item 버릴 아이템
 	 * @return 성공 여부
@@ -36,6 +36,27 @@ interface ItemDroppable {
 		val spaceY = (Random.nextInt(4) + maxHalfLength + Constants.ITEM_SIZE * 0.5f) * if(Random.nextBoolean()) 1 else -1;
 		world.entities.add(DroppedItem(world, x + spaceX, y + spaceY, item));
 		inventory.removeItem(item);
+		return true;
+	}
+
+	/**
+	 * 선택한 아이템을 버린다.
+	 *
+	 * @return 성공 여부
+	 */
+	fun dropSelected(): Boolean {
+		if(this !is ItemSelectable) return false;
+		return selectedItem?.let { dropItem(it) } ?: false;
+	}
+
+	/**
+	 * 인벤토리의 모든 아이템을 떨군다. (주로 죽었을 때 LivingEntity#takeDamage에서 호출)
+	 *
+	 * @return 성공 여부
+	 */
+	fun dropAll(): Boolean {
+		if(this !is InventoryHolder) return false;
+		inventory.forEachItemsReverse { dropItem(it) };
 		return true;
 	}
 }

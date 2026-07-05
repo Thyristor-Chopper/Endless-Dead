@@ -126,7 +126,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 		health -= damage;
 		val killed = (health == 0);
 		if(killed) {  // 사망
-			_onDeath();
+			if(this is ItemDroppable) dropAll();
 			if(this is DamageListener) onDeath(attacker);  // 콜백 호출
 			if(attacker is AttackListener) attacker.onKill(this);
 			remove();
@@ -154,14 +154,6 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 		if(!isAlive) return false;
 		health += amount;
 		return true;
-	}
-
-	/**
-	 * 죽었을 때의 필수 처리사항을 처리한다.
-	 */
-	private inline fun _onDeath() {  // 현재 한 곳에서만 쓰여서 인라인이며 두 곳 이상에서 쓰이게 되면 인라인 해제
-		if(this is InventoryHolder && this is ItemDroppable)
-			inventory.forEachItemsReverse { dropItem(it) };
 	}
 
 	/**
