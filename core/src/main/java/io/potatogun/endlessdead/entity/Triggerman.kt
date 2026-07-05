@@ -6,10 +6,12 @@ import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.ai.RotateToTarget;
 import io.potatogun.endlessdead.entity.ai.ShootTarget;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
-import io.potatogun.endlessdead.inventory.SingleItemInventory;
+import io.potatogun.endlessdead.inventory.LinearInventory;
+import io.potatogun.endlessdead.inventory.ObservableInventory;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.item.Shootable;
+import io.potatogun.endlessdead.item.TurretInstaller;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
@@ -20,7 +22,7 @@ import kotlin.random.Random;
 /**
  * 총잡이 - 총을 쏘는 적
  */
-class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: SingleItemInventory) : Mob(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, ItemDroppable, ItemPickupable {
+class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : Mob(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, ItemDroppable, ItemPickupable {
 	private val rotator = RotateToTarget(this);
 	private val shooter = ShootTarget(this, 360f);
 	override val movementSpeed = 140f;
@@ -40,7 +42,7 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	 * @param x     개체의 처음 X 위치
 	 * @param y     개체의 처음 Y 위치
 	 */
-	constructor(world: World, x: Float, y: Float) : this(world, x, y, SingleItemInventory());
+	constructor(world: World, x: Float, y: Float) : this(world, x, y, LinearInventory(3));
 
 	init {
 		val gun = TriggermanGun();
@@ -59,6 +61,8 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	override fun update(delta: Float) {
 		super.update(delta);
 		pickupNearbyItems();
+		if(selectedItem !is Shootable)
+			inventory.forEachItems { if(it is Shootable) selectItem(it) };
 		rotator.update(delta);
 		shooter.update(delta);
 	}
@@ -80,6 +84,10 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 				entity.pickup(this);
 				pickedUp = true;
 				selectItem(item);
+			} else if(item is TurretInstaller) {
+				entity.pickup(this);
+				pickedUp = true;
+				item.use(this);
 			}
 		};
 		return pickedUp;
