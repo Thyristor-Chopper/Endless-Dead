@@ -231,7 +231,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	 * @param amount   증가율
 	 * @param duration 활성 기간
 	 */
-	fun speedUp(amount: Float, duration: Float) {
+	fun increaseSpeed(amount: Float, duration: Float) {
 		speedModifier += amount;
 		timerManager.register(Timer(duration) { speedModifier -= amount });
 	}

@@ -11,7 +11,9 @@ import io.potatogun.endlessdead.inventory.ObservableInventory;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.item.Shootable;
-import io.potatogun.endlessdead.item.TurretInstaller;
+import io.potatogun.endlessdead.item.SpeedPotion;
+import io.potatogun.endlessdead.item.TimeStopper;
+import io.potatogun.endlessdead.item.Usable;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
@@ -76,15 +78,17 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 			if(!collidesWith(entity)) return@forEachNearby;
 			val item = entity.item;
 			val selected = selectedItem;
-			if(item is Gun && (selected !is Gun || item.bulletDamage > selected.bulletDamage)) {
-				selected?.let {
-					if(canDropItems && Random.nextInt(2) == 0) dropItem(it);
-					else it.destroy();
-				};
-				entity.pickup(this);
-				pickedUp = true;
-				selectItem(item);
-			} else if(item is TurretInstaller) {
+			if(item is Gun) {
+				if(selected !is Gun || item.bulletDamage > selected.bulletDamage) {
+					selected?.let {
+						if(canDropItems && Random.nextInt(2) == 0) dropItem(it);
+						else it.destroy();
+					};
+					entity.pickup(this);
+					pickedUp = true;
+					selectItem(item);
+				}
+			} else if(item is Usable && item !is TimeStopper && item !is SpeedPotion) {
 				entity.pickup(this);
 				pickedUp = true;
 				selectItem(item);

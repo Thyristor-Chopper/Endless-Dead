@@ -14,7 +14,7 @@ class SpeedPotion : Item("speed_potion", "Speed Potion", Item.Properties().rarit
 	override fun use(user: ItemSelectable): Boolean {
 		if(user.selectedItem !== this) return false;
 		if(user !is Player) return false;
-		user.speedUp(20f, 30f);
+		user.increaseSpeed(20f, 30f);
 		user.getWorld().projector?.drawSubtitles("SPEED UP");
 		destroy();
 		return true;
