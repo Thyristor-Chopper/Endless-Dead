@@ -73,6 +73,10 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	private var attackTarget: LivingEntity? = null;  // 매 업데이트 시 개체가 죽으면 초기화되므로 굳이 WeakReference 쓸 필요 없음
 	private val enemyBarColor = Utils.rgb(205, 46, 46);
 	private val friendBarColor = Utils.rgb(132, 208, 132);
+	private val playerNameColor = Utils.rgb(156, 213, 155);
+	private val enemyNameColor = Utils.rgb(247, 215, 215);
+	private val friendNameColor = Utils.rgb(215, 247, 215);
+	private val scoreColor = Utils.rgb(203, 241, 194);
 
 	init {
 		// 단색용 텍스처 생성
@@ -485,7 +489,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 				text = "${player.name}  [ ${player.health} ]",
 				x = 10f,
 				y = Window.height - 8f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
-				color = Utils.rgb(156, 213, 155),
+				color = playerNameColor,
 				scale = 1.0f
 			);
 
@@ -510,7 +514,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 					text = "${it.name}  [ ${it.health} ]",
 					x = 211f,
 					y = Window.height - 8f,
-					color = if(player.isSameTeamWith(it)) Utils.rgb(215, 247, 215) else Utils.rgb(247, 215, 215),
+					color = if(player.isSameTeamWith(it)) friendNameColor else enemyNameColor,
 					scale = 1.0f
 				);
 			};
@@ -521,7 +525,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			text = "Score: ${ScoreManager.score}",
 			x = Window.width - 130f,
 			y = Window.height - 10f,
-			color = Utils.rgb(203, 241, 194),
+			color = scoreColor,
 			scale = 1.2f,
 			width = 120f,
 			align = Align.right

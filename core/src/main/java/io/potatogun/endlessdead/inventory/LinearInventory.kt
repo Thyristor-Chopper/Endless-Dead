@@ -75,7 +75,7 @@ class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 	}
 
 	override fun forEachItemsReverse(callback: Consumer<Item>) {
-		for(i in (inventory.size - 1)..0)
+		for(i in (inventory.size - 1) downTo 0)
 			callback.accept(inventory[i]);
 	}
 
