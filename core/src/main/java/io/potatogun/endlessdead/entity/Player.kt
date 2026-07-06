@@ -6,6 +6,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.potatogun.endlessdead.ScoreManager;
 import io.potatogun.endlessdead.Statistics;
 import io.potatogun.endlessdead.entity.Zombie;
+import io.potatogun.endlessdead.entity.component.MeleeAttackComponent;
+import io.potatogun.endlessdead.entity.component.MoveComponent;
+import io.potatogun.endlessdead.entity.component.ItemDropComponent;
+import io.potatogun.endlessdead.entity.component.ItemPickupComponent;
 import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.entity.listener.AttackListener;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
@@ -30,13 +34,9 @@ import java.lang.ref.WeakReference;
 /**
  * 플레이어 — 화살표로 조종
  */
-class Player private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, TextureUtils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), ItemPickupable, ItemDroppable {
+class Player private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, TextureUtils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), MeleeAttackable, Movable {
 	override val isUpdatableWhileFrozen = true;
 	private val textureWithGun = TextureUtils.loadTexture("entity/player_holding_gun.bmp");
-	override val movementSpeed = 200f;
-	override val attackDamage = 1;
-	override val attackInterval = 0.5f;
-	private var speedModifier = 0f;
 	// 타이머
 	private val timerManager = TimerManager();
 	private val healTimer: RepeatingTimer;
@@ -44,12 +44,14 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	private var _latestAttackVictim: WeakReference<LivingEntity>? = null;
 	val latestAttackVictim: LivingEntity?
 		get() = _latestAttackVictim?.get();
-	@Suppress("INAPPLICABLE_JVM_NAME")
-	@get:JvmName("canPickupItems")
-	override val canPickupItems = true;
-	@Suppress("INAPPLICABLE_JVM_NAME")
-	@get:JvmName("canDropItems")
-	override val canDropItems = true;
+	// 컴포넌트
+	private val meleeAttackComponent = MeleeAttackComponent(this, 1, 0.4f);
+	override val attackDamage: Int by meleeAttackComponent::attackDamage;
+	override val attackInterval: Float by meleeAttackComponent::attackInterval;
+	private val moveComponent = MoveComponent(this, 200f);
+	override val speed: Float by moveComponent::speed;
+	private val dropComponent = ItemDropComponent(this);
+	private val pickupComponent = ItemPickupComponent(this);
 
 	/**
 	 * 플레이어를 생성한다.
@@ -77,12 +79,26 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		team = "friends";
 	}
 
+	override fun move(delta: Float, directionX: Float, directionY: Float) {
+		moveComponent.move(delta, directionX, directionY);
+	}
+
+	override fun damageTarget(target: LivingEntity): Boolean = meleeAttackComponent.damageTarget(target);
+
+	override fun meleeAttackNearby() {
+		meleeAttackComponent.meleeAttackNearby();
+	}
+
 	// ---- 매 프레임 로직 ----
 
 	override fun update(delta: Float) {
+		// 타이머 갱신
 		timerManager.tick(delta);
 
 		super.update(delta);
+
+		// 컴포넌트 갱신
+		meleeAttackComponent.update(delta);
 
 		// 반디 위치에 따라 플레이어 회전
 		rotateToCursor();
@@ -97,7 +113,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 				useItem(it);
 		} ?: run {
 			if(Input.isButtonJustPressed(Input.LEFT_MOUSE))
-				meleeAttackNearby();
+				meleeAttackComponent.meleeAttackNearby();
 		};
 
 		// 아이템 파괴
@@ -114,11 +130,11 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 			selectPreviousItem();
 
 		// 주변 아이템 줍기
-		pickupNearbyItems();
+		pickupComponent.pickupNearbyItems();
 
 		// 현재 선택한 아이템 버리기
 		if(Input.isKeyJustPressed(Input.BACKTICK))
-			dropSelected();
+			selectedItem?.let { dropComponent.dropItem(it) };
 
 		// 이동 (총 쏜 이후에 처리할 것.)
 		val moved = updatePosition(delta);
@@ -136,13 +152,13 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		val originalY = y;
 
 		if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A))
-			x -= (movementSpeed + speedModifier) * delta;
+			move(delta, -1f, 0f);
 		if(Input.isKeyPressed(Input.RIGHT) || Input.isKeyPressed(Input.D))
-			x += (movementSpeed + speedModifier) * delta;
+			move(delta, 1f, 0f);
 		if(Input.isKeyPressed(Input.UP) || Input.isKeyPressed(Input.W))
-			y += (movementSpeed + speedModifier) * delta;
+			move(delta, 0f, 1f);
 		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S))
-			y -= (movementSpeed + speedModifier) * delta;
+			move(delta, 0f, -1f);
 
 		// 월드 경계 안쪽으로 가두기.
 		x = x.coerceIn(0f, world.width);
@@ -225,8 +241,8 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	 * @param duration 활성 기간
 	 */
 	fun increaseSpeed(amount: Float, duration: Float) {
-		speedModifier += amount;
-		timerManager.register(Timer(duration) { speedModifier -= amount });
+		moveComponent.speedAddend += amount;
+		timerManager.register(Timer(duration) { moveComponent.speedAddend -= amount });
 	}
 
 	// 플레이어를 들고 있는 아이템에 맞게 그린다.

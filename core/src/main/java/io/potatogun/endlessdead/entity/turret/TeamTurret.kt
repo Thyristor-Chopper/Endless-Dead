@@ -7,6 +7,7 @@ import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.isSameTeamWith;
+import io.potatogun.endlessdead.entity.component.AutoTargeter;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Rarity;
@@ -22,21 +23,24 @@ import io.potatogun.gdxhelper.world.World;
  * @param y           Y 좌표
  * @param team        포탑의 팀 (null: 중립)
  * @param gun         포탑의 총
+ * @param followRange 공격 대상 감지 범위
  * @param health      포탑의 체력
  * @param isPermanent 포탑이 영구적인지의 여부(죽지 못하는지)
  * @param texture     개체 텍스처
  */
-abstract class TeamTurret(world: World, name: String, x: Float, y: Float, team: String?, gun: Item?, health: Int, isPermanent: Boolean = false, texture: Texture) : Turret(world, name, x, y, gun, health, isPermanent, texture) {
-	init {
-		this.team = team;
-	}
-
-	override fun findNewTarget(): LivingEntity? {
+abstract class TeamTurret(world: World, name: String, x: Float, y: Float, team: String?, gun: Item?, followRange: Float, health: Int, isPermanent: Boolean = false, texture: Texture) : Turret(world, name, x, y, gun, health, isPermanent, texture) {
+	private val autoTargeter = AutoTargeter(this, followRange) {
 		val distanceSorted = Pools.entityArray.obtain();
 		world.entities.getDistanceSorted(this, distanceSorted);
 		val ret = distanceSorted.firstOrNull { it is LivingEntity && !it.isSameTeamWith(this) && it !is Bullet } as? LivingEntity;
 		Pools.entityArray.free(distanceSorted);
 
-		return ret;
+		/* return */ ret
+	};
+	override val target: LivingEntity? by autoTargeter::target;
+	override val followRange: Float by autoTargeter::followRange;
+
+	init {
+		this.team = team;
 	}
 }

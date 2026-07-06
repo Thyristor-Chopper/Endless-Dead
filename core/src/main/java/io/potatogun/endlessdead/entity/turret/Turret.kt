@@ -6,8 +6,8 @@ import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.entity.InventoryItemSelector;
 import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.LivingEntity;
-import io.potatogun.endlessdead.entity.Mob;
 import io.potatogun.endlessdead.entity.PenetratorDamagable;
+import io.potatogun.endlessdead.entity.Targetable;
 import io.potatogun.endlessdead.entity.ai.RotateToTarget;
 import io.potatogun.endlessdead.entity.ai.ShootTarget;
 import io.potatogun.endlessdead.inventory.SingleItemInventory;
@@ -24,10 +24,9 @@ import kotlin.random.Random;
 /**
  * 포탑 - 자동 총알 발사 기계
  */
-abstract class Turret private constructor(world: World, name: String, x: Float, y: Float, gun: Item?, health: Int, isPermanent: Boolean, texture: Texture, final override val inventory: SingleItemInventory) : Mob(world, name, x, y, 83f, 154f, health, texture), InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable {
+abstract class Turret private constructor(world: World, name: String, x: Float, y: Float, gun: Item?, health: Int, isPermanent: Boolean, texture: Texture, final override val inventory: SingleItemInventory) : LivingEntity(world, name, x, y, 83f, 154f, health, texture), InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, Targetable {
 	private val rotator = RotateToTarget(this);
 	private val shooter = ShootTarget(this);
-	override val movementSpeed = 0f;
 	override val penetrationDamage = (health * 0.1f).toInt();
 	override val damageInvincibilityDuration = 0.05f;
 

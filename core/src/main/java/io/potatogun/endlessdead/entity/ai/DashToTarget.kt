@@ -1,7 +1,10 @@
 package io.potatogun.endlessdead.entity.ai;
 
 import io.potatogun.endlessdead.entity.LivingEntity;
-import io.potatogun.endlessdead.entity.Mob;
+import io.potatogun.endlessdead.entity.Movable;
+import io.potatogun.endlessdead.entity.Targetable;
+import io.potatogun.endlessdead.entity.component.MoveComponent;
+import io.potatogun.gdxhelper.entity.Entity;
 
 /**
  * 대상에게 돌진한다.
@@ -11,7 +14,7 @@ import io.potatogun.endlessdead.entity.Mob;
  * @property dashSpeed   돌진 속도
  * @property minDistance 돌진하기 위해 접근해야 할 최소 거리
  */
-class DashToTarget(private val attacker: Mob, private val dashDamage: Int, private val dashSpeed: Float, private val minDistance: Float) : Behavior {
+class DashToTarget<T>(private val attacker: T, private val dashDamage: Int, private val dashSpeed: Float, private val minDistance: Float) : Behavior where T : Entity, T : Targetable, T : Movable {
 	/**
 	 * 현재 AI 상태
 	 */
@@ -21,6 +24,7 @@ class DashToTarget(private val attacker: Mob, private val dashDamage: Int, priva
 	// 돌진할 '방향(벡터)'을 기억해 둘 변수
 	private var dashDirX = 0f;
 	private var dashDirY = 0f;
+	private val dashComponent = MoveComponent(attacker, dashSpeed);
 
 	override fun update(delta: Float): Behavior.Result {
 		val target: LivingEntity? = attacker.target;
@@ -52,8 +56,7 @@ class DashToTarget(private val attacker: Mob, private val dashDamage: Int, priva
 				}
 			}
 			State.DASHING -> {
-				attacker.x += dashDirX * dashSpeed * delta;
-				attacker.y += dashDirY * dashSpeed * delta;
+				dashComponent.move(delta, dashDirX, dashDirY);
 
 				// 돌진 중에 플레이어랑 부딪히면 대미지 주고 즉시 쿨타임으로 넘어감
 				if(attacker.collidesWith(target)) {

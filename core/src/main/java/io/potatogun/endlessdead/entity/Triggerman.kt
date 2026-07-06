@@ -3,11 +3,16 @@ package io.potatogun.endlessdead.entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.entity.ai.ApproachTarget;
 import io.potatogun.endlessdead.entity.ai.RotateToTarget;
 import io.potatogun.endlessdead.entity.ai.ShootTarget;
+import io.potatogun.endlessdead.entity.component.AutoTargeter;
+import io.potatogun.endlessdead.entity.component.ItemDropComponent;
+import io.potatogun.endlessdead.entity.component.ItemPickupComponent;
+import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
+import io.potatogun.endlessdead.inventory.LinearInventory;
 import io.potatogun.endlessdead.inventory.ObservableInventory;
-import io.potatogun.endlessdead.inventory.SingleItemInventory;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.item.Shootable;
@@ -21,18 +26,25 @@ import kotlin.random.Random;
 /**
  * 총잡이 - 총을 쏘는 적
  */
-class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : Mob(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, ItemDroppable, ItemPickupable {
+class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : LivingEntity(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, Movable, Targetable {
+	private val moveComponent = MoveComponent(this, 140f);
+	override val speed: Float by moveComponent::speed;
+	private val minDistance = 360f;
 	private val rotator = RotateToTarget(this);
-	private val shooter = ShootTarget(this, 360f);
-	override val movementSpeed = 140f;
+	private val approacher = ApproachTarget(this, minDistance);
+	private val shooter = ShootTarget(this, minDistance);
 	override val penetrationDamage = 1;
 	override val damageInvincibilityDuration = 0.15f;
-	@Suppress("INAPPLICABLE_JVM_NAME")
-	@get:JvmName("canDropItems")
-	override val canDropItems = (Random.nextInt(1000) + 1 <= 1);  // 0.1% 확률로 총을 떨굴 수 있음
-	@Suppress("INAPPLICABLE_JVM_NAME")
-	@get:JvmName("canPickupItems")
-	override val canPickupItems = (Random.nextInt(10) + 1 <= 3);  // 30% 확률
+	private val dropComponent: ItemDropComponent<Triggerman>? = if(Random.nextInt(1000) + 1 <= 1) ItemDropComponent(this) else null;  // 0.1% 확률로 총을 떨굴 수 있음
+	private val pickupComponent: ItemPickupComponent<Triggerman>? = if(Random.nextInt(10) + 1 <= 3) ItemPickupComponent(this) else null;  // 30% 확률
+	private val autoTargeter = AutoTargeter(this) {
+		if(world is SinglePlayerWorld)
+			world.player
+		else
+			world.entities.getClosestOf<Player>(this)
+	};
+	override val target: LivingEntity? by autoTargeter::target;
+	override val followRange: Float by autoTargeter::followRange;
 
 	/**
 	 * 총잡이를 생성한다.
@@ -41,7 +53,7 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	 * @param x     개체의 처음 X 위치
 	 * @param y     개체의 처음 Y 위치
 	 */
-	constructor(world: World, x: Float, y: Float) : this(world, x, y, SingleItemInventory());
+	constructor(world: World, x: Float, y: Float) : this(world, x, y, LinearInventory(2));
 
 	init {
 		val gun = TriggermanGun();
@@ -49,48 +61,38 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 		selectItem(gun);
 	}
 
-	override fun findNewTarget(): LivingEntity? {
-		val world = this.world;
-		if(world is SinglePlayerWorld)
-			return world.player;
-		else
-			return world.entities.getClosestOf<Player>(this);
+	override fun move(delta: Float, directionX: Float, directionY: Float) {
+		moveComponent.move(delta, directionX, directionY);
 	}
 
 	override fun update(delta: Float) {
 		super.update(delta);
-		pickupNearbyItems();
-		rotator.update(delta);
-		shooter.update(delta);
-	}
-
-	override fun pickupNearbyItems(): Boolean {
-		// 총이 떨어져 있을 때 자신의 총보다 좋으면 갈아끼운다.
-		if(!canPickupItems) return false;
-		var pickedUp = false;
-		forEachNearby { entity ->
-			if(entity !is DroppedItem) return@forEachNearby;
-			if(!collidesWith(entity)) return@forEachNearby;
-			val item = entity.item;
+		pickupComponent?.let {
 			val selected = selectedItem;
-			if(item is Gun && (selected !is Gun || item.bulletDamage > selected.bulletDamage)) {
+			val succeeded = it.pickupNearbyItems { item -> item is Gun && (selected !is Gun || item.bulletDamage > selected.bulletDamage) };
+			if(succeeded)
 				selected?.let {
-					if(canDropItems && Random.nextInt(2) == 0) dropItem(it);
-					else it.destroy();
+					if(dropComponent != null && Random.nextInt(2) == 0)
+						dropComponent.dropItem(it);
+					else
+						it.destroy();
 				};
-				entity.pickup(this);
-				pickedUp = true;
-				selectItem(item);
-			}
 		};
-		return pickedUp;
+		rotator.update(delta);
+		approacher.update(delta);
+		if(approacher.state == ApproachTarget.State.APPROACHED)
+			shooter.update(delta);
 	}
 
 	// 누군가가 자신을 공격하면 처치 대상을 그자로 한다.
 	//   자연 생성된 포탑은 공격 불가이기 때문에 그것에게 공격받아도 그걸 타겟하지는 않는다.
 	override fun onDamage(damage: Int, attacker: Entity?) {
 		if(attacker is LivingEntity)
-			target = attacker;
+			autoTargeter.target = attacker;
+	}
+
+	override fun onDeath(killer: Entity?) {
+		dropComponent?.dropAll();
 	}
 
 	/**

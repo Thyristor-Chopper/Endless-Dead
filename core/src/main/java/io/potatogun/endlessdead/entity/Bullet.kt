@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Player;
+import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
@@ -26,19 +27,20 @@ import kotlin.math.sqrt;
  * @param    size         총알 지름
  * @param    texture      총알 텍스처
  */
-class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, speed: Float, val damage: Int, val isPenetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet")) : LivingEntity(world, "Bullet", shooter.position.x, shooter.position.y, size, size, health, texture) {
-	override val movementSpeed = speed;
+class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, speed: Float, val damage: Int, val isPenetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet")) : LivingEntity(world, "Bullet", shooter.position.x, shooter.position.y, size, size, health, texture), Movable {
+	private val moveComponent = MoveComponent(this, speed);
+	override val speed: Float by moveComponent::speed;
 	override val isUpdatableWhileFrozen = (shooter is Player);
 	override val showDamageIndicator = false;
 	override val damageInvincibilityDuration = 0.1f;
 	/**
 	 * 총알 속도에 따른 가로 이동량
 	 */
-	private val amountX: Float;
+	private val directionX: Float;
 	/**
 	 * 총알 속도에 따른 세로 이동량
 	 */
-	private val amountY: Float;
+	private val directionY: Float;
 
 	init {
 		if(speed < 0f) throw IllegalArgumentException("invalid speed");
@@ -49,11 +51,11 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 		val dy = target.y - shooter.y;
 		val distance = sqrt(dx * dx + dy * dy);
 		if(distance > 0f) {
-			amountX = dx / distance * speed;
-			amountY = dy / distance * speed;
+			directionX = dx / distance;
+			directionY = dy / distance;
 		} else {
-			amountX = 0f;
-			amountY = 0f;
+			directionX = 0f;
+			directionY = 0f;
 			this.remove();  // 안 움직이는 총알 방지
 		}
 
@@ -64,8 +66,7 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 	override fun update(delta: Float) {
 		super.update(delta);
 
-		x += amountX * delta;
-		y += amountY * delta;
+		move(delta, directionX, directionY);
 
 		// 화면 밖으로 나가면 소멸
 		val maxHalfLength = max2(width, height) * 0.5f;
@@ -84,5 +85,9 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 				}
 			}
 		};
+	}
+
+	override fun move(delta: Float, directionX: Float, directionY: Float) {
+		moveComponent.move(delta, directionX, directionY);
 	}
 }

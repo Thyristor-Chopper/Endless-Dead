@@ -3,6 +3,7 @@ package io.potatogun.endlessdead.entity.turret;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
+import io.potatogun.endlessdead.entity.component.AutoTargeter;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
@@ -20,20 +21,19 @@ import io.potatogun.gdxhelper.world.World;
  * @param isPermanent 포탑이 영구적인지의 여부(죽지 못하는지)
  */
 class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : Turret(world, "Turret", x, y, HostileTurretGun(), 600, isPermanent, Textures.getShared("turret_hostile")), DamageListener {
-	override val followRange = 384f;
-
-	override fun findNewTarget(): LivingEntity? {
-		val world = this.world;
+	private val autoTargeter = AutoTargeter(this, 384f) {
 		if(world is SinglePlayerWorld)
-			return world.player;
+			world.player
 		else
-			return world.entities.getClosestOf<Player>(this);
-	}
+			world.entities.getClosestOf<Player>(this)
+	};
+	override val target: LivingEntity? by autoTargeter::target;
+	override val followRange: Float by autoTargeter::followRange;
 
 	// 누군가가 포탑을 공격하면 처치 대상을 그자로 한다.
 	override fun onDamage(damage: Int, attacker: Entity?) {
 		if(attacker is LivingEntity)
-			target = attacker;
+			autoTargeter.target = attacker;
 	}
 
 	/**

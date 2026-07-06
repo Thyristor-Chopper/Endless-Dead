@@ -46,23 +46,6 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	var isInvincible = false  // setter는 자바에서는 setInvincible임 디컴파일해서 확인함
 		protected set;
 	/**
-	 * 기본 이동 속도
-	 */
-	abstract val movementSpeed: Float;
-	/**
-	 * 손공격 피해량
-	 */
-	open val attackDamage: Int = 0;
-	/**
-	 * 손공격 간격 (낮을수록 빠름)
-	 */
-	open val attackInterval: Float = 0f;
-	private var attackCooldownTimer = 0f
-		set(value) {
-			if(value < 0f) field = 0f;
-			else field = value;
-		};
-	/**
 	 * 대미지를 입었을 때 붉게 표시할지의 여부
 	 */
 	@Suppress("INAPPLICABLE_JVM_NAME")
@@ -126,7 +109,6 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 		health -= damage;
 		val killed = (health == 0);
 		if(killed) {  // 사망
-			if(this is ItemDroppable) dropAll();
 			if(this is DamageListener) onDeath(attacker);  // 콜백 호출
 			if(attacker is AttackListener) attacker.onKill(this);
 			remove();
@@ -156,36 +138,11 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 		return true;
 	}
 
-	/**
-	 * 공격 대상에게 대미지를 입힌다.
-	 *
-	 * @param target 대상
-	 * @return 성공 여부
-	 */
-	fun damageTarget(target: LivingEntity): Boolean {
-		if(attackCooldownTimer > 0f) return false;
-		val result = target.takeDamage(attackDamage, attacker = this);
-		if(result) attackCooldownTimer = attackInterval;
-		return result;
-	}
-
-	/**
-	 * 주변 개체를 손공격한다.
-	 */
-	protected fun meleeAttackNearby() {
-		forEachNearby { entity ->
-			if(entity is LivingEntity && collidesWith(entity))
-				damageTarget(entity);
-		};
-	}
-
 	override fun update(delta: Float) {
 		super.update(delta);
 
 		if(invincibilityTimer > 0f)
 			invincibilityTimer -= delta;
-		if(attackCooldownTimer > 0f)
-			attackCooldownTimer -= delta;
 	}
 
 	override fun forceUpdate(delta: Float) {

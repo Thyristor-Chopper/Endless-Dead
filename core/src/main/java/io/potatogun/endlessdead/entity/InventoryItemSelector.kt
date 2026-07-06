@@ -34,6 +34,11 @@ class InventoryItemSelector(private val inventory: ObservableInventory) : ItemSe
 		};
 
 	init {
+		inventory.addItemAddObserver {
+			if(selectedItem == null)
+				selectNextItem();
+		};
+
 		inventory.addItemRemoveObserver {
 			if(inventory.isEmpty)
 				selectedItemIndex = -1;

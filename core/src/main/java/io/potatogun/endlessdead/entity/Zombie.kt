@@ -7,6 +7,9 @@ import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.ai.ApproachTarget;
 import io.potatogun.endlessdead.entity.ai.DashToTarget;
 import io.potatogun.endlessdead.entity.ai.MeleeAttackTarget;
+import io.potatogun.endlessdead.entity.component.AutoTargeter;
+import io.potatogun.endlessdead.entity.component.MeleeAttackComponent;
+import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.Entity;
@@ -25,27 +28,43 @@ import io.potatogun.gdxhelper.world.World;
  * @param height   세로 크기 (픽셀)
  * @param settings 좀비 옵션
  */
-sealed class Zombie(world: World, name: String, x: Float, y: Float, width: Float, height: Float, settings: Properties) : Mob(world, name, x, y, width, height, settings.health, Textures.getShared("zombie")), DamageListener, PenetratorDamagable {
-	private val meleeAttacker = MeleeAttackTarget(this, 3f / 4f);
+sealed class Zombie(world: World, name: String, x: Float, y: Float, width: Float, height: Float, settings: Properties) : LivingEntity(world, name, x, y, width, height, settings.health, Textures.getShared("zombie")), MeleeAttackable, DamageListener, PenetratorDamagable, Movable, Targetable {
+	private val meleeAttackComponent = MeleeAttackComponent(this, settings.attackDamage, 0.3f);
+	override val attackDamage: Int by meleeAttackComponent::attackDamage;
+	override val attackInterval: Float by meleeAttackComponent::attackInterval;
+	private val moveComponent = MoveComponent(this, settings.speed);
+	override val speed: Float by moveComponent::speed;
+	private val autoTargeter = AutoTargeter(this) {
+		if(world is SinglePlayerWorld)
+			world.player
+		else
+			world.entities.getClosestOf<Player>(this)
+	};
+	override val target: LivingEntity? by autoTargeter::target;
+	override val followRange: Float by autoTargeter::followRange;
+	private val targetCenterFactor = 3f / 4f;
+	private val approacher = ApproachTarget(this, targetCenterGapFactor = targetCenterFactor);
+	private val meleeAttacker = MeleeAttackTarget(this, targetCenterFactor);
 	private val attackingTexture = Textures.getShared("attacking_zombie");
-	override val attackDamage = settings.attackDamage;
-	override val attackInterval = 0.3f;
-	override val movementSpeed = settings.speed;
 	override val penetrationDamage = 1;
 	override val damageInvincibilityDuration = 0.15f;
 	private var attackCooldownTimer = attackInterval;
 	private var attackTextureTimer = 0f;
 
-	override fun findNewTarget(): LivingEntity? {
-		val world = this.world;
-		if(world is SinglePlayerWorld)
-			return world.player;
-		else
-			return world.entities.getClosestOf<Player>(this);
+	override fun move(delta: Float, directionX: Float, directionY: Float) {
+		moveComponent.move(delta, directionX, directionY);
 	}
 
-	final override fun update(delta: Float) {
+	override fun damageTarget(target: LivingEntity): Boolean = meleeAttackComponent.damageTarget(target);
+
+	override fun meleeAttackNearby() {
+		meleeAttackComponent.meleeAttackNearby();
+	}
+
+	override fun update(delta: Float) {
 		super.update(delta);
+
+		meleeAttackComponent.update(delta);
 
 		updateAI(delta);
 		if(meleeAttacker.state == MeleeAttackTarget.State.ATTACKING) {
@@ -58,7 +77,9 @@ sealed class Zombie(world: World, name: String, x: Float, y: Float, width: Float
 	}
 
 	protected open fun updateAI(delta: Float) {
-		meleeAttacker.update(delta);
+		approacher.update(delta);
+		if(approacher.state == ApproachTarget.State.APPROACHED)
+			meleeAttacker.update(delta);
 	}
 
 	override fun draw(batch: SpriteBatch) {
@@ -72,7 +93,7 @@ sealed class Zombie(world: World, name: String, x: Float, y: Float, width: Float
 	//   자연 생성된 포탑은 공격 불가이기 때문에 그것에게 공격받아도 그걸 타겟하지는 않는다.
 	override fun onDamage(damage: Int, attacker: Entity?) {
 		if(attacker is LivingEntity)
-			target = attacker;
+			autoTargeter.target = attacker;
 	}
 
 	/**

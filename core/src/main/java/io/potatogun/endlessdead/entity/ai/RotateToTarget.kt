@@ -1,19 +1,20 @@
 package io.potatogun.endlessdead.entity.ai;
 
 import io.potatogun.endlessdead.entity.LivingEntity;
-import io.potatogun.endlessdead.entity.Mob;
+import io.potatogun.endlessdead.entity.Targetable;
+import io.potatogun.gdxhelper.entity.Entity;
 
 /**
- * 공격 대상으로 몸을 돌린다.
+ * 대상으로 몸을 돌린다.
  *
- * @property attacker 공격자
+ * @property entity 사용 개체
  */
-class RotateToTarget(private val attacker: Mob) : Behavior {
+class RotateToTarget<T>(private val entity: T) : Behavior where T : Entity, T : Targetable {
 	override fun update(delta: Float): Behavior.Result {
-		val target: LivingEntity? = attacker.target;
+		val target: LivingEntity? = entity.target;
 		if(target == null) return Behavior.Result.FAILED;
 
-		attacker.rotateTo(target);
+		entity.rotateTo(target);
 		return Behavior.Result.SUCCEEDED;
 	}
 }
