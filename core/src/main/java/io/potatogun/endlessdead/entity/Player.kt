@@ -203,6 +203,11 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		Statistics.totalDamage += damage;
 	}
 
+	// 죽으면 모든 템 떨구기
+	override fun onDeath(killer: Entity?) {
+		dropComponent?.dropAll();
+	}
+
 	// 처치한 좀비 수를 갱신한다.
 	override fun onKill(victim: LivingEntity) {
 		if(victim is Zombie) {

@@ -91,6 +91,7 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 			autoTargeter.target = attacker;
 	}
 
+	// 죽으면 모든 템 떨구기
 	override fun onDeath(killer: Entity?) {
 		dropComponent?.dropAll();
 	}
