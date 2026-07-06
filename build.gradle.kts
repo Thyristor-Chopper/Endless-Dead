@@ -37,7 +37,7 @@ subprojects {
 			freeCompilerArgs.addAll(listOf("-Xwarning-level=NOTHING_TO_INLINE:disabled", "-Xwarning-level=UNCHECKED_CAST:disabled"))
 
 			// 인터페이스 최적화
-			//   자바 인터페이스의 default void f() { ... }문법을 쓴다. 디컴파일해서 비교하니까 DefaultImpls 내부 클래스를 만드는 것보다
+			//   자바 8 인터페이스의 default void f() { ... }문법을 쓴다. 디컴파일해서 비교하니까 DefaultImpls 내부 클래스를 만드는 것보다
 			//   훨씬 깔끔하고 효율적이다. (코틀린 1.x은 -Xjvm-default=all)
 			jvmDefault = org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode.NO_COMPATIBILITY
 		}
@@ -49,7 +49,8 @@ subprojects {
 				enableJdkDocumentationLink.set(false)
 			}
 
-			dokkaGeneratorIsolation = ClassLoaderIsolation()  // 32비트 운영체제에서 2기가 힙 할당으로 실패 방지
+			// 32비트 운영체제에서 2기가 힙 할당으로 실패 방지
+			dokkaGeneratorIsolation = ClassLoaderIsolation()
 		}
 	}
 }
