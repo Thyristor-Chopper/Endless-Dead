@@ -9,6 +9,8 @@ import java.util.function.Predicate;
 
 /**
  * 떨어진 아이템을 주울 수 있는 개체
+ *
+ * @property entity 사용자
  */
 class ItemPickupComponent<T>(private val entity: T) where T : Entity, T : InventoryHolder {
 	/**

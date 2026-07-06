@@ -5,6 +5,12 @@ import io.potatogun.gdxhelper.entity.Entity;
 
 import kotlin.math.sqrt;
 
+/**
+ * 매 프레임당 일정한 속도로 이동하는 컴포넌트
+ *
+ * @property entity 이동자
+ * @property speed  이동 속도
+ */
 class MoveComponent(private val entity: Entity, override val speed: Float) : Movable {
 	/**
 	 * 속도 배수

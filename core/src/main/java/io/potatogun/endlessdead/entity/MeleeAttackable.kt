@@ -1,7 +1,5 @@
 package io.potatogun.endlessdead.entity;
 
-import io.potatogun.endlessdead.entity.LivingEntity;
-
 interface MeleeAttackable {
 	/**
 	 * 손공격 피해량

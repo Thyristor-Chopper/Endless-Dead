@@ -107,7 +107,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this));
 		// 5% 확률로 총 쏘는 적도 나오는 월드
-		if(Random.nextInt(20) == 7 || true)
+		if(Random.nextInt(20) == 7)
 			spawners.add(TriggermanSpawner(this));
 
 		// 10초마다 빈 상자 하나 리필

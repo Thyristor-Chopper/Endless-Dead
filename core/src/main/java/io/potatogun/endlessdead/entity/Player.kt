@@ -49,7 +49,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	override val attackDamage: Int by meleeAttackComponent::attackDamage;
 	override val attackInterval: Float by meleeAttackComponent::attackInterval;
 	private val moveComponent = MoveComponent(this, 200f);
-	override val speed: Float by moveComponent::speed;
+	override val speed: Float by moveComponent::speed;  // 디컴파일해서 확인한 결과 수동 get() = moveComponent.speed와 오버헤드는 똑같음
 	private val dropComponent = ItemDropComponent(this);
 	private val pickupComponent = ItemPickupComponent(this);
 

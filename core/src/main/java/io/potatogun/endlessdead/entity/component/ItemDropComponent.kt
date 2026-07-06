@@ -11,6 +11,8 @@ import kotlin.random.Random;
 
 /**
  * 아이템을 땅에 버릴 수 있는 개체
+ *
+ * @property entity 사용자
  */
 class ItemDropComponent<T>(private val entity: T) where T : Entity, T : InventoryHolder {
 	/**
