@@ -14,6 +14,11 @@ import kotlin.properties.Delegates;
  */
 object GameManager {
 	/**
+	 * 게임 진행 시간 (진행 중에만)
+	 */
+	@JvmStatic var gameTime = 0f
+		private set;
+	/**
 	 * 게임의 현재 상태
 	 */
 	private var state: GameState by Delegates.observable(GameState.STANDBY) { _, _, new -> 
@@ -50,6 +55,7 @@ object GameManager {
 		round = 0;
 		Window.titleBarStats = null;
 		state = GameState.STANDBY;
+		gameTime = 0f;
 	}
 
 	/**
@@ -92,6 +98,16 @@ object GameManager {
 	 */
 	@JvmStatic inline fun resume() {  // setPlaying과 로직이 달라지면 inline 해제
 		setPlaying();
+	}
+
+	/**
+	 * 게임 진행 시간을 증가한다.
+	 * 
+	 * @param delta 직전 프레임과의 간격(초)
+	 */
+	@JvmStatic internal fun tickGameTime(delta: Float) {
+		if(state != GameState.PLAYING) return;
+		gameTime += delta;
 	}
 
 	/**

@@ -1,5 +1,7 @@
 package io.potatogun.endlessdead;
 
+import com.badlogic.gdx.Gdx;
+
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.screen.Title;
 import io.potatogun.endlessdead.screen.ZombieWorldProjector;
@@ -20,6 +22,12 @@ class EndlessDead : Game() {
 	override fun create() {
 		setScreen(titleScreen);  // 부모 Game이 제공하는 메서드
 		Window.setBaseTitle(Constants.GAME_TITLE);
+	}
+
+	// 게임 시간 갱신
+	override fun render() {
+		GameManager.tickGameTime(Gdx.graphics.getDeltaTime());
+		super.render();
 	}
 
 	/**

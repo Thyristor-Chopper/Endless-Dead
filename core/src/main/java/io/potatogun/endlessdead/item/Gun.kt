@@ -13,7 +13,6 @@ import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.util.Math.max2;
-import io.potatogun.gdxhelper.util.Utils;
 
 import java.lang.Math.toRadians;
 
@@ -71,7 +70,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	 */
 	@get:JvmName("canFire")
 	val canFire: Boolean
-		get() = (fireInterval == 0f || Utils.getTime() >= lastShoot + fireInterval) && (infiniteBullets || bullets > 0);
+		get() = (fireInterval == 0f || GameManager.gameTime >= lastShoot + fireInterval) && (infiniteBullets || bullets > 0);
 	/**
 	 * 남은 총탄 개수 (내부용)
 	 */
@@ -87,11 +86,11 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	 * @return 정규화된 값
 	 */
 	val remainingCooldownPercentage: Float
-		get() = if(fireInterval == 0f) 0f else max2((lastShoot + fireInterval - Utils.getTime()) / fireInterval, 0.0).toFloat();
+		get() = if(fireInterval == 0f) 0f else max2((lastShoot + fireInterval - GameManager.gameTime) / fireInterval, 0f);
 	/**
 	 * 마지막으로 총을 쏜 시간
 	 */
-	private var lastShoot = 0.0;
+	private var lastShoot = 0f;
 
 	init {
 		settings.fillDefaults();
@@ -124,7 +123,7 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 			shooted = 1;
 
 			if(fireInterval != 0f)
-				lastShoot = Utils.getTime();
+				lastShoot = GameManager.gameTime;
 
 			if(!infiniteBullets)
 				bullets--;
