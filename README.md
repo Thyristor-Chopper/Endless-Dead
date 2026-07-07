@@ -24,7 +24,7 @@ git submodule init && git submodule update
 
 Windows는 `run.bat` 실행
 
-매킨토시나 리눅스는
+매킨토시나 리눅스는 터미날에서
 ```bash
 ./gradlew desktop:run
 ```
@@ -32,7 +32,6 @@ Windows는 `run.bat` 실행
 ### 컴파일된 JAR 사용
 
 JDK가 설치된 환경에서 `build.bat`를 실행하거나
-
 ```bash
 ./gradlew :desktop:shadowJar
 ```
