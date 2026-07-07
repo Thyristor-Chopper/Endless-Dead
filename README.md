@@ -1,4 +1,4 @@
-# Endless Dead & GDX Helper
+# Endless Dead
 
 코틀린으로 만든 libGDX 기반의 좀비 사냥 슈팅 게임이다.
 
