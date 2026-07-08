@@ -6,11 +6,11 @@
 
 ## 요구 사항
 
-자바 1.8 이상 (Windows XP의 경우), Windows 7 이상이라면 자바 17 이상을 추천함.
+자바 1.8 이상 (직접 빌드 시에는 JDK 필요)
 
-직접 빌드 시에는 JDK가 필요하다.
+Windows XP 32비트 SP3(JDK 1.8u51)에서 빌드 가능 확인.
 
-Windows XP 32비트 SP3, Windows 7 64비트 SP1, Windows 10 64비트 LTSC 2021에서 동작 확인.
+Windows XP 32비트 SP3, Windows 7 64비트 SP1, Windows 10 64비트 LTSC 2021에서 정상 실행 확인.
 
 ## gdxhelper 서브모듈 불러오기
 
