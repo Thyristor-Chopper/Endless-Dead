@@ -55,11 +55,6 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			else if(value < 0) field = TitleInfoType.size - 1;
 			else field = value;
 		};
-	// 일시 중지 및 게임 오버 화면의 단추.
-	private val resumeButton: Button;
-	private val replayButton: Button;
-	private val titleButton: Button;
-	private val quitButton: Button;
 	// 로드된 월드가 없을 때 보일 placeholder 배경
 	private val lazyStillCut = lazy { TextureUtils.loadTexture("title/still_cut.bmp") };
 	// 타이머
@@ -94,21 +89,21 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		addWidget("gun_cooldown_indicator", ProgressBar({ Window.width - 215f }, { 10f }, { 60f }, value=0.42f, color = Color.SCARLET).apply { hide() });
 
 		// 일시 중지 및 게임 오버 단추
-		resumeButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = Textures.greenButton) {
+		addOverlayWidget("resume_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = Textures.greenButton) {
 			GameManager.resume();
-		};
-		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Textures.greenButton) {
+		}.apply { hide() });
+		addOverlayWidget("replay_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Textures.greenButton) {
 			restartGame();
-		};
-		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", color = Utils.rgb(225, 247, 231)) {
+		}.apply { hide() });
+		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", color = Utils.rgb(225, 247, 231)) {
 			unloadWorld(dispose = true);
 			GameManager.resetAll();
 			GameManager.standBy();
 			game.setScreen(game.titleScreen);
-		};
-		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", color = Utils.rgb(225, 247, 231)) {
+		}.apply { hide() });
+		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", color = Utils.rgb(225, 247, 231)) {
 			Gdx.app.exit();
-		};
+		}.apply { hide() });
 
 		// 제목 표시줄 정보 전환
 		timerManager.register(RepeatingTimer(3f, { !GameManager.isGameOver }) {
@@ -162,6 +157,11 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 
 		// 일시 정지
 		detectPauseKey();
+
+		hideWidget("replay_button");
+		hideWidget("resume_button");
+		hideWidget("title_button");
+		hideWidget("quit_button");
 	}
 
 	/**
@@ -264,6 +264,11 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		
 		// 일시 정지 키 누름 감지
 		detectPauseKey();
+
+		hideWidget("replay_button");
+		showWidget("resume_button");
+		showWidget("title_button");
+		showWidget("quit_button");
 	}
 
 	/**
@@ -278,6 +283,11 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		// R 키나 사이띄개를 누르면 다시 시작
 		if(Input.isKeyJustPressed(Input.R) || Input.isKeyJustPressed(Input.SPACE))
 			restartGame();
+
+		showWidget("replay_button");
+		hideWidget("resume_button");
+		showWidget("title_button");
+		showWidget("quit_button");
 	}
 
 	/**
@@ -350,10 +360,6 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			width = Window.width,
 			align = Align.center
 		);
-
-		drawWidget(resumeButton);
-		drawWidget(titleButton);
-		drawWidget(quitButton);
 	}
 
 	/**
@@ -422,11 +428,6 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			color = Color.LIGHT_GRAY,
 			scale = 1.0f
 		);
-
-		// 게임 오버 관련 단추 그리기(게임 오버 화면에서만 보임)
-		drawWidget(replayButton);
-		drawWidget(titleButton);
-		drawWidget(quitButton);
 	}
 
 	// 로딩된 월드가 없을 때 placeholder 배경
@@ -537,10 +538,6 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		solidColor.dispose();
 		if(lazyStillCut.isInitialized())
 			lazyStillCut.value.dispose();
-		resumeButton.dispose();
-		replayButton.dispose();
-		titleButton.dispose();
-		quitButton.dispose();
 	}
 
 	/**
