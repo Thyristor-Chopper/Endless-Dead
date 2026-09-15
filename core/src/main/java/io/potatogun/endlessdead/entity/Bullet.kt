@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.entity;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 import io.potatogun.endlessdead.Textures;
@@ -56,7 +57,7 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 		} else {
 			directionX = 0f;
 			directionY = 0f;
-			this.remove();  // 안 움직이는 총알 방지
+			Gdx.app.postRunnable { this.remove() };  // 안 움직이는 총알 방지
 		}
 
 		if(shooter is TeamMember)
