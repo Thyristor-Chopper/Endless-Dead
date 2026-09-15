@@ -59,13 +59,12 @@ object GameManager {
 	}
 
 	/**
-	 * 게임 진행 상태로 전환한다.
+	 * 새 게임을 시작한다.
 	 */
-	@JvmStatic fun setPlaying() {
-		if(state != GameState.PAUSED) {
-			round++;
-			gameTime = 0f;
-		}
+	@JvmStatic fun newGame() {
+		resetAll();
+		round++;
+		gameTime = 0f;
 		state = GameState.PLAYING;
 	}
 

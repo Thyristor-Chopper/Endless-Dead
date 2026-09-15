@@ -6,7 +6,7 @@ plugins {
 }
 
 dependencies {
-	implementation(project(":gdxhelper"))
+	implementation(project(":gdxhelper"))  // 왜인지는 모르겠지만 core만 하면 에러 남.
 	implementation(project(":core"))
 	implementation("com.badlogicgames.gdx:gdx-backend-lwjgl3:1.10.0")  // 1.11.0 이상은 Windows XP에서 소리 관련 오류 발생
 	implementation("com.badlogicgames.gdx:gdx-platform:1.14.2:natives-desktop")

@@ -17,7 +17,7 @@ object Textures : SharedTextureManager() {
 	/**
 	 * 녹색 단추 스킨
 	 */
-	val greenButton: Button.Skin by lazy { Button.Skin(NinePatch(getShared("green_button"), 12, 12, 7, 6), NinePatch(getShared("green_button_hover"), 12, 12, 7, 6), NinePatch(getShared("green_button_pressed"), 12, 12, 7, 6), NinePatch(getShared("green_button_disabled"), 12, 12, 7, 6), Color.WHITE, Color.LIGHT_GRAY) };
+	@JvmStatic val greenButton: Button.Skin;
 
 	init {
 		register("attacking_zombie", "entity/zombie_attacking.bmp");
@@ -38,5 +38,7 @@ object Textures : SharedTextureManager() {
 		register("green_button_hover", "widget/green_button_hover.bmp");
 		register("green_button_pressed", "widget/green_button_pressed.bmp");
 		register("green_button_disabled", "widget/green_button_disabled.bmp");
+
+		greenButton = Button.Skin(NinePatch(getShared("green_button"), 12, 12, 7, 6), NinePatch(getShared("green_button_hover"), 12, 12, 7, 6), NinePatch(getShared("green_button_pressed"), 12, 12, 7, 6), NinePatch(getShared("green_button_disabled"), 12, 12, 7, 6), Color.WHITE, Color.LIGHT_GRAY);  // 어차피 게임 실행 시 단추가 나오므로 굳이 lazy로 할 필요 없음
 	}
 }

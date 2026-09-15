@@ -294,8 +294,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	 * 다음 라운드로 게임을 재시작한다.
 	 */
 	private fun restartGame() {
-		GameManager.resetAll();
-		GameManager.setPlaying();  // 상태를 다시 플레이로 되돌리고
+		GameManager.newGame();  // 상태를 다시 플레이로 되돌리고
 		loadWorld(ZombieWorld(), disposePreviousWorld = true);  // 월드를 아예 새로 파서 화면을 덮어씌움
 	}
 

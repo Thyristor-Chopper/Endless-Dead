@@ -34,8 +34,7 @@ class Title(private val game: EndlessDead) : Screen() {
 	 * 게임을 시작한다.
 	 */
 	private fun startGame() {
-		GameManager.resetAll();
-		GameManager.setPlaying();
+		GameManager.newGame();
 		val worldViewer = game.worldViewer.apply { loadWorld(ZombieWorld()) };
 		game.setScreen(worldViewer);
 	}
