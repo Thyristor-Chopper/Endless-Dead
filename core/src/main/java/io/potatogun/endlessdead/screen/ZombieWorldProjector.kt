@@ -440,9 +440,9 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		drawText("Waiting for a new adventure...", 0f, Window.height * 0.5f, Color.LIGHT_GRAY, 2.0f, Window.width, Align.center);
 	}
 
-	override fun drawElements() {
+	override fun drawContents() {
 		// 월드 및 자막 그리기
-		super.drawElements();
+		super.drawContents();
 
 		// 자막이 있으면 표시
 		if(subtitlesVisible)
@@ -477,7 +477,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	/**
 	 * 항상 화면에 표시되는 정보 — HP 표시와 월드 중앙 표지를 그린다.
 	 */
-	private inline fun drawHud() {  // drawElements에서만 한 번 쓰이기 때문에 inline이다.
+	private inline fun drawHud() {  // drawContents에서만 한 번 쓰이기 때문에 inline이다.
 		val world: World? = projectingWorld;
 		if(world == null) return;
 

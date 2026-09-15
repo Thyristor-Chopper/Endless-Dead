@@ -53,7 +53,7 @@ class Title(private val game: EndlessDead) : Screen() {
 		batch.draw(stillCut, 0f, 0f, Window.width, Window.height);
 	}
 
-	override fun drawElements() {
+	override fun drawContents() {
 		// 아무 키나 누르시오. 구현,
 		//   titleBlinkTimer로 깜박이는 간격 구현
 
