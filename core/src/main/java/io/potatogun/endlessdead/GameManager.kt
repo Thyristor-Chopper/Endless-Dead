@@ -62,7 +62,10 @@ object GameManager {
 	 * 게임 진행 상태로 전환한다.
 	 */
 	@JvmStatic fun setPlaying() {
-		if(state != GameState.PAUSED) round++;
+		if(state != GameState.PAUSED) {
+			round++;
+			gameTime = 0f;
+		}
 		state = GameState.PLAYING;
 	}
 
@@ -82,6 +85,15 @@ object GameManager {
 	}
 
 	/**
+	 * 일시 중지된 게임을 계속한다.
+	 */
+	@JvmStatic fun resume() {
+		if(state != GameState.PAUSED)
+			throw IllegalStateException("game is not paused");
+		state = GameState.PLAYING;
+	}
+
+	/**
 	 * 점수 및 통계 초기화
 	 */
 	@JvmStatic fun resetAll() {
@@ -91,13 +103,6 @@ object GameManager {
 		Statistics.killedZombieCount = 0;
 		Statistics.fireCount = 0;
 		Statistics.totalDamage = 0;
-	}
-
-	/**
-	 * 일시 중지된 게임을 계속한다.
-	 */
-	@JvmStatic inline fun resume() {  // setPlaying과 로직이 달라지면 inline 해제
-		setPlaying();
 	}
 
 	/**

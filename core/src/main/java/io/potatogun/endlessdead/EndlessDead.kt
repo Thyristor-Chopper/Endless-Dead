@@ -25,9 +25,8 @@ class EndlessDead : Game() {
 	}
 
 	// 게임 시간 갱신
-	override fun render() {
-		GameManager.tickGameTime(Gdx.graphics.getDeltaTime());
-		super.render();
+	override fun update(delta: Float) {
+		GameManager.tickGameTime(delta);
 	}
 
 	/**
