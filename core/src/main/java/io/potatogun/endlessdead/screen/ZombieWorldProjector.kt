@@ -10,8 +10,6 @@ import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
-import io.potatogun.endlessdead.ScoreManager;
-import io.potatogun.endlessdead.Statistics;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.LivingEntity;
@@ -172,11 +170,11 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		}
 
 		Window.titleBarStats = when(TitleInfoType.byIndex(currentTitleInfo)) {
-			TitleInfoType.OPENED	-> "Opened chests: ${Statistics.openedContainerCount}"
-			TitleInfoType.KILLED	-> "Killed zombies: ${Statistics.killedZombieCount}"
-			TitleInfoType.FIRED		-> "Fired: ${Statistics.fireCount}"
-			TitleInfoType.SURVIVED	-> "Survived duration: ${Utils.parseSeconds(Statistics.survivedDuration, "m", "s")}"
-			TitleInfoType.DAMAGE	-> "Total damage: ${Statistics.totalDamage}"
+			TitleInfoType.OPENED	-> "Opened chests: ${GameManager.statistics.openedContainerCount}"
+			TitleInfoType.KILLED	-> "Killed zombies: ${GameManager.statistics.killedZombieCount}"
+			TitleInfoType.FIRED		-> "Fired: ${GameManager.statistics.fireCount}"
+			TitleInfoType.SURVIVED	-> "Survived duration: ${Utils.parseSeconds(GameManager.statistics.survivedDuration, "m", "s")}"
+			TitleInfoType.DAMAGE	-> "Total damage: ${GameManager.statistics.totalDamage}"
 			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.entities.countOf<Zombie>()}"
 		};
 	}
@@ -375,42 +373,42 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 
 		// 통계
 		drawText(
-			text = "Opened containers: ${Statistics.openedContainerCount}",
+			text = "Opened containers: ${GameManager.statistics.openedContainerCount}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 20f,
 			color = Color.LIGHT_GRAY,
 			scale = 1.0f
 		);
 		drawText(
-			text = "Killed zombies: ${Statistics.killedZombieCount}",
+			text = "Killed zombies: ${GameManager.statistics.killedZombieCount}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 35f,
 			color = Color.LIGHT_GRAY,
 			scale = 1.0f
 		);
 		drawText(
-			text = "Fired: ${Statistics.fireCount}",
+			text = "Fired: ${GameManager.statistics.fireCount}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 50f,
 			color = Color.LIGHT_GRAY,
 			scale = 1.0f
 		);
 		drawText(
-			text = "Survived duration: ${Utils.parseSeconds(Statistics.survivedDuration, "m", "s")}",
+			text = "Survived duration: ${Utils.parseSeconds(GameManager.statistics.survivedDuration, "m", "s")}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 65f,
 			color = Color.LIGHT_GRAY,
 			scale = 1.0f
 		);
 		drawText(
-			text = "Total damage: ${Statistics.totalDamage}",
+			text = "Total damage: ${GameManager.statistics.totalDamage}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 80f,
 			color = Color.LIGHT_GRAY,
 			scale = 1.0f
 		);
 		drawText(
-			text = "Final score: ${ScoreManager.score}",
+			text = "Final score: ${GameManager.scoreManager.score}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 95f,
 			color = Color.LIGHT_GRAY,
@@ -511,7 +509,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 
 		// 점수
 		drawText(
-			text = "Score: ${ScoreManager.score}",
+			text = "Score: ${GameManager.scoreManager.score}",
 			x = Window.width - 130f,
 			y = Window.height - 10f,
 			color = scoreColor,

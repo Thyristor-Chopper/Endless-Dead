@@ -14,7 +14,18 @@ import kotlin.properties.Delegates;
  * 큰 위험성은 없다.
  */
 object GameManager {
+	/**
+	 * 게임 인스턴스
+	 */
 	private lateinit var game: EndlessDead;  // 초기화 후 바뀔 일 없음 코틀린이 원래 나 같은 개발자를 열받게 하는 언어라...
+	/**
+	 * 점수 관리자
+	 */
+	@JvmField val scoreManager = ScoreManager();
+	/**
+	 * 통계 관리자
+	 */
+	@JvmField val statistics = StatisticsManager();
 	/**
 	 * 게임 진행 시간 (진행 중에만)
 	 */
@@ -67,6 +78,9 @@ object GameManager {
 	@JvmStatic fun standBy() {
 		if(!::game.isInitialized)
 			throw IllegalStateException("game manager is not initialised");
+
+		// 월드를 메모리에서 내리기
+		game.worldProjector.unloadWorld(true);
 
 		// 통계, 시간 및 라운드 초기화
 		resetAll();
@@ -136,12 +150,12 @@ object GameManager {
 	 * 점수 및 통계 초기화
 	 */
 	@JvmStatic fun resetAll() {
-		ScoreManager.resetScore();
-		Statistics.survivedDuration = 0;
-		Statistics.openedContainerCount = 0;
-		Statistics.killedZombieCount = 0;
-		Statistics.fireCount = 0;
-		Statistics.totalDamage = 0;
+		scoreManager.resetScore();
+		statistics.survivedDuration = 0;
+		statistics.openedContainerCount = 0;
+		statistics.killedZombieCount = 0;
+		statistics.fireCount = 0;
+		statistics.totalDamage = 0;
 	}
 
 	/**
@@ -162,5 +176,62 @@ object GameManager {
 		PLAYING,
 		PAUSED,
 		GAME_OVER;
+	}
+
+	/**
+	 * 점수 관리자
+	 */
+	class ScoreManager internal constructor() {
+		/**
+		 * 현재 점수
+		 */
+		var score: Int = 0
+			private set(value) {
+				if(value < 0) field = 0;
+				else field = value;
+			};
+
+		/**
+		 * 점수를 준다.
+		 *
+		 * @param amount 줄 점수
+		 */
+		fun addScore(amount: Int) {
+			if(amount < 0) throw IllegalArgumentException("invalid score amount");
+			score += amount;
+		}
+
+		/**
+		 * 점수를 감점한다.
+		 *
+		 * @param amount 차감할 점수
+		 */
+		fun subtractScore(amount: Int) {
+			if(amount < 0) throw IllegalArgumentException("invalid score amount");
+			score -= amount;
+		}
+
+		/**
+		 * 점수를 초기화한다.
+		 */
+		fun resetScore() {
+			score = 0;
+		}
+	}
+
+	/**
+	 * 게임 통계 관리자
+	 */
+	class StatisticsManager internal constructor() {
+		var survivedDuration = 0
+			@JvmSynthetic internal set;
+		var openedContainerCount = 0
+			@JvmSynthetic internal set;
+		var killedZombieCount = 0
+			@JvmSynthetic internal set;
+		var fireCount = 0
+			@JvmSynthetic internal set;
+		var totalDamage = 0
+			@JvmSynthetic internal set;
 	}
 }

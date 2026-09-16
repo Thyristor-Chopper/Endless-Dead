@@ -3,8 +3,7 @@ package io.potatogun.endlessdead.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.potatogun.endlessdead.ScoreManager;
-import io.potatogun.endlessdead.Statistics;
+import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.entity.Zombie;
 import io.potatogun.endlessdead.entity.component.MeleeAttackComponent;
 import io.potatogun.endlessdead.entity.component.MoveComponent;
@@ -67,8 +66,8 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 
 		// 1. 생존 시간 기록 & 생존 시간 보너스
 		timerManager.register(RepeatingTimer(1f) {
-			Statistics.survivedDuration++;
-			ScoreManager.addScore(1);
+			GameManager.statistics.survivedDuration++;
+			GameManager.scoreManager.addScore(1);
 		});
 
 		// 2. 30초마다 자연 회복
@@ -188,7 +187,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 					selectItem(item);
 					projector?.drawSubtitles("Took ${item.name} from the container");
 					if(!isPlayerItem)
-						Statistics.openedContainerCount++;
+						GameManager.statistics.openedContainerCount++;
 				}
 			}
 		};
@@ -199,8 +198,8 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	// 대미지를 받았을 때 자연 회복 타이머를 초기화하고 점수를 감점한다
 	override fun onDamage(damage: Int, attacker: Entity?) {
 		healTimer.reset();
-		ScoreManager.subtractScore(5);
-		Statistics.totalDamage += damage;
+		GameManager.scoreManager.subtractScore(5);
+		GameManager.statistics.totalDamage += damage;
 	}
 
 	// 죽으면 모든 템 떨구기
@@ -211,8 +210,8 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	// 처치한 좀비 수를 갱신한다.
 	override fun onKill(victim: LivingEntity) {
 		if(victim is Zombie) {
-			ScoreManager.addScore(10);
-			Statistics.killedZombieCount++;
+			GameManager.scoreManager.addScore(10);
+			GameManager.statistics.killedZombieCount++;
 		}
 	}
 
@@ -235,7 +234,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		val succeeded = item.use(this);
 		if(succeeded)
 			if(item is Shootable)
-				Statistics.fireCount++;
+				GameManager.statistics.fireCount++;
 		return succeeded;
 	}
 
