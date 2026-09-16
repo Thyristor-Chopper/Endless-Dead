@@ -30,7 +30,7 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 	/**
 	 * 아이템을 들고 있는 인벤토리 (캐시)
 	 */
-	internal var inventory: Inventory? = null;
+	@JvmSynthetic internal var inventory: Inventory? = null;
 	/**
 	 * 아이템 희귀도
 	 */
@@ -69,7 +69,7 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 	 * 아이템 옵션
 	 */
 	open class Properties {
-		internal var rarity: Rarity = Rarity.COMMON
+		@JvmSynthetic internal var rarity: Rarity = Rarity.COMMON
 			private set;
 
 		/**
@@ -83,7 +83,7 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 			return this;
 		}
 
-		internal open fun fillDefaults() {}
+		@JvmSynthetic internal open fun fillDefaults() {}
 	}
 
 	/**

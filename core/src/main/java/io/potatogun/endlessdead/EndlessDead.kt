@@ -14,8 +14,8 @@ import io.potatogun.gdxhelper.screen.WorldProjector;
  */
 class EndlessDead : Game() {
 	// 미리 등록된 스크린. val은 lateinit이 불가하여 lazy 위임 사용.
-	internal val titleScreen: Title by lazy { Title(this) };
-	internal val worldProjector: WorldProjector by lazy { ZombieWorldProjector(this) };
+	@get:JvmSynthetic internal val titleScreen: Title by lazy { Title(this) };
+	@get:JvmSynthetic internal val worldProjector: WorldProjector by lazy { ZombieWorldProjector(this) };
 
 	// 게임 시작 시 한 번 호출되는 메쏘드
 	override fun create() {
