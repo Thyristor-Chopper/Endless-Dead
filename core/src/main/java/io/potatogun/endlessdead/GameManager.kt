@@ -3,6 +3,7 @@ package io.potatogun.endlessdead;
 import com.badlogic.gdx.Gdx;
 
 import io.potatogun.gdxhelper.Window;
+import io.potatogun.endlessdead.world.ZombieWorld;
 
 import kotlin.properties.Delegates;
 
@@ -13,6 +14,8 @@ import kotlin.properties.Delegates;
  * 큰 위험성은 없다.
  */
 object GameManager {
+	private var initialized = false;
+	private lateinit var game: EndlessDead;  // 초기화 후 바뀔 일 없음 코틀린이 원래 나 같은 개발자를 열받게 하는 언어라...
 	/**
 	 * 게임 진행 시간 (진행 중에만)
 	 */
@@ -49,29 +52,64 @@ object GameManager {
 		get() = (state == GameState.PAUSED);
 
 	/**
+	 * 게임 관리자를 초기화한다.
+	 *
+	 * @param game 게임 인스턴스
+	 */
+	@JvmSynthetic internal fun init(game: EndlessDead) {
+		if(initialized)
+			throw IllegalStateException("game manager is already initialised");
+		this.game = game;
+		initialized = true;
+	}
+
+	/**
 	 * 준비 상태(타이틀 화면)로 전환한다.
 	 */
 	@JvmStatic fun standBy() {
+		if(!initialized)
+			throw IllegalStateException("game manager is not initialised");
+
+		// 통계, 시간 및 라운드 초기화
+		resetAll();
 		round = 0;
 		Window.titleBarStats = null;
-		state = GameState.STANDBY;
 		gameTime = 0f;
+
+		// 상태 전환
+		state = GameState.STANDBY;
+
+		// 타이틀 화면으로 전환
+		game.setScreen(game.titleScreen);
 	}
 
 	/**
 	 * 새 게임을 시작한다.
 	 */
 	@JvmStatic fun newGame() {
+		if(!initialized)
+			throw IllegalStateException("game manager is not initialised");
+
+		// 통계 및 시간 초기화
 		resetAll();
 		round++;
 		gameTime = 0f;
+
+		// 상태 전환
 		state = GameState.PLAYING;
+
+		// 월드 생성 후 월드 표시기 화면으로 전환
+		game.worldProjector.loadWorld(ZombieWorld(), disposePreviousWorld = true);
+		if(game.getScreen() !== game.worldProjector)
+			game.setScreen(game.worldProjector);
 	}
 
 	/**
 	 * 게임을 종료 상태로 전환한다.
 	 */
 	@JvmStatic fun setGameOver() {
+		if(!initialized)
+			throw IllegalStateException("game manager is not initialised");
 		Window.titleBarStats = null;
 		state = GameState.GAME_OVER;
 	}
@@ -80,6 +118,8 @@ object GameManager {
 	 * 게임을 일시 중지한다.
 	 */
 	@JvmStatic fun pause() {
+		if(!initialized)
+			throw IllegalStateException("game manager is not initialised");
 		state = GameState.PAUSED;
 	}
 
@@ -87,6 +127,8 @@ object GameManager {
 	 * 일시 중지된 게임을 계속한다.
 	 */
 	@JvmStatic fun resume() {
+		if(!initialized)
+			throw IllegalStateException("game manager is not initialised");
 		if(state != GameState.PAUSED)
 			throw IllegalStateException("game is not paused");
 		state = GameState.PLAYING;
@@ -109,7 +151,7 @@ object GameManager {
 	 * 
 	 * @param delta 직전 프레임과의 간격(초)
 	 */
-	@JvmStatic internal fun tickGameTime(delta: Float) {
+	@JvmSynthetic internal fun tickGameTime(delta: Float) {
 		if(state != GameState.PLAYING) return;
 		gameTime += delta;
 	}

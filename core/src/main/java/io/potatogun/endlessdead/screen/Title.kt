@@ -7,7 +7,6 @@ import com.badlogic.gdx.utils.Align;
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Textures;
-import io.potatogun.endlessdead.world.ZombieWorld;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.Screen;
 import io.potatogun.gdxhelper.util.Input;
@@ -26,17 +25,8 @@ class Title(private val game: EndlessDead) : Screen() {
 	private var titleBlinkTimer = 0f;
 
 	init {
-		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, { 120f }, caption = "Play", skin = Textures.greenButton) { startGame() });
+		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, { 120f }, caption = "Play", skin = Textures.greenButton) { GameManager.newGame() });
 		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, { 120f }, caption = "Quit", color = Utils.rgb(225, 247, 231)) { Gdx.app.exit() });
-	}
-
-	/**
-	 * 게임을 시작한다.
-	 */
-	private fun startGame() {
-		GameManager.newGame();
-		val worldViewer = game.worldViewer.apply { loadWorld(ZombieWorld()) };
-		game.setScreen(worldViewer);
 	}
 
 	override fun update(delta: Float) {
@@ -45,8 +35,9 @@ class Title(private val game: EndlessDead) : Screen() {
 		titleBlinkTimer += delta;
 		if(titleBlinkTimer >= 1f)
 			titleBlinkTimer = 0f;
+
 		if(Input.isAnyKeyJustPressed())
-			startGame();
+			GameManager.newGame();
 	}
 
 	override fun drawBackground() {
@@ -56,13 +47,11 @@ class Title(private val game: EndlessDead) : Screen() {
 	override fun drawContents() {
 		// 아무 키나 누르시오. 구현,
 		//   titleBlinkTimer로 깜박이는 간격 구현
-
 		val titleWidth = Window.width * 0.75f;
 		val titleHeight = titleWidth / 6f;
 		val titleX = (Window.width - titleWidth) * 0.5f;
 		val titleY = Window.height * 0.5f + 80f;
 		batch.draw(title, titleX, titleY, titleWidth, titleHeight);
-
 		if(titleBlinkTimer % 1f < 0.5f)
 			drawText(
 				text = "Press any key to start",

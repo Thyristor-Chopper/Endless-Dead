@@ -22,7 +22,6 @@ import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
-import io.potatogun.endlessdead.world.ZombieWorld;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.manager.countOf;
 import io.potatogun.gdxhelper.entity.manager.getDistanceSorted;
@@ -93,13 +92,11 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			GameManager.resume();
 		}.apply { hide() });
 		addOverlayWidget("replay_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Textures.greenButton) {
-			restartGame();
+			GameManager.newGame();
 		}.apply { hide() });
 		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", color = Utils.rgb(225, 247, 231)) {
 			unloadWorld(dispose = true);
-			GameManager.resetAll();
 			GameManager.standBy();
-			game.setScreen(game.titleScreen);
 		}.apply { hide() });
 		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", color = Utils.rgb(225, 247, 231)) {
 			Gdx.app.exit();
@@ -282,20 +279,12 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 
 		// R 키나 사이띄개를 누르면 다시 시작
 		if(Input.isKeyJustPressed(Input.R) || Input.isKeyJustPressed(Input.SPACE))
-			restartGame();
+			GameManager.newGame();
 
 		showWidget("replay_button");
 		hideWidget("resume_button");
 		showWidget("title_button");
 		showWidget("quit_button");
-	}
-
-	/**
-	 * 다음 라운드로 게임을 재시작한다.
-	 */
-	private fun restartGame() {
-		GameManager.newGame();  // 상태를 다시 플레이로 되돌리고
-		loadWorld(ZombieWorld(), disposePreviousWorld = true);  // 월드를 아예 새로 파서 화면을 덮어씌움
 	}
 
 	/**
