@@ -14,7 +14,6 @@ import kotlin.properties.Delegates;
  * 큰 위험성은 없다.
  */
 object GameManager {
-	private var initialized = false;
 	private lateinit var game: EndlessDead;  // 초기화 후 바뀔 일 없음 코틀린이 원래 나 같은 개발자를 열받게 하는 언어라...
 	/**
 	 * 게임 진행 시간 (진행 중에만)
@@ -57,17 +56,16 @@ object GameManager {
 	 * @param game 게임 인스턴스
 	 */
 	@JvmSynthetic internal fun init(game: EndlessDead) {
-		if(initialized)
+		if(::game.isInitialized)
 			throw IllegalStateException("game manager is already initialised");
 		this.game = game;
-		initialized = true;
 	}
 
 	/**
 	 * 준비 상태(타이틀 화면)로 전환한다.
 	 */
 	@JvmStatic fun standBy() {
-		if(!initialized)
+		if(!::game.isInitialized)
 			throw IllegalStateException("game manager is not initialised");
 
 		// 통계, 시간 및 라운드 초기화
@@ -87,7 +85,7 @@ object GameManager {
 	 * 새 게임을 시작한다.
 	 */
 	@JvmStatic fun newGame() {
-		if(!initialized)
+		if(!::game.isInitialized)
 			throw IllegalStateException("game manager is not initialised");
 
 		// 통계 및 시간 초기화
@@ -108,7 +106,7 @@ object GameManager {
 	 * 게임을 종료 상태로 전환한다.
 	 */
 	@JvmStatic fun setGameOver() {
-		if(!initialized)
+		if(!::game.isInitialized)
 			throw IllegalStateException("game manager is not initialised");
 		Window.titleBarStats = null;
 		state = GameState.GAME_OVER;
@@ -118,7 +116,7 @@ object GameManager {
 	 * 게임을 일시 중지한다.
 	 */
 	@JvmStatic fun pause() {
-		if(!initialized)
+		if(!::game.isInitialized)
 			throw IllegalStateException("game manager is not initialised");
 		state = GameState.PAUSED;
 	}
@@ -127,7 +125,7 @@ object GameManager {
 	 * 일시 중지된 게임을 계속한다.
 	 */
 	@JvmStatic fun resume() {
-		if(!initialized)
+		if(!::game.isInitialized)
 			throw IllegalStateException("game manager is not initialised");
 		if(state != GameState.PAUSED)
 			throw IllegalStateException("game is not paused");
