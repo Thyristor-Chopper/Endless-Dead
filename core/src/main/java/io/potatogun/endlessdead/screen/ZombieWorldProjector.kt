@@ -80,10 +80,10 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		};
 
 		// 미터기 추가
-		addWidget("hp_indicator", ProgressBar({ 9f }, { Window.height - 38f }, { 180f }, color = Utils.rgb(73, 186, 73)));
-		addWidget("attack_target_hp_indicator", ProgressBar({ 210f }, { Window.height - 38f }, { 180f }, color = enemyBarColor).apply { hide() });
-		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, { 130f }, color = Utils.rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() });
-		addWidget("gun_cooldown_indicator", ProgressBar({ Window.width - 215f }, { 10f }, { 60f }, value=0.42f, color = Color.SCARLET).apply { hide() });
+		addWidget("hp_indicator", ProgressBar({ 9f }, { Window.height - 38f }, { 180f }, skin = Textures.smoothProgressBar, color = Utils.rgb(73, 186, 73)));
+		addWidget("attack_target_hp_indicator", ProgressBar({ 210f }, { Window.height - 38f }, { 180f }, skin = Textures.smoothProgressBar, color = enemyBarColor).apply { hide() });
+		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, { 130f }, skin = Textures.chunkedProgressBar, color = Utils.rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() });
+		addWidget("gun_cooldown_indicator", ProgressBar({ Window.width - 215f }, { 10f }, { 60f }, skin = Textures.smoothProgressBar, color = Color.SCARLET).apply { hide() });
 
 		// 일시 중지 및 게임 오버 단추
 		addOverlayWidget("resume_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = Textures.greenButton) {
@@ -92,11 +92,11 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		addOverlayWidget("replay_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Textures.greenButton) {
 			GameManager.newGame();
 		}.apply { hide() });
-		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", color = Utils.rgb(225, 247, 231)) {
+		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Textures.button, color = Utils.rgb(225, 247, 231)) {
 			unloadWorld(dispose = true);
 			GameManager.standBy();
 		}.apply { hide() });
-		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", color = Utils.rgb(225, 247, 231)) {
+		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Textures.button, color = Utils.rgb(225, 247, 231)) {
 			Gdx.app.exit();
 		}.apply { hide() });
 
