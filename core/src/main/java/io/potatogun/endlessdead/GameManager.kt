@@ -132,6 +132,7 @@ object GameManager {
 	@JvmStatic fun pause() {
 		if(!::game.isInitialized)
 			throw IllegalStateException("game manager is not initialised");
+
 		state = GameState.PAUSED;
 	}
 
@@ -143,6 +144,7 @@ object GameManager {
 			throw IllegalStateException("game manager is not initialised");
 		if(state != GameState.PAUSED)
 			throw IllegalStateException("game is not paused");
+
 		state = GameState.PLAYING;
 	}
 
