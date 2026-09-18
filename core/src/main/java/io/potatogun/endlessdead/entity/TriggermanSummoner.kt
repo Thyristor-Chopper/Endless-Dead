@@ -16,6 +16,7 @@ import kotlin.random.Random;
  */
 class TriggermanSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "Triggerman Summoner", x, y, 32f, 32f, 250, Textures.getShared("triggerman_summoner")) {
 	private val timerManager = TimerManager();
+	override val damageInvincibilityDuration = 0.15f;
 
 	init {
 		rotateToRandom();
