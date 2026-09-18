@@ -19,10 +19,10 @@ import kotlin.random.Random;
  */
 class TriggermanSpawner(private val world: World) : Spawner {
 	private val spawnInterval = 5f;
-	private val timerManager = TimerManager();
+	private val timers = TimerManager();
 
 	init {
-		timerManager.register(RepeatingTimer(spawnInterval) {
+		timers.register(RepeatingTimer(spawnInterval) {
 			// 50% 확률로 소환
 			if(Random.nextInt(2) == 1)
 				spawn();
@@ -30,7 +30,7 @@ class TriggermanSpawner(private val world: World) : Spawner {
 	}
 
 	override fun update(delta: Float) {
-		timerManager.tick(delta);
+		timers.tick(delta);
 	}
 
 	// 타이머에서 한 번만 쓰이므로 인라인

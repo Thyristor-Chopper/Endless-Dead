@@ -35,7 +35,7 @@ object GameManager {
 	/**
 	 * 월드, 개체 등에 종속되지 않는 전역 타이머 관리자
 	 */
-	@JvmStatic val globalTimerManager = TimerManager();
+	@JvmStatic val globalTimers = TimerManager();
 	/**
 	 * 게임의 현재 상태
 	 */
@@ -176,7 +176,7 @@ object GameManager {
 	}
 
 	@JvmSynthetic internal fun tickGlobalTimers(delta: Float) {
-		globalTimerManager.tick(delta);
+		globalTimers.tick(delta);
 	}
 
 	/**

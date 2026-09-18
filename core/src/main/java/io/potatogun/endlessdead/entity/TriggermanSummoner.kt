@@ -15,18 +15,18 @@ import kotlin.random.Random;
  * @param y	 개체의 Y 위치
  */
 class TriggermanSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "Triggerman Summoner", x, y, 32f, 32f, 250, Textures.getShared("triggerman_summoner")) {
-	private val timerManager = TimerManager();
+	private val timers = TimerManager();
 	override val damageInvincibilityDuration = 0.15f;
 
 	init {
 		rotateToRandom();
-		timerManager.register(RepeatingTimer(10f, this::spawn));
+		timers.register(RepeatingTimer(10f, this::spawn));
 	}
 
 	override fun update(delta: Float) {
 		super.update(delta);
 
-		timerManager.tick(delta);
+		timers.tick(delta);
 	}
 
 	private fun spawn() {

@@ -24,7 +24,7 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 		}
 		world.projector?.drawSubtitles("Time stop!");
 		world.freeze();
-		GameManager.globalTimerManager.register(Timer(3f, { GameManager.isPlaying }) {
+		GameManager.globalTimers.register(Timer(3f, { GameManager.isPlaying }) {
 			world.unfreeze();
 		});
 		destroy();

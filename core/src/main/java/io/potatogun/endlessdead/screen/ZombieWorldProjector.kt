@@ -55,7 +55,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	// 로드된 월드가 없을 때 보일 placeholder 배경
 	private val lazyStillCut = lazy { TextureUtils.loadTexture("title/still_cut.bmp") };
 	// 타이머
-	private val timerManager = TimerManager();
+	private val timers = TimerManager();
 	// 자막 관련 필드들.
 	private var subtitlesTimer: Timer? = null;
 	private var subtitlesMessage: String = "";
@@ -101,7 +101,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		}.apply { hide() });
 
 		// 제목 표시줄 정보 전환
-		timerManager.register(RepeatingTimer(3f, { !GameManager.isGameOver }) {
+		timers.register(RepeatingTimer(3f, { !GameManager.isGameOver }) {
 			currentTitleInfo++;
 		});
 	}
@@ -113,7 +113,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	}
 
 	override fun update(delta: Float) {
-		timerManager.tick(delta);
+		timers.tick(delta);
 
 		when {
 			GameManager.isPlaying	-> updatePlaying(delta);
@@ -451,7 +451,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 
 	override fun drawSubtitles(message: String, duration: Float, color: Color) {
 		subtitlesTimer?.let {
-			timerManager.unregister(it);
+			timers.unregister(it);
 			subtitlesTimer = null;
 		};
 		subtitlesMessage = message;
@@ -460,7 +460,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			subtitlesMessage = "";
 			subtitlesColor = Color.WHITE;  // 초깃값으로 복원하여 메모리를 점유하지 않게 함
 			subtitlesTimer = null;
-		}.also { timerManager.register(it) };
+		}.also { timers.register(it) };
 	}
 
 	/**

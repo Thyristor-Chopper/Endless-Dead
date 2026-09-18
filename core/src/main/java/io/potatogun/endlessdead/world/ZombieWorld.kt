@@ -64,7 +64,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	override var isFrozen: Boolean = false
 		private set;
 	// 타이머
-	private val timerManager = TimerManager();
+	private val timers = TimerManager();
 
 	/**
 	 * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -115,7 +115,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 					entities.add(TriggermanSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 
 		// 10초마다 빈 상자 하나 리필
-		timerManager.register(RepeatingTimer(10f) {
+		timers.register(RepeatingTimer(10f) {
 			val emptyContainers = Pools.entityArray.obtain();
 			entities.view.filter({ it is Container && it.inventory.isEmpty }, emptyContainers);
 			val randomContainer = emptyContainers.randomOrNull() as Container?;
@@ -161,7 +161,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 	// 개체, 스포너 및 타이머를 갱신한다.
 	override fun update(delta: Float) {
-		timerManager.tick(delta);
+		timers.tick(delta);
 
 		// ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
 		super.update(delta);  // updateEntities와 removeDead

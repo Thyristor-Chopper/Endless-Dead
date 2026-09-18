@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.GameManager;
-import io.potatogun.endlessdead.entity.Zombie;
+import io.potatogun.endlessdead.entity.Zombie;	
 import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.entity.component.ItemDropComponent;
 import io.potatogun.endlessdead.entity.component.ItemPickupComponent;
@@ -36,7 +36,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	override val isUpdatableWhileFrozen = true;
 	private val textureWithGun = TextureUtils.loadTexture("entity/player_holding_gun.bmp");
 	// 타이머
-	private val timerManager = TimerManager();
+	private val timers = TimerManager();
 	private val healTimer: RepeatingTimer;
 	override val damageInvincibilityDuration = 0.01f;
 	private var _latestAttackVictim: WeakReference<LivingEntity>? = null;
@@ -61,7 +61,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		// 타이머
 
 		// 1. 생존 시간 기록 & 생존 시간 보너스
-		timerManager.register(RepeatingTimer(1f) {
+		timers.register(RepeatingTimer(1f) {
 			GameManager.statistics.survivedDuration++;
 			GameManager.scoreManager.addScore(1);
 		});
@@ -69,7 +69,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		// 2. 30초마다 자연 회복
 		healTimer = RepeatingTimer(30f) {
 			heal(3);
-		}.also { timerManager.register(it) };
+		}.also { timers.register(it) };
 
 		team = "friends";
 	}
@@ -82,7 +82,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 
 	override fun update(delta: Float) {
 		// 타이머 갱신
-		timerManager.tick(delta);
+		timers.tick(delta);
 
 		super.update(delta);
 
@@ -230,7 +230,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	 */
 	fun increaseSpeed(amount: Float, duration: Float) {
 		moveComponent.speedAddend += amount;
-		timerManager.register(Timer(duration) { moveComponent.speedAddend -= amount });
+		timers.register(Timer(duration) { moveComponent.speedAddend -= amount });
 	}
 
 	// 플레이어를 들고 있는 아이템에 맞게 그린다.
