@@ -1,8 +1,10 @@
 package io.potatogun.endlessdead.item
 
+import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
+import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.world.Freezable;
 
 /**
@@ -21,7 +23,10 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 			return false;
 		}
 		world.projector?.drawSubtitles("Time stop!");
-		world.freeze(3f);
+		world.freeze();
+		GameManager.globalTimerManager.register(Timer(3f, { GameManager.isPlaying }) {
+			world.unfreeze();
+		});
 		destroy();
 		return true;
 	}

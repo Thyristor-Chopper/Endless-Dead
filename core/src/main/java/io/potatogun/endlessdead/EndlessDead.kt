@@ -27,6 +27,7 @@ class EndlessDead : Game() {
 	// 게임 시간 갱신
 	override fun update(delta: Float) {
 		GameManager.tickGameTime(delta);
+		GameManager.tickGlobalTimers(delta);
 	}
 
 	// 자원을 정리한다.

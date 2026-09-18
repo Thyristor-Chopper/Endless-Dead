@@ -3,6 +3,7 @@ package io.potatogun.endlessdead;
 import com.badlogic.gdx.Gdx;
 
 import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
 import kotlin.properties.Delegates;
@@ -21,16 +22,20 @@ object GameManager {
 	/**
 	 * 점수 관리자
 	 */
-	@JvmField val scoreManager = ScoreManager();
+	@JvmStatic val scoreManager = ScoreManager();
 	/**
 	 * 통계 관리자
 	 */
-	@JvmField val statistics = StatisticsManager();
+	@JvmStatic val statistics = StatisticsManager();
 	/**
 	 * 게임 진행 시간 (진행 중에만)
 	 */
 	@JvmStatic var gameTime = 0f
 		private set;
+	/**
+	 * 월드, 개체 등에 종속되지 않는 전역 타이머 관리자
+	 */
+	@JvmStatic val globalTimerManager = TimerManager();
 	/**
 	 * 게임의 현재 상태
 	 */
@@ -168,6 +173,10 @@ object GameManager {
 	@JvmSynthetic internal fun tickGameTime(delta: Float) {
 		if(state != GameState.PLAYING) return;
 		gameTime += delta;
+	}
+
+	@JvmSynthetic internal fun tickGlobalTimers(delta: Float) {
+		globalTimerManager.tick(delta);
 	}
 
 	/**

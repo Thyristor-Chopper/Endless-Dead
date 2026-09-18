@@ -65,7 +65,6 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		private set;
 	// 타이머
 	private val timerManager = TimerManager();
-	private var unfreezer: Timer? = null;
 
 	/**
 	 * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
@@ -96,6 +95,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		for(i in 1..3)
 			if(Random.nextInt(100) == i * 24)
 				entities.add(FriendlyTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, true));
+
 		// 각각 2.5% 확률로 플레이어 공격 포탑을 월드의 각 모퉁이에 설치
 		if(Random.nextInt(40) == 8) entities.add(HostileTurret(this, 100f, 100f, true).apply { rotate(315f) });
 		if(Random.nextInt(40) == 12) entities.add(HostileTurret(this, width - 100f, 100f, true).apply { rotate(45f) });
@@ -147,23 +147,12 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 	// ---- Freezable 구현 -----
 
-	override fun freeze(duration: Float) {
+	override fun freeze() {
 		isFrozen = true;
-		cancelUnfreezer();  // 기존 타이머 해제
-		if(duration > 0f)
-			unfreezer = Timer(duration) { unfreeze() }.also { timerManager.register(it) };
 	}
 
 	override fun unfreeze() {
 		isFrozen = false;
-		cancelUnfreezer();
-	}
-
-	private inline fun cancelUnfreezer() {
-		unfreezer?.let {
-			timerManager.unregister(it);
-			unfreezer = null;
-		};
 	}
 
 	// ────────────────────────────────────────────────────────
