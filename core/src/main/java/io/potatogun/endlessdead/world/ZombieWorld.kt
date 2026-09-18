@@ -33,6 +33,7 @@ import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.TextureUtils;
 import io.potatogun.gdxhelper.util.Utils;
 import io.potatogun.gdxhelper.world.Freezable;
+import io.potatogun.gdxhelper.world.SimpleFreezer;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.ceil;
@@ -42,7 +43,7 @@ import kotlin.random.Random;
 /**
  * 좀비 파밍 월드 구현체
  */
-class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, entityCapacity = 256, tileSize = 128f), Freezable, SinglePlayerWorld {
+class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, entityCapacity = 256, tileSize = 128f), Freezable by SimpleFreezer(), SinglePlayerWorld {
 	/**
 	 * 플레이어
 	 *
@@ -61,15 +62,10 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	private val bgColorDark = Utils.rgb(38, 92, 38);
 	private val bgColorLight = Utils.rgb(38, 107, 38);
 	private val tileSize = 64f;
-	override var isFrozen: Boolean = false
-		private set;
 	// 타이머
 	private val timers = TimerManager();
 
-	/**
-	 * 생성자 본문 — 월드에 플레이어와 적을 등록한다.
-	 *   이렇게 등록해야 update / draw 루프에 포함된다.
-	 */
+	// 생성자 본문 — 월드에 플레이어와 적을 등록한다. 이렇게 등록해야 update / draw 루프에 포함된다.
 	init {
 		// 50~100개의 건물과 상자를 무작위로 배치
 		val trapChestGeneratable = (Random.nextInt(1000) + 1 <= 1);  // 0.1% 확률
@@ -143,16 +139,6 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 					TimeStopper()  // 5% 확률
 			}
 		};
-	}
-
-	// ---- Freezable 구현 -----
-
-	override fun freeze() {
-		isFrozen = true;
-	}
-
-	override fun unfreeze() {
-		isFrozen = false;
 	}
 
 	// ────────────────────────────────────────────────────────
