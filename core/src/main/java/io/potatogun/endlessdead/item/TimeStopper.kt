@@ -1,7 +1,7 @@
 package io.potatogun.endlessdead.item
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.ObjectMap;
+import com.badlogic.gdx.utils.IdentityMap;
 
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.entity.ItemSelectable;
@@ -41,6 +41,6 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 	}
 
 	companion object {
-		@JvmSynthetic internal val unfreezeTimers = ObjectMap<World, Timer>(8);
+		@JvmSynthetic internal val unfreezeTimers = IdentityMap<World, Timer>(8);
 	}
 }

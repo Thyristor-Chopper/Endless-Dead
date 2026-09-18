@@ -1,7 +1,6 @@
 package io.potatogun.endlessdead.inventory;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
-import com.badlogic.gdx.utils.ObjectMap;
 
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.item.Item;
