@@ -132,10 +132,10 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	private fun generateRandomItem(allowRare: Boolean = true): Item {
 		val rand = Random.nextInt(1000) + 1;  // 1~1000
 		return when {
-			rand <= 350	-> MachineGun()			// 35% 확률
-			rand <= 650	-> Shotgun()			// 30% 확률
-			rand <= 850	-> Bandage()			// 20% 확률
-			rand <= 950	-> SpeedPotion()		// 10% 확률
+			rand <= 350	-> MachineGun()		// 35% 확률
+			rand <= 650	-> Shotgun()		// 30% 확률
+			rand <= 850	-> Bandage()		// 20% 확률
+			rand <= 950	-> SpeedPotion()	// 10% 확률
 			else		-> {
 				if(rand >= 1000 && allowRare)
 					TurretInstaller()  // 0.1% 확률
