@@ -61,8 +61,8 @@ object Textures : SharedTextureManager() {
 		register("progress_bar", "widget/progress_bar.bmp", true);
 		register("progress_fill", "widget/progress_chunk.bmp", true);
 
-		button = Button.Skin(NinePatch(getShared("button"), 12, 12, 7, 6), NinePatch(getShared("button_hover"), 12, 12, 7, 6), NinePatch(getShared("button_pressed"), 12, 12, 7, 6), NinePatch(getShared("button_disabled"), 12, 12, 7, 6), Color.WHITE, Color.LIGHT_GRAY);  // 어차피 게임 실행 시 단추가 나오므로 굳이 lazy로 할 필요 없음
-		greenButton = Button.Skin(NinePatch(getShared("green_button"), 12, 12, 7, 6), NinePatch(getShared("green_button_hover"), 12, 12, 7, 6), NinePatch(getShared("green_button_pressed"), 12, 12, 7, 6), NinePatch(getShared("green_button_disabled"), 12, 12, 7, 6), Color.WHITE, Color.LIGHT_GRAY);
+		button = Button.Skin(NinePatch(getShared("button"), 12, 12, 7, 6), NinePatch(getShared("button_hover"), 12, 12, 7, 6), NinePatch(getShared("button_pressed"), 12, 12, 7, 6), NinePatch(getShared("button_disabled"), 12, 12, 7, 6), Color.WHITE, Color.WHITE, Color.WHITE, Color.LIGHT_GRAY);  // 어차피 게임 실행 시 단추가 나오므로 굳이 lazy로 할 필요 없음
+		greenButton = Button.Skin(NinePatch(getShared("green_button"), 12, 12, 7, 6), NinePatch(getShared("green_button_hover"), 12, 12, 7, 6), NinePatch(getShared("green_button_pressed"), 12, 12, 7, 6), NinePatch(getShared("green_button_disabled"), 12, 12, 7, 6), Color.WHITE, Color.WHITE, Color.WHITE, Color.LIGHT_GRAY);
 
 		val progressBar = NinePatch(getShared("progress_bar"), 2, 2, 5, 6);
 		val progressFill = getShared("progress_fill");

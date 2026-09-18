@@ -159,10 +159,10 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 		};
 	}
 
-	// 대미지를 입은 경우 붉게 바꾼다.
-	override fun draw(batch: SpriteBatch, textureOverride: Texture?, colorOverride: Color?) {
-		val showDamaged = (colorOverride == null && showDamageIndicator && damagedIndicatorTimer > 0f);
-		val color = if(showDamaged) Color.RED else colorOverride;
+	// 대미지를 입은 경우 붉게 바꾸는 고급 hook이다.
+	override fun draw(batch: SpriteBatch, textureOverride: Texture?, tintOverride: Color?) {
+		val showDamaged = (tintOverride == null && showDamageIndicator && damagedIndicatorTimer > 0f);
+		val color = if(showDamaged) Color.RED else tintOverride;
 		super.draw(batch, textureOverride, color);
 	}
 }

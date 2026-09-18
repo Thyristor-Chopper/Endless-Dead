@@ -138,7 +138,7 @@ sealed class Zombie(world: World, name: String, x: Float, y: Float, width: Float
 	class Strong(world: World, x: Float, y: Float) : Zombie(world, "Rabid Zombie", x, y, 49f, 70f, Zombie.Properties(15, 5, 50f)) {
 		private val dasher = DashToTarget(this, 20, 800f, 250f);
 		// 강한 좀비는 살짝 붉게
-		override val overlayColor = Utils.rgb(255, 204, 204);
+		override val tint = Utils.rgb(255, 204, 204);
 
 		override fun updateAI(delta: Float) {
 			dasher.update(delta);

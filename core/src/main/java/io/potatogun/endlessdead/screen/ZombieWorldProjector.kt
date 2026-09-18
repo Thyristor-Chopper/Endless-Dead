@@ -92,11 +92,11 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		addOverlayWidget("replay_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Textures.greenButton) {
 			GameManager.newGame();
 		}.apply { hide() });
-		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Textures.button, color = Utils.rgb(225, 247, 231)) {
+		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Textures.button, tint = Utils.rgb(225, 247, 231)) {
 			unloadWorld(dispose = true);
 			GameManager.standBy();
 		}.apply { hide() });
-		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Textures.button, color = Utils.rgb(225, 247, 231)) {
+		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Textures.button, tint = Utils.rgb(225, 247, 231)) {
 			Gdx.app.exit();
 		}.apply { hide() });
 
