@@ -1467,8 +1467,7 @@ class TriggermanSummoner(world: World, x: Float, y: Float) : LivingEntity(world,
 		timerManager.tick(delta);
 	}
 
-	// 타이머에서 한 번만 쓰이므로 인라인
-    private inline fun spawn() {
+    private fun spawn() {
 		rotateToRandom();
 		val triggerman = Triggerman(world, x, y);  // 소환기가 있는 위치에 생성. 소환기 텍스처에 구멍이 있고 거기서 총잡이가 월드로 나온다는 컨셉이다.
         world.entities.add(triggerman);
