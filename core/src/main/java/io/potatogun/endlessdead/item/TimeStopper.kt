@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.item
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import io.potatogun.endlessdead.GameManager;
@@ -25,13 +26,12 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 			world.projector?.drawSubtitles("Can't use this item here");
 			return false;
 		}
+		if(world.isFrozen) {
+			world.projector?.drawSubtitles("Time is already stopped", Color.SALMON);
+			return false;
+		}
 		world.projector?.drawSubtitles("Time stop!");
 		world.freeze();
-		val previousTimer = unfreezeTimers.get(world);
-		if(previousTimer != null) {
-			GameManager.globalTimers.unregister(previousTimer);
-			unfreezeTimers.remove(world);
-		}
 		GameManager.globalTimers.register(Timer(3f, { GameManager.isPlaying }) {
 			world.unfreeze();
 		}.also { unfreezeTimers.put(world, it) });
