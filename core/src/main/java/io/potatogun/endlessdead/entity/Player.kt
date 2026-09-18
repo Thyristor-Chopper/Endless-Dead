@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.entity.Zombie;
-import io.potatogun.endlessdead.entity.component.MeleeAttackComponent;
 import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.entity.component.ItemDropComponent;
 import io.potatogun.endlessdead.entity.component.ItemPickupComponent;
@@ -33,7 +32,7 @@ import java.lang.ref.WeakReference;
 /**
  * 플레이어 — 화살표로 조종
  */
-class Player private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, TextureUtils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), MeleeAttackable, Movable {
+class Player private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, TextureUtils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable {
 	override val isUpdatableWhileFrozen = true;
 	private val textureWithGun = TextureUtils.loadTexture("entity/player_holding_gun.bmp");
 	// 타이머
@@ -44,9 +43,6 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	val latestAttackVictim: LivingEntity?
 		get() = _latestAttackVictim?.get();
 	// 컴포넌트
-	private val meleeAttackComponent = MeleeAttackComponent(this, 1, 0.4f);
-	override val attackDamage: Int by meleeAttackComponent::attackDamage;
-	override val attackInterval: Float by meleeAttackComponent::attackInterval;
 	private val moveComponent = MoveComponent(this, 200f);
 	override val speed: Float by moveComponent::speed;  // 디컴파일해서 확인한 결과 수동 get() = moveComponent.speed와 오버헤드는 똑같음
 	private val dropComponent = ItemDropComponent(this);
@@ -82,12 +78,6 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		moveComponent.move(delta, directionX, directionY);
 	}
 
-	override fun damageTarget(target: LivingEntity): Boolean = meleeAttackComponent.damageTarget(target);
-
-	override fun meleeAttackNearby() {
-		meleeAttackComponent.meleeAttackNearby();
-	}
-
 	// ---- 매 프레임 로직 ----
 
 	override fun update(delta: Float) {
@@ -96,9 +86,6 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 
 		super.update(delta);
 
-		// 컴포넌트 갱신
-		meleeAttackComponent.update(delta);
-
 		// 반디 위치에 따라 플레이어 회전
 		rotateToCursor();
 
@@ -106,13 +93,10 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		if(Input.isKeyJustPressed(Input.SPACE) || Input.isButtonJustPressed(Input.RIGHT_MOUSE))
 			interactContainer();
 
-		// 아이템 사용 및 손공격
+		// 아이템 사용
 		selectedItem?.let {
 			if(it is Usable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.isContinuousUseAllowed && Input.isButtonPressed(Input.LEFT_MOUSE))))
 				useItem(it);
-		} ?: run {
-			if(Input.isButtonJustPressed(Input.LEFT_MOUSE))
-				meleeAttackComponent.meleeAttackNearby();
 		};
 
 		// 아이템 파괴
