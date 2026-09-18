@@ -42,7 +42,7 @@ sealed class Zombie(world: World, name: String, x: Float, y: Float, width: Float
 	};
 	override val target: LivingEntity? by autoTargeter::target;
 	override val followRange: Float by autoTargeter::followRange;
-	private val targetCenterFactor = 3f / 4f;
+	private val targetCenterFactor = 0.75f;
 	private val approacher = ApproachTarget(this, targetCenterGapFactor = targetCenterFactor);
 	private val meleeAttacker = MeleeAttackTarget(this, targetCenterFactor);
 	private val attackingTexture = Textures.getShared("attacking_zombie");
@@ -67,7 +67,7 @@ sealed class Zombie(world: World, name: String, x: Float, y: Float, width: Float
 		meleeAttackComponent.update(delta);
 
 		updateAI(delta);
-		if(meleeAttacker.state == MeleeAttackTarget.State.ATTACKING) {
+		if(approacher.state == ApproachTarget.State.APPROACHED && meleeAttacker.state == MeleeAttackTarget.State.ATTACKING) {
 			attackTextureTimer -= delta;
 			if(attackTextureTimer <= 0f)
 				attackTextureTimer = 0.75f;
