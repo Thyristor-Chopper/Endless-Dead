@@ -172,8 +172,13 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 				spawners[i].update(delta);
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
-		if(!player.isAlive)
+		if(!player.isAlive) {
 			GameManager.setGameOver();
+			TimeStopper.unfreezeTimers.get(this)?.let {
+				GameManager.globalTimers.unregister(it);
+				TimeStopper.unfreezeTimers.remove(this);
+			};
+		}
 	}
 
 	// ────────────────────────────────────────────────────────

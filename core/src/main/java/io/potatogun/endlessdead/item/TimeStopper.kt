@@ -1,11 +1,14 @@
 package io.potatogun.endlessdead.item
 
+import com.badlogic.gdx.utils.ObjectMap;
+
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.world.Freezable;
+import io.potatogun.gdxhelper.world.World;
 
 /**
  * 시간 정지기 아이템
@@ -24,10 +27,19 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 		}
 		world.projector?.drawSubtitles("Time stop!");
 		world.freeze();
+		val previousTimer = unfreezeTimers.get(world);
+		if(previousTimer != null) {
+			GameManager.globalTimers.unregister(previousTimer);
+			unfreezeTimers.remove(world);
+		}
 		GameManager.globalTimers.register(Timer(3f, { GameManager.isPlaying }) {
 			world.unfreeze();
-		});
+		}.also { unfreezeTimers.put(world, it) });
 		destroy();
 		return true;
+	}
+
+	companion object {
+		@JvmSynthetic internal val unfreezeTimers = ObjectMap<World, Timer>(8);
 	}
 }
