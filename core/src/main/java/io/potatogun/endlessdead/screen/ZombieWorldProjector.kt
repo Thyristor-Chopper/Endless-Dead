@@ -238,6 +238,8 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 					};
 				else
 					cooldownIndicator.hide();
+			} else {
+				cooldownIndicator.hide();
 			}
 		} else {
 			ammoIndicator.hide();
