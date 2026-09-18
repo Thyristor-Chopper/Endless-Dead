@@ -19,7 +19,7 @@ class TriggermanSummoner(world: World, x: Float, y: Float) : LivingEntity(world,
 
 	init {
 		rotateToRandom();
-		timerManager.register(RepeatingTimer(10f, operation = this::spawn));
+		timerManager.register(RepeatingTimer(10f, this::spawn));
 	}
 
 	override fun update(delta: Float) {
