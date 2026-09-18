@@ -24,6 +24,8 @@ class TriggermanSummoner(world: World, x: Float, y: Float) : LivingEntity(world,
 	}
 
 	override fun update(delta: Float) {
+		super.update(delta);
+
 		timerManager.tick(delta);
 	}
 
