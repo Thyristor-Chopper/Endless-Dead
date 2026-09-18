@@ -426,7 +426,6 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		batch.color = noWorldOverlay;
 		batch.draw(lazyStillCut.value, 0f, 0f, Window.width, Window.height);
 		batch.color = Color.WHITE;
-		drawText("Waiting for a new adventure...", 0f, Window.height * 0.5f, Color.LIGHT_GRAY, 2.0f, Window.width, Align.center);
 	}
 
 	override fun drawContents() {
