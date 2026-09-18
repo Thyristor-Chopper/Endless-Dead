@@ -29,12 +29,12 @@ class TriggermanSpawner(private val world: World) : Spawner {
 		});
 	}
 
-    override fun update(delta: Float) {
+	override fun update(delta: Float) {
 		timerManager.tick(delta);
-    }
+	}
 
 	// 타이머에서 한 번만 쓰이므로 인라인
-    private inline fun spawn() {
+	private inline fun spawn() {
 		val triggerman = Triggerman(world, 0f, 0f);
 		var loopCount = 0;
 		val target = triggerman.target;
@@ -46,7 +46,7 @@ class TriggermanSpawner(private val world: World) : Spawner {
 		} while(target != null && position.distanceTo(target) < 408f && loopCount < 30);
 		triggerman.x = position.x;
 		triggerman.y = position.y;
-        world.entities.add(triggerman);
+		world.entities.add(triggerman);
 		Pools.position.free(position);
-    }
+	}
 }
