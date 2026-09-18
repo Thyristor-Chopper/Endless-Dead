@@ -175,6 +175,11 @@ object GameManager {
 		gameTime += delta;
 	}
 
+	/**
+	 * 전역 타이머 관리자를 갱신한다.
+	 * 
+	 * @param delta 직전 프레임과의 간격(초)
+	 */
 	@JvmSynthetic internal fun tickGlobalTimers(delta: Float) {
 		globalTimers.tick(delta);
 	}
