@@ -7,6 +7,7 @@ import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.Player;
+import io.potatogun.endlessdead.entity.TriggermanSummoner;
 import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
 import io.potatogun.endlessdead.entity.container.Container;
@@ -106,9 +107,12 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this));
-		// 5% 확률로 총 쏘는 적도 나오는 월드
-		if(Random.nextInt(20) == 7)
+		if(Random.nextInt(20) == 7)  // 5% 확률로 총 쏘는 적도 나오는 월드
 			spawners.add(TriggermanSpawner(this));
+		else  // 그 외에는 각각 0.5% 확률로 총잡이 써모너를 1~2대 추가 (공격해서 제거 가능)
+			for(i in 1..2)
+				if(Random.nextInt(1000) + 1 <= 5)
+					entities.add(TriggermanSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((width - 300f).toInt()).toFloat() + 150f));
 
 		// 10초마다 빈 상자 하나 리필
 		timerManager.register(RepeatingTimer(10f) {

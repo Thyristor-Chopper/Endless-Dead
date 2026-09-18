@@ -44,6 +44,7 @@ object Textures : SharedTextureManager() {
 		register("empty_chest", "entity/chest_empty.bmp");
 		register("silver_bullet", "entity/bullet_silver.bmp");
 		register("triggerman", "entity/triggerman.bmp");
+		register("triggerman_summoner", "entity/triggerman_summoner.bmp");
 		register("turret_friendly", "entity/turret_friendly.bmp");
 		register("turret_hostile", "entity/turret_hostile.bmp");
 		register("zombie", "entity/zombie.bmp");
