@@ -34,6 +34,7 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 		world.freeze();
 		GameManager.globalTimers.register(Timer(3f, { GameManager.isPlaying }) {
 			world.unfreeze();
+			unfreezeTimers.remove(world);
 		}.also { unfreezeTimers.put(world, it) });
 		destroy();
 		return true;
