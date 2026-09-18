@@ -13,9 +13,9 @@ import kotlin.math.cos;
 import kotlin.math.sin;
 
 /**
- * 산탄총 아이템 구현체
+ * 산탄총 아이템 구현체 - 총 여섯 번 쏠 수 있다.
  */
-class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetration(5).fireInterval(1f).bullets(5)) {
+class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetration(5).fireInterval(1f).bullets(30)) {
 	companion object {
 		private val spreadAngles = floatArrayOf(-0.2f, -0.1f, 0.1f, 0.2f);  // 방향 기준 퍼짐 좌표
 	}
@@ -25,7 +25,7 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 		val centerX = shooter.x;  // shooter, 즉 발사를 하는 주체인 플레이어의 위치를 중심으로 두는 객체
 		val centerY = shooter.y;
 		val angle = atan2(target.y - centerY, target.x - centerX);  // atan2()으로 사분면(방향)을 확인, -180°부터 +180°까지 정확한 방향 반환
-		var shootedBullets = 0;
+		var shootedPellets = 0;
 		for(spread in spreadAngles) {  // 디컴파일해서 확인한 결과 C언어 스타일의 인덱스 기반 iteration으로 바뀜
 			if(!canFire) break;
 			val finalAngle = angle + spread;  // atan2로 반환한 방향에 배열로 저장한 다섯 가지 방향으로 퍼짐 구현
@@ -36,11 +36,11 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 			world.entities.add(Bullet(world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration));
 			if(!infiniteBullets)
 				bullets--;  // 탄약 수 차감
-			shootedBullets++;
+			shootedPellets++;
 		}
 
-		val defaultShoot = super.shoot(target, shooter);
+		val defaultResult = super.shoot(target, shooter);
 
-		return defaultShoot + shootedBullets;
+		return defaultResult + shootedPellets;
 	}
 }
