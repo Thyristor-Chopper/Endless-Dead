@@ -41,5 +41,6 @@ class MeleeAttackComponent(private val attacker: Entity, override val attackDama
 			if(entity is LivingEntity && attacker.collidesWith(entity))
 				damageTarget(entity);
 		}
+		Pools.entityArray.free(nearbyEntities);
 	}
 }

@@ -33,6 +33,7 @@ class ItemPickupComponent<T>(private val entity: T) where T : Entity, T : Invent
 				pickedUp = true;
 			}
 		}
+		Pools.entityArray.free(nearbyEntities);
 		return pickedUp;
 	}
 
@@ -55,6 +56,7 @@ class ItemPickupComponent<T>(private val entity: T) where T : Entity, T : Invent
 				found = true;
 			}
 		}
+		Pools.entityArray.free(nearbyEntities);
 		return found;
 	}
 }

@@ -160,6 +160,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 			if(entity is BodyDamagable && entity !== this && !isSameTeamWith(entity) && collidesWith(entity))
 				takeDamage(entity.bodyDamage, attacker = entity);
 		}
+		Pools.entityArray.free(nearbyEntities);
 	}
 
 	// 대미지를 입은 경우 붉게 바꾸는 고급 hook이다.

@@ -90,6 +90,7 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 				}
 			}
 		}
+		Pools.entityArray.free(nearbyEntities);
 	}
 
 	override fun move(delta: Float, directionX: Float, directionY: Float) {

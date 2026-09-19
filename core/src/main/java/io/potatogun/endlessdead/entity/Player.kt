@@ -182,6 +182,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 				}
 			}
 		}
+		Pools.entityArray.free(nearbyEntities);
 	}
 
 	// ---- 콜백(이벤트) 처리 ----
