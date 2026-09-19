@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.entity;
 
+import io.potatogun.endlessdead.inventory.Inventory;
 import io.potatogun.endlessdead.inventory.ObservableInventory;
 import io.potatogun.endlessdead.item.Item;
 
@@ -7,17 +8,23 @@ import io.potatogun.endlessdead.item.Item;
  * 인벤토리에서 아이템을 선택할 수 있는 개체에 대한 구현체.
  * 단독으로 사용하지 않고 위임으로만 사용된다.
  *
- * @property inventory 이벤트 핸들러가 지원되는 인벤토리
+ * @property inventory 인벤토리
  */
-class InventoryItemSelector(private val inventory: ObservableInventory) : ItemSelectable {
+class InventoryItemSelector(private val inventory: Inventory) : ItemSelectable {
 	override val selectedItem: Item?
 		get() {
 			if(selectedItemIndex == -1) return null;
 			try {
 				return inventory.getItem(selectedItemIndex);
 			} catch(e: IndexOutOfBoundsException) {
-				selectedItemIndex = -1;
-				return null;
+				val size = inventory.size;
+				if(size == 0) {
+					selectedItemIndex = -1;
+					return null;
+				} else {
+					selectedItemIndex = size - 1;
+					return inventory.getItem(selectedItemIndex);
+				}
 			}
 		};
 	override var selectedItemIndex: Int = -1
@@ -35,17 +42,20 @@ class InventoryItemSelector(private val inventory: ObservableInventory) : ItemSe
 		};
 
 	init {
-		inventory.addItemAddObserver {
-			if(selectedItem == null)
-				selectNextItem();
-		};
+		if(inventory is ObservableInventory) {
+			inventory.addItemAddObserver {
+				if(selectedItem == null)
+					selectNextItem();
+			};
 
-		inventory.addItemRemoveObserver {
-			if(inventory.isEmpty)
-				selectedItemIndex = -1;
-			else if(selectedItemIndex >= inventory.size)
-				selectedItemIndex = 0;
-		};
+			inventory.addItemRemoveObserver {
+				val size = inventory.size;
+				if(inventory.isEmpty)
+					selectedItemIndex = -1;
+				else if(selectedItemIndex >= size)
+					selectedItemIndex = size - 1;
+			};
+		}
 	}
 
 	override fun selectNextItem(): Boolean {

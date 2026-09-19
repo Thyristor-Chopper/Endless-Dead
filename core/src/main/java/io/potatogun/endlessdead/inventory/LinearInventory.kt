@@ -17,7 +17,7 @@ class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 	override val size: Int
 		get() = inventory.size;
 	override val isEmpty: Boolean
-		get() = inventory.isEmpty();
+		get() = (inventory.size == 0);
 
 	init {
 		if(maxSlots < -1)
