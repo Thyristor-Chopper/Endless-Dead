@@ -135,14 +135,17 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		val originalX = x;
 		val originalY = y;
 
+		var dx = 0f;
+		var dy = 0f;
 		if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A))
-			move(delta, -1f, 0f);
+			dx = -1f;
 		if(Input.isKeyPressed(Input.RIGHT) || Input.isKeyPressed(Input.D))
-			move(delta, 1f, 0f);
+			dx = 1f;
 		if(Input.isKeyPressed(Input.UP) || Input.isKeyPressed(Input.W))
-			move(delta, 0f, 1f);
+			dy = 1f;
 		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S))
-			move(delta, 0f, -1f);
+			dy = -1f;
+		move(delta, dx, dy);
 
 		// 월드 경계 안쪽으로 가두기.
 		x = x.coerceIn(0f, world.width);
