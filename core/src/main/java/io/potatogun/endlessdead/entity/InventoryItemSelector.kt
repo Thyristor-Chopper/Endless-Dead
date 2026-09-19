@@ -50,7 +50,7 @@ class InventoryItemSelector(private val inventory: Inventory) : ItemSelectable {
 
 			inventory.addItemRemoveObserver {
 				val size = inventory.size;
-				if(inventory.isEmpty)
+				if(size == 0)
 					selectedItemIndex = -1;
 				else if(selectedItemIndex >= size)
 					selectedItemIndex = size - 1;
