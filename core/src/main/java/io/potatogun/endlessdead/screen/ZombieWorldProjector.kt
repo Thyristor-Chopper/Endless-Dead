@@ -90,10 +90,12 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			GameManager.resume();
 		}.apply { hide() });
 		addOverlayWidget("replay_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Textures.greenButton) {
+			clearSubtitles();
 			GameManager.newGame();
 		}.apply { hide() });
 		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Textures.button, tint = Utils.rgb(225, 247, 231)) {
 			unloadWorld(dispose = true);
+			clearSubtitles();
 			GameManager.standBy();
 		}.apply { hide() });
 		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Textures.button, tint = Utils.rgb(225, 247, 231)) {
@@ -101,9 +103,22 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		}.apply { hide() });
 
 		// 제목 표시줄 정보 전환
-		timers.register(RepeatingTimer(3f, { !GameManager.isGameOver }) {
+		timers.register(RepeatingTimer(3f, { (GameManager.isPlaying || GameManager.isPaused) && projectingWorld != null }) {
 			currentTitleInfo++;
+			updateTitleBarInfo();
 		});
+	}
+
+	override fun loadWorld(world: World, disposePreviousWorld: Boolean) {
+		super.loadWorld(world, disposePreviousWorld);
+		updateTitleBarInfo();
+	}
+
+	override fun unloadWorld(dispose: Boolean): Boolean {
+		val result = super.unloadWorld(dispose);
+		updateTitleBarInfo();
+		clearSubtitles();
+		return result;
 	}
 
 	// 창 최소화(아이콘 표시) 시 자동 일시 중지
@@ -128,9 +143,6 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	 * @param delta 직전 프레임과의 간격 (초)
 	 */
 	private inline fun updatePlaying(delta: Float) {  // update에서만 한 번 쓰이기 때문에 inline이다.
-		// 제목 표시줄에 통계 표시
-		updateTitleBarInfo();
-
 		super.update(delta);
 
 		val world: World? = projectingWorld;
@@ -256,9 +268,6 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	 *   세상이 그대로 멈춰있는 상태가 됨.
 	 */
 	private inline fun updatePaused() {  // update에서만 한 번 쓰이기 때문에 inline이다.
-		// 제목 표시줄에 통계 표시
-		updateTitleBarInfo();
-		
 		// 일시 정지 키 누름 감지
 		detectPauseKey();
 
@@ -460,6 +469,14 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			subtitlesColor = Color.WHITE;  // 초깃값으로 복원하여 메모리를 점유하지 않게 함
 			subtitlesTimer = null;
 		}.also { timers.register(it) };
+	}
+
+	// 간단한 함수라 인라인
+	private inline fun clearSubtitles() {
+		subtitlesTimer?.let {
+			timers.unregister(it);
+			subtitlesTimer = null;
+		};
 	}
 
 	/**

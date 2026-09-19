@@ -48,7 +48,6 @@ sealed class Zombie(world: World, name: String, x: Float, y: Float, width: Float
 	private val attackingTexture = Textures.getShared("attacking_zombie");
 	override val penetrationDamage = 1;
 	override val damageInvincibilityDuration = 0.15f;
-	private var attackCooldownTimer = attackInterval;
 	private var attackTextureTimer = 0f;
 
 	override fun move(delta: Float, directionX: Float, directionY: Float) {

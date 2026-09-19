@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.entity.component;
 
+import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.MeleeAttackable;
 import io.potatogun.gdxhelper.entity.Entity;
@@ -33,9 +34,12 @@ class MeleeAttackComponent(private val attacker: Entity, override val attackDama
 	}
 
 	override fun meleeAttackNearby() {
-		attacker.forEachNearby { entity ->
+		val nearbyEntities = Pools.entityArray.obtain();
+		attacker.getWorld().entities.getNearby(attacker, nearbyEntities);
+		for(i in 0 until nearbyEntities.size) {
+			val entity = nearbyEntities[i];
 			if(entity is LivingEntity && attacker.collidesWith(entity))
 				damageTarget(entity);
-		};
+		}
 	}
 }

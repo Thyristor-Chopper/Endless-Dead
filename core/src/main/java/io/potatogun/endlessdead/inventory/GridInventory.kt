@@ -49,12 +49,12 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		if(hasItem(item)) return false;
 		var emptyI = -1;
 		var emptyJ = -1;
-		for(i in 0 until rows)
+		rowloop@ for(i in 0 until rows)
 			for(j in 0 until columns)
 				if(inventory[i][j] == null) {
 					emptyI = i;
 					emptyJ = j;
-					break;
+					break@rowloop;
 				}
 		if(emptyI == -1 || emptyJ == -1) return false;
 		val holder: Inventory? = item.inventory;

@@ -1,5 +1,7 @@
 package io.potatogun.endlessdead.item;
 
+import com.badlogic.gdx.graphics.Color;
+
 import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
@@ -15,6 +17,10 @@ class Bandage : Item("bandage", "Bandage"), Usable {
 	override fun use(user: ItemSelectable): Boolean {
 		if(user.selectedItem !== this) return false;
 		if(user !is LivingEntity) return false;
+		if(user.health >= user.maxHealth) {
+			user.getWorld().projector?.drawSubtitles("can't heal anymore", Color.SALMON);
+			return false;
+		}
 		user.heal(10);
 		if(user is Player)
 			user.getWorld().projector?.drawSubtitles("Healed 10 HP");

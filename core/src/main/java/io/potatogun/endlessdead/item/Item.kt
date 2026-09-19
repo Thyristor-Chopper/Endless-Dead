@@ -99,9 +99,9 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 		 */
 		fun get(item: Item): Texture {
 			val itemID = item.id;
-			try {
+			if(hasShared(itemID)) {
 				return getShared(itemID);
-			} catch(e: NoSuchElementException) {
+			} else {
 				try {
 					val texture = TextureUtils.loadTexture("item/${itemID}.bmp");
 					register(itemID, texture);

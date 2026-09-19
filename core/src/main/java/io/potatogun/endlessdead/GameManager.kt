@@ -39,17 +39,22 @@ object GameManager {
 	/**
 	 * 게임의 현재 상태
 	 */
-	private var state: GameState by Delegates.observable(GameState.STANDBY) { _, _, new -> 
-		if(new == GameState.PLAYING)
-			Gdx.graphics.setForegroundFPS(Constants.FPS);
-		else
-			Gdx.graphics.setForegroundFPS(Constants.PASSIVE_FPS);  // 20fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
-	};
+	private var state = GameState.STANDBY
+		set(value) {
+			field = value;
+			if(value == GameState.PLAYING)
+				Gdx.graphics.setForegroundFPS(Constants.FPS);
+			else
+				Gdx.graphics.setForegroundFPS(Constants.PASSIVE_FPS);  // 20fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
+		};
 	/**
 	 * 현재 라운드 (0이면 아직 게임이 시작되지 않은 것)
 	 */
-	@JvmStatic var round: Int by Delegates.observable(0) { _, _, new -> Window.titleBarInfo = (if(new > 0) "Round $new" else null) }
-		private set;
+	@JvmStatic var round = 0
+		private set(value) {
+			field = value;
+			Window.titleBarInfo = if(value > 0) "Round $value" else null;
+		};
 	/**
 	 * 현재 게임이 진행 중인지의 여부
 	 */

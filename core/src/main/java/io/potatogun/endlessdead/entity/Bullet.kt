@@ -3,6 +3,7 @@ package io.potatogun.endlessdead.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
+import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.component.MoveComponent;
@@ -75,7 +76,10 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 			this.remove();
 
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지 주고 총알은 소멸.
-		forEachNearby { entity ->
+		val nearbyEntities = Pools.entityArray.obtain();
+		world.entities.getNearby(this, nearbyEntities);
+		for(i in 0 until nearbyEntities.size) {
+			val entity = nearbyEntities[i];
 			if(entity !== this && entity !== shooter && entity is LivingEntity && !entity.isInvincible && !isSameTeamWith(entity) && (entity !is Bullet || entity.gun !== this.gun) && collidesWith(entity)) {
 				entity.takeDamage(damage, attacker = shooter);  // 무적 시간이 필요하면 추가...
 				if(isPenetrable) {
@@ -85,7 +89,7 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 					this.remove();
 				}
 			}
-		};
+		}
 	}
 
 	override fun move(delta: Float, directionX: Float, directionY: Float) {

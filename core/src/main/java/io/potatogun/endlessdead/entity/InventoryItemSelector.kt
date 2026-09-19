@@ -12,6 +12,7 @@ import io.potatogun.endlessdead.item.Item;
 class InventoryItemSelector(private val inventory: ObservableInventory) : ItemSelectable {
 	override val selectedItem: Item?
 		get() {
+			if(selectedItemIndex == -1) return null;
 			try {
 				return inventory.getItem(selectedItemIndex);
 			} catch(e: IndexOutOfBoundsException) {

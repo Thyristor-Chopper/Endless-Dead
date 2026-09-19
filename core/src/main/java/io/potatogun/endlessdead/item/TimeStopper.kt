@@ -23,7 +23,7 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 		if(user !is Player) return false;
 		val world = user.getWorld();
 		if(world !is Freezable) {
-			world.projector?.drawSubtitles("Can't use this item here");
+			world.projector?.drawSubtitles("Can't use this item here", Color.SALMON);
 			return false;
 		}
 		if(world.isFrozen) {
