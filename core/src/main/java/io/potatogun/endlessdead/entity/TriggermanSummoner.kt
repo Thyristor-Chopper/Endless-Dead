@@ -5,6 +5,10 @@ import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.world.World;
 
+import java.lang.Math.toRadians;
+
+import kotlin.math.cos;
+import kotlin.math.sin;
 import kotlin.random.Random;
 
 /**
@@ -14,7 +18,7 @@ import kotlin.random.Random;
  * @param x	 개체의 X 위치
  * @param y	 개체의 Y 위치
  */
-class TriggermanSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "Triggerman Summoner", x, y, 32f, 32f, 1000, Textures.getShared("triggerman_summoner")) {
+class TriggermanSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "Triggerman Summoner", x, y, 26f, 38f, 1000, Textures.getShared("triggerman_summoner")) {
 	private val timers = TimerManager();
 	override val damageInvincibilityDuration = 0.15f;
 
@@ -31,7 +35,9 @@ class TriggermanSummoner(world: World, x: Float, y: Float) : LivingEntity(world,
 
 	private fun spawn() {
 		rotateToRandom();
-		val triggerman = Triggerman(world, x, y);  // 소환기가 있는 위치에 생성. 소환기 텍스처에 구멍이 있고 거기서 총잡이가 월드로 나온다는 컨셉이다.
+		val rad = toRadians(getRotationAngle().toDouble() + 90.0).toFloat();
+		val distance = 24f;
+		val triggerman = Triggerman(world, x + distance * cos(rad), y + distance * sin(rad));  // 소환기가 있는 위치에 생성. 소환기 텍스처에 구멍이 있고 거기서 총잡이가 월드로 나온다는 컨셉이다.
 		world.entities.add(triggerman);
 	}
 
