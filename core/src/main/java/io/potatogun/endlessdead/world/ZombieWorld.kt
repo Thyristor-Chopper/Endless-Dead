@@ -107,7 +107,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 			spawners.add(TriggermanSpawner(this));
 		else  // 그 외에는 각각 0.5% 확률로 총잡이 써모너를 1~2대 추가 (공격해서 제거 가능)
 			for(i in 1..2)
-				if(Random.nextInt(1000) + 1 <= 5)
+				if(true||Random.nextInt(1000) + 1 <= 5)
 					entities.add(TriggermanSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 
 		// 10초마다 빈 상자 하나 리필

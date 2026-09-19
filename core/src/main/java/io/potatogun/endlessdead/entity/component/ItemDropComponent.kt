@@ -7,6 +7,10 @@ import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.util.Math.max2;
 
+import java.lang.Math.toRadians;
+
+import kotlin.math.cos;
+import kotlin.math.sin;
 import kotlin.random.Random;
 
 /**
@@ -25,9 +29,9 @@ class ItemDropComponent<T>(private val entity: T) where T : Entity, T : Inventor
 		if(!entity.inventory.hasItem(item)) return false;
 		val world = entity.getWorld();
 		val maxHalfLength = max2(entity.width, entity.height) * 0.5f;
-		val spaceX = (Random.nextInt(4) + maxHalfLength + Constants.ITEM_SIZE * 0.5f) * if(Random.nextBoolean()) 1 else -1;
-		val spaceY = (Random.nextInt(4) + maxHalfLength + Constants.ITEM_SIZE * 0.5f) * if(Random.nextBoolean()) 1 else -1;
-		world.entities.add(DroppedItem(world, entity.x + spaceX, entity.y + spaceY, item));
+		val rad = toRadians(entity.getRotationAngle().toDouble() + 90.0 + Random.nextInt(30).toDouble() - 15.0).toFloat();
+		val distance = Random.nextInt(24) + maxHalfLength + Constants.ITEM_SIZE * 0.5f;
+		world.entities.add(DroppedItem(world, entity.x + distance * cos(rad), entity.y + distance * sin(rad), item));
 		entity.inventory.removeItem(item);
 		return true;
 	}
