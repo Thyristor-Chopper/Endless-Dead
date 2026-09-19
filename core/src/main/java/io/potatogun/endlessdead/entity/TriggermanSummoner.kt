@@ -14,7 +14,7 @@ import kotlin.random.Random;
  * @param x	 개체의 X 위치
  * @param y	 개체의 Y 위치
  */
-class TriggermanSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "Triggerman Summoner", x, y, 32f, 32f, 250, Textures.getShared("triggerman_summoner")) {
+class TriggermanSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "Triggerman Summoner", x, y, 32f, 32f, 1000, Textures.getShared("triggerman_summoner")) {
 	private val timers = TimerManager();
 	override val damageInvincibilityDuration = 0.15f;
 
