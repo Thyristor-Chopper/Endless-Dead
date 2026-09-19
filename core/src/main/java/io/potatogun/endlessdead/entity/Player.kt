@@ -138,13 +138,13 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		var dx = 0f;
 		var dy = 0f;
 		if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A))
-			dx = -1f;
+			dx += -1f;
 		if(Input.isKeyPressed(Input.RIGHT) || Input.isKeyPressed(Input.D))
-			dx = 1f;
+			dx += 1f;
 		if(Input.isKeyPressed(Input.UP) || Input.isKeyPressed(Input.W))
-			dy = 1f;
+			dy += 1f;
 		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S))
-			dy = -1f;
+			dy += -1f;
 		move(delta, dx, dy);
 
 		// 월드 경계 안쪽으로 가두기.
