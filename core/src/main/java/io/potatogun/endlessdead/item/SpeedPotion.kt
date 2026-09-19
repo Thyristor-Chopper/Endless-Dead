@@ -10,7 +10,7 @@ import io.potatogun.gdxhelper.screen.drawSubtitles;
 class SpeedPotion : Item("speed_potion", "Speed Potion", Item.Properties().rarity(Rarity.UNCOMMON)), Usable {
 	override val isContinuousUseAllowed = false;
 
-	// 포션을 사용하여 속도를 1만큼 올린다.
+	// 포션을 사용하여 속도를 올린다.
 	override fun use(user: ItemSelectable): Boolean {
 		if(user.selectedItem !== this) return false;
 		if(user !is Player) return false;
