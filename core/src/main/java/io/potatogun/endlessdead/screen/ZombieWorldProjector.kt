@@ -287,8 +287,10 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			Gdx.app.exit();
 
 		// R 키나 사이띄개를 누르면 다시 시작
-		if(Input.isKeyJustPressed(Input.R) || Input.isKeyJustPressed(Input.SPACE))
+		if(Input.isKeyJustPressed(Input.R) || Input.isKeyJustPressed(Input.SPACE)) {
+			clearSubtitles();
 			GameManager.newGame();
+		}
 
 		showWidget("replay_button");
 		hideWidget("resume_button");
