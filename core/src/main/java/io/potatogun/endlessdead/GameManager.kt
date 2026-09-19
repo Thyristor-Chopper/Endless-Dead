@@ -61,7 +61,7 @@ object GameManager {
 	@JvmStatic val isGameOver: Boolean
 		get() = (state == GameState.GAME_OVER);
 	/**
-	 * 현재 게임이 일지 중지된 상태인지의 여부
+	 * 현재 게임이 일시 중지된 상태인지의 여부
 	 */
 	@JvmStatic val isPaused: Boolean
 		get() = (state == GameState.PAUSED);

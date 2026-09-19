@@ -4,5 +4,5 @@ plugins {
 }
 
 dependencies {
-	implementation(project(":gdxhelper"))
+	api(project(":gdxhelper"))
 }
