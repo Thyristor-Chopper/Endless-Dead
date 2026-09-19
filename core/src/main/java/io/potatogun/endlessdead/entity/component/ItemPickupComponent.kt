@@ -32,7 +32,7 @@ class ItemPickupComponent<T>(private val entity: T) where T : Entity, T : Invent
 				e.pickup(entity);
 				pickedUp = true;
 			}
-		};
+		}
 		return pickedUp;
 	}
 
