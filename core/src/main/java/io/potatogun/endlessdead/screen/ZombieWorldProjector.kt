@@ -99,6 +99,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			GameManager.standBy();
 		}.apply { hide() });
 		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Textures.button) {
+			unloadWorld(dispose = true);
 			Gdx.app.exit();
 		}.apply { hide() });
 
