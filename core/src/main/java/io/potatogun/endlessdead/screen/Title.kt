@@ -25,8 +25,12 @@ class Title(private val game: EndlessDead) : Screen() {
 	private var titleBlinkTimer = 0f;
 
 	init {
-		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, { 120f }, caption = "Play", skin = Textures.greenButton) { GameManager.newGame() });
-		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, { 120f }, caption = "Quit", skin = Textures.button, tint = Utils.rgb(225, 247, 231)) { Gdx.app.exit() });
+		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, { 120f }, caption = "Play", skin = Textures.primaryButton) {
+			GameManager.newGame();
+		});
+		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, { 120f }, caption = "Quit", skin = Textures.button) {
+			Gdx.app.exit();
+		});
 	}
 
 	override fun update(delta: Float) {

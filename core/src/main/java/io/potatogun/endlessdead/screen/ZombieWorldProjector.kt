@@ -86,19 +86,19 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		addWidget("gun_cooldown_indicator", ProgressBar({ Window.width - 215f }, { 10f }, { 60f }, skin = Textures.smoothProgressBar, color = Color.SCARLET).apply { hide() });
 
 		// 일시 중지 및 게임 오버 단추
-		addOverlayWidget("resume_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = Textures.greenButton) {
+		addOverlayWidget("resume_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = Textures.primaryButton) {
 			GameManager.resume();
 		}.apply { hide() });
-		addOverlayWidget("replay_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Textures.greenButton) {
+		addOverlayWidget("replay_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Textures.primaryButton) {
 			clearSubtitles();
 			GameManager.newGame();
 		}.apply { hide() });
-		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Textures.button, tint = Utils.rgb(225, 247, 231)) {
+		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Textures.button) {
 			unloadWorld(dispose = true);
 			clearSubtitles();
 			GameManager.standBy();
 		}.apply { hide() });
-		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Textures.button, tint = Utils.rgb(225, 247, 231)) {
+		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Textures.button) {
 			Gdx.app.exit();
 		}.apply { hide() });
 
