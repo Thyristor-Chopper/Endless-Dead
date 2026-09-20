@@ -36,4 +36,6 @@ abstract class TeamTurret(world: World, name: String, x: Float, y: Float, team: 
 	init {
 		this.team = team;
 	}
+
+	private inline fun isValidTarget(entity: LivingEntity?): Boolean = autoTargeter.isValidTarget(entity);
 }
