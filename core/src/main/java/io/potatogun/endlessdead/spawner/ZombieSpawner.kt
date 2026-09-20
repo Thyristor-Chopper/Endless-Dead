@@ -77,8 +77,7 @@ class ZombieSpawner(private val world: World) : Spawner {
 			position.y = Random.nextFloat() * (world.height - 140f) + 70f;
 			loopCount++;
 		} while(target != null && position.distanceTo(target) < 408f && loopCount < 30);
-		newZombie.x = position.x;
-		newZombie.y = position.y;
+		newZombie.position.set(position);
 		world.entities.add(newZombie);
 		Pools.position.free(position);
 	}
