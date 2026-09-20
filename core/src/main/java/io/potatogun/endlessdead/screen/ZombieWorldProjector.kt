@@ -21,7 +21,7 @@ import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.Window;
-import io.potatogun.gdxhelper.entity.manager.countOf;
+// import io.potatogun.gdxhelper.entity.manager.countOf;
 import io.potatogun.gdxhelper.entity.manager.getClosest;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.screen.WorldProjector;

@@ -153,6 +153,8 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 			damagedIndicatorTimer -= delta;
 
 		// 몸 대미지 처리
+		// 현재는 BodyDamagable을 구현하는 개체가 없으므로 주석 처리한다. (나중에 쓰이면 해제)
+		/*
 		val nearbyEntities = Pools.entityArray.obtain();
 		world.entities.getNearby(this, nearbyEntities);
 		for(i in 0 until nearbyEntities.size) {
@@ -161,6 +163,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 				takeDamage(entity.bodyDamage, attacker = entity);
 		}
 		Pools.entityArray.free(nearbyEntities);
+		*/
 	}
 
 	// 대미지를 입은 경우 붉게 바꾸는 고급 hook이다.
