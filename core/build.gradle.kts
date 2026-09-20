@@ -1,6 +1,6 @@
 plugins {
 	kotlin("jvm")
-	id("org.jetbrains.dokka-javadoc") version "2.2.0"
+	id("org.jetbrains.dokka-javadoc")
 }
 
 dependencies {

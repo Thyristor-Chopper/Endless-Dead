@@ -1,5 +1,6 @@
 plugins {
 	kotlin("jvm") version "2.4.20" apply false
+	id("org.jetbrains.dokka-javadoc") version "2.2.0" apply false
 }
 
 allprojects {
