@@ -11,6 +11,8 @@ import java.util.function.Consumer;
  */
 class SingleItemInventory : ObservableInventory() {
 	private var inventoryItem: Item? = null;
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("size")
 	override val size: Int
 		get() = if(inventoryItem != null) 1 else 0;
 	override val isEmpty: Boolean
@@ -23,7 +25,7 @@ class SingleItemInventory : ObservableInventory() {
 		if(!(holder?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
 		inventoryItem = item;
 		item.inventory = this;
-		invokeItemAddObservers(item);
+		invokeAddObservers(item);
 		return true;
 	}
 
@@ -32,7 +34,7 @@ class SingleItemInventory : ObservableInventory() {
 		if(index != 0 || item == null) return false;
 		inventoryItem = null;
 		item.inventory = null;
-		invokeItemRemoveObservers(item);
+		invokeRemoveObservers(item);
 		return true;
 	}
 
@@ -40,7 +42,7 @@ class SingleItemInventory : ObservableInventory() {
 		if(inventoryItem !== item) return false;
 		inventoryItem = null;
 		item.inventory = null;
-		invokeItemRemoveObservers(item);
+		invokeRemoveObservers(item);
 		return true;
 	}
 
@@ -73,7 +75,7 @@ class SingleItemInventory : ObservableInventory() {
 		inventoryItem?.let {
 			it.inventory = null;
 			inventoryItem = null;
-			invokeItemRemoveObservers(it);
+			invokeRemoveObservers(it);
 		}
 		invokeClearObservers();
 	}
@@ -98,10 +100,10 @@ class SingleItemInventory : ObservableInventory() {
 		inventoryItem?.let {
 			it.inventory = null;
 			inventoryItem = item;
-			invokeItemRemoveObservers(it);
+			invokeRemoveObservers(it);
 		};
 		item.inventory = this;
-		invokeItemAddObservers(item);
+		invokeAddObservers(item);
 		return true;
 	}
 }

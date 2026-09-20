@@ -14,6 +14,8 @@ import java.util.function.Consumer;
  */
 class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 	private val inventory = GdxArray<Item>();
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("size")
 	override val size: Int
 		get() = inventory.size;
 	override val isEmpty: Boolean
@@ -31,7 +33,7 @@ class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 		if(!(holder?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
 		inventory.add(item);
 		item.inventory = this;
-		invokeItemAddObservers(item);
+		invokeAddObservers(item);
 		return true;
 	}
 
@@ -40,14 +42,14 @@ class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 		val item = inventory[index];
 		inventory.removeIndex(index);
 		item.inventory = null;
-		invokeItemRemoveObservers(item);
+		invokeRemoveObservers(item);
 		return true;
 	}
 
 	override fun removeItem(item: Item): Boolean {
 		if(!inventory.removeValue(item, true)) return false;
 		item.inventory = null;
-		invokeItemRemoveObservers(item);
+		invokeRemoveObservers(item);
 		return true;
 	}
 

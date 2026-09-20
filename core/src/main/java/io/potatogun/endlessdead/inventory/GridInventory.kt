@@ -21,6 +21,8 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 					add(null);
 			});
 	};
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("size")
 	override val size: Int
 		get() {
 			var ret = 0;
@@ -61,7 +63,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		if(!(holder?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
 		inventory[emptyI][emptyJ] = item;
 		item.inventory = this;
-		invokeItemAddObservers(item);
+		invokeAddObservers(item);
 		return true;
 	}
 
@@ -77,7 +79,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		if(item == null) return false;
 		inventory[i][j] = null;
 		item.inventory = null;
-		invokeItemRemoveObservers(item);
+		invokeRemoveObservers(item);
 		return true;
 	}
 
@@ -91,7 +93,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 					if(n == index) {
 						inventory[i][j] = null;
 						item.inventory = null;
-						invokeItemRemoveObservers(item);
+						invokeRemoveObservers(item);
 						return true;
 					}
 					n++;
@@ -106,7 +108,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 				if(inventory[i][j] === item) {
 					inventory[i][j] = null;
 					item.inventory = null;
-					invokeItemRemoveObservers(item);
+					invokeRemoveObservers(item);
 					return true;
 				}
 		return false;
@@ -200,7 +202,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 				if(item != null) {
 					inventory[i][j] = null;
 					item.inventory = null;
-					invokeItemRemoveObservers(item);
+					invokeRemoveObservers(item);
 				}
 			}
 		invokeClearObservers();

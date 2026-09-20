@@ -17,10 +17,8 @@ import io.potatogun.gdxhelper.world.World;
  */
 class TrapChest(world: World, x: Float, y: Float, initialItem: Item? = null): Chest(world, x, y, initialItem) {
 	init {
-		inventory.addItemRemoveObserver {
-			Gdx.app.postRunnable {
-				world.projector?.drawSubtitles("Turret trap activated!");
-			};
+		inventory.attachRemoveObserver {
+			Gdx.app.postRunnable { world.projector?.drawSubtitles("Turret trap activated!") };
 			world.entities.add(HostileTurret(world, x, y));
 			remove();
 		};

@@ -44,7 +44,7 @@ abstract class Container(world: World, name: String, x: Float, y: Float, width: 
 	init {
 		initialItem?.let { inventory.addItem(it) };
 
-		inventory.addItemRemoveObserver {
+		inventory.attachRemoveObserver {
 			if(isPlayerItem)
 				isPlayerItem = false;
 		};
