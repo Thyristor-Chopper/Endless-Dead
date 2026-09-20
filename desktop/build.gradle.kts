@@ -14,8 +14,8 @@ dependencies {
 application {
 	mainClass.set("io.potatogun.endlessdead.desktop.DesktopLauncher")
 
-	// macOS에서 LWJGL3 실행 시 필요. Windows에서 넣어도 오류는 안 난다.
-	applicationDefaultJvmArgs = listOf("-XstartOnFirstThread")
+	// macOS에서 LWJGL3 실행 시 필요
+	applicationDefaultJvmArgs = listOf("-XX:+IgnoreUnrecognizedVMOptions", "-XstartOnFirstThread")
 }
 
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
