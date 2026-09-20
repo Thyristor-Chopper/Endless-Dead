@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.timer.TimerManager;
@@ -41,16 +42,22 @@ object GameManager {
 	 */
 	private var state = GameState.STANDBY
 		set(value) {
+			if(field == value) return;
 			field = value;
 			if(value == GameState.PLAYING)
 				Gdx.graphics.setForegroundFPS(Constants.FPS);
 			else
 				Gdx.graphics.setForegroundFPS(Constants.PASSIVE_FPS);  // 20fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
+			invokeStateObservers(value);
 		};
+	/**
+	 * 게임 상태 변경 감시자 목록
+	 */
+	private val stateObservers = GdxArray<Runnable>(false, 2);
 	/**
 	 * 현재 라운드 (0이면 아직 게임이 시작되지 않은 것)
 	 */
-	@JvmStatic var round = 0
+	@get:JvmStatic var round = 0
 		private set(value) {
 			field = value;
 			Window.titleBarInfo = if(value > 0) "Round $value" else null;
@@ -80,6 +87,30 @@ object GameManager {
 		if(::game.isInitialized)
 			throw IllegalStateException("game manager is already initialised");
 		this.game = game;
+	}
+
+	// setter에서만 한 번 쓰이므로 인라인
+	private inline fun invokeStateObservers(state: GameState) {
+		for(i in 0 until stateObservers.size)
+			stateObservers[i].run();
+	}
+
+	/**
+	 * 게임 상태가 바뀔 때 호출되는 콜백 함수를 지정한다.
+	 *
+	 * @param handler 콜백
+	 */
+	fun attachStateObserver(handler: Runnable) {
+		stateObservers.add(handler);
+	}
+
+	/**
+	 * 게임 상태가 바뀔 때 호출되는 콜백 함수를 해제한다.
+	 *
+	 * @param handler 해제할 콜백
+	 */
+	fun detachStateObserver(handler: Runnable) {
+		stateObservers.removeValue(handler, true);
 	}
 
 	/**
@@ -132,7 +163,6 @@ object GameManager {
 	@JvmStatic fun setGameOver() {
 		if(!::game.isInitialized)
 			throw IllegalStateException("game manager is not initialised");
-		Window.titleBarStats = null;
 		state = GameState.GAME_OVER;
 	}
 

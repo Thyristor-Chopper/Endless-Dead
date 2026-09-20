@@ -107,6 +107,31 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			currentTitleInfo++;
 			updateTitleBarInfo();
 		});
+
+		GameManager.attachStateObserver {
+			when {
+				GameManager.isPlaying -> {
+					hideWidget("replay_button");
+					hideWidget("resume_button");
+					hideWidget("title_button");
+					hideWidget("quit_button");
+				}
+				GameManager.isPaused -> {
+					hideWidget("replay_button");
+					showWidget("resume_button");
+					showWidget("title_button");
+					showWidget("quit_button");
+				}
+				GameManager.isGameOver -> {
+					Window.titleBarStats = null;
+
+					showWidget("replay_button");
+					hideWidget("resume_button");
+					showWidget("title_button");
+					showWidget("quit_button");
+				}
+			}
+		};
 	}
 
 	override fun loadWorld(world: World, disposePreviousWorld: Boolean) {
@@ -157,11 +182,6 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 
 		// 일시 정지
 		detectPauseKey();
-
-		hideWidget("replay_button");
-		hideWidget("resume_button");
-		hideWidget("title_button");
-		hideWidget("quit_button");
 	}
 
 	/**
@@ -180,7 +200,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			TitleInfoType.FIRED		-> "Fired: ${GameManager.statistics.fireCount}"
 			TitleInfoType.SURVIVED	-> "Survived duration: ${Utils.parseSeconds(GameManager.statistics.survivedDuration, "m", "s")}"
 			TitleInfoType.DAMAGE	-> "Total damage: ${GameManager.statistics.totalDamage}"
-			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.entities.countOf<Zombie>()}"
+			// TitleInfoType.ZOMBIES	-> "Current zombies: ${world.entities.countOf<Zombie>()}"
 		};
 	}
 
@@ -263,11 +283,6 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	private inline fun updatePaused() {  // update에서만 한 번 쓰이기 때문에 inline이다.
 		// 일시 정지 키 누름 감지
 		detectPauseKey();
-
-		hideWidget("replay_button");
-		showWidget("resume_button");
-		showWidget("title_button");
-		showWidget("quit_button");
 	}
 
 	/**
@@ -284,11 +299,6 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			clearSubtitles();
 			GameManager.newGame();
 		}
-
-		showWidget("replay_button");
-		hideWidget("resume_button");
-		showWidget("title_button");
-		showWidget("quit_button");
 	}
 
 	/**
@@ -547,8 +557,8 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		KILLED,
 		FIRED,
 		SURVIVED,
-		DAMAGE,
-		ZOMBIES;
+		DAMAGE;
+		// ZOMBIES;
 
 		companion object {
 			private val enumEntries = TitleInfoType.entries;
