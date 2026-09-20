@@ -48,7 +48,7 @@ object GameManager {
 				Gdx.graphics.setForegroundFPS(Constants.FPS);
 			else
 				Gdx.graphics.setForegroundFPS(Constants.PASSIVE_FPS);  // 20fps로 제한하여 비디오 카드 리소스를 낭비하지 않게 한다
-			invokeStateObservers(value);
+			invokeStateObservers();
 		};
 	/**
 	 * 게임 상태 변경 감시자 목록
@@ -90,7 +90,7 @@ object GameManager {
 	}
 
 	// setter에서만 한 번 쓰이므로 인라인
-	private inline fun invokeStateObservers(state: GameState) {
+	private inline fun invokeStateObservers() {
 		for(i in 0 until stateObservers.size)
 			stateObservers[i].run();
 	}
