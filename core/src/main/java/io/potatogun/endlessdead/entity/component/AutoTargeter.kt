@@ -31,5 +31,5 @@ class AutoTargeter @JvmOverloads constructor(private val attacker: Entity, overr
 		if(followRange < 0f) throw IllegalArgumentException("invalid follow range");
 	}
 
-	private inline fun isValidTarget(entity: LivingEntity?): Boolean = entity != null && entity.isAlive && !entity.isInvincible && !attacker.isSameTeamWith(entity) && (followRange == 0f || (followRange > 0f && entity.distanceTo(attacker) <= followRange));
+	inline fun isValidTarget(entity: LivingEntity?): Boolean = entity != null && entity.isAlive && !entity.isInvincible && !attacker.isSameTeamWith(entity) && (followRange == 0f || (followRange > 0f && entity.distanceTo(attacker) <= followRange));
 }
