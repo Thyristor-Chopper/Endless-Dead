@@ -139,15 +139,11 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 		return true;
 	}
 
-	override fun update(delta: Float) {
-		super.update(delta);
+	override fun forceUpdate(delta: Float) {
+		super.forceUpdate(delta);
 
 		if(invincibilityTimer > 0f)
 			invincibilityTimer -= delta;
-	}
-
-	override fun forceUpdate(delta: Float) {
-		super.forceUpdate(delta);
 
 		if(damagedIndicatorTimer > 0f)
 			damagedIndicatorTimer -= delta;
