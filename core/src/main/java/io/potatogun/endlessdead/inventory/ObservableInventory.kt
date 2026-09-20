@@ -58,7 +58,7 @@ abstract class ObservableInventory : Inventory {
 	}
 
 	/**
-	 * 아이템이 제거될 때 호출되는 콜백 함수를 지정한다. (전체 clear 시에는 호출되지 않음에 주의)
+	 * 아이템이 제거될 때 호출되는 콜백 함수를 지정한다.
 	 *
 	 * @param handler 콜백, Item: 제거된 아이템
 	 */

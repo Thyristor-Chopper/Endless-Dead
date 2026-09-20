@@ -82,8 +82,10 @@ class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
 	}
 
 	override fun clear() {
-		for(i in 0 until inventory.size)
+		for(i in 0 until inventory.size) {
 			inventory[i].inventory = null;
+			invokeRemoveObservers(inventory[i]);
+		}
 		inventory.clear();
 		invokeClearObservers();
 	}
