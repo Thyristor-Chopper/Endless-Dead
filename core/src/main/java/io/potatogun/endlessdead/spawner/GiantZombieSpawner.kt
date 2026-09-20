@@ -30,8 +30,6 @@ class GiantZombieSpawner(private val world: World) : Spawner {
 	}
 
 	private fun spawn() {
-		// 주사위를 굴려서 확률로 좀비 종류 뽑기
-		val rand = Random.nextInt(10);
 		val newZombie = GiantZombie(world, 0f, 0f);
 		var loopCount = 0;
 		val target = newZombie.target;
