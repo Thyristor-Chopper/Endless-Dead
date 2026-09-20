@@ -11,7 +11,6 @@ import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.Screen;
 import io.potatogun.gdxhelper.util.Input;
 import io.potatogun.gdxhelper.util.TextureUtils;
-import io.potatogun.gdxhelper.util.Utils;
 import io.potatogun.gdxhelper.widget.Button;
 
 /**
