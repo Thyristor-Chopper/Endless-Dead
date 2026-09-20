@@ -91,7 +91,7 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 	 * 아이템 텍스처 관리자
 	 */
 	class ItemTextures internal constructor() : SharedTextureManager() {
-		val nonExistent = ObjectSet<String>(16);
+		private val nonExistent = ObjectSet<String>(16);
 		val defaultTexture: Texture by lazy { getShared("default") };
 
 		init {
