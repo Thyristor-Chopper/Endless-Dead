@@ -1,3 +1,8 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
+val buildDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd-HHmm"))
+
 plugins {
 	kotlin("jvm")
 	id("org.jetbrains.dokka-javadoc")
@@ -27,7 +32,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach 
 tasks.shadowJar {
 	archiveBaseName.set(rootProject.name)
 	archiveClassifier.set("")
-	archiveVersion.set("")
+	archiveVersion.set(buildDate)
 
 	mergeServiceFiles()
 
