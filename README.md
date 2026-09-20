@@ -8,7 +8,7 @@
 
 자바 1.8 이상 (직접 빌드 시에는 JDK 필요)
 
-Windows XP 32비트 SP3(JDK 1.8u51)에서 빌드 가능 확인.
+Windows XP 32비트 SP3(JDK 1.8u51), Windows 7 64비트 SP1(JDK 17)에서 빌드 가능 확인.
 
 Windows XP 32비트 SP3, Windows 7 64비트 SP1, Windows 10 64비트 LTSC 2021에서 정상 실행 확인.
 
@@ -45,6 +45,8 @@ JDK가 설치된 환경에서 `build.bat`를 실행하거나
 | Esc 또는 P | 일시 중지 |
 | 좌클릭 | 아이템 사용 |
 | 우클릭 / 사이띄개 | 상자 상호작용 |
+| 휠 | 인벤토리 아이템 선택 |
+| Delete | 선택된 아이템 삭제 |
 
 ## 프로젝트 구조
 
