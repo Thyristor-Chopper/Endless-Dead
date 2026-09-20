@@ -60,11 +60,11 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	/**
 	 * 총알 지름
 	 */
-	private val bulletSize: Float;
+	@JvmField protected val bulletSize: Float;
 	/**
 	 * 총알 텍스처
 	 */
-	private val bulletTexture: Texture;
+	@JvmField protected val bulletTexture: Texture;
 	/**
 	 * 현재 쏘기 가능 여부
 	 */

@@ -28,10 +28,9 @@ class ItemPickupComponent<T>(private val entity: T) where T : Entity, T : Invent
 			val e = nearbyEntities[i];
 			if(e !is DroppedItem) continue;
 			if(!entity.collidesWith(e)) continue;
-			if(condition?.test(e.item) ?: true) {
-				e.pickup(entity);
-				pickedUp = true;
-			}
+			if(condition?.test(e.item) ?: true)
+				if(e.pickup(entity))
+					pickedUp = true;
 		}
 		Pools.entityArray.free(nearbyEntities);
 		return pickedUp;
@@ -43,7 +42,7 @@ class ItemPickupComponent<T>(private val entity: T) where T : Entity, T : Invent
 	 * @return 성공 여부
 	 */
 	fun pickupItem(item: Item): Boolean {
-		var found = false;
+		var pickedUp = false;
 		val nearbyEntities = Pools.entityArray.obtain();
 		entity.getWorld().entities.getNearby(entity, nearbyEntities);
 		for(i in 0 until nearbyEntities.size) {
@@ -52,11 +51,12 @@ class ItemPickupComponent<T>(private val entity: T) where T : Entity, T : Invent
 			if(!entity.collidesWith(e)) continue;
 			val droppedItem = e.item;
 			if(item === droppedItem) {
-				e.pickup(entity);
-				found = true;
+				if(e.pickup(entity))
+					pickedUp = true;
+				break;
 			}
 		}
 		Pools.entityArray.free(nearbyEntities);
-		return found;
+		return pickedUp;
 	}
 }

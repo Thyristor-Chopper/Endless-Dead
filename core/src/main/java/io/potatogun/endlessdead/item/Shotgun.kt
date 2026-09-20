@@ -33,7 +33,7 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 				centerX + cos(finalAngle) * 100f,
 				centerY + sin(finalAngle) * 100f
 			);
-			world.entities.add(Bullet(world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration));
+			world.entities.add(Bullet(world, this, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture));
 			if(!infiniteBullets)
 				bullets--;  // 탄약 수 차감
 			shootedPellets++;

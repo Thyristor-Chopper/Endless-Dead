@@ -11,7 +11,7 @@ import io.potatogun.endlessdead.entity.component.AutoTargeter;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Rarity;
-import io.potatogun.gdxhelper.entity.manager.getDistanceSorted;
+import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -29,14 +29,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param texture     개체 텍스처
  */
 abstract class TeamTurret(world: World, name: String, x: Float, y: Float, team: String?, gun: Item?, followRange: Float, health: Int, isPermanent: Boolean = false, texture: Texture) : Turret(world, name, x, y, gun, health, isPermanent, texture) {
-	private val autoTargeter = AutoTargeter(this, followRange) {
-		val distanceSorted = Pools.entityArray.obtain();
-		world.entities.getDistanceSorted(this, distanceSorted);
-		val ret = distanceSorted.firstOrNull { it is LivingEntity && !it.isSameTeamWith(this) && it !is Bullet } as? LivingEntity;
-		Pools.entityArray.free(distanceSorted);
-
-		/* return */ ret
-	};
+	private val autoTargeter = AutoTargeter(this, followRange) { world.entities.getClosestOf(this) { it is LivingEntity && !it.isSameTeamWith(this) && it !is Bullet } as? LivingEntity };
 	override val target: LivingEntity? by autoTargeter::target;
 	override val followRange: Float by autoTargeter::followRange;
 

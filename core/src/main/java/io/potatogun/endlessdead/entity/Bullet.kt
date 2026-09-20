@@ -47,7 +47,6 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 	init {
 		if(speed < 0f) throw IllegalArgumentException("invalid speed");
 		if(damage < 0) throw IllegalArgumentException("invalid damage");
-		if(health < 0f) throw IllegalArgumentException("invalid health");
 
 		val dx = target.x - shooter.x;
 		val dy = target.y - shooter.y;

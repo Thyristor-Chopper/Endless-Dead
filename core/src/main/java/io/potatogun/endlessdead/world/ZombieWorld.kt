@@ -61,7 +61,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	private val tileTexture = TextureUtils.loadTexture("world/tile.bmp");
 	private val bgColorDark = Utils.rgb(38, 92, 38);
 	private val bgColorLight = Utils.rgb(38, 107, 38);
-	private val tileSize = 64f;
+	private val bgTileSize = 64f;
 	// 타이머
 	private val timers = TimerManager();
 
@@ -177,11 +177,11 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		val screenHeight = Window.height;
 
 		// 현재 카메라 시작점이 속한 타일 인덱스
-		val startCol = floor((cameraX - screenWidth * 0.5f) / tileSize).toInt();
-		val startRow = floor((cameraY - screenHeight * 0.5f) / tileSize).toInt();
+		val startCol = floor((cameraX - screenWidth * 0.5f) / bgTileSize).toInt();
+		val startRow = floor((cameraY - screenHeight * 0.5f) / bgTileSize).toInt();
 		// 화면을 채우는 데 필요한 타일 개수 (여유분으로 1)
-		val cols = ceil(screenWidth / tileSize).toInt() + 1;
-		val rows = ceil(screenHeight / tileSize).toInt() + 1;
+		val cols = ceil(screenWidth / bgTileSize).toInt() + 1;
+		val rows = ceil(screenHeight / bgTileSize).toInt() + 1;
 
 		for(row in startRow until startRow + rows)
 			for(col in startCol until startCol + cols) {
@@ -189,9 +189,9 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 				batch.color = if((row + col) % 2 == 0) bgColorDark else bgColorLight;
 
 				// 월드 좌표의 타일 위치에서 offset 만큼 빼면 화면 좌표
-				val drawX = col * tileSize;
-				val drawY = row * tileSize;
-				batch.draw(tileTexture, drawX, drawY, tileSize, tileSize);
+				val drawX = col * bgTileSize;
+				val drawY = row * bgTileSize;
+				batch.draw(tileTexture, drawX, drawY, bgTileSize, bgTileSize);
 			}
 
 		// 배경에 입힌 색이 다음 그리기(게임 객체)에 영향을 주지 않도록 흰색으로 복원.

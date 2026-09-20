@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.item;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+import com.badlogic.gdx.utils.ObjectSet;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.inventory.Inventory;
@@ -90,8 +91,12 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 	 * 아이템 텍스처 관리자
 	 */
 	class ItemTextures internal constructor() : SharedTextureManager() {
+		val nonExistent = ObjectSet<String>(16);
+		val defaultTexture: Texture;
+
 		init {
 			register("default", "item/default.bmp");
+			defaultTexture = getShared("default");
 		}
 
 		/**
@@ -101,13 +106,16 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 			val itemID = item.id;
 			if(hasShared(itemID)) {
 				return getShared(itemID);
+			} else if(nonExistent.contains(itemID)) {
+				return defaultTexture;
 			} else {
 				try {
 					val texture = TextureUtils.loadTexture("item/${itemID}.bmp");
 					register(itemID, texture);
 					return getShared(itemID);
 				} catch(e: GdxRuntimeException) {
-					return getShared("default");
+					nonExistent.add(itemID);
+					return defaultTexture;
 				}
 			}
 		}

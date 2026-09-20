@@ -26,7 +26,6 @@ class MoveComponent(private val entity: Entity, override val speed: Float) : Mov
 		if(length == 0f) return;
 
 		val speed = this.speed * speedModifier + speedAddend;
-		entity.position.addX(directionX / length * speed * delta);
-		entity.position.addY(directionY / length * speed * delta);
+		entity.position.add(directionX / length * speed * delta, directionY / length * speed * delta);
 	}
 }
