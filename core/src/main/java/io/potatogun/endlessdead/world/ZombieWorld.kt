@@ -8,6 +8,7 @@ import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.TriggermanSummoner;
+import io.potatogun.endlessdead.entity.ZombieSummoner;
 import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
 import io.potatogun.endlessdead.entity.container.Container;
@@ -21,6 +22,7 @@ import io.potatogun.endlessdead.item.Shotgun;
 import io.potatogun.endlessdead.item.SpeedPotion;
 import io.potatogun.endlessdead.item.TimeStopper;
 import io.potatogun.endlessdead.item.TurretInstaller;
+import io.potatogun.endlessdead.spawner.GiantZombieSpawner;
 import io.potatogun.endlessdead.spawner.Spawner;
 import io.potatogun.endlessdead.spawner.TriggermanSpawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
@@ -108,12 +110,18 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this));
+		if(Random.nextInt(10000) + 1 <= 1)  // 0.01% 확률로 왕좀비도 나오는 월드
+			spawners.add(GiantZombieSpawner(this));
 		if(Random.nextInt(20) == 7)  // 5% 확률로 총 쏘는 적도 나오는 월드
 			spawners.add(TriggermanSpawner(this));
 		else  // 그 외에는 각각 0.5% 확률로 총잡이 써모너를 1~2대 추가 (공격해서 제거 가능)
 			for(i in 1..2)
 				if(Random.nextInt(1000) + 1 <= 5)
 					entities.add(TriggermanSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
+		if(Random.nextInt(1000) + 1 <= 1)  // 0.1% 확률로 스트림약좀비생성기가 있을 수 있음
+			for(i in 1..(Random.nextInt(8) + 1))  // 무작위로 1~8개
+				if(Random.nextInt(2) == 0)  // 이 경우에 대해 50% 판정
+					entities.add(ZombieSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 
 		// 10초마다 빈 상자 하나 리필
 		timers.register(RepeatingTimer(10f) {

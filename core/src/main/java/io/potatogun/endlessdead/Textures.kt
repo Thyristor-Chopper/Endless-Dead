@@ -48,6 +48,7 @@ object Textures : SharedTextureManager() {
 		register("turret_friendly", "entity/turret_friendly.bmp");
 		register("turret_hostile", "entity/turret_hostile.bmp");
 		register("zombie", "entity/zombie.bmp");
+		register("zombie_summoner", "entity/zombie_summoner.bmp");
 
 		register("button", "widget/button.bmp", true);
 		register("button_hover", "widget/button_hover.bmp", true);
