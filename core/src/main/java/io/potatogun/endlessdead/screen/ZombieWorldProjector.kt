@@ -22,7 +22,7 @@ import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.Window;
 // import io.potatogun.gdxhelper.entity.manager.countOf;
-import io.potatogun.gdxhelper.entity.manager.getClosest;
+import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.screen.WorldProjector;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
@@ -177,7 +177,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		if(world is SinglePlayerWorld) {
 			val player = world.player;
 			attackTarget = player.latestAttackVictim?.takeIf { isValidAttackTarget(it, player) }
-				?: run { (world.entities.getClosest(player) { it is LivingEntity && it !is Bullet && it !== player } as? LivingEntity)?.takeIf { isValidAttackTarget(it, player) } };
+				?: run { world.entities.getClosestOf<LivingEntity>(player) { it !is Bullet && it !== player }?.takeIf { isValidAttackTarget(it, player) } };
 		}
 
 		// 미터기 정보 갱신
