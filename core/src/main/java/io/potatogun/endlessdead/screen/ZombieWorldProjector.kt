@@ -210,7 +210,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	/**
 	 * 미터기 정보를 갱신한다.
 	 */
-	private inline fun updateProgressBars() {  // updateInPlay에서만 한 번 쓰이기 때문에 inline이다.
+	private inline fun updateProgressBars() {  // updatePlaying에서만 한 번 쓰이기 때문에 inline이다.
 		val hpIndicator = getWidget("hp_indicator") as ProgressBar;
 		val targetIndicator = getWidget("attack_target_hp_indicator") as ProgressBar;
 		val ammoIndicator = getWidget("gun_ammo_indicator") as ProgressBar;

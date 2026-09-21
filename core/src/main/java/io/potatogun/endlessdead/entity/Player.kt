@@ -250,7 +250,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		super.draw(batch, textureOverride, null);
 	}
 
-	// 자원 및 타이머 정리
+	// 자원 정리
 	override fun dispose() {
 		super.dispose();
 		textureWithGun.dispose();

@@ -179,24 +179,25 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	//  매 프레임 그리기
 	// ────────────────────────────────────────────────────────
 
-	// 배경 그리기 - 카메라(offset)에 따라 타일 위치가 바뀌어 이동감을 준다.
+	// 배경 그리기 - 카메라 위치에 따라 타일 위치가 바뀌어 이동감을 준다.
 	override fun drawBackground() {
+		// 화면 크기 캐시 (getter 오버헤드)
 		val screenWidth = Window.width;
 		val screenHeight = Window.height;
 
 		// 현재 카메라 시작점이 속한 타일 인덱스
 		val startCol = floor((cameraX - screenWidth * 0.5f) / bgTileSize).toInt();
 		val startRow = floor((cameraY - screenHeight * 0.5f) / bgTileSize).toInt();
+
 		// 화면을 채우는 데 필요한 타일 개수 (여유분으로 1)
 		val cols = ceil(screenWidth / bgTileSize).toInt() + 1;
 		val rows = ceil(screenHeight / bgTileSize).toInt() + 1;
 
 		for(row in startRow until startRow + rows)
 			for(col in startCol until startCol + cols) {
-				// 행+열이 짝수면 어둡게, 홀수면 밝게 → 체스판 패턴
+				// 행+열이 짝수면 어둡게, 홀수면 밝게 (체스판 패턴)
 				batch.color = if((row + col) % 2 == 0) bgColorDark else bgColorLight;
 
-				// 월드 좌표의 타일 위치에서 offset 만큼 빼면 화면 좌표
 				val drawX = col * bgTileSize;
 				val drawY = row * bgTileSize;
 				batch.draw(tileTexture, drawX, drawY, bgTileSize, bgTileSize);
@@ -208,10 +209,6 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 	// 플레이어 위치에 따라 카메라 위치 변경
 	override fun updateOffset() {
-		// 카메라가 월드 경계 밖을 보여주지 않도록 clamp.
-		//   보여주는 영역이 [offset, offset+screen]이어야 하므로
-		//   offset은 0 ~ (world - screen) 범위여야 한다.
-
 		val halfScreenWidth = Window.width * 0.5f;
 		val halfScreenHeight = Window.height * 0.5f;
 		cameraX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);

@@ -69,12 +69,12 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 
 		move(delta, directionX, directionY);
 
-		// 화면 밖으로 나가면 소멸
+		// 월드 밖으로 나가면 소멸
 		val maxHalfLength = max2(width, height) * 0.5f;
 		if(x < 0f - maxHalfLength || x > world.width + maxHalfLength || y < 0f - maxHalfLength || y > world.height + maxHalfLength)
 			this.remove();
 
-		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지 주고 총알은 소멸.
+		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지를 준다.
 		val nearbyEntities = Pools.entityArray.obtain();
 		world.entities.getNearby(this, nearbyEntities);
 		for(i in 0 until nearbyEntities.size) {
