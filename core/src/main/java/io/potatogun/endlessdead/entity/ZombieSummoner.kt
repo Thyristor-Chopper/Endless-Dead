@@ -25,6 +25,11 @@ class ZombieSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "Zo
 	private val timers = TimerManager();
 	private val maxDistanceToPlayer = 456f;
 	override val damageInvincibilityDuration = 0.15f;
+	private val isActive: Boolean
+		inline get() {
+			val player = findPlayer();
+			return player != null && distanceTo(player) <= maxDistanceToPlayer;
+		};
 
 	init {
 		rotate(Random.nextInt(360).toFloat());
@@ -37,14 +42,14 @@ class ZombieSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "Zo
 		timers.tick(delta);
 
 		val player = findPlayer();
-		if(player != null && distanceTo(player) <= maxDistanceToPlayer)
+		if(isActive && player != null)
 			rotateTo(player);
+		else
+			rotateBy(0.5f);
 	}
 
 	private fun spawn() {
-		val player = findPlayer();
-		if(player == null) return;
-		if(distanceTo(player) > maxDistanceToPlayer) return;
+		if(!isActive) return;
 		val rad = toRadians(getRotationAngle().toDouble() + 90.0 + Random.nextInt(30).toDouble() - 15.0).toFloat();
 		val distance = 24f;
 		val zombie = WeakZombie(world, x + distance * cos(rad), y + distance * sin(rad));  // 소환기가 있는 위치에 생성. 소환기 텍스처에 구멍이 있고 거기서 좀비가 월드로 나온다는 컨셉이다.
