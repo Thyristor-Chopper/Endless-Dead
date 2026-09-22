@@ -21,7 +21,7 @@ import kotlin.random.Random;
  * @param x	 개체의 X 위치
  * @param y	 개체의 Y 위치
  */
-class ZombieSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "Zombie Summoner", x, y, 26f, 38f, 100, Textures.getShared("zombie_summoner")) {
+class ZombieSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "Zombie Summoner", x, y, 26f, 32f, 100, Textures.getShared("zombie_summoner")) {
 	private val timers = TimerManager();
 	private val maxDistanceToPlayer = 456f;
 	override val damageInvincibilityDuration = 0.15f;
@@ -32,6 +32,7 @@ class ZombieSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "Zo
 		};
 
 	init {
+		setOriginOffsetY(-3f);
 		rotate(Random.nextInt(360).toFloat());
 		timers.register(RepeatingTimer(0.5f, this::spawn));
 	}

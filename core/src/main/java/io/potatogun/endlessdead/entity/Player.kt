@@ -33,7 +33,7 @@ import java.lang.ref.WeakReference;
 /**
  * 플레이어 — 화살표로 조종
  */
-class Player private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, TextureUtils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable {
+class Player private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 5000000, TextureUtils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable {
 	override val isUpdatableWhileFrozen = true;
 	private val textureWithGun = TextureUtils.loadTexture("entity/player_holding_gun.bmp");
 	// 타이머

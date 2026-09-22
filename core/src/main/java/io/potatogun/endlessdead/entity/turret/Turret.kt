@@ -24,7 +24,7 @@ import kotlin.random.Random;
 /**
  * 포탑 - 자동 총알 발사 기계
  */
-abstract class Turret private constructor(world: World, name: String, x: Float, y: Float, gun: Item?, health: Int, isPermanent: Boolean, texture: Texture, final override val inventory: SingleItemInventory) : LivingEntity(world, name, x, y, 83f, 154f, health, texture), InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, Targetable {
+abstract class Turret private constructor(world: World, name: String, x: Float, y: Float, width: Float, height: Float, gun: Item?, health: Int, isPermanent: Boolean, texture: Texture, final override val inventory: SingleItemInventory) : LivingEntity(world, name, x, y, width, height, health, texture), InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, Targetable {
 	private val rotator = RotateToTarget(this);
 	private val shooter = ShootTarget(this);
 	override val penetrationDamage = (health * 0.1f).toInt();
@@ -42,7 +42,7 @@ abstract class Turret private constructor(world: World, name: String, x: Float, 
 	 * @param isPermanent 포탑이 영구적인지의 여부(죽지 못하는지)
 	 * @param texture     개체 텍스처
 	 */
-	@JvmOverloads constructor(world: World, name: String, x: Float, y: Float, gun: Item?, health: Int, isPermanent: Boolean = false, texture: Texture) : this(world, name, x, y, gun, health, isPermanent, texture, SingleItemInventory());
+	@JvmOverloads constructor(world: World, name: String, x: Float, y: Float, width: Float, height: Float, gun: Item?, health: Int, isPermanent: Boolean = false, texture: Texture) : this(world, name, x, y, width, height, gun, health, isPermanent, texture, SingleItemInventory());
 
 	init {
 		gun?.let {

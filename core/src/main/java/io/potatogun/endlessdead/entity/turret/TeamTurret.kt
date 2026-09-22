@@ -28,7 +28,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param isPermanent 포탑이 영구적인지의 여부(죽지 못하는지)
  * @param texture     개체 텍스처
  */
-abstract class TeamTurret(world: World, name: String, x: Float, y: Float, team: String?, gun: Item?, followRange: Float, health: Int, isPermanent: Boolean = false, texture: Texture) : Turret(world, name, x, y, gun, health, isPermanent, texture) {
+abstract class TeamTurret(world: World, name: String, x: Float, y: Float, width: Float, height: Float, team: String?, gun: Item?, followRange: Float, health: Int, isPermanent: Boolean = false, texture: Texture) : Turret(world, name, x, y, width, height, gun, health, isPermanent, texture) {
 	private val autoTargeter: AutoTargeter = AutoTargeter(this, followRange) { world.entities.getClosestOf<LivingEntity>(this) { autoTargeter.isValidTarget(it) && it !is Bullet } };
 	override val target: LivingEntity? by autoTargeter::target;
 	override val followRange: Float by autoTargeter::followRange;

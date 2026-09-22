@@ -20,7 +20,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param y           Y 좌표
  * @param isPermanent 포탑이 영구적인지의 여부(죽지 못하는지)
  */
-class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : Turret(world, "Turret", x, y, HostileTurretGun(), 600, isPermanent, Textures.getShared("turret_hostile")), DamageListener {
+class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : Turret(world, "Turret", x, y, 83f, 106f, HostileTurretGun(), 600, isPermanent, Textures.getShared("turret_hostile")), DamageListener {
 	private val autoTargeter = AutoTargeter(this, 384f) {
 		if(world is SinglePlayerWorld)
 			world.player
@@ -29,6 +29,10 @@ class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = fal
 	};
 	override val target: LivingEntity? by autoTargeter::target;
 	override val followRange: Float by autoTargeter::followRange;
+
+	init {
+		setOriginOffsetY(-9f);
+	}
 
 	// 누군가가 포탑을 공격하면 처치 대상을 그자로 한다.
 	override fun onDamage(damage: Int, attacker: Entity?) {
