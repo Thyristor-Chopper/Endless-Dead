@@ -19,11 +19,6 @@ import kotlin.math.sin;
 
 /**
  * 지뢰 설치기
- *
- * @param id       총 식별자
- * @param name     총 이름
- * @param settings 총 옵션
- * @throws IllegalArgumentException 총 옵션이 잘못된 경우
  */
 class LandminePlacer : Item("landmine_placer", "Landmine Placer", Item.Properties().rarity(Rarity.UNCOMMON)), LimitedUsable {
 	override val isContinuousUseAllowed = false;
