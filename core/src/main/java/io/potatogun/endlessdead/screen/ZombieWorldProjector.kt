@@ -21,7 +21,7 @@ import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.Window;
-// import io.potatogun.gdxhelper.entity.manager.countOf;
+import io.potatogun.gdxhelper.entity.manager.countOf;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
 import io.potatogun.gdxhelper.screen.WorldProjector;
@@ -203,7 +203,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			TitleInfoType.FIRED		-> "Fired: ${GameManager.statistics.fireCount}"
 			TitleInfoType.SURVIVED	-> "Survived duration: ${Utils.parseSeconds(GameManager.statistics.survivedDuration, "m", "s")}"
 			TitleInfoType.DAMAGE	-> "Total damage: ${GameManager.statistics.totalDamage}"
-			// TitleInfoType.ZOMBIES	-> "Current zombies: ${world.entities.countOf<Zombie>()}"
+			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.entities.countOf<Zombie>()}"
 		};
 	}
 
@@ -564,8 +564,8 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		KILLED,
 		FIRED,
 		SURVIVED,
-		DAMAGE;
-		// ZOMBIES;
+		DAMAGE,
+		ZOMBIES;
 
 		companion object {
 			private val enumEntries = TitleInfoType.entries;
