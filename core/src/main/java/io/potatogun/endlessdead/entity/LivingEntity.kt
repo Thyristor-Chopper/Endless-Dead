@@ -57,7 +57,7 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 	 */
 	protected open val damageIndicatorDuration = 0.5f;
 	/**
-	 * 기본 무적 타이머 길이 (isInvincible과는 별개)
+	 * 무적 타이머 길이 (isInvincible과는 별개)
 	 */
 	protected open val damageInvincibilityDuration = 0f;
 	/**

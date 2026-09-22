@@ -33,7 +33,7 @@ class ZombieSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "St
 
 	init {
 		setOriginOffsetY(-3f);
-		rotate(Random.nextInt(360).toFloat());
+		rotateToRandom();
 		timers.register(RepeatingTimer(0.5f, this::spawn));
 	}
 
@@ -55,6 +55,11 @@ class ZombieSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "St
 		val distance = 24f;
 		val zombie = WeakZombie(world, x + distance * cos(rad), y + distance * sin(rad));  // 소환기가 있는 위치에 생성. 소환기 텍스처에 구멍이 있고 거기서 좀비가 월드로 나온다는 컨셉이다.
 		world.entities.add(zombie);
+	}
+
+	// 한 줄 짜리 함수라 인라인
+	private inline fun rotateToRandom() {
+		rotate(Random.nextInt(360).toFloat());
 	}
 
 	private inline fun findPlayer(): Player? {

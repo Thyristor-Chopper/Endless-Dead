@@ -24,7 +24,6 @@ import io.potatogun.endlessdead.item.TimeStopper;
 import io.potatogun.endlessdead.item.TurretInstaller;
 import io.potatogun.endlessdead.spawner.GiantZombieSpawner;
 import io.potatogun.endlessdead.spawner.Spawner;
-import io.potatogun.endlessdead.spawner.TriggermanSpawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.collections.randomOrNull;
@@ -113,10 +112,8 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		if(Random.nextInt(10000) + 1 <= 1)  // 0.01% 확률로 왕좀비도 나오는 월드
 			spawners.add(GiantZombieSpawner(this));
 		if(Random.nextInt(20) == 7)  // 5% 확률로 총 쏘는 적도 나오는 월드
-			spawners.add(TriggermanSpawner(this));
-		else  // 그 외에는 각각 0.5% 확률로 총잡이 써모너를 1~2대 추가 (공격해서 제거 가능)
-			for(i in 1..2)
-				if(Random.nextInt(1000) + 1 <= 5)
+			for(i in 1..(Random.nextInt(3) + 1))  // 무작위로 1~3개
+				if(Random.nextInt(i) == 0)  // 첫째: 100%, 둘째: 50%, 셋째: 33.3%
 					entities.add(TriggermanSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 		if(Random.nextInt(1000) + 1 <= 1)  // 0.1% 확률로 스트림약좀비생성기가 있을 수 있음
 			for(i in 1..(Random.nextInt(8) + 1))  // 무작위로 1~8개
