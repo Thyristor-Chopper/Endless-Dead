@@ -50,13 +50,13 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	 */
 	override val interval: Float
 		get() = fireInterval;
-	@JvmField protected val fireInterval: Float;
+	@JvmField protected val fireInterval: Float;  // X같은 코틀린 property must be initialized, be final, or be abstract
 	/**
 	 * 최대 총알 개수
 	 */
 	override val maxUses: Int
 		get() = maxBullets;
-	@JvmField protected val maxBullets: Int;
+	@JvmField protected val maxBullets: Int;  // property must be initialized, be final, or be abstract 때문에 중복해서 선언
 	/**
 	 * 무한 총알 여부
 	 */
