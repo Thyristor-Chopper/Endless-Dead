@@ -140,8 +140,6 @@ abstract class LivingEntity(world: World, name: String, x: Float, y: Float, widt
 		return true;
 	}
 
-	
-
 	/**
 	 * 체력을 회복한다.
 	 *
