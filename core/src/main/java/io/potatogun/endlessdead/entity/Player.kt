@@ -121,6 +121,10 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 			selectedItem?.let { dropComponent.dropItem(it) };
 
 		// 이동 (총 쏜 이후에 처리할 것.)
+		if(Input.isKeyPressed(Input.SHIFT_LEFT))
+			moveComponent.speedModifier = 0.5f;
+		else
+			moveComponent.speedModifier = 1f;
 		val moved = updatePosition(delta);
 		if(moved) world.updateOffset();
 	}
