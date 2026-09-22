@@ -19,7 +19,6 @@ import kotlin.math.sqrt;
  * 총알 개체
  *
  * @param    world        총알이 있는 세계
- * @property gun          쏜 발사기
  * @property shooter      쏜 개체
  * @property target       총알이 향할 위치
  * @property speed        총알 속도
@@ -29,7 +28,7 @@ import kotlin.math.sqrt;
  * @param    size         총알 지름
  * @param    texture      총알 텍스처
  */
-class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val shooter: Entity, private val target: Position, speed: Float, val damage: Int, val isPenetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet")) : LivingEntity(world, "Bullet", shooter.position.x, shooter.position.y, size, size, health, texture), Movable {
+class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, private val target: Position, speed: Float, val damage: Int, val isPenetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet")) : LivingEntity(world, "Bullet", shooter.position.x, shooter.position.y, size, size, health, texture), Movable {
 	private val moveComponent = MoveComponent(this, speed);
 	override val speed: Float by moveComponent::speed;
 	override val isUpdatableWhileFrozen = (shooter is Player);
@@ -79,7 +78,7 @@ class Bullet @JvmOverloads constructor(world: World, val gun: Shootable, val sho
 		world.entities.getNearby(this, nearbyEntities);
 		for(i in 0 until nearbyEntities.size) {
 			val entity = nearbyEntities[i];
-			if(entity !== this && entity !== shooter && entity is LivingEntity && !entity.isInvincible && !isSameTeamWith(entity) && (entity !is Bullet || entity.gun !== this.gun) && collidesWith(entity)) {
+			if(entity !== this && entity !== shooter && entity is LivingEntity && !entity.isInvincible && !isSameTeamWith(entity) && collidesWith(entity)) {
 				entity.takeDamage(damage, attacker = shooter);  // 무적 시간이 필요하면 추가...
 				if(isPenetrable) {
 					if(entity is PenetratorDamagable)

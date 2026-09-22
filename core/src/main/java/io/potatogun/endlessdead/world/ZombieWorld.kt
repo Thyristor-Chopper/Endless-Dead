@@ -17,6 +17,7 @@ import io.potatogun.endlessdead.entity.turret.FriendlyTurret;
 import io.potatogun.endlessdead.entity.turret.HostileTurret;
 import io.potatogun.endlessdead.item.Bandage;
 import io.potatogun.endlessdead.item.Item;
+import io.potatogun.endlessdead.item.LandminePlacer;
 import io.potatogun.endlessdead.item.MachineGun;
 import io.potatogun.endlessdead.item.Shotgun;
 import io.potatogun.endlessdead.item.SpeedPotion;
@@ -138,15 +139,16 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	private fun generateRandomItem(allowRare: Boolean = true): Item {
 		val rand = Random.nextInt(1000) + 1;  // 1~1000
 		return when {
-			rand <= 350	-> MachineGun()		// 35% 확률
-			rand <= 650	-> Shotgun()		// 30% 확률
-			rand <= 850	-> Bandage()		// 20% 확률
-			rand <= 950	-> SpeedPotion()	// 10% 확률
+			rand <= 350	-> MachineGun()			// 35% 확률
+			rand <= 650	-> Shotgun()			// 30% 확률
+			rand <= 850	-> Bandage()			// 20% 확률
+			rand <= 900	-> SpeedPotion()		// 5% 확률
+			rand <= 950	-> LandminePlacer()		// 5% 확률
 			else		-> {
 				if(rand >= 1000 && allowRare)
-					TurretInstaller()  // 0.1% 확률
+					TurretInstaller()			// 0.1% 확률
 				else
-					TimeStopper()  // 5% 확률
+					TimeStopper()				// 5% 확률
 			}
 		};
 	}

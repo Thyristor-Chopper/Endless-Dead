@@ -12,12 +12,14 @@ import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Bullet;
+import io.potatogun.endlessdead.entity.Landmine;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.isSameTeamWith;
 import io.potatogun.endlessdead.entity.zombie.Zombie;
-import io.potatogun.endlessdead.item.Gun;
+import io.potatogun.endlessdead.item.Cooldownable;
 import io.potatogun.endlessdead.item.Item;
+import io.potatogun.endlessdead.item.LimitedUsable;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.Window;
@@ -177,7 +179,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		if(world is SinglePlayerWorld) {
 			val player = world.player;
 			attackTarget = player.latestAttackVictim?.takeIf { isValidAttackTarget(it, player) }
-				?: run { world.entities.getClosestOf<LivingEntity>(player) { it !is Bullet && it !== player }?.takeIf { isValidAttackTarget(it, player) } };
+				?: run { world.entities.getClosestOf<LivingEntity>(player) { it !is Bullet && it !is Landmine && it !== player }?.takeIf { isValidAttackTarget(it, player) } };
 		}
 
 		// 미터기 정보 갱신
@@ -245,27 +247,34 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 
 		// 총 관련 미터기 처리
 		val holding: Item? = player.selectedItem;
-		if(holding != null && holding is Gun) {
+		if(holding is LimitedUsable) {
+			val remaining = holding.remainingUses;
+			val maxUses = holding.maxUses;
 			// 총의 ammo를 미터기로 표시
 			ammoIndicator.apply {
-				if(!holding.infiniteBullets) {
-					value = holding.remainingBullets.toFloat() / holding.maxBullets;
+				if(maxUses > 0) {
+					value = remaining.toFloat() / holding.maxUses;
 					show();
 				} else {
 					hide();
 				}
 			};
+		} else {
+			ammoIndicator.hide();
+		}
 
+		if(holding is Cooldownable) {
 			// 총의 공격 쿨타임 표시
-			if(holding.fireInterval > 0.2f) {
-				val cooldown = holding.remainingCooldownPercentage;
-				if(cooldown > 0f)
+			if(holding.interval > 0.2f) {
+				val cooldown = holding.remainingCooldown;
+				val interval = holding.interval;
+				if(interval > 0f && cooldown > 0f)
 					cooldownIndicator.apply {
-						value = cooldown;
-						if(holding.infiniteBullets)
-							cooldownIndicator.setX(infiniteGunCooldownBarX);
-						else
+						value = cooldown / interval;
+						if(holding is LimitedUsable && holding.maxUses > 0)
 							cooldownIndicator.setX(gunCooldownBarX);
+						else
+							cooldownIndicator.setX(infiniteGunCooldownBarX);
 						show();
 					};
 				else
@@ -274,7 +283,6 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 				cooldownIndicator.hide();
 			}
 		} else {
-			ammoIndicator.hide();
 			cooldownIndicator.hide();
 		}
 	}

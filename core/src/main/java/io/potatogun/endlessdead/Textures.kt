@@ -42,6 +42,7 @@ object Textures : SharedTextureManager() {
 		register("chest_player_item", "entity/chest_player_added.bmp");
 		register("empty_building", "entity/building_empty.bmp");
 		register("empty_chest", "entity/chest_empty.bmp");
+		register("landmine", "entity/landmine.bmp");
 		register("silver_bullet", "entity/bullet_silver.bmp");
 		register("stream_zombie_summoner", "entity/stream_zombie_summoner.bmp");
 		register("triggerman", "entity/triggerman.bmp");

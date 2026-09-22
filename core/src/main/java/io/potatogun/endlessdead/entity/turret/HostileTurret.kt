@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead.entity.turret;
 
 import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.entity.Landmine;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.component.AutoTargeter;
@@ -36,8 +37,9 @@ class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = fal
 
 	// 누군가가 포탑을 공격하면 처치 대상을 그자로 한다.
 	override fun onDamage(damage: Int, attacker: Entity?) {
-		if(attacker is LivingEntity)
-			autoTargeter.target = attacker;
+		val realAttacker = if(attacker is Landmine) attacker.installer else attacker;
+		if(realAttacker is LivingEntity)
+			autoTargeter.target = realAttacker;
 	}
 
 	/**

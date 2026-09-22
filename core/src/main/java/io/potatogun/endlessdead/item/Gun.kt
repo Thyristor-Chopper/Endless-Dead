@@ -27,7 +27,7 @@ import kotlin.math.sin;
  * @param settings 총 옵션
  * @throws IllegalArgumentException 총 옵션이 잘못된 경우
  */
-abstract class Gun(id: String, name: String, settings: Properties) : Item(id, name, settings), Shootable, Usable {
+abstract class Gun(id: String, name: String, settings: Properties) : Item(id, name, settings), Shootable, LimitedUsable, Cooldownable {
 	override val isContinuousUseAllowed = false;
 	/**
 	 * 총알 피해량
@@ -46,13 +46,17 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	 */
 	@JvmField val isBulletPenetrable: Boolean;
 	/**
-	 * 발사 속도
+	 * 발사 속도 (외부용)
 	 */
-	val fireInterval: Float;
+	override val interval: Float
+		get() = fireInterval;
+	@JvmField protected val fireInterval: Float;
 	/**
 	 * 최대 총알 개수
 	 */
-	@JvmField val maxBullets: Int;
+	override val maxUses: Int
+		get() = maxBullets;
+	@JvmField protected val maxBullets: Int;
 	/**
 	 * 무한 총알 여부
 	 */
@@ -78,15 +82,15 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	/**
 	 * 남은 총탄 개수 (외부용 API)
 	 */
-	val remainingBullets: Int
+	override val remainingUses: Int
 		get() = bullets;
 	/**
 	 * 남은 쿨타임을 전체 공격 간격에 비례하여 0.0~1.0로 정규화하여 반환한다.
 	 * 
 	 * @return 정규화된 값
 	 */
-	val remainingCooldownPercentage: Float
-		get() = if(fireInterval == 0f) 0f else max2((lastShoot + fireInterval - GameManager.gameTime) / fireInterval, 0f);
+	override val remainingCooldown: Float
+		get() = if(fireInterval == 0f) 0f else max2(lastShoot + fireInterval - GameManager.gameTime, 0f);
 	/**
 	 * 마지막으로 총을 쏜 시간
 	 */
@@ -118,11 +122,11 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		var shooted = 0;
 
 		if(canFire) {
-			val bullet = Bullet(world, this, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture);
+			val bullet = Bullet(world, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture);
 			world.entities.add(bullet);
 			shooted = 1;
 
-			if(fireInterval != 0f)
+			if(interval != 0f)
 				lastShoot = GameManager.gameTime;
 
 			if(!infiniteBullets)

@@ -87,8 +87,9 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	// 누군가가 자신을 공격하면 처치 대상을 그자로 한다.
 	//   자연 생성된 포탑은 공격 불가이기 때문에 그것에게 공격받아도 그걸 타겟하지는 않는다.
 	override fun onDamage(damage: Int, attacker: Entity?) {
-		if(attacker is LivingEntity)
-			autoTargeter.target = attacker;
+		val realAttacker = if(attacker is Landmine) attacker.installer else attacker;
+		if(realAttacker is LivingEntity)
+			autoTargeter.target = realAttacker;
 	}
 
 	// 죽으면 모든 템 떨구기
