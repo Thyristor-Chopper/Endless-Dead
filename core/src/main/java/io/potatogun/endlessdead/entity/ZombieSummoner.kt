@@ -45,7 +45,7 @@ class ZombieSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "Zo
 		if(isActive && player != null)
 			rotateTo(player);
 		else
-			rotateBy(30f * delta);  // 30 ≒ 0.5 / (1 / 60) - 60fps 기준으로 0.5도씩 회전하되 프레임률에 영향을 받지 않게 한다.
+			rotateBy(30f * delta);  // 30 == 0.5 / (1 / 60) - 60fps 기준으로 0.5도씩 회전하되 프레임률에 영향을 받지 않게 한다.
 	}
 
 	private fun spawn() {
