@@ -39,7 +39,7 @@ class GiantZombieSpawner(world: World) : Spawner(world) {
 		val newZombie = GiantZombie(world, 0f, 0f);
 		val target = newZombie.target;
 		if(target != null) {
-			val rad = Random.nextFloat(0f, 2 * PI.toFloat());
+			val rad = Random.nextFloat(0f, 2f * PI.toFloat());
 			val maxLength = Math.max2(target.width, target.height);
 			val distance = Random.nextFloat(maxLength + 96f, maxLength + 224f) * Random.nextSign();
 			newZombie.teleport(target.x + distance * cos(rad), target.y + distance * sin(rad));
