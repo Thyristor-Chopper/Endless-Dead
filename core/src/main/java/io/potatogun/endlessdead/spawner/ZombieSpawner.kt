@@ -43,14 +43,9 @@ class ZombieSpawner(world: World) : Spawner(world) {
 				zombiesPerSpawn++;
 				world.projector?.drawSubtitles("More zombies coming...");
 			} else {
-				stopSpawnIncreaser();
+				timers.unregister(spawnIncreaseTimer);
 			}
 		}.also { timers.register(it) };
-	}
-
-	// RepeatingTimer 실행기 내부에서 직접 호출하면 변수 초기화 안 됐다고 컴파일러가 귀찮게 함 자바는 내가 알아서 관리하게 냅두는데 코틀린은 '안전'같은 명목 내세우면서 다 막고 진짜 ㅡㅡ;;
-	private inline fun stopSpawnIncreaser() {
-		timers.unregister(spawnIncreaseTimer);
 	}
 
 	// 매 프레임 실행해서 타이머를 갱신하여 소환할 시간이 되면 좀비를 스폰한다
