@@ -5,12 +5,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
+import io.potatogun.endlessdead.entity.Triggerman;	
 import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.entity.component.ItemDropComponent;
 import io.potatogun.endlessdead.entity.component.ItemPickupComponent;
 import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.entity.listener.AttackListener;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
+import io.potatogun.endlessdead.entity.turret.HostileTurret;
 import io.potatogun.endlessdead.entity.zombie.Zombie;	
 import io.potatogun.endlessdead.inventory.LinearInventory;
 import io.potatogun.endlessdead.inventory.ObservableInventory;
@@ -203,11 +205,19 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		dropComponent.dropAll();
 	}
 
-	// 처치한 좀비 수를 갱신한다.
+	// 처치한 좀비 수를 갱신하고 점수를 준다.
 	override fun onKill(victim: LivingEntity) {
-		if(victim is Zombie) {
-			GameManager.scoreManager.addScore(10);
-			GameManager.statistics.killedZombieCount++;
+		when(victim) {
+			is Zombie -> {
+				GameManager.scoreManager.addScore(10);
+				GameManager.statistics.killedZombieCount++;
+			}
+			is Triggerman -> {
+				GameManager.scoreManager.addScore(30);
+			}
+			is HostileTurret -> {
+				GameManager.scoreManager.addScore(300);
+			}
 		}
 	}
 
