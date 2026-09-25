@@ -25,7 +25,8 @@ import io.potatogun.gdxhelper.world.World;
  */
 abstract class Summoner @JvmOverloads constructor(world: World, name: String, x: Float, y: Float, width: Float, height: Float, health: Int, texture: Texture? = null) : LivingEntity(world, name, x, y, width, height, health, texture) {
 	@JvmField protected val timers = TimerManager();
-	abstract val isActive: Boolean;
+	open val isActive: Boolean
+		get() = true;
 	abstract val summonInterval: Float;
 
 	init {
