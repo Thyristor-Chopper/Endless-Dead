@@ -5,7 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
-import io.potatogun.endlessdead.entity.Triggerman;	
+import io.potatogun.endlessdead.entity.StreamZombieSummoner;
+import io.potatogun.endlessdead.entity.Triggerman;
+import io.potatogun.endlessdead.entity.TriggermanSummoner;
 import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.entity.component.ItemDropComponent;
 import io.potatogun.endlessdead.entity.component.ItemPickupComponent;
@@ -217,6 +219,12 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 			}
 			is HostileTurret -> {
 				GameManager.scoreManager.addScore(300);
+			}
+			is StreamZombieSummoner -> {
+				GameManager.scoreManager.addScore(100);
+			}
+			is TriggermanSummoner -> {
+				GameManager.scoreManager.addScore(10000);
 			}
 		}
 	}
