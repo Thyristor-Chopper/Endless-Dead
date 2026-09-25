@@ -8,8 +8,14 @@ import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.position.distanceTo;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.TimerManager;
+import io.potatogun.gdxhelper.util.Math;
+import io.potatogun.gdxhelper.util.nextFloat;
+import io.potatogun.gdxhelper.util.nextSign;
 import io.potatogun.gdxhelper.world.World;
 
+import kotlin.math.cos;
+import kotlin.math.PI;
+import kotlin.math.sin;
 import kotlin.random.Random;
 
 /**
@@ -31,18 +37,13 @@ class GiantZombieSpawner(world: World) : Spawner(world) {
 
 	private fun spawn() {
 		val newZombie = GiantZombie(world, 0f, 0f);
-		var loopCount = 0;
 		val target = newZombie.target;
-		val position = Pools.position.obtain();
-		do {
-			position.set(
-				Random.nextFloat() * (world.width - 140f) + 70f,
-				Random.nextFloat() * (world.height - 140f) + 70f
-			);
-			loopCount++;
-		} while(target != null && position.distanceTo(target) < 408f && loopCount < 30);
-		newZombie.position.set(position);
+		if(target != null) {
+			val rad = Random.nextFloat(0f, 2 * PI.toFloat());
+			val maxLength = Math.max2(target.width, target.height);
+			val distance = Random.nextFloat(maxLength + 96f, maxLength + 224f) * Random.nextSign();
+			newZombie.position.set(target.x + distance * cos(rad), target.y + distance * sin(rad));
+		}
 		world.entities.add(newZombie);
-		Pools.position.free(position);
 	}
 }
