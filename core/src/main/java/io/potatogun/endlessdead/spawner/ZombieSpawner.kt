@@ -20,7 +20,7 @@ import kotlin.random.Random;
  *
  * @property world 소속 월드
  */
-class ZombieSpawner(private val world: World) : Spawner {
+class ZombieSpawner(world: World) : Spawner(world) {
 	private val spawnInterval = 3f;
 	private var zombiesPerSpawn = 1
 		set(value) {

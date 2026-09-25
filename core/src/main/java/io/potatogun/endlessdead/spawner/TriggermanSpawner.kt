@@ -17,7 +17,7 @@ import kotlin.random.Random;
  *
  * @property world 소속 월드
  */
-class TriggermanSpawner(private val world: World) : Spawner {
+class TriggermanSpawner(world: World) : Spawner(world) {
 	private val spawnInterval = 5f;
 	private val timers = TimerManager();
 

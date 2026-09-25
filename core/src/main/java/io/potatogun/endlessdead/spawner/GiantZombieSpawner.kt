@@ -17,7 +17,7 @@ import kotlin.random.Random;
  *
  * @property world 소속 월드
  */
-class GiantZombieSpawner(private val world: World) : Spawner {
+class GiantZombieSpawner(world: World) : Spawner(world) {
 	private val spawnInterval = 300f;
 	private val timers = TimerManager();
 
