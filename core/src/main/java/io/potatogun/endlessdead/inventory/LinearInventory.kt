@@ -12,7 +12,7 @@ import java.util.function.Consumer;
  * @property maxSlots 최대 아이템 개수(-1: 무제한)
  * @throws IllegalArgumentException 최대 아이템 개수가 잘못된 경우
  */
-class LinearInventory(override val maxSlots: Int = -1) : ObservableInventory() {
+class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1) : ObservableInventory() {
 	private val inventory = GdxArray<Item>();
 	@Suppress("INAPPLICABLE_JVM_NAME")
 	@get:JvmName("size")

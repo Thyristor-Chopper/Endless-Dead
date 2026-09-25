@@ -11,8 +11,8 @@ import io.potatogun.endlessdead.entity.component.ItemDropComponent;
 import io.potatogun.endlessdead.entity.component.ItemPickupComponent;
 import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
+import io.potatogun.endlessdead.inventory.Inventory;
 import io.potatogun.endlessdead.inventory.LinearInventory;
-import io.potatogun.endlessdead.inventory.ObservableInventory;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.item.Shootable;
@@ -26,7 +26,7 @@ import kotlin.random.Random;
 /**
  * 총잡이 - 총을 쏘는 적
  */
-class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : LivingEntity(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, Movable, Targetable {
+class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: Inventory) : LivingEntity(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, Movable, Targetable {
 	private val moveComponent = MoveComponent(this, 140f);
 	override val speed: Float by moveComponent::speed;
 	private val minDistance = 360f;

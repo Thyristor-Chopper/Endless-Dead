@@ -15,9 +15,9 @@ import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.entity.listener.AttackListener;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.endlessdead.entity.turret.HostileTurret;
-import io.potatogun.endlessdead.entity.zombie.Zombie;	
+import io.potatogun.endlessdead.entity.zombie.Zombie;
+import io.potatogun.endlessdead.inventory.Inventory;
 import io.potatogun.endlessdead.inventory.LinearInventory;
-import io.potatogun.endlessdead.inventory.ObservableInventory;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Shootable;
@@ -37,7 +37,7 @@ import java.lang.ref.WeakReference;
 /**
  * 플레이어 — 화살표로 조종
  */
-class Player private constructor(world: World, x: Float, y: Float, override val inventory: ObservableInventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, TextureUtils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable {
+class Player private constructor(world: World, x: Float, y: Float, override val inventory: Inventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, TextureUtils.loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable {
 	override val isUpdatableWhileFrozen = true;
 	private val textureWithGun = TextureUtils.loadTexture("entity/player_holding_gun.bmp");
 	// 타이머
