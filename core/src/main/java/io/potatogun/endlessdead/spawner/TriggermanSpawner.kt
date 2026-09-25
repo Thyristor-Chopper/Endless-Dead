@@ -46,7 +46,7 @@ class TriggermanSpawner(world: World) : Spawner(world) {
 			);
 			loopCount++;
 		} while(target != null && position.distanceTo(target) < 408f && loopCount < 30);
-		triggerman.position.set(position);
+		triggerman.teleport(position);
 		world.entities.add(triggerman);
 		Pools.position.free(position);
 	}

@@ -74,7 +74,7 @@ class ZombieSpawner(world: World) : Spawner(world) {
 			);
 			loopCount++;
 		} while(target != null && position.distanceTo(target) < 408f && loopCount < 30);
-		newZombie.position.set(position);
+		newZombie.teleport(position);
 		world.entities.add(newZombie);
 		Pools.position.free(position);
 	}
