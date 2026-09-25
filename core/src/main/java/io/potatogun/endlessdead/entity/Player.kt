@@ -44,7 +44,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	// 타이머
 	private val timers = TimerManager();
 	private val healTimer: RepeatingTimer;
-	override val damageInvincibilityDuration = 0.1f;
+	override val damageInvincibilityDuration = 0.05f;
 	private var _latestAttackVictim: WeakReference<LivingEntity>? = null;
 	val latestAttackVictim: LivingEntity?
 		get() = _latestAttackVictim?.get();
