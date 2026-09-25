@@ -44,7 +44,7 @@ class TriggermanSummoner(world: World, x: Float, y: Float) : LivingEntity(world,
 				spawn();
 		});
 
-		// 1분마다 300 피 회복
+		// 30초마다 300 피 회복
 		timers.register(RepeatingTimer(30f) {
 			heal(300);
 		});
