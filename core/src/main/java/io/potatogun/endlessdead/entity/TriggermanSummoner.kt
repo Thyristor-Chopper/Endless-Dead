@@ -29,10 +29,16 @@ class TriggermanSummoner(world: World, x: Float, y: Float) : LivingEntity(world,
 	init {
 		setOriginOffsetY(-3f);
 		rotateToRandom();
+
 		timers.register(RepeatingTimer(5f) {
 			// 50% 확률로 소환
 			if(Random.nextInt(2) == 1)
 				spawn();
+		});
+
+		// 1분마다 300 피 회복
+		timers.register(RepeatingTimer(60f) {
+			heal(300);
 		});
 	}
 
