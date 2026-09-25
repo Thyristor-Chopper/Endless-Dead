@@ -76,7 +76,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		for(i in 0 until Random.nextInt(51) + 50) {
 			val x = Random.nextInt(intWidth).toFloat();
 			val y = Random.nextInt(intHeight).toFloat();
-			val item: Item = generateRandomItem();  // 들어있을 아이템
+			val item: Item = generateLoot();  // 들어있을 아이템
 			val rand = Random.nextInt(100) + 1;
 			entities.add(when {
 				rand <= 40	-> Building(this, x, y, item)  // 40% 확률
@@ -126,7 +126,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 			val emptyContainers = Pools.entityArray.obtain();
 			entities.view.filter({ it is Container && it.inventory.isEmpty }, emptyContainers);
 			val randomContainer = emptyContainers.randomOrNull() as Container?;
-			randomContainer?.putItem(generateRandomItem(false));
+			randomContainer?.putItem(generateLoot(false));
 			Pools.entityArray.free(emptyContainers);
 		});
 	}
@@ -136,7 +136,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	 *
 	 * @param allowRare 희귀 아이템 생성 가능 여부
 	 */
-	private fun generateRandomItem(allowRare: Boolean = true): Item {
+	private fun generateLoot(allowRare: Boolean = true): Item {
 		val rand = Random.nextInt(1000) + 1;  // 1~1000
 		return when {
 			rand <= 350	-> MachineGun()			// 35% 확률
