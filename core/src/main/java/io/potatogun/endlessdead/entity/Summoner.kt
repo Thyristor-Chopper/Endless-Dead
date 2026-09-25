@@ -32,7 +32,12 @@ abstract class Summoner @JvmOverloads constructor(world: World, name: String, x:
 	init {
 		rotateToRandom();
 
-		Gdx.app.postRunnable { timers.register(RepeatingTimer(summonInterval, this::summon)) };  // abstract val은 생성자에서 바로 읽으면 0이 됨 하 코틀린 진짜...
+		Gdx.app.postRunnable {  // abstract val은 생성자에서 바로 읽으면 0이 됨 하 코틀린 진짜...
+			timers.register(RepeatingTimer(summonInterval) {
+				if(isActive)
+					summon();
+			});
+		};
 	}
 
 	override fun update(delta: Float) {

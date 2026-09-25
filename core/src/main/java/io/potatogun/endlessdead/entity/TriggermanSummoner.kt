@@ -50,7 +50,6 @@ class TriggermanSummoner(world: World, x: Float, y: Float) : Summoner(world, "Tr
 	}
 
 	override fun summon() {
-		if(!isActive) return;
 		if(Random.nextInt(2) != 0) return;  // 50% 확률로 소환
 		val rad = toRadians(getRotationAngle().toDouble() + 90.0 + Random.nextInt(30).toDouble() - 15.0).toFloat();
 		val distance = 32f;
