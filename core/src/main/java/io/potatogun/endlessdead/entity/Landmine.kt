@@ -9,8 +9,6 @@ import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.world.World;
 
-import kotlin.random.Random;
-
 /**
  * 지뢰
  *
