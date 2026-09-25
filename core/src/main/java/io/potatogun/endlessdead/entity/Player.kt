@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead.entity;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.GameManager;
@@ -176,12 +177,12 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 				selectedItem?.let {
 					projector?.drawSubtitles("Put ${it.name} into the container");
 					entity.putItem(it, true);
-				} ?: projector?.drawSubtitles("Can't take any item; container is empty");
+				} ?: projector?.drawSubtitles("Can't take any item; container is empty", Color.SALMON);
 			} else {
 				val isPlayerItem = entity.isPlayerItem;
 				val item: Item? = entity.takeItem(this);
 				if(item == null) {
-					projector?.drawSubtitles("Failed to take the item in the container");
+					projector?.drawSubtitles("Failed to take the item in the container", Color.SALMON);
 				} else {
 					selectItem(item);
 					projector?.drawSubtitles("Took ${item.name} from the container");
