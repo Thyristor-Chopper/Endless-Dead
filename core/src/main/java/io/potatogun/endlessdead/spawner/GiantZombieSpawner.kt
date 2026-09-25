@@ -10,7 +10,6 @@ import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.Math;
 import io.potatogun.gdxhelper.util.nextFloat;
-import io.potatogun.gdxhelper.util.nextSign;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.cos;
@@ -41,7 +40,7 @@ class GiantZombieSpawner(world: World) : Spawner(world) {
 		if(target != null) {
 			val rad = Random.nextFloat(0f, 2f * PI.toFloat());
 			val maxLength = Math.max2(target.width, target.height);
-			val distance = Random.nextFloat(maxLength + 96f, maxLength + 224f) * Random.nextSign();
+			val distance = Random.nextFloat(maxLength + 96f, maxLength + 224f);
 			newZombie.teleport(target.x + distance * cos(rad), target.y + distance * sin(rad));
 		}
 		world.entities.add(newZombie);
