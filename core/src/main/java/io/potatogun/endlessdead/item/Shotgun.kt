@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.item;
 
 import com.badlogic.gdx.graphics.Color;
 
+import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.entity.Entity;
@@ -26,18 +27,17 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 		val centerY = shooter.y;
 		val angle = atan2(target.y - centerY, target.x - centerX);  // atan2()으로 사분면(방향)을 확인, -180°부터 +180°까지 정확한 방향 반환
 		var shootedPellets = 0;
+		val pelletTarget = Pools.position.obtain();
 		for(spread in spreadAngles) {  // 디컴파일해서 확인한 결과 C언어 스타일의 인덱스 기반 iteration으로 바뀜
 			if(!canFire) break;
 			val finalAngle = angle + spread;  // atan2로 반환한 방향에 배열로 저장한 방향들로 퍼짐 구현
-			val pelletTarget = Position(  // angle로 각도(방향)을 지정했으니 그곳의 cos, sin을 이용한 위치 좌표를 구하는 식
-				centerX + cos(finalAngle) * 100f,
-				centerY + sin(finalAngle) * 100f
-			);
+			pelletTarget.set(centerX + cos(finalAngle) * 100f, centerY + sin(finalAngle) * 100f);  // angle로 각도(방향)을 지정했으니 그곳의 cos, sin을 이용한 위치 좌표를 구하는 식
 			world.entities.add(Bullet(world, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture));
 			if(!infiniteBullets)
 				bullets--;  // 탄약 수 차감
 			shootedPellets++;
 		}
+		Pools.position.free(pelletTarget);
 
 		val defaultResult = super.shoot(target, shooter);
 

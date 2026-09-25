@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 
 import io.potatogun.endlessdead.GameManager;
+import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.ItemSelectable;
@@ -158,7 +159,10 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 		val distance = max2(world.width, world.height);  // 그냥 100f 이상 가능한 한 큰 수면 된다.
 		val targetX = cos(radians) * distance + user.x;
 		val targetY = sin(radians) * distance + user.y;
-		return shoot(Position(targetX.toFloat(), targetY.toFloat()), user) > 0;
+		val target = Pools.position.obtain(targetX.toFloat(), targetY.toFloat());
+		val result = shoot(target, user) > 0;
+		Pools.position.free(target);
+		return result;
 	}
 
 	/**
