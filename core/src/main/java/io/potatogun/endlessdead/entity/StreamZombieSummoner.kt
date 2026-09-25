@@ -15,13 +15,13 @@ import kotlin.math.sin;
 import kotlin.random.Random;
 
 /**
- * 좀비를 소환하는 기계. ZombieSpawner와는 다르게 월드에서 보이는 개체이다.
+ * 물살처럼 빠르게 좀비를 소환하는 기계. ZombieSpawner와는 다르게 월드에서 보이는 개체이다.
  *
  * @param world 개체가 속한 세계
  * @param x	 개체의 X 위치
  * @param y	 개체의 Y 위치
  */
-class ZombieSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "Stream Zombie Summoner", x, y, 26f, 32f, 100, Textures.getShared("stream_zombie_summoner")) {
+class StreamZombieSummoner(world: World, x: Float, y: Float) : LivingEntity(world, "Stream Zombie Summoner", x, y, 26f, 32f, 100, Textures.getShared("stream_zombie_summoner")) {
 	private val timers = TimerManager();
 	private val maxDistanceToPlayer = 456f;
 	override val damageInvincibilityDuration = 0.15f;

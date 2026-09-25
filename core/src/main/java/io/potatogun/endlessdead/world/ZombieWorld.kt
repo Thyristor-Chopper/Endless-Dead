@@ -7,8 +7,8 @@ import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.Player;
+import io.potatogun.endlessdead.entity.StreamZombieSummoner;
 import io.potatogun.endlessdead.entity.TriggermanSummoner;
-import io.potatogun.endlessdead.entity.ZombieSummoner;
 import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
 import io.potatogun.endlessdead.entity.container.Container;
@@ -119,7 +119,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		if(Random.nextInt(1000) + 1 <= 1)  // 0.1% 확률로 스트림약좀비생성기가 있을 수 있음
 			for(i in 1..(Random.nextInt(8) + 1))  // 무작위로 1~8개
 				if(Random.nextInt(2) == 0)  // 이 경우에 대해 50% 판정
-					entities.add(ZombieSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
+					entities.add(StreamZombieSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 
 		// 10초마다 빈 상자 하나 리필
 		timers.register(RepeatingTimer(10f) {
