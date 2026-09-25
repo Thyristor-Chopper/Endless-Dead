@@ -9,10 +9,9 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.inventory.SingleItemInventory;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.entity.rotateToRandom;
 import io.potatogun.gdxhelper.util.TextureUtils;
 import io.potatogun.gdxhelper.world.World;
-
-import kotlin.random.Random;
 
 /**
  * 땅에 떨어져 있는 아이템
@@ -37,11 +36,6 @@ class DroppedItem(world: World, x: Float, y: Float, val item: Item) : Entity(wor
 		val added = collector.inventory.addItem(item);
 		if(added) this.remove();
 		return added;
-	}
-
-	// 한 줄 짜리 함수라 인라인
-	private inline fun rotateToRandom() {
-		rotate(Random.nextInt(360).toFloat());
 	}
 
 	// 개체가 텍스처를 갖지 않고 아이템의 텍스처를 빌려 쓸 뿐이라 dispose하면 안 됨

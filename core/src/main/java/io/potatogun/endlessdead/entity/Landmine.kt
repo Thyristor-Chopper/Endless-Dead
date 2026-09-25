@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.entity.rotateToRandom;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.world.World;
@@ -42,10 +43,5 @@ class Landmine @JvmOverloads constructor(world: World, x: Float, y: Float, val i
 		super.update(delta);
 
 		timers.tick(delta);
-	}
-
-	// 한 줄 짜리 함수라 인라인
-	private inline fun rotateToRandom() {
-		rotate(Random.nextInt(360).toFloat());
 	}
 }

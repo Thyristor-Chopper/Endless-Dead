@@ -4,13 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
+import io.potatogun.gdxhelper.entity.rotateToRandom;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.nextFloat;
 import io.potatogun.gdxhelper.world.World;
-
-import kotlin.random.Random;
 
 /**
  * 플레이어를 보면서 개체를 소환하는 기계
@@ -46,11 +45,6 @@ abstract class Summoner @JvmOverloads constructor(world: World, name: String, x:
 	}
 
 	protected abstract fun summon();
-
-	// 한 줄 짜리 함수라 인라인
-	protected inline fun rotateToRandom() {
-		rotate(Random.nextFloat(360f).toFloat());
-	}
 
 	protected inline fun findPlayer(): Player? {
 		val world = this.world;
