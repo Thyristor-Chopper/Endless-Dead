@@ -15,7 +15,7 @@ import io.potatogun.gdxhelper.world.World;
  */
 class FriendlyTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : TeamTurret(world, "Friendly Turret", x, y, 83f, 120f, "friends", FriendlyTurretGun(), 456f, 2000, isPermanent, Textures.getShared("turret_friendly")) {
 	init {
-		setOriginOffsetY(-17f);
+		setOriginOffsetY(-16f);
 	}
 
 	/**
