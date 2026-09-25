@@ -40,8 +40,10 @@ class TriggermanSpawner(world: World) : Spawner(world) {
 		val target = triggerman.target;
 		val position = Pools.position.obtain();
 		do {
-			position.x = Random.nextFloat() * (world.width - 140f) + 70f;
-			position.y = Random.nextFloat() * (world.height - 140f) + 70f;
+			position.set(
+				Random.nextFloat() * (world.width - 140f) + 70f,
+				Random.nextFloat() * (world.height - 140f) + 70f
+			);
 			loopCount++;
 		} while(target != null && position.distanceTo(target) < 408f && loopCount < 30);
 		triggerman.position.set(position);

@@ -31,7 +31,10 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 		for(spread in spreadAngles) {  // 디컴파일해서 확인한 결과 C언어 스타일의 인덱스 기반 iteration으로 바뀜
 			if(!canFire) break;
 			val finalAngle = angle + spread;  // atan2로 반환한 방향에 배열로 저장한 방향들로 퍼짐 구현
-			pelletTarget.set(centerX + cos(finalAngle) * 100f, centerY + sin(finalAngle) * 100f);  // angle로 각도(방향)을 지정했으니 그곳의 cos, sin을 이용한 위치 좌표를 구하는 식
+			pelletTarget.set(
+				centerX + cos(finalAngle) * 100f,  // angle로 각도(방향)을 지정했으니 그곳의 cos, sin을 이용한 위치 좌표를 구하는 식
+				centerY + sin(finalAngle) * 100f
+			);
 			world.entities.add(Bullet(world, shooter, pelletTarget, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture));
 			if(!infiniteBullets)
 				bullets--;  // 탄약 수 차감
