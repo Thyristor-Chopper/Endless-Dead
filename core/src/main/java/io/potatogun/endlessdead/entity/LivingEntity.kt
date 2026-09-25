@@ -22,7 +22,7 @@ import io.potatogun.gdxhelper.world.World;
  * @property health  최대 체력
  * @param    texture 개체 텍스처(없을 수도 있음)
  */
-abstract class LivingEntity(world: World, name: String, x: Float, y: Float, width: Float, height: Float, health: Int, texture: Texture?) : Entity(world, name, x, y, width, height, texture), TeamMember {
+abstract class LivingEntity @JvmOverloads constructor(world: World, name: String, x: Float, y: Float, width: Float, height: Float, health: Int, texture: Texture? = null) : Entity(world, name, x, y, width, height, texture), TeamMember {
 	/**
 	 * 개체의 최대 체력
 	 */
