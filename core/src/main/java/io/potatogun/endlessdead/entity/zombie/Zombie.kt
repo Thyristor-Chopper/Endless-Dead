@@ -95,9 +95,9 @@ abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Flo
 
 	// 누군가(총잡이, 포탑, 좀비 등)가 자신을 공격하면 처치 대상을 그자로 한다. 단, 자연 생성된 포탑은 공격 불가이기 때문에 그것에게 공격받아도 그걸 타겟하지는 않는다.
 	override fun onDamage(damage: Int, attacker: Entity?) {
-		val realAttacker = if(attacker is Landmine) attacker.installer else attacker;
-		if(realAttacker is LivingEntity)
-			autoTargeter.target = realAttacker;
+		if(attacker is Landmine) return;
+		if(attacker is LivingEntity)
+			autoTargeter.target = attacker;
 	}
 
 	/**

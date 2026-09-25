@@ -37,9 +37,9 @@ class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = fal
 
 	// 누군가가 포탑을 공격하면 처치 대상을 그자로 한다.
 	override fun onDamage(damage: Int, attacker: Entity?) {
-		val realAttacker = if(attacker is Landmine) attacker.installer else attacker;
-		if(realAttacker is LivingEntity)
-			autoTargeter.target = realAttacker;
+		if(attacker is Landmine) return;
+		if(attacker is LivingEntity)
+			autoTargeter.target = attacker;
 	}
 
 	/**
