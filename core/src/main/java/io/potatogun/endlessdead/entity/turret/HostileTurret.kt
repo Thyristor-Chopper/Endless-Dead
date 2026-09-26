@@ -45,5 +45,5 @@ class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = fal
 	/**
 	 * 이 터렛의 발사기
 	 */
-	private class HostileTurretGun : Gun("hostile_turret_shooter", "Hostile Turret Shooter", Gun.Properties(4, 190f).fireInterval(1.0f).bulletTexture(Textures.getShared("silver_bullet")).bulletSize(18f).rarity(Rarity.RARE) as Gun.Properties);
+	private class HostileTurretGun : Gun("hostile_turret_shooter", "Hostile Turret Shooter", Gun.Properties(4, 190f).fireInterval(1.0f).bulletTexture(Textures.getShared("silver_bullet")).bulletSize(18f).rarity(Rarity.RARE));
 }

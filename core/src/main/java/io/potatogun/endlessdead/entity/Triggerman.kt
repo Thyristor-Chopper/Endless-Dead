@@ -99,5 +99,5 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	/**
 	 * 이 개체의 총
 	 */
-	private class TriggermanGun : Gun("triggerman_gun", "Triggerman's Gun", Gun.Properties(3, 400f).fireInterval(0.5f).bulletTexture(Textures.getShared("silver_bullet")).rarity(Rarity.RARE) as Gun.Properties);
+	private class TriggermanGun : Gun("triggerman_gun", "Triggerman's Gun", Gun.Properties(3, 400f).fireInterval(0.5f).bulletTexture(Textures.getShared("silver_bullet")).rarity(Rarity.RARE));
 }

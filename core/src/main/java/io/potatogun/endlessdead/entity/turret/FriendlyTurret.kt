@@ -21,5 +21,5 @@ class FriendlyTurret(world: World, x: Float, y: Float, isPermanent: Boolean = fa
 	/**
 	 * 이 터렛의 발사기
 	 */
-	private class FriendlyTurretGun : Gun("friendly_turret_shooter", "Friendly Turret Shooter", Gun.Properties(2, 1050f).fireInterval(0.4f).rarity(Rarity.RARE) as Gun.Properties);
+	private class FriendlyTurretGun : Gun("friendly_turret_shooter", "Friendly Turret Shooter", Gun.Properties(2, 1050f).fireInterval(0.4f).rarity(Rarity.RARE));
 }

@@ -28,7 +28,7 @@ import kotlin.math.sin;
  * @param settings 총 옵션
  * @throws IllegalArgumentException 총 옵션이 잘못된 경우
  */
-abstract class Gun(id: String, name: String, settings: Properties) : Item(id, name, settings), Shootable, LimitedUsable, Cooldownable {
+abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(id, name, settings), Shootable, LimitedUsable, Cooldownable {
 	override val isContinuousUseAllowed = false;
 	/**
 	 * 총알 피해량
@@ -98,6 +98,8 @@ abstract class Gun(id: String, name: String, settings: Properties) : Item(id, na
 	private var lastShoot = 0f;
 
 	init {
+		if(settings !is Properties)
+			throw IllegalArgumentException("gun settings is not an instance of Gun.Properties");
 		settings.fillDefaults();
 		bulletDamage = settings.bulletDamage;
 		bulletSpeed = settings.bulletSpeed;
