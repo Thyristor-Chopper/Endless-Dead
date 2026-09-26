@@ -39,22 +39,13 @@ class ItemPickupComponent<T>(private val entity: T) where T : Entity, T : Invent
 	 * @return 성공 여부
 	 */
 	fun pickupItem(item: Item): Boolean {
-		var pickedUp = false;
-		// break를 구현하기 귀찮아서 여기선 forEachNearby 안 씀
-		val nearbyEntities = Pools.entityArray.obtain();
-		entity.getWorld().entities.getNearby(entity, nearbyEntities);
-		for(i in 0 until nearbyEntities.size) {
-			val e = nearbyEntities[i];
-			if(e !is DroppedItem) continue;
-			if(!entity.collidesWith(e)) continue;
+		entity.forEachNearby { e ->
+			if(e !is DroppedItem) return@forEachNearby;
+			if(!entity.collidesWith(e)) return@forEachNearby;
 			val droppedItem = e.item;
-			if(item === droppedItem) {
-				if(e.pickup(entity))
-					pickedUp = true;
-				break;
-			}
-		}
-		Pools.entityArray.free(nearbyEntities);
-		return pickedUp;
+			if(item === droppedItem)
+				return e.pickup(entity);
+		};
+		return false;
 	}
 }

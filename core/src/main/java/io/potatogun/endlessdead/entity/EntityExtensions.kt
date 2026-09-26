@@ -22,12 +22,15 @@ import java.util.function.Consumer;
 @JvmSynthetic inline fun Entity.forEachNearby(callback: (Entity) -> Unit) {
 	val world = getWorld();
 	val nearbyEntities = Pools.entityArray.obtain();
-	world.entities.getNearby(this, nearbyEntities);
-	for(i in 0 until nearbyEntities.size) {
-		val entity = nearbyEntities[i];
-		callback(entity);
+	try {
+		world.entities.getNearby(this, nearbyEntities);
+		for(i in 0 until nearbyEntities.size) {
+			val entity = nearbyEntities[i];
+			callback(entity);
+		}
+	} finally {
+		Pools.entityArray.free(nearbyEntities);
 	}
-	Pools.entityArray.free(nearbyEntities);
 }
 
 /**
