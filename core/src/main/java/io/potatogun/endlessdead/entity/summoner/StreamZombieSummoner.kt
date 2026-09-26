@@ -1,4 +1,4 @@
-package io.potatogun.endlessdead.entity;
+package io.potatogun.endlessdead.entity.summoner;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.zombie.WeakZombie;

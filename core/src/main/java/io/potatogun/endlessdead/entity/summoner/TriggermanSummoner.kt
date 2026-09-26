@@ -1,6 +1,8 @@
-package io.potatogun.endlessdead.entity;
+package io.potatogun.endlessdead.entity.summoner;
 
 import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.entity.InventoryHolder;
+import io.potatogun.endlessdead.entity.Triggerman;
 import io.potatogun.endlessdead.entity.component.ItemDropComponent;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.endlessdead.inventory.LinearInventory;

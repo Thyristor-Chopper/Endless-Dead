@@ -1,8 +1,10 @@
-package io.potatogun.endlessdead.entity;
+package io.potatogun.endlessdead.entity.summoner;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
+import io.potatogun.endlessdead.entity.LivingEntity;
+import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.rotateToRandom;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
