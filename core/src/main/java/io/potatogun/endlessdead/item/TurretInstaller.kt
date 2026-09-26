@@ -11,7 +11,7 @@ import io.potatogun.gdxhelper.screen.drawSubtitles;
 /**
  * 좀비 공격 포탑 설치기 아이템
  */
-class TurretInstaller : Item("Turret Installer", Item.Properties().rarity(Rarity.RARE)), Usable {
+class TurretInstaller : Item("turret_installer", "Turret Installer", Item.Properties().rarity(Rarity.RARE)), Usable {
 	override val isContinuousUseAllowed = false;
 
 	override fun use(user: ItemSelectable): Boolean {

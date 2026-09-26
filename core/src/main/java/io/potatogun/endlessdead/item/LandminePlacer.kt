@@ -3,7 +3,6 @@ package io.potatogun.endlessdead.item;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 
-import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Bullet;
@@ -21,7 +20,7 @@ import kotlin.math.sin;
 /**
  * 지뢰 설치기
  */
-class LandminePlacer : Item("Landmine Placer", Textures.getShared("landmine_placer"), Item.Properties().rarity(Rarity.UNCOMMON)), LimitedUsable {
+class LandminePlacer : Item("landmine_placer", "Landmine Placer", Item.Properties().rarity(Rarity.UNCOMMON)), LimitedUsable {
 	override val isContinuousUseAllowed = false;
 	/**
 	 * 지뢰 피해량

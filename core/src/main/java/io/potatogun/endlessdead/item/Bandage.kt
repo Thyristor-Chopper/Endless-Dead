@@ -2,7 +2,6 @@ package io.potatogun.endlessdead.item;
 
 import com.badlogic.gdx.graphics.Color;
 
-import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
@@ -11,7 +10,7 @@ import io.potatogun.gdxhelper.screen.drawSubtitles;
 /**
  * 붕대 - 회복 아이템
  */
-class Bandage : Item("Bandage", Textures.getShared("bandage")), Usable {
+class Bandage : Item("bandage", "Bandage"), Usable {
 	override val isContinuousUseAllowed = false;
 
 	// 붕대를 사용하여 체력을 10만큼 회복한다.
