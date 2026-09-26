@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.GameManager;
-import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.Triggerman;
+import io.potatogun.endlessdead.entity.forEachNearby;
 import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.entity.component.ItemDropComponent;
 import io.potatogun.endlessdead.entity.component.ItemPickupComponent;
@@ -168,11 +168,8 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	 */
 	private inline fun interactContainer() {  // update()에서만 한 번 쓰이기 때문에 inline이다.
 		val projector = world.projector;
-		val nearbyEntities = Pools.entityArray.obtain();
-		world.entities.getNearby(this, nearbyEntities);
-		for(i in 0 until nearbyEntities.size) {
-			val entity = nearbyEntities[i];
-			if(entity !is Container || !collidesWith(entity)) continue;
+		forEachNearby { entity ->
+			if(entity !is Container || !collidesWith(entity)) return@forEachNearby;
 			if(entity.inventory.isEmpty) {
 				selectedItem?.let {
 					projector?.drawSubtitles("Put ${it.name} into the container");
@@ -190,8 +187,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 						GameManager.statistics.openedContainerCount++;
 				}
 			}
-		}
-		Pools.entityArray.free(nearbyEntities);
+		};
 	}
 
 	// ---- 콜백(이벤트) 처리 ----

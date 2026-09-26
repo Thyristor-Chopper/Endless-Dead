@@ -3,6 +3,7 @@ package io.potatogun.endlessdead.entity.component;
 import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.DroppedItem;
 import io.potatogun.endlessdead.entity.InventoryHolder;
+import io.potatogun.endlessdead.entity.forEachNearby;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.entity.Entity;
 
@@ -22,17 +23,13 @@ class ItemPickupComponent<T>(private val entity: T) where T : Entity, T : Invent
 	 */
 	@JvmOverloads fun pickupNearbyItems(condition: Predicate<Item>? = null): Boolean {
 		var pickedUp = false;
-		val nearbyEntities = Pools.entityArray.obtain();
-		entity.getWorld().entities.getNearby(entity, nearbyEntities);
-		for(i in 0 until nearbyEntities.size) {
-			val e = nearbyEntities[i];
-			if(e !is DroppedItem) continue;
-			if(!entity.collidesWith(e)) continue;
+		entity.forEachNearby { e ->
+			if(e !is DroppedItem) return@forEachNearby;
+			if(!entity.collidesWith(e)) return@forEachNearby;
 			if(condition?.test(e.item) ?: true)
 				if(e.pickup(entity))
 					pickedUp = true;
-		}
-		Pools.entityArray.free(nearbyEntities);
+		};
 		return pickedUp;
 	}
 

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.potatogun.endlessdead.Pools;
+import io.potatogun.endlessdead.entity.forEachNearby;
 import io.potatogun.endlessdead.entity.listener.AttackListener;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.gdxhelper.entity.Entity;
@@ -162,14 +162,10 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 			damagedIndicatorTimer -= delta;
 
 		// 몸 대미지 처리
-		val nearbyEntities = Pools.entityArray.obtain();
-		world.entities.getNearby(this, nearbyEntities);
-		for(i in 0 until nearbyEntities.size) {
-			val entity = nearbyEntities[i];
+		forEachNearby { entity ->
 			if(entity is BodyDamagable && entity !== this && !isSameTeamWith(entity) && collidesWith(entity))
 				takeDamage(entity.bodyDamage, attacker = entity);
-		}
-		Pools.entityArray.free(nearbyEntities);
+		};
 	}
 
 	// 대미지를 입은 경우 붉게 바꾸는 고급 hook이다.
