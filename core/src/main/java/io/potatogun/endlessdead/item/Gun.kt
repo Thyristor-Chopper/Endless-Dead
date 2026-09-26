@@ -175,21 +175,21 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 	 * @throws IllegalArgumentException 속성이 잘못된 경우
 	 */
 	open class Properties(@JvmField val bulletDamage: Int, @JvmField val bulletSpeed: Float) : Item.Properties() {
-		@JvmSynthetic internal var bulletPenetration = 1
+		@get:JvmSynthetic internal var bulletPenetration = 1
 			private set;
-		@JvmSynthetic internal var isBulletPenetrable = false
+		@get:JvmSynthetic internal var isBulletPenetrable = false
 			private set;
-		@JvmSynthetic internal var fireInterval = 0f
+		@get:JvmSynthetic internal var fireInterval = 0f
 			private set;
-		@JvmSynthetic internal var bullets = 0
+		@get:JvmSynthetic internal var bullets = 0
 			private set;
-		@JvmSynthetic internal var maxBullets = 0
+		@get:JvmSynthetic internal var maxBullets = 0
 			private set;
-		@JvmSynthetic internal var isBulletsInfinite = true
+		@get:JvmSynthetic internal var isBulletsInfinite = true
 			private set;
-		@JvmSynthetic internal var bulletSize = 16f
+		@get:JvmSynthetic internal var bulletSize = 16f
 			private set;
-		@JvmSynthetic internal lateinit var bulletFaceTexture: Texture
+		@get:JvmSynthetic internal lateinit var bulletFaceTexture: Texture
 			private set;
 
 		init {
