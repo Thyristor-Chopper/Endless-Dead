@@ -9,20 +9,14 @@ import io.potatogun.endlessdead.item.Shootable;
 /**
  * 대상에게 일정 거리까지 접근하고 발사체를 쏜다.
  *
- * @property attacker       공격자
- * @property targetDistance 얼만큼 다가갈지의 값 (0: 쏘기 전에 굳이 다가가지 않음)
+ * @property attacker 공격자
  */
-class ShootTarget<T>(private val attacker: T, private val targetDistance: Float = 0f) : Behavior where T : Entity, T : Targetable, T : ItemSelectable {
+class ShootTarget<T>(private val attacker: T) : Behavior where T : Entity, T : Targetable, T : ItemSelectable {
 	/**
 	 * 현재 AI 상태
 	 */
 	var state = State.STANDBY
 		private set;
-
-	init {
-		if(targetDistance < 0f)
-			throw IllegalArgumentException("invalid target distance");
-	}
 
 	override fun update(delta: Float) {
 		state = State.STANDBY;
@@ -30,11 +24,6 @@ class ShootTarget<T>(private val attacker: T, private val targetDistance: Float 
 		if(item !is Shootable) return;
 		val target: LivingEntity? = attacker.target;
 		if(target == null) return;
-
-		if(targetDistance > 0f && attacker.distanceTo(target) > targetDistance) {
-			state = State.TOO_FAR;
-			return;
-		}
 
 		state = State.SHOOTING;
 		item.shoot(target.position, attacker);

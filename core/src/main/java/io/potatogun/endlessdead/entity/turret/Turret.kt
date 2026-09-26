@@ -53,7 +53,7 @@ abstract class Turret private constructor(world: World, name: String, x: Float, 
 		if(isPermanent) isInvincible = true;
 	}
 
-	final override fun update(delta: Float) {
+	override fun update(delta: Float) {
 		super.update(delta);
 		rotator.update(delta);
 		shooter.update(delta);

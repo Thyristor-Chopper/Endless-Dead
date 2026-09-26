@@ -29,10 +29,9 @@ import kotlin.random.Random;
 class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: Inventory) : LivingEntity(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, Movable, Targetable {
 	private val moveComponent = MoveComponent(this, 140f);
 	override val speed: Float by moveComponent::speed;
-	private val minDistance = 360f;
 	private val rotator = RotateToTarget(this);
-	private val approacher = ApproachTarget(this, minDistance);
-	private val shooter = ShootTarget(this, minDistance);
+	private val approacher = ApproachTarget(this, 360f);
+	private val shooter = ShootTarget(this);
 	override val penetrationDamage = 1;
 	override val damageInvincibilityDuration = 0.15f;
 	private val dropComponent: ItemDropComponent<Triggerman>? = if(Random.nextInt(1000) + 1 <= 1) ItemDropComponent(this) else null;  // 0.1% 확률로 총을 떨굴 수 있음
