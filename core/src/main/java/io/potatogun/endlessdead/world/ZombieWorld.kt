@@ -27,6 +27,7 @@ import io.potatogun.endlessdead.spawner.GiantZombieSpawner;
 import io.potatogun.endlessdead.spawner.Spawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
 import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.collections.filter;
 import io.potatogun.gdxhelper.collections.randomOrNull;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
@@ -124,7 +125,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		// 10초마다 빈 상자 하나 리필
 		timers.register(RepeatingTimer(10f) {
 			val emptyContainers = Pools.entityArray.obtain();
-			entities.view.filter({ it is Container && it.inventory.isEmpty }, emptyContainers);
+			entities.view.filter(emptyContainers) { it is Container && it.inventory.isEmpty };
 			val randomContainer = emptyContainers.randomOrNull() as Container?;
 			randomContainer?.putItem(generateLoot(false));
 			Pools.entityArray.free(emptyContainers);
