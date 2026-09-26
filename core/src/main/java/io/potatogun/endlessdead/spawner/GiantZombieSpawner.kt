@@ -1,13 +1,6 @@
 package io.potatogun.endlessdead.spawner;
 
-import io.potatogun.endlessdead.Pools;
-import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.zombie.GiantZombie;
-import io.potatogun.endlessdead.world.SinglePlayerWorld;
-import io.potatogun.gdxhelper.position.Position;
-import io.potatogun.gdxhelper.position.distanceTo;
-import io.potatogun.gdxhelper.timer.RepeatingTimer;
-import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.Math;
 import io.potatogun.gdxhelper.util.nextFloat;
 import io.potatogun.gdxhelper.world.World;
@@ -18,23 +11,14 @@ import kotlin.math.sin;
 import kotlin.random.Random;
 
 /**
- * 왕좀비 소환기
+ * 왕좀비 소환 시스템
  *
  * @property world 소속 월드
  */
 class GiantZombieSpawner(world: World) : Spawner(world) {
-	private val spawnInterval = 300f;
-	private val timers = TimerManager();
+	override val spawnInterval = 300f;
 
-	init {
-		timers.register(RepeatingTimer(spawnInterval, this::spawn));
-	}
-
-	override fun update(delta: Float) {
-		timers.tick(delta);
-	}
-
-	private fun spawn() {
+	override fun spawn() {
 		val newZombie = GiantZombie(world, 0f, 0f);
 		val target = newZombie.target;
 		if(target != null) {

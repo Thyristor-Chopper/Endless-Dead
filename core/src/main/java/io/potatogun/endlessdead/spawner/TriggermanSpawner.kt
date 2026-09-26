@@ -1,40 +1,23 @@
 package io.potatogun.endlessdead.spawner;
 
 import io.potatogun.endlessdead.Pools;
-import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.Triggerman;
-import io.potatogun.endlessdead.world.SinglePlayerWorld;
-import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.position.distanceTo;
-import io.potatogun.gdxhelper.timer.RepeatingTimer;
-import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.random.Random;
 
 /**
- * 총잡이 소환기 (현재 사용되지 않음)
+ * 총잡이 소환 시스템 (현재 사용되지 않음)
  *
  * @property world 소속 월드
  */
 class TriggermanSpawner(world: World) : Spawner(world) {
-	private val spawnInterval = 5f;
-	private val timers = TimerManager();
+	override val spawnInterval = 5f;
 
-	init {
-		timers.register(RepeatingTimer(spawnInterval) {
-			// 50% 확률로 소환
-			if(Random.nextInt(2) == 1)
-				spawn();
-		});
-	}
+	override fun spawn() {
+		if(Random.nextInt(2) != 0) return;  // 50% 확률로 소환
 
-	override fun update(delta: Float) {
-		timers.tick(delta);
-	}
-
-	// 타이머에서 한 번만 쓰이므로 인라인
-	private inline fun spawn() {
 		val triggerman = Triggerman(world, 0f, 0f);
 		var loopCount = 0;
 		val target = triggerman.target;
