@@ -27,11 +27,6 @@ abstract class Spawner(@JvmField protected val world: World) {
 		Gdx.app.postRunnable { timers.register(RepeatingTimer(spawnInterval, this::spawn)) };  // abstract val은 생성자에서 바로 읽으면 0이 됨
 	}
 
-	/**
-	 * 매 프레임 실행하는 서브루틴
-	 *
-	 * @param delta 직전 프레임과의 간격(초)
-	 */
 	fun update(delta: Float) {
 		timers.tick(delta);
 	}
