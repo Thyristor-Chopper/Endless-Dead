@@ -7,7 +7,7 @@ import com.badlogic.gdx.utils.ObjectSet;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.inventory.Inventory;
 import io.potatogun.gdxhelper.util.SharedTextureManager;
-import io.potatogun.gdxhelper.util.TextureUtils;
+import io.potatogun.gdxhelper.util.loadTexture;
 
 /**
  * 아이템 추상 클래스
@@ -109,7 +109,7 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 				return defaultTexture;
 			} else {
 				try {
-					val texture = TextureUtils.loadTexture("item/${itemID}.bmp");
+					val texture = loadTexture("item/${itemID}.bmp");
 					register(itemID, texture);
 					return getShared(itemID);
 				} catch(e: GdxRuntimeException) {

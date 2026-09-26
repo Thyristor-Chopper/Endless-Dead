@@ -13,7 +13,7 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
-import io.potatogun.gdxhelper.util.Math.max2;
+import io.potatogun.gdxhelper.util.max2;
 
 import java.lang.Math.toRadians;
 

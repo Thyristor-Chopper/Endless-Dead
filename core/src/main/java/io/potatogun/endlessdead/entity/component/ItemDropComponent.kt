@@ -5,7 +5,7 @@ import io.potatogun.endlessdead.entity.DroppedItem;
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.util.Math.max2;
+import io.potatogun.gdxhelper.util.max2;
 
 import java.lang.Math.toRadians;
 

@@ -10,7 +10,7 @@ import io.potatogun.endlessdead.Textures;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.Screen;
 import io.potatogun.gdxhelper.util.Input;
-import io.potatogun.gdxhelper.util.TextureUtils;
+import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.widget.Button;
 
 /**
@@ -19,8 +19,8 @@ import io.potatogun.gdxhelper.widget.Button;
  * @property game 게임 인스턴스
  */
 class Title(private val game: EndlessDead) : Screen() {
-	private val title = TextureUtils.loadTexture("title/title.bmp");
-	private val stillCut = TextureUtils.loadTexture("title/still_cut.bmp");
+	private val title = loadTexture("title/title.bmp");
+	private val stillCut = loadTexture("title/still_cut.bmp");
 	private var titleBlinkTimer = 0f;
 
 	init {

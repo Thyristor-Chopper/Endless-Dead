@@ -10,7 +10,6 @@ import io.potatogun.endlessdead.inventory.SingleItemInventory;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.entity.rotateToRandom;
-import io.potatogun.gdxhelper.util.TextureUtils;
 import io.potatogun.gdxhelper.world.World;
 
 /**

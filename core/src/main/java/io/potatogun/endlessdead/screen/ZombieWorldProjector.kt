@@ -31,8 +31,9 @@ import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.Input;
-import io.potatogun.gdxhelper.util.TextureUtils;
-import io.potatogun.gdxhelper.util.Utils;
+import io.potatogun.gdxhelper.util.loadTexture;
+import io.potatogun.gdxhelper.util.parseSeconds;
+import io.potatogun.gdxhelper.util.rgb;
 import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
 import io.potatogun.gdxhelper.world.World;
@@ -44,8 +45,8 @@ import io.potatogun.gdxhelper.world.World;
  * @property game 게임 인스턴스
  */
 class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), SubtitlesDrawable {
-	private val noWorldOverlay = Utils.rgb(255, 255, 255, 0.5f);
-	private val frozenOverlay = Utils.rgb(0, 0, 0, 0.5f);
+	private val noWorldOverlay = rgb(255, 255, 255, 0.5f);
+	private val frozenOverlay = rgb(0, 0, 0, 0.5f);
 	private val solidColor: Texture;
 	// 제목 표시줄에 표시할 정보의 인덱스
 	private var currentTitleInfo = 0
@@ -55,7 +56,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			else field = value;
 		};
 	// 로드된 월드가 없을 때 보일 placeholder 배경
-	private val lazyStillCut = lazy { TextureUtils.loadTexture("title/still_cut.bmp") };
+	private val lazyStillCut = lazy { loadTexture("title/still_cut.bmp") };
 	// 타이머
 	private val timers = TimerManager();
 	// 자막 관련 필드들.
@@ -65,12 +66,12 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	private val subtitlesVisible: Boolean
 		inline get() = (subtitlesTimer != null);
 	private var attackTarget: LivingEntity? = null;  // 매 업데이트 시 개체가 죽으면 초기화되므로 굳이 WeakReference 쓸 필요 없음
-	private val enemyBarColor = Utils.rgb(205, 46, 46);
-	private val friendBarColor = Utils.rgb(132, 208, 132);
-	private val playerNameColor = Utils.rgb(156, 213, 155);
-	private val enemyNameColor = Utils.rgb(247, 215, 215);
-	private val friendNameColor = Utils.rgb(215, 247, 215);
-	private val scoreColor = Utils.rgb(203, 241, 194);
+	private val enemyBarColor = rgb(205, 46, 46);
+	private val friendBarColor = rgb(132, 208, 132);
+	private val playerNameColor = rgb(156, 213, 155);
+	private val enemyNameColor = rgb(247, 215, 215);
+	private val friendNameColor = rgb(215, 247, 215);
+	private val scoreColor = rgb(203, 241, 194);
 	private val gunCooldownBarX = { Window.width - 215f };
 	private val infiniteGunCooldownBarX = { Window.width - 75f };
 
@@ -84,9 +85,9 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		};
 
 		// 미터기 추가
-		addWidget("hp_indicator", ProgressBar({ 9f }, { Window.height - 38f }, { 180f }, skin = Textures.smoothProgressBar, color = Utils.rgb(73, 186, 73)));
+		addWidget("hp_indicator", ProgressBar({ 9f }, { Window.height - 38f }, { 180f }, skin = Textures.smoothProgressBar, color = rgb(73, 186, 73)));
 		addWidget("attack_target_hp_indicator", ProgressBar({ 210f }, { Window.height - 38f }, { 180f }, skin = Textures.smoothProgressBar, color = enemyBarColor).apply { hide() });
-		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, { 130f }, skin = Textures.chunkedProgressBar, color = Utils.rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() });
+		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, { 130f }, skin = Textures.chunkedProgressBar, color = rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() });
 		addWidget("gun_cooldown_indicator", ProgressBar(gunCooldownBarX, { 10f }, { 60f }, skin = Textures.smoothProgressBar, color = Color.SCARLET).apply { hide() });
 
 		// 일시 중지 및 게임 오버 단추
@@ -203,7 +204,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			TitleInfoType.OPENED	-> "Opened chests: ${GameManager.statistics.openedContainerCount}"
 			TitleInfoType.KILLED	-> "Killed zombies: ${GameManager.statistics.killedZombieCount}"
 			TitleInfoType.FIRED		-> "Fired: ${GameManager.statistics.fireCount}"
-			TitleInfoType.SURVIVED	-> "Survived duration: ${Utils.parseSeconds(GameManager.statistics.survivedDuration, "m", "s")}"
+			TitleInfoType.SURVIVED	-> "Survived duration: ${parseSeconds(GameManager.statistics.survivedDuration, "m", "s")}"
 			TitleInfoType.DAMAGE	-> "Total damage: ${GameManager.statistics.totalDamage}"
 			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.entities.countOf<Zombie>()}"
 		};
@@ -425,7 +426,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			scale = 1.0f
 		);
 		drawText(
-			text = "Survived duration: ${Utils.parseSeconds(GameManager.statistics.survivedDuration, "m", "s")}",
+			text = "Survived duration: ${parseSeconds(GameManager.statistics.survivedDuration, "m", "s")}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 65f,
 			color = Color.LIGHT_GRAY,

@@ -10,7 +10,7 @@ import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
-import io.potatogun.gdxhelper.util.Math.max2;
+import io.potatogun.gdxhelper.util.max2;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.sqrt;

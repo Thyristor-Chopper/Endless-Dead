@@ -1,7 +1,7 @@
 package io.potatogun.endlessdead.spawner;
 
 import io.potatogun.endlessdead.entity.zombie.GiantZombie;
-import io.potatogun.gdxhelper.util.Math;
+import io.potatogun.gdxhelper.util.max2;
 import io.potatogun.gdxhelper.util.nextFloat;
 import io.potatogun.gdxhelper.world.World;
 
@@ -23,7 +23,7 @@ class GiantZombieSpawner(world: World) : Spawner(world) {
 		val target = newZombie.target;
 		if(target != null) {
 			val rad = Random.nextFloat(0f, 2f * PI.toFloat());
-			val maxLength = (Math.max2(target.width, target.height) + Math.max2(newZombie.width, newZombie.height)) * 0.5f;
+			val maxLength = (max2(target.width, target.height) + max2(newZombie.width, newZombie.height)) * 0.5f;
 			val distance = Random.nextFloat(maxLength + 80f, maxLength + 144f);
 			newZombie.teleport(target.x + distance * cos(rad), target.y + distance * sin(rad));
 		}
