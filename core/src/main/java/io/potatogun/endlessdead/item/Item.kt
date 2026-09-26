@@ -1,33 +1,17 @@
 package io.potatogun.endlessdead.item;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.ObjectSet;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.inventory.Inventory;
-import io.potatogun.gdxhelper.util.SharedTextureManager;
-import io.potatogun.gdxhelper.util.loadTexture;
 
 /**
  * 아이템 추상 클래스
  *
- * @property id   아이템 식별자 (소문자)
- * @property name 아이템 이름
+ * @property name     아이템 이름
+ * @param    settings 아이템 옵션
  */
-abstract class Item @JvmOverloads constructor(id: String, val name: String, settings: Properties = Properties()) {
-	companion object {
-		/**
-		 * 재사용하기 위한 아이템 텍스처들이다.
-		 */
-		@JvmField val textures = ItemTextures();
-	}
-
-	/**
-	 * 아이템 식별자
-	 */
-	@get:JvmName("getID")
-	val id = id.lowercase();
+abstract class Item @JvmOverloads constructor(val name: String, val texture: Texture = Textures.getShared("default_item"), settings: Properties = Properties()) {
 	/**
 	 * 아이템을 들고 있는 인벤토리 (캐시)
 	 */
@@ -36,12 +20,6 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 	 * 아이템 희귀도
 	 */
 	val rarity: Rarity;
-	/**
-	 * 아이템 텍스처 (인벤토리용)
-	 *
-	 * 아이템 식별자가 텍스처 화일명이 된다.
-	 */
-	val texture = textures.get(this);
 
 	init {
 		settings.fillDefaults();
@@ -85,38 +63,5 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 		}
 
 		@JvmSynthetic internal open fun fillDefaults() {}
-	}
-
-	/**
-	 * 아이템 텍스처 관리자
-	 */
-	class ItemTextures internal constructor() : SharedTextureManager() {
-		private val nonExistent = ObjectSet<String>(16);
-		val defaultTexture: Texture by lazy { getShared("default") };
-
-		init {
-			register("default", "item/default.bmp");
-		}
-
-		/**
-		 * 아이템의 텍스처를 불러온다.
-		 */
-		fun get(item: Item): Texture {
-			val itemID = item.id;
-			if(hasShared(itemID)) {
-				return getShared(itemID);
-			} else if(nonExistent.contains(itemID)) {
-				return defaultTexture;
-			} else {
-				try {
-					val texture = loadTexture("item/${itemID}.bmp");
-					register(itemID, texture);
-					return getShared(itemID);
-				} catch(e: GdxRuntimeException) {
-					nonExistent.add(itemID);
-					return defaultTexture;
-				}
-			}
-		}
 	}
 }

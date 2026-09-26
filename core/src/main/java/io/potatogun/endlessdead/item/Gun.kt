@@ -3,6 +3,7 @@ package io.potatogun.endlessdead.item;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 
+import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.Textures;
@@ -23,12 +24,12 @@ import kotlin.math.sin;
 /**
  * 총 추상 클래스
  *
- * @param id       총 식별자
  * @param name     총 이름
+ * @param texture  총 텍스처
  * @param settings 총 옵션
  * @throws IllegalArgumentException 총 옵션이 잘못된 경우
  */
-abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(id, name, settings), Shootable, LimitedUsable, Cooldownable {
+abstract class Gun @JvmOverloads constructor(name: String, texture: Texture = Textures.getShared("default_item"), settings: Item.Properties) : Item(name, settings), Shootable, LimitedUsable, Cooldownable {
 	override val isContinuousUseAllowed = false;
 	/**
 	 * 총알 피해량

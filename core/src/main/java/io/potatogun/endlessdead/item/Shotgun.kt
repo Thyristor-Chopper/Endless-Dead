@@ -3,6 +3,7 @@ package io.potatogun.endlessdead.item;
 import com.badlogic.gdx.graphics.Color;
 
 import io.potatogun.endlessdead.Pools;
+import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.entity.Entity;
@@ -16,7 +17,7 @@ import kotlin.math.sin;
 /**
  * 산탄총 아이템 구현체 - 총 여섯 번 쏠 수 있다.
  */
-class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetration(5).fireInterval(1f).bullets(30)) {
+class Shotgun : Gun("Shotgun", Textures.getShared("shotgun"), Gun.Properties(10, 500f).bulletPenetration(5).fireInterval(1f).bullets(30)) {
 	companion object {
 		private val spreadAngles = floatArrayOf(-0.2f, -0.1f, 0.1f, 0.2f);  // 방향 기준 퍼짐 좌표
 	}
