@@ -41,6 +41,6 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 	}
 
 	companion object {
-		@JvmField @JvmSynthetic internal val unfreezeTimers = IdentityMap<World, Timer>(8);
+		@JvmField @JvmSynthetic internal val unfreezeTimers = IdentityMap<World, Timer>(4);
 	}
 }

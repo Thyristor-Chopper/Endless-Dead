@@ -17,10 +17,6 @@ import kotlin.math.sin;
  * 산탄총 아이템 구현체 - 총 여섯 번 쏠 수 있다.
  */
 class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetration(5).fireInterval(1f).bullets(30)) {
-	companion object {
-		private val spreadAngles = floatArrayOf(-0.2f, -0.1f, 0.1f, 0.2f);  // 방향 기준 퍼짐 좌표
-	}
-
 	override fun shoot(target: Position, shooter: Entity): Int {
 		val world = shooter.getWorld();
 		val centerX = shooter.x;  // shooter, 즉 발사를 하는 주체인 플레이어의 위치를 중심으로 두는 객체
@@ -45,5 +41,9 @@ class Shotgun : Gun("shotgun", "Shotgun", Gun.Properties(10, 500f).bulletPenetra
 		val defaultResult = super.shoot(target, shooter);
 
 		return defaultResult + shootedPellets;
+	}
+
+	companion object {
+		private val spreadAngles = floatArrayOf(-0.2f, -0.1f, 0.1f, 0.2f);  // 방향 기준 퍼짐 좌표
 	}
 }
