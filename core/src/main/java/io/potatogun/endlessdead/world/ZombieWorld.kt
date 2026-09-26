@@ -159,7 +159,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 	// 개체, 스포너 및 타이머를 갱신한다.
 	override fun update(delta: Float) {
-		timers.tick(delta);
+		timers.update(delta);
 
 		// ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
 		super.update(delta);  // updateEntities와 removeDead

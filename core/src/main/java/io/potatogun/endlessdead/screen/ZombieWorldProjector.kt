@@ -158,7 +158,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	}
 
 	override fun update(delta: Float) {
-		timers.tick(delta);
+		timers.update(delta);
 
 		when {
 			GameManager.isPlaying	-> updatePlaying(delta);

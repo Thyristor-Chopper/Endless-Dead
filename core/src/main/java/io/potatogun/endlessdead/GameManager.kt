@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.timer.TimerManager;
+import io.potatogun.gdxhelper.util.Updatable;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
 import kotlin.properties.Delegates;
@@ -15,7 +16,7 @@ import kotlin.properties.Delegates;
  * libGDX는 Game()의 인스턴스가 두 개 이상일 이유가 없고 창을 두 개 이상 띄우지 못하므로
  * 큰 위험성은 없다.
  */
-object GameManager {
+object GameManager : Updatable {
 	/**
 	 * 게임 인스턴스
 	 */
@@ -200,23 +201,32 @@ object GameManager {
 		statistics.totalDamage = 0;
 	}
 
+	override fun update(delta: Float) {
+		tickGameTime(delta);
+		tickGlobalTimers(delta);
+	}
+
 	/**
 	 * 게임 진행 시간을 증가한다.
+	 *
+	 * update에서 한 번만 쓰이기 때문에 인라인이다.
 	 * 
 	 * @param delta 직전 프레임과의 간격(초)
 	 */
-	@JvmSynthetic internal fun tickGameTime(delta: Float) {
+	private inline fun tickGameTime(delta: Float) {
 		if(state != GameState.PLAYING) return;
 		gameTime += delta;
 	}
 
 	/**
 	 * 전역 타이머 관리자를 갱신한다.
+	 *
+	 * update에서 한 번만 쓰이기 때문에 인라인이다.
 	 * 
 	 * @param delta 직전 프레임과의 간격(초)
 	 */
-	@JvmSynthetic internal fun tickGlobalTimers(delta: Float) {
-		globalTimers.tick(delta);
+	private inline fun tickGlobalTimers(delta: Float) {
+		globalTimers.update(delta);
 	}
 
 	/**

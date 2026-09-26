@@ -88,7 +88,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 
 	override fun update(delta: Float) {
 		// 타이머 갱신
-		timers.tick(delta);
+		timers.update(delta);
 
 		super.update(delta);
 

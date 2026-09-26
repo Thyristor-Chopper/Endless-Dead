@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.TimerManager;
+import io.potatogun.gdxhelper.util.Updatable;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -11,7 +12,7 @@ import io.potatogun.gdxhelper.world.World;
  *
  * @property world 소환기가 속하는 월드
  */
-abstract class Spawner(@JvmField protected val world: World) {
+abstract class Spawner(@JvmField protected val world: World) : Updatable {
 	/**
 	 * 개체 소환 간격
 	 */
@@ -27,8 +28,8 @@ abstract class Spawner(@JvmField protected val world: World) {
 		Gdx.app.postRunnable { timers.register(RepeatingTimer(spawnInterval, this::spawn)) };  // abstract val은 생성자에서 바로 읽으면 0이 됨
 	}
 
-	fun update(delta: Float) {
-		timers.tick(delta);
+	override fun update(delta: Float) {
+		timers.update(delta);
 	}
 
 	/**

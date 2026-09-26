@@ -40,6 +40,6 @@ class Landmine @JvmOverloads constructor(world: World, x: Float, y: Float, val i
 	override fun update(delta: Float) {
 		super.update(delta);
 
-		timers.tick(delta);
+		timers.update(delta);
 	}
 }

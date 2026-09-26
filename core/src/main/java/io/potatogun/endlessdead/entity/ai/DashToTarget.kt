@@ -26,9 +26,9 @@ class DashToTarget<T>(private val attacker: T, private val dashDamage: Int, priv
 	private var dashDirY = 0f;
 	private val dashComponent = MoveComponent(attacker, dashSpeed);
 
-	override fun update(delta: Float): Behavior.Result {
+	override fun update(delta: Float) {
 		val target: LivingEntity? = attacker.target;
-		if(target == null) return Behavior.Result.FAILED;
+		if(target == null) return;
 
 		when(state) {
 			State.STANDBY -> {
@@ -44,8 +44,6 @@ class DashToTarget<T>(private val attacker: T, private val dashDamage: Int, priv
 						dashDirX = dx / distance;
 						dashDirY = dy / distance;
 					}
-				} else {
-					return Behavior.Result.REJECTED;
 				}
 			}
 			State.PREPARING -> {
@@ -77,8 +75,6 @@ class DashToTarget<T>(private val attacker: T, private val dashDamage: Int, priv
 					state = State.STANDBY;
 			}
 		}
-
-		return Behavior.Result.SUCCEEDED;
 	}
 
 	/**

@@ -18,23 +18,20 @@ class MeleeAttackTarget<T>(private val attacker: T, private val targetCenterGapF
 	var state = State.STANDBY
 		private set;
 
-	override fun update(delta: Float): Behavior.Result {
+	override fun update(delta: Float) {
 		state = State.STANDBY;
 		val target: LivingEntity? = attacker.target;
-		if(target == null) return Behavior.Result.FAILED;
+		if(target == null) return;
 
 		val distance = attacker.distanceTo(target);
 		val targetAverageLength = (target.width + target.height) * 0.5f;
 		if(distance > targetAverageLength * targetCenterGapFactor) {
 			state = State.TOO_FAR;
-			return Behavior.Result.REJECTED;
+			return;
 		}
 
 		state = State.ATTACKING;
-		if(attacker.damageTarget(target))
-			return Behavior.Result.SUCCEEDED;
-		else
-			return Behavior.Result.FAILED;
+		attacker.damageTarget(target);
 	}
 
 	/**

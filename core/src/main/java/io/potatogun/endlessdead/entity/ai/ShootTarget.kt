@@ -24,23 +24,20 @@ class ShootTarget<T>(private val attacker: T, private val targetDistance: Float 
 			throw IllegalArgumentException("invalid target distance");
 	}
 
-	override fun update(delta: Float): Behavior.Result {
+	override fun update(delta: Float) {
 		state = State.STANDBY;
 		val item = attacker.selectedItem;
-		if(item !is Shootable) return Behavior.Result.REJECTED;
+		if(item !is Shootable) return;
 		val target: LivingEntity? = attacker.target;
-		if(target == null) return Behavior.Result.FAILED;
+		if(target == null) return;
 
 		if(targetDistance > 0f && attacker.distanceTo(target) > targetDistance) {
 			state = State.TOO_FAR;
-			return Behavior.Result.REJECTED;
+			return;
 		}
 
 		state = State.SHOOTING;
-		if(item.shoot(target.position, attacker) > 0)
-			return Behavior.Result.SUCCEEDED;
-		else
-			return Behavior.Result.FAILED;
+		item.shoot(target.position, attacker);
 	}
 
 	/**

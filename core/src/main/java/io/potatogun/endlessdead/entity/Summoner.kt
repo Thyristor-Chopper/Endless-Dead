@@ -54,7 +54,7 @@ abstract class Summoner @JvmOverloads constructor(world: World, name: String, x:
 	override fun update(delta: Float) {
 		super.update(delta);
 
-		timers.tick(delta);
+		timers.update(delta);
 
 		val player = findPlayer();
 		if(isActive && player != null)

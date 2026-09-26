@@ -19,22 +19,20 @@ class ApproachTarget<T>(private val targeter: T, private val targetDistance: Flo
 	var state = State.STANDBY
 		private set;
 
-	override fun update(delta: Float): Behavior.Result {
+	override fun update(delta: Float) {
 		state = State.STANDBY;
 		val target: LivingEntity? = targeter.target;
-		if(target == null) return Behavior.Result.FAILED;
+		if(target == null) return;
 
 		val distance = targeter.distanceTo(target);
 		val targetAverageLength = (target.width + target.height) * 0.5f;
 		if(distance <= targetDistance + targetAverageLength * targetCenterGapFactor) {
 			state = State.APPROACHED;
-			return Behavior.Result.REJECTED;
 		} else {
 			state = State.APPROACHING;
 			val dx = target.x - targeter.x;
 			val dy = target.y - targeter.y;
 			targeter.move(delta, dx / distance, dy / distance);
-			return Behavior.Result.SUCCEEDED;
 		}
 	}
 
