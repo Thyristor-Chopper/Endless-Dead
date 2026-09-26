@@ -40,6 +40,7 @@ class ItemPickupComponent<T>(private val entity: T) where T : Entity, T : Invent
 	 */
 	fun pickupItem(item: Item): Boolean {
 		var pickedUp = false;
+		// break를 구현하기 귀찮아서 여기선 forEachNearby 안 씀
 		val nearbyEntities = Pools.entityArray.obtain();
 		entity.getWorld().entities.getNearby(entity, nearbyEntities);
 		for(i in 0 until nearbyEntities.size) {
