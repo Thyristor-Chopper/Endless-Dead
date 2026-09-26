@@ -11,7 +11,7 @@ import io.potatogun.gdxhelper.entity.Entity;
  * @property attacker              공격자
  * @property targetCenterGapFactor 대상의 크기(변 길이)의 이 곱까지는 간격을 둬도 공격할 수 있다.
  */
-class MeleeAttackTarget<T>(private val attacker: T, private val targetCenterGapFactor: Float = 0f) : Behavior where T : Entity, T : Targetable, T : MeleeAttackable {
+class MeleeAttackTarget<T>(private val attacker: T, private val targetCenterGapFactor: Float = 0f) : Behavior() where T : Entity, T : Targetable, T : MeleeAttackable {
 	/**
 	 * 현재 AI 상태
 	 */
@@ -21,17 +21,24 @@ class MeleeAttackTarget<T>(private val attacker: T, private val targetCenterGapF
 	override fun update(delta: Float) {
 		state = State.STANDBY;
 		val target: LivingEntity? = attacker.target;
-		if(target == null) return;
+		if(target == null) {
+			lastResult = Behavior.Result.FAILED;
+			return;
+		}
 
 		val distance = attacker.distanceTo(target);
 		val targetAverageLength = (target.width + target.height) * 0.5f;
 		if(distance > targetAverageLength * targetCenterGapFactor) {
 			state = State.TOO_FAR;
+			lastResult = Behavior.Result.REJECTED;
 			return;
 		}
 
 		state = State.ATTACKING;
-		attacker.damageTarget(target);
+		if(attacker.damageTarget(target))
+			lastResult = Behavior.Result.SUCCEEDED;
+		else
+			lastResult = Behavior.Result.FAILED;
 	}
 
 	/**

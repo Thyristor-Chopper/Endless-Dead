@@ -12,7 +12,7 @@ import io.potatogun.gdxhelper.entity.Entity;
  * @property targetDistance        지정한 거리만큼 좁혀질 때까지 다가간다.
  * @property targetCenterGapFactor 대상의 크기(변 길이)의 이 곱만큼 간격을 둔다.
  */
-class ApproachTarget<T>(private val targeter: T, private val targetDistance: Float = 0f, private val targetCenterGapFactor: Float = 0f) : Behavior where T : Entity, T : Targetable, T : Movable {
+class ApproachTarget<T>(private val targeter: T, private val targetDistance: Float = 0f, private val targetCenterGapFactor: Float = 0f) : Behavior() where T : Entity, T : Targetable, T : Movable {
 	/**
 	 * 현재 AI 상태
 	 */
@@ -22,17 +22,22 @@ class ApproachTarget<T>(private val targeter: T, private val targetDistance: Flo
 	override fun update(delta: Float) {
 		state = State.STANDBY;
 		val target: LivingEntity? = targeter.target;
-		if(target == null) return;
+		if(target == null) {
+			lastResult = Behavior.Result.FAILED;
+			return;
+		}
 
 		val distance = targeter.distanceTo(target);
 		val targetAverageLength = (target.width + target.height) * 0.5f;
 		if(distance <= targetDistance + targetAverageLength * targetCenterGapFactor) {
 			state = State.APPROACHED;
+			lastResult = Behavior.Result.REJECTED;
 		} else {
 			state = State.APPROACHING;
 			val dx = target.x - targeter.x;
 			val dy = target.y - targeter.y;
 			targeter.move(delta, dx / distance, dy / distance);
+			lastResult = Behavior.Result.SUCCEEDED;
 		}
 	}
 

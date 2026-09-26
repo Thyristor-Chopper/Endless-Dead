@@ -11,7 +11,7 @@ import io.potatogun.endlessdead.item.Shootable;
  *
  * @property attacker 공격자
  */
-class ShootTarget<T>(private val attacker: T) : Behavior where T : Entity, T : Targetable, T : ItemSelectable {
+class ShootTarget<T>(private val attacker: T) : Behavior() where T : Entity, T : Targetable, T : ItemSelectable {
 	/**
 	 * 현재 AI 상태
 	 */
@@ -21,12 +21,21 @@ class ShootTarget<T>(private val attacker: T) : Behavior where T : Entity, T : T
 	override fun update(delta: Float) {
 		state = State.STANDBY;
 		val item = attacker.selectedItem;
-		if(item !is Shootable) return;
+		if(item !is Shootable) {
+			lastResult = Behavior.Result.REJECTED;
+			return;
+		}
 		val target: LivingEntity? = attacker.target;
-		if(target == null) return;
+		if(target == null) {
+			lastResult = Behavior.Result.FAILED;
+			return;
+		}
 
 		state = State.SHOOTING;
-		item.shoot(target.position, attacker);
+		if(item.shoot(target.position, attacker) > 0)
+			lastResult = Behavior.Result.SUCCEEDED;
+		else
+			lastResult = Behavior.Result.FAILED;
 	}
 
 	/**

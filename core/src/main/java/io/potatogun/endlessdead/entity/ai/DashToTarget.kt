@@ -14,7 +14,7 @@ import io.potatogun.gdxhelper.entity.Entity;
  * @property dashSpeed   돌진 속도
  * @property minDistance 돌진하기 위해 접근해야 할 최소 거리
  */
-class DashToTarget<T>(private val attacker: T, private val dashDamage: Int, private val dashSpeed: Float, private val minDistance: Float) : Behavior where T : Entity, T : Targetable, T : Movable {
+class DashToTarget<T>(private val attacker: T, private val dashDamage: Int, private val dashSpeed: Float, private val minDistance: Float) : Behavior() where T : Entity, T : Targetable, T : Movable {
 	/**
 	 * 현재 AI 상태
 	 */
@@ -28,7 +28,10 @@ class DashToTarget<T>(private val attacker: T, private val dashDamage: Int, priv
 
 	override fun update(delta: Float) {
 		val target: LivingEntity? = attacker.target;
-		if(target == null) return;
+		if(target == null) {
+			lastResult = Behavior.Result.FAILED;
+			return;
+		}
 
 		when(state) {
 			State.STANDBY -> {
@@ -44,6 +47,9 @@ class DashToTarget<T>(private val attacker: T, private val dashDamage: Int, priv
 						dashDirX = dx / distance;
 						dashDirY = dy / distance;
 					}
+				} else {
+					lastResult = Behavior.Result.REJECTED;
+					return;
 				}
 			}
 			State.PREPARING -> {
@@ -75,6 +81,8 @@ class DashToTarget<T>(private val attacker: T, private val dashDamage: Int, priv
 					state = State.STANDBY;
 			}
 		}
+
+		lastResult = Behavior.Result.SUCCEEDED;
 	}
 
 	/**

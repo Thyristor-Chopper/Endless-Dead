@@ -9,11 +9,15 @@ import io.potatogun.gdxhelper.entity.Entity;
  *
  * @property entity 사용 개체
  */
-class RotateToTarget<T>(private val entity: T) : Behavior where T : Entity, T : Targetable {
+class RotateToTarget<T>(private val entity: T) : Behavior() where T : Entity, T : Targetable {
 	override fun update(delta: Float) {
 		val target: LivingEntity? = entity.target;
-		if(target == null) return;
+		if(target == null) {
+			lastResult = Behavior.Result.FAILED;
+			return;
+		}
 
 		entity.rotateTo(target);
+		lastResult = Behavior.Result.SUCCEEDED;
 	}
 }
