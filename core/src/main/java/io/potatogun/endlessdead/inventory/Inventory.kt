@@ -12,12 +12,16 @@ import java.util.function.Consumer;
 interface Inventory {
 	/**
 	 * 인벤토리 내 아이템 개수
+	 * 
+	 * 자바에서는 inventory.size(), 코틀린에서는 inventory.size로 접근한다.
 	 */
 	@Suppress("INAPPLICABLE_JVM_NAME")
 	@get:JvmName("size")
 	val size: Int;
 	/**
 	 * 인벤토리가 비어 있는지의 여부
+	 *
+	 * 자바에서는 inventory.isEmpty(), 코틀린에서는 inventory.isEmpty로 접근한다.
 	 */
 	val isEmpty: Boolean;
 	/**
