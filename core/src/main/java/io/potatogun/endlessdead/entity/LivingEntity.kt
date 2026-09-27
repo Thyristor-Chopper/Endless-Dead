@@ -135,6 +135,7 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 
 			// 개체를 월드에서 제거
 			remove();
+			dispose();
 		} else {
 			// 무적 피격 타이머 활성화 (중복 활성화/갱신 방지)
 			if(!isInvincibilityTimerActive && damageInvincibilityDuration > 0f) {
