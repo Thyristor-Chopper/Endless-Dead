@@ -115,11 +115,16 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 		health -= finalDamage;
 
 		val killed = (health == 0);
-		if(killed) {  // 사망
+		if(killed) {  // 사망 시
+			// 사망 이벤트 발생
 			if(this is DamageListener)
-				onDeath(attacker);  // 콜백 호출
+				onDeath(attacker);
+
+			// 죽임 이벤트 발생
 			if(attacker is AttackListener)
 				attacker.onKill(this);
+
+			// 개체를 월드에서 제거
 			remove();
 		} else {
 			// 무적 피격 타이머 활성화 (중복 활성화/갱신 방지)
