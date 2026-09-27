@@ -71,11 +71,11 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 	// 생성자 본문 — 월드에 플레이어와 적을 등록한다. 이렇게 등록해야 update / draw 루프에 포함된다.
 	init {
-		// 50~100개의 건물과 상자를 무작위로 배치
+		// 100~150개의 건물과 상자를 무작위로 배치
 		val trapChestGeneratable = (Random.nextInt(1000) + 1 <= 1);  // 0.1% 확률
 		val intWidth = this.width.toInt();
 		val intHeight = this.height.toInt();
-		for(i in 0 until Random.nextInt(51) + 50) {
+		for(i in 0 until Random.nextInt(51) + 100) {
 			val x = Random.nextInt(intWidth).toFloat();
 			val y = Random.nextInt(intHeight).toFloat();
 			val item: Item = generateLoot();  // 들어있을 아이템
