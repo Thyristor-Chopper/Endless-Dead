@@ -23,7 +23,7 @@ import io.potatogun.gdxhelper.world.World;
  * @property health  처음 체력
  * @param    texture 개체 텍스처(없을 수도 있음)
  */
-abstract class LivingEntity @JvmOverloads constructor(world: World, name: String, x: Float, y: Float, width: Float, height: Float, health: Int, texture: Texture? = null) : Entity(world, name, x, y, width, height, texture), TeamMember {
+abstract class LivingEntity @JvmOverloads constructor(world: World, name: String, x: Float, y: Float, width: Float, height: Float, health: Int, texture: Texture? = null) : Entity(world, name, x, y, width, height, texture) {
 	/**
 	 * 개체의 최대 체력
 	 */
@@ -78,10 +78,6 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 	 * 피격 무적 타이머 활성 시간 동안 더 큰 대미지가 들어왔을 때를 감지하기 위한 변수
 	 */
 	private var accumulatedDamage = 0;
-	/**
-	 * 모든 살아있는 개체는 기본적으로 팀이 있으며 기본적으로 중립
-	 */
-	final override var team: String? = null;
 
 	init {
 		if(health <= 0) throw IllegalArgumentException("invalid health");

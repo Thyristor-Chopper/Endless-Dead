@@ -38,7 +38,7 @@ import java.lang.ref.WeakReference;
 /**
  * 플레이어 — 화살표로 조종
  */
-class Player private constructor(world: World, x: Float, y: Float, override val inventory: Inventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable {
+class Player private constructor(world: World, x: Float, y: Float, override val inventory: Inventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable, TeamMember {
 	override val isUpdatableWhileFrozen = true;
 	private val textureWithGun = loadTexture("entity/player_holding_gun.bmp");
 	// 타이머
@@ -53,6 +53,8 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	override val speed: Float by moveComponent::speed;  // 디컴파일해서 확인한 결과 수동 get() = moveComponent.speed와 오버헤드는 똑같음
 	private val dropComponent = ItemDropComponent(this);
 	private val pickupComponent = ItemPickupComponent(this);
+	// 팀
+	override var team: String? = "friends";
 
 	/**
 	 * 플레이어를 생성한다.
@@ -76,8 +78,6 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		healTimer = RepeatingTimer(30f) {
 			heal(3);
 		}.also { timers.register(it) };
-
-		team = "friends";
 	}
 
 	override fun move(delta: Float, directionX: Float, directionY: Float) {
