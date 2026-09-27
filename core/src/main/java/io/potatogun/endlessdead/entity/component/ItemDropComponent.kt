@@ -27,7 +27,7 @@ class ItemDropComponent<T>(private val entity: T) where T : Entity, T : Inventor
 	 */
 	fun dropItem(item: Item): Boolean {
 		if(!entity.inventory.hasItem(item)) return false;
-		val world = entity.getWorld();
+		val world = entity.world;
 		val maxHalfLength = max2(entity.width, entity.height) * 0.5f;
 		val rad = toRadians(entity.getRotationAngle().toDouble() + 90.0 + Random.nextInt(30).toDouble() - 15.0).toFloat();
 		val distance = Random.nextInt(16) + 16 + maxHalfLength + Constants.ITEM_SIZE * 0.5f;

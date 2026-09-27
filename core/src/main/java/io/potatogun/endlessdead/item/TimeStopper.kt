@@ -21,7 +21,7 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 	override fun use(user: ItemSelectable): Boolean {
 		if(user.selectedItem !== this) return false;
 		if(user !is Player) return false;
-		val world = user.getWorld();
+		val world = user.world;
 		if(world !is Freezable) {
 			world.projector?.drawSubtitles("Can't use this item here", Color.SALMON);
 			return false;

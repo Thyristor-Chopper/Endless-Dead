@@ -15,7 +15,7 @@ class SpeedPotion : Item("speed_potion", "Speed Potion", Item.Properties().rarit
 		if(user.selectedItem !== this) return false;
 		if(user !is Player) return false;
 		user.increaseSpeed(30f, 30f);
-		user.getWorld().projector?.drawSubtitles("Speed up!");
+		user.world.projector?.drawSubtitles("Speed up!");
 		destroy();
 		return true;
 	}

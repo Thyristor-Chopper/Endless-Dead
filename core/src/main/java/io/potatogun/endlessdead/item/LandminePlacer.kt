@@ -49,7 +49,7 @@ class LandminePlacer : Item("landmine_placer", "Landmine Placer", Item.Propertie
 		if(user.selectedItem !== this) return false;
 		if(user !is Entity) return false;
 
-		val world = user.getWorld();
+		val world = user.world;
 		val radians = toRadians(user.getRotationAngle() + 90.0).toFloat();
 		val distance = 32f;
 		val targetX = cos(radians) * distance + user.x;

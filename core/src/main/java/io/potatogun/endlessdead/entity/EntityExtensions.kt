@@ -20,7 +20,7 @@ import java.util.function.Consumer;
  * @param callback 실행할 서브루틴
  */
 @JvmSynthetic inline fun Entity.forEachNearby(callback: (Entity) -> Unit) {
-	val world = getWorld();
+	val world = this.world;
 	val nearbyEntities = Pools.entityArray.obtain();
 	try {
 		world.entities.getNearby(this, nearbyEntities);
