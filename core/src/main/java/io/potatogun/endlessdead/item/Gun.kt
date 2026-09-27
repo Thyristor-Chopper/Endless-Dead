@@ -175,7 +175,7 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 	 * @throws IllegalArgumentException 속성이 잘못된 경우
 	 */
 	open class Properties(@JvmField val bulletDamage: Int, @JvmField val bulletSpeed: Float) : Item.Properties() {
-		@get:JvmSynthetic internal var bulletPenetration = 1
+		@get:JvmSynthetic internal var bulletPenetration = Int.MAX_VALUE
 			private set;
 		@get:JvmSynthetic internal var isBulletPenetrable = false
 			private set;
