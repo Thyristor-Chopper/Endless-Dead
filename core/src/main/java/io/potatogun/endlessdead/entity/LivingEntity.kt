@@ -74,6 +74,10 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 	private val isInvincibilityTimerActive: Boolean
 		inline get() = (invincibilityTimer > 0f);
 	/**
+	 * 피격 무적 타이머 활성 시간 동안 더 큰 대미지가 들어왔을 때를 감지하기 위한 변수
+	 */
+	private var accumulatedDamage = 0;
+	/**
 	 * 모든 살아있는 개체는 기본적으로 팀이 있으며 기본적으로 중립
 	 */
 	final override var team: String? = null;
@@ -96,26 +100,39 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 		if(isInvincible) return false;
 		if(!isAlive) return false;
 
-		// 무적 시간이 다 끝났을 때만 피격당함
-		if(isInvincibilityTimerActive) return false;
+		val invincibilityTimerActive = isInvincibilityTimerActive;  // 활성 여부 캐시
+		val finalDamage: Int;  // 실제로 받을 대미지 (아래에서 계산)
+		// 무적 시간이 남아있을 경우 더 큰 대미지가 들어왔을 때만 해당 대미지 값으로 대체
+		if(invincibilityTimerActive)
+			finalDamage = damage - accumulatedDamage;
+		else
+			finalDamage = damage;
 
-		health -= damage;
+		// 피격 무적 시간 동안 새로 받은 공격의 대미지가 기존보다 작으면 처리 안 함
+		if(finalDamage <= 0)
+			return false;
+
+		health -= finalDamage;
+		accumulatedDamage += finalDamage;
 		val killed = (health == 0);
 		if(killed) {  // 사망
 			if(this is DamageListener) onDeath(attacker);  // 콜백 호출
 			if(attacker is AttackListener) attacker.onKill(this);
 			remove();
 		} else {
-			invincibilityTimer = damageInvincibilityDuration;
-			if(this is DamageListener) onDamage(damage, attacker);
+			// 무적 피격 타이머 활성화 (중복 활성화/갱신 방지)
+			if(!invincibilityTimerActive)
+				invincibilityTimer = damageInvincibilityDuration;
+			// 피해 이벤트 발생
+			if(this is DamageListener)
+				onDamage(finalDamage, attacker);
 			// 타격 시 붉게 표시 타이머
 			if(showDamageIndicator)
 				damagedIndicatorTimer = damageIndicatorDuration;
 		}
-		if(attacker != null) {
-			if(!killed && attacker is AttackListener)
-				attacker.onAttack(this);
-		}
+		// 공격 이벤트 발생
+		if(!killed && attacker is AttackListener)
+			attacker.onAttack(this);
 		return true;
 	}
 
@@ -134,8 +151,13 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 	override fun forceUpdate(delta: Float) {
 		super.forceUpdate(delta);
 
-		if(invincibilityTimer > 0f)
+		if(invincibilityTimer > 0f) {
 			invincibilityTimer -= delta;
+
+			// 피격 무적 동안의 누적 대미지 초기화
+			if(invincibilityTimer <= 0f)
+				accumulatedDamage = 0;
+		}
 
 		if(damagedIndicatorTimer > 0f)
 			damagedIndicatorTimer -= delta;
