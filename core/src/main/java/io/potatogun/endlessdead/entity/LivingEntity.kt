@@ -189,7 +189,7 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 
 	// 대미지를 입은 경우 붉게 바꾸는 고급 hook이다.
 	override fun draw(batch: SpriteBatch, textureOverride: Texture?, tintOverride: Color?) {
-		val showDamaged = (tintOverride == null && showDamageIndicator && damagedIndicatorTimer > 0f);
+		val showDamaged = (tintOverride == null && damagedIndicatorTimer > 0f);
 		val color = if(showDamaged) Color.RED else tintOverride;
 		super.draw(batch, textureOverride, color);
 	}
