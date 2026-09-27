@@ -100,10 +100,9 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 		if(isInvincible) return false;
 		if(!isAlive) return false;
 
-		val invincibilityTimerActive = isInvincibilityTimerActive;  // 활성 여부 캐시
 		val finalDamage: Int;  // 실제로 받을 대미지 (아래에서 계산)
 		// 무적 시간이 남아있을 경우 더 큰 대미지가 들어왔을 때만 해당 대미지 값으로 대체
-		if(invincibilityTimerActive)
+		if(isInvincibilityTimerActive)
 			finalDamage = damage - accumulatedDamage;
 		else
 			finalDamage = damage;
@@ -112,29 +111,40 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 		if(finalDamage <= 0)
 			return false;
 
+		// 체력 감소
 		health -= finalDamage;
-		accumulatedDamage += finalDamage;
+
 		val killed = (health == 0);
 		if(killed) {  // 사망
-			if(this is DamageListener) onDeath(attacker);  // 콜백 호출
-			if(attacker is AttackListener) attacker.onKill(this);
+			if(this is DamageListener)
+				onDeath(attacker);  // 콜백 호출
+			if(attacker is AttackListener)
+				attacker.onKill(this);
 			remove();
 		} else {
 			// 무적 피격 타이머 활성화 (중복 활성화/갱신 방지)
-			if(!invincibilityTimerActive) {
+			if(!isInvincibilityTimerActive && damageInvincibilityDuration > 0f) {
 				invincibilityTimer = damageInvincibilityDuration;
 				accumulatedDamage = 0;
 			}
+
+			// 타격 시 붉게 표시 타이머 활성화
+			if(showDamageIndicator)
+				damagedIndicatorTimer = damageIndicatorDuration;
+
 			// 피해 이벤트 발생
 			if(this is DamageListener)
 				onDamage(finalDamage, attacker);
-			// 타격 시 붉게 표시 타이머
-			if(showDamageIndicator)
-				damagedIndicatorTimer = damageIndicatorDuration;
+
+			// 공격 이벤트 발생
+			if(attacker is AttackListener)
+				attacker.onAttack(this);
+
+			// 무적 시간 동안 대미지 누적
+			if(isInvincibilityTimerActive)
+				accumulatedDamage += finalDamage;
 		}
-		// 공격 이벤트 발생
-		if(!killed && attacker is AttackListener)
-			attacker.onAttack(this);
+
 		return true;
 	}
 
