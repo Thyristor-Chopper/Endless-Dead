@@ -121,8 +121,10 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 			remove();
 		} else {
 			// 무적 피격 타이머 활성화 (중복 활성화/갱신 방지)
-			if(!invincibilityTimerActive)
+			if(!invincibilityTimerActive) {
 				invincibilityTimer = damageInvincibilityDuration;
+				accumulatedDamage = 0;
+			}
 			// 피해 이벤트 발생
 			if(this is DamageListener)
 				onDamage(finalDamage, attacker);
