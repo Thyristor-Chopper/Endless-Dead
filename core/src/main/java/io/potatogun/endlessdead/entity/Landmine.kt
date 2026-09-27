@@ -30,7 +30,7 @@ class Landmine @JvmOverloads constructor(world: World, x: Float, y: Float, val i
 		rotateToRandom();
 
 		timers.register(RepeatingTimer(1f) {
-			this.health--;
+			this@Landmine.health--;
 		});
 
 		if(installer is TeamMember)

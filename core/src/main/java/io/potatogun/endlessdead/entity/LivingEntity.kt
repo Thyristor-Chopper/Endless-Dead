@@ -181,11 +181,10 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 			damagedIndicatorTimer -= delta;
 
 		// 몸 대미지 처리
-		if(this is BodyDamagable)
-			forEachNearby { entity ->
-				if(entity !== this && entity is LivingEntity && !isSameTeamWith(entity) && collidesWith(entity))
-					entity.takeDamage(this.bodyDamage, attacker = this);
-			};
+		forEachNearby { entity ->
+			if(entity is BodyDamagable && entity !== this && !isSameTeamWith(entity) && collidesWith(entity))
+				takeDamage(entity.bodyDamage, attacker = entity);
+		};
 	}
 
 	// 대미지를 입은 경우 붉게 바꾸는 고급 hook이다.
