@@ -8,6 +8,7 @@ import io.potatogun.endlessdead.entity.forEachNearby;
 import io.potatogun.endlessdead.entity.listener.AttackListener;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.util.max2;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -103,19 +104,27 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 		val finalDamage: Int;  // 실제로 받을 대미지 (아래에서 계산)
 		// 무적 시간이 남아있을 경우 더 큰 대미지가 들어왔을 때만 해당 대미지 값으로 대체
 		if(isInvincibilityTimerActive)
-			finalDamage = damage - accumulatedDamage;
+			finalDamage = max2(damage - accumulatedDamage, 0);
 		else
 			finalDamage = damage;
 
 		// 피격 무적 시간 동안 새로 받은 공격의 대미지가 기존보다 작으면 처리 안 함
+		if(finalDamage > 0)
+			health -= finalDamage;
+
+		// 피해 이벤트 발생 (무적 타이머가 켜져 있어서 실제 피해가 무시되어도 발생함.)
+		if(this is DamageListener)
+			onDamage(damage, attacker);  // 실제 피해량이 아닌 원 피해량임에 주의
+
+		// 공격 이벤트 발생 (위와 동일)
+		if(attacker is AttackListener)
+			attacker.onAttack(this);
+
+		// 실제 피해가 무시됐으면 이후 처리는 건너뜀.
 		if(finalDamage <= 0)
 			return false;
 
-		// 체력 감소
-		health -= finalDamage;
-
-		val killed = (health == 0);
-		if(killed) {  // 사망 시
+		if(health == 0) {  // 사망 시
 			// 사망 이벤트 발생
 			if(this is DamageListener)
 				onDeath(attacker);
@@ -136,14 +145,6 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 			// 타격 시 붉게 표시 타이머 활성화
 			if(showDamageIndicator)
 				damagedIndicatorTimer = damageIndicatorDuration;
-
-			// 피해 이벤트 발생
-			if(this is DamageListener)
-				onDamage(finalDamage, attacker);
-
-			// 공격 이벤트 발생
-			if(attacker is AttackListener)
-				attacker.onAttack(this);
 
 			// 무적 시간 동안 대미지 누적
 			if(isInvincibilityTimerActive)
