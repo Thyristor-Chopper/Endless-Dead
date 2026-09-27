@@ -21,11 +21,10 @@ import io.potatogun.gdxhelper.world.World;
  * @param    size         지뢰 지름
  * @param    texture      지뢰 텍스처
  */
-class Landmine @JvmOverloads constructor(world: World, x: Float, y: Float, val installer: Entity, val damage: Int, health: Int, size: Float = 32f, texture: Texture = Textures.getShared("landmine")) : LivingEntity(world, "Landmine", x, y, size, size, health, texture), BodyDamagable, TeamMember {
+class Landmine @JvmOverloads constructor(world: World, x: Float, y: Float, val installer: Entity, val damage: Int, health: Int, size: Float = 32f, texture: Texture = Textures.getShared("landmine")) : LivingEntity(world, "Landmine", x, y, size, size, health, texture), BodyDamagable {
 	override val damageInvincibilityDuration = 0.1f;
 	override val bodyDamage = damage;
 	val timers = TimerManager();
-	override var team: String? = null;
 
 	init {
 		rotateToRandom();

@@ -28,7 +28,7 @@ import kotlin.math.sqrt;
  * @param    size         총알 지름
  * @param    texture      총알 텍스처
  */
-class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target: Position, speed: Float, val damage: Int, val isPenetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet")) : LivingEntity(world, "Bullet", shooter.position.x, shooter.position.y, size, size, health, texture), Movable, TeamMember {
+class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target: Position, speed: Float, val damage: Int, val isPenetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet")) : LivingEntity(world, "Bullet", shooter.position.x, shooter.position.y, size, size, health, texture), Movable {
 	private val moveComponent = MoveComponent(this, speed);
 	override val speed: Float by moveComponent::speed;
 	override val isUpdatableWhileFrozen = (shooter is Player);
@@ -36,7 +36,6 @@ class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target
 	@get:JvmName("canShowDamageIndicator")
 	override val showDamageIndicator = false;
 	override val damageInvincibilityDuration = 0.1f;
-	override var team: String? = null;
 	/**
 	 * 총알 속도에 따른 가로 이동량
 	 */
