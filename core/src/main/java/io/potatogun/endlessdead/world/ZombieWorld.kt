@@ -29,6 +29,7 @@ import io.potatogun.endlessdead.spawner.ZombieSpawner;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.collections.filter;
 import io.potatogun.gdxhelper.collections.randomOrNull;
+import io.potatogun.gdxhelper.entity.manager.SpatialGrid;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.Timer;
@@ -46,7 +47,7 @@ import kotlin.random.Random;
 /**
  * 좀비 파밍 월드 구현체
  */
-class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, entityCapacity = 256, tileSize = 128f), Freezable by SimpleFreezer(), SinglePlayerWorld {
+class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, entities = SpatialGrid(256, 128f)), Freezable by SimpleFreezer(), SinglePlayerWorld {
 	/**
 	 * 플레이어
 	 *
