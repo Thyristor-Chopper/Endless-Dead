@@ -19,7 +19,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param    y       개체의 처음 Y 위치
  * @param    width   가로 크기
  * @param    height  세로 크기
- * @property health  체력
+ * @property health  처음 체력
  * @param    texture 개체 텍스처(없을 수도 있음)
  */
 abstract class LivingEntity @JvmOverloads constructor(world: World, name: String, x: Float, y: Float, width: Float, height: Float, health: Int, texture: Texture? = null) : Entity(world, name, x, y, width, height, texture), TeamMember {
