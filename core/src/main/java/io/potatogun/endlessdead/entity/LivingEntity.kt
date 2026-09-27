@@ -8,7 +8,6 @@ import io.potatogun.endlessdead.entity.forEachNearby;
 import io.potatogun.endlessdead.entity.listener.AttackListener;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -64,19 +63,11 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 	/**
 	 * 대미지를 입으면 0.5초 동안 붉게 표시할 때 사용되는 타이머
 	 */
-	private var damagedIndicatorTimer = 0f
-		set(value) {
-			if(value < 0f) field = 0f;
-			else field = value;
-		};
+	private var damagedIndicatorTimer = 0f;
 	/**
 	 * 피격 시 잠깐 동안 대미지를 안 받게 해주는 무적 타이머 (isInvincible과는 별개)
 	 */
-	private var invincibilityTimer = 0f
-		set(value) {
-			if(value < 0f) field = 0f;
-			else field = value;
-		};
+	private var invincibilityTimer = 0f;
 	/** 
 	 * 피격 무적 타이머가 가동 중인지의 여부 (isInvincible과는 별개)
 	 */
