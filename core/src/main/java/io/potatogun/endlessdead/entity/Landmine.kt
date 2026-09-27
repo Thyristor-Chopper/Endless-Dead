@@ -24,13 +24,14 @@ import io.potatogun.gdxhelper.world.World;
 class Landmine @JvmOverloads constructor(world: World, x: Float, y: Float, val installer: Entity, val damage: Int, health: Int, size: Float = 32f, texture: Texture = Textures.getShared("landmine")) : LivingEntity(world, "Landmine", x, y, size, size, health, texture), BodyDamagable {
 	override val damageInvincibilityDuration = 0.1f;
 	override val bodyDamage = damage;
+	override val showDamageIndicator = false;
 	val timers = TimerManager();
 
 	init {
 		rotateToRandom();
 
 		timers.register(RepeatingTimer(1f) {
-			takeDamage(1, damageIndicator = LivingEntity.DamageIndicatorOption.HIDE);
+			takeDamage(1);
 		});
 
 		if(installer is TeamMember)

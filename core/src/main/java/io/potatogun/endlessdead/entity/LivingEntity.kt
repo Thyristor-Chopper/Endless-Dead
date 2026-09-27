@@ -99,19 +99,6 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 	 * @throws IllegalArgumentException 피해량이 잘못된 경우
 	 */
 	@JvmOverloads fun takeDamage(damage: Int, attacker: Entity? = null): Boolean {
-		return takeDamage(damage, attacker, DamageIndicatorOption.DEFAULT);
-	}
-
-	/**
-	 * 체력 감소(대미지를 입는다.)
-	 *
-	 * @param damage          피해량
-	 * @param attacker        공격자
-	 * @param damageIndicator 이번 공격에서만 강제로 피해 표시를 표시하거나 숨긴다.
-	 * @return 성공 여부
-	 * @throws IllegalArgumentException 피해량이 잘못된 경우
-	 */
-	protected fun takeDamage(damage: Int, attacker: Entity? = null, damageIndicator: DamageIndicatorOption = DamageIndicatorOption.DEFAULT): Boolean {
 		if(damage < 0) throw IllegalArgumentException("damage must not be negative");
 		if(attacker != null && isSameTeamWith(attacker)) return false;
 		if(isInvincible) return false;
@@ -130,7 +117,7 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 			invincibilityTimer = damageInvincibilityDuration;
 			if(this is DamageListener) onDamage(damage, attacker);
 			// 타격 시 붉게 표시 타이머
-			if(damageIndicator != DamageIndicatorOption.HIDE && (showDamageIndicator || damageIndicator == DamageIndicatorOption.SHOW))
+			if(showDamageIndicator)
 				damagedIndicatorTimer = damageIndicatorDuration;
 		}
 		if(attacker != null) {
@@ -173,11 +160,5 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 		val showDamaged = (tintOverride == null && showDamageIndicator && damagedIndicatorTimer > 0f);
 		val color = if(showDamaged) Color.RED else tintOverride;
 		super.draw(batch, textureOverride, color);
-	}
-
-	protected enum class DamageIndicatorOption {
-		DEFAULT,
-		SHOW,
-		HIDE;
 	}
 }
