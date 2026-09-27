@@ -41,7 +41,7 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 	 * 개체가 살아있는지의 여부
 	 */
 	val isAlive: Boolean
-		get() = health > 0;
+		inline get() = health > 0;
 	/**
 	 * 무적인지의 여부
 	 */
