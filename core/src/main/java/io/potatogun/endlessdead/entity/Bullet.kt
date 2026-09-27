@@ -32,6 +32,8 @@ class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target
 	private val moveComponent = MoveComponent(this, speed);
 	override val speed: Float by moveComponent::speed;
 	override val isUpdatableWhileFrozen = (shooter is Player);
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("canShowDamageIndicator")
 	override val showDamageIndicator = false;
 	override val damageInvincibilityDuration = 0.1f;
 	/**
