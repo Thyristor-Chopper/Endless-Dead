@@ -8,6 +8,7 @@ import io.potatogun.endlessdead.entity.forEachNearby;
 import io.potatogun.endlessdead.entity.listener.AttackListener;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.world.World;
 
 /**
