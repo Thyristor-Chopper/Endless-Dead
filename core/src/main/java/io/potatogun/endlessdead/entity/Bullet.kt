@@ -84,7 +84,6 @@ class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target
 						this.takeDamage(entity.penetrationDamage, attacker = entity);
 				} else {
 					this.remove();
-					this.dispose();
 				}
 			}
 		};
