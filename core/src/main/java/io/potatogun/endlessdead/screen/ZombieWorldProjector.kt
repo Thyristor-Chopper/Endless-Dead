@@ -200,14 +200,22 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			return;
 		}
 
-		Window.titleBarStats = when(TitleInfoType.byIndex(currentTitleInfo)) {
-			TitleInfoType.OPENED	-> "Opened chests: ${GameManager.statistics.openedContainerCount}"
-			TitleInfoType.KILLED	-> "Killed zombies: ${GameManager.statistics.killedZombieCount}"
-			TitleInfoType.FIRED		-> "Fired: ${GameManager.statistics.fireCount}"
-			TitleInfoType.SURVIVED	-> "Survived duration: ${parseSeconds(GameManager.statistics.survivedDuration, "m", "s")}"
-			TitleInfoType.DAMAGE	-> "Total damage: ${GameManager.statistics.totalDamage}"
-			TitleInfoType.ZOMBIES	-> "Current zombies: ${world.entities.countOf<Zombie>()}"
-		};
+		val currentTitleType = TitleInfoType.byIndex(currentTitleInfo);
+		Window.titleBarStats =
+			if(currentTitleType == TitleInfoType.OPENED)
+				"Opened chests: ${GameManager.statistics.openedContainerCount}"
+			else if(currentTitleType == TitleInfoType.KILLED)
+				"Killed zombies: ${GameManager.statistics.killedZombieCount}"
+			else if(currentTitleType == TitleInfoType.FIRED)
+				"Fired: ${GameManager.statistics.fireCount}"
+			else if(currentTitleType == TitleInfoType.SURVIVED)
+				"Survived duration: ${parseSeconds(GameManager.statistics.survivedDuration, "m", "s")}"
+			else if(currentTitleType == TitleInfoType.DAMAGE)
+				"Total damage: ${GameManager.statistics.totalDamage}"
+			else if(currentTitleType == TitleInfoType.ZOMBIES)
+				"Current zombies: ${world.entities.countOf<Zombie>()}"
+			else
+				"";
 	}
 
 	/**
@@ -521,17 +529,20 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 
 			// 현재 플레이어가 들고 있는 아이템
 			player.selectedItem?.let {
+				val rarity = it.rarity;
 				batch.draw(it.texture, 8f, 4f, Constants.ITEM_SIZE, Constants.ITEM_SIZE);
 				drawText(
 					text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.size}]",
 					x = 40f,
 					y = 22f,
-					color = when(it.rarity) {
-						Rarity.UNCOMMON	-> Color.YELLOW  // 마인크래프트 따라함
-						Rarity.RARE		-> Color.MAGENTA  // 마인크래프트 따라함
-						else			-> Color.WHITE
-					},
-					scale = 1.0f
+					color =
+						if(rarity == Rarity.UNCOMMON)
+							Color.YELLOW  // 마인크래프트 따라함
+						else if(rarity == Rarity.RARE)
+							Color.MAGENTA
+						else
+							Color.WHITE,
+					scale = 1f
 				);
 			};
 
