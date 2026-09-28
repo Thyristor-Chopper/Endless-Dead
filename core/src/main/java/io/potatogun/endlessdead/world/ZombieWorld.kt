@@ -220,5 +220,9 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	override fun dispose() {
 		super.dispose();
 		tileTexture.dispose();
+		TimeStopper.unfreezeTimers.get(this)?.let {
+			GameManager.globalTimers.unregister(it);
+			TimeStopper.unfreezeTimers.remove(this);
+		};
 	}
 }
