@@ -34,6 +34,7 @@ import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
+import io.potatogun.gdxhelper.util.TimerAttachable;
 import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.util.rgb;
 import io.potatogun.gdxhelper.world.Freezable;
@@ -47,7 +48,7 @@ import kotlin.random.Random;
 /**
  * 좀비 파밍 월드 구현체
  */
-class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, SpatialGrid(256, 128f)), Freezable by SimpleFreezer(), SinglePlayerWorld {
+class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, SpatialGrid(256, 128f)), Freezable by SimpleFreezer(), SinglePlayerWorld, TimerAttachable {
 	/**
 	 * 플레이어
 	 *
@@ -155,6 +156,16 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		};
 	}
 
+	// TimerAttachable 구현
+
+	override fun attachTimer(timer: Timer) {
+		timers.register(timer);
+	}
+
+	override fun detachTimer(timer: Timer) {
+		timers.unregister(timer);
+	}
+
 	// ────────────────────────────────────────────────────────
 	//  매 프레임 로직
 	// ────────────────────────────────────────────────────────
@@ -220,9 +231,5 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	override fun dispose() {
 		super.dispose();
 		tileTexture.dispose();
-		TimeStopper.unfreezeTimers.get(this)?.let {
-			GameManager.globalTimers.unregister(it);
-			TimeStopper.unfreezeTimers.remove(this);
-		};
 	}
 }

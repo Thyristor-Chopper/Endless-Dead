@@ -8,6 +8,7 @@ import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.timer.Timer;
+import io.potatogun.gdxhelper.util.TimerAttachable;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
 
@@ -22,7 +23,7 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 		if(user.selectedItem !== this) return false;
 		if(user !is Player) return false;
 		val world = user.world;
-		if(world !is Freezable) {
+		if(world !is Freezable || world !is TimerAttachable) {
 			world.projector?.drawSubtitles("Can't use this item here", Color.SALMON);
 			return false;
 		}
@@ -32,15 +33,10 @@ class TimeStopper : Item("time_stopper", "Time Stopper", Item.Properties().rarit
 		}
 		world.projector?.drawSubtitles("Time stop!");
 		world.freeze();
-		GameManager.globalTimers.register(Timer(3f, { GameManager.isPlaying }) {
+		world.attachTimer(Timer(3f) {
 			world.unfreeze();
-			unfreezeTimers.remove(world);
-		}.also { unfreezeTimers.put(world, it) });
+		});
 		destroy();
 		return true;
-	}
-
-	companion object {
-		@JvmField @JvmSynthetic internal val unfreezeTimers = IdentityMap<World, Timer>(4);
 	}
 }
