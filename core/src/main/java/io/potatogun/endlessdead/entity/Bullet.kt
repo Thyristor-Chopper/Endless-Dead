@@ -77,7 +77,7 @@ class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target
 
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지를 준다.
 		forEachNearby { entity ->
-			if(entity !== this && entity !== shooter && entity is LivingEntity && !entity.isInvincible && !isSameTeamWith(entity) && collidesWith(entity)) {
+			if(entity !== shooter && entity is LivingEntity && !entity.isInvincible && !isSameTeamWith(entity) && collidesWith(entity)) {
 				entity.takeDamage(damage, attacker = shooter);  // 무적 시간이 필요하면 추가...
 				if(isPenetrable) {
 					if(entity is PenetratorDamagable)

@@ -182,7 +182,7 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 
 		// 몸 대미지 처리
 		forEachNearby { entity ->
-			if(entity is BodyDamagable && entity !== this && !isSameTeamWith(entity) && collidesWith(entity))
+			if(entity is BodyDamagable && !isSameTeamWith(entity) && collidesWith(entity))
 				takeDamage(entity.bodyDamage, attacker = entity);
 		};
 	}
