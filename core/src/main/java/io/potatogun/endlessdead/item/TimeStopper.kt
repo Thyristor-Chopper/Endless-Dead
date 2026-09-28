@@ -1,9 +1,7 @@
 package io.potatogun.endlessdead.item
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.utils.IdentityMap;
 
-import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
