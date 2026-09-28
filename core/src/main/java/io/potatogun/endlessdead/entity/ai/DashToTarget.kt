@@ -33,53 +33,48 @@ class DashToTarget<T>(private val attacker: T, private val dashDamage: Int, priv
 			return;
 		}
 
-		when(state) {
-			State.STANDBY -> {
-				val distance = attacker.distanceTo(target);
-				if(distance < minDistance) {
-					state = State.PREPARING;
-					stateTimer = 0.5f;
+		if(state == State.STANDBY) {
+			val distance = attacker.distanceTo(target);
+			if(distance < minDistance) {
+				state = State.PREPARING;
+				stateTimer = 0.5f;
 
-					// 대기 상태에 들어가는 첫 프레임. 이때 플레이어를 조준해서 방향을 기억해둔다
-					val dx = target.x - attacker.x;
-					val dy = target.y - attacker.y;
-					if(distance > 0) {
-						dashDirX = dx / distance;
-						dashDirY = dy / distance;
-					}
-				} else {
-					lastResult = Behavior.Result.REJECTED;
-					return;
+				// 대기 상태에 들어가는 첫 프레임. 이때 플레이어를 조준해서 방향을 기억해둔다
+				val dx = target.x - attacker.x;
+				val dy = target.y - attacker.y;
+				if(distance > 0) {
+					dashDirX = dx / distance;
+					dashDirY = dy / distance;
 				}
+			} else {
+				lastResult = Behavior.Result.REJECTED;
+				return;
 			}
-			State.PREPARING -> {
+		} else if(state == State.PREPARING) {
+			stateTimer -= delta;
+			if(stateTimer <= 0f) {
+				state = State.DASHING;
+				stateTimer = 0.4f;
+			}
+		} else if(state == State.DASHING) {
+			dashComponent.move(delta, dashDirX, dashDirY);
+
+			// 돌진 중에 플레이어랑 부딪히면 대미지 주고 즉시 쿨타임으로 넘어감
+			if(attacker.collidesWith(target)) {
+				target.takeDamage(dashDamage, attacker = attacker);
+				state = State.COOLDOWN;
+				stateTimer = 5.0f;
+			} else {
 				stateTimer -= delta;
 				if(stateTimer <= 0f) {
-					state = State.DASHING;
-					stateTimer = 0.4f;
-				}
-			}
-			State.DASHING -> {
-				dashComponent.move(delta, dashDirX, dashDirY);
-
-				// 돌진 중에 플레이어랑 부딪히면 대미지 주고 즉시 쿨타임으로 넘어감
-				if(attacker.collidesWith(target)) {
-					target.takeDamage(dashDamage, attacker = attacker);
 					state = State.COOLDOWN;
 					stateTimer = 5.0f;
-				} else {
-					stateTimer -= delta;
-					if(stateTimer <= 0f) {
-						state = State.COOLDOWN;
-						stateTimer = 5.0f;
-					}
 				}
 			}
-			State.COOLDOWN -> {
-				stateTimer -= delta;
-				if(stateTimer <= 0f)
-					state = State.STANDBY;
-			}
+		} else if(state == State.COOLDOWN) {
+			stateTimer -= delta;
+			if(stateTimer <= 0f)
+				state = State.STANDBY;
 		}
 
 		lastResult = Behavior.Result.SUCCEEDED;
