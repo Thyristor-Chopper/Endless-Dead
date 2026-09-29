@@ -40,6 +40,6 @@ import java.util.function.Consumer;
  *
  * @param callback 실행할 서브루틴
  */
-fun Entity.forEachNearby(callback: Consumer<Entity>) {
+@SinceKotlin("9999.9") fun Entity.forEachNearby(callback: Consumer<Entity>) {
 	forEachNearby(callback::accept);
 }

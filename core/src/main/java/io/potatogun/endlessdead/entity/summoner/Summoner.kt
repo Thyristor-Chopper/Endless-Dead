@@ -29,7 +29,7 @@ abstract class Summoner @JvmOverloads constructor(world: World, name: String, x:
 	/**
 	 * 이 소환기에 대한 타이머
 	 *
-	 * 자바에서도 클래스 내부 구현에서는 직접 필드 접근이 자연스럽기 때문에 @JvmField가 있다.
+	 * 자바에서도 클래스 내부 구현에서는 직접 필드 접근이 자연스럽기 때문에 `@JvmField`가 있다.
 	 */
 	@JvmField protected val timers = TimerManager();
 	/**

@@ -40,6 +40,9 @@ subprojects {
 			freeCompilerArgs.addAll(listOf("-Xlambdas=indy", "-Xstring-concat=indy", "-Xno-call-assertions", "-Xno-receiver-assertions", "-Xno-source-debug-extension"))
 			freeCompilerArgs.addAll(listOf("-Xwarning-level=NOTHING_TO_INLINE:disabled", "-Xwarning-level=UNCHECKED_CAST:disabled"))
 
+			// SinceKotlin 트릭으로 자바 전용 API를 코틀린에서만 숨길 때 나오는 경고 죽이기
+			freeCompilerArgs.addAll(listOf("-Xwarning-level=NEWER_VERSION_IN_SINCE_KOTLIN:disabled"))
+
 			// 인터페이스 최적화
 			//   자바 8 인터페이스의 default void f() { ... }문법을 쓴다. 디컴파일해서 비교하니까 DefaultImpls 내부 클래스를 만드는 것보다
 			//   훨씬 깔끔하고 효율적이다. (코틀린 1.x은 -Xjvm-default=all)
