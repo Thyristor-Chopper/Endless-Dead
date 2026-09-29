@@ -39,6 +39,7 @@ import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.util.rgb;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.SimpleFreezer;
+import io.potatogun.gdxhelper.world.TimedWorld;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.ceil;
@@ -48,7 +49,7 @@ import kotlin.random.Random;
 /**
  * 좀비 파밍 월드 구현체
  */
-class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, SpatialGrid(256, 128f)), Freezable by SimpleFreezer(), SinglePlayerWorld, TimerAttachable {
+class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, SpatialGrid(256, 128f)), Freezable by SimpleFreezer(), TimedWorld, SinglePlayerWorld, TimerAttachable {
 	/**
 	 * 플레이어
 	 *
@@ -69,6 +70,9 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	private val bgTileSize = 64f;
 	// 타이머
 	private val timers = TimerManager();
+	// 이 월드의 시간
+	override var time = 0f
+		private set;
 
 	// 생성자 본문 — 월드에 플레이어와 적을 등록한다. 이렇게 등록해야 update / draw 루프에 포함된다.
 	init {
@@ -172,6 +176,8 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 	// 개체, 스포너 및 타이머를 갱신한다.
 	override fun update(delta: Float) {
+		time += delta;
+
 		timers.update(delta);
 
 		// ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──
