@@ -68,7 +68,7 @@ abstract class Container(world: World, name: String, x: Float, y: Float, width: 
 	 */
 	fun takeItem(taker: InventoryHolder): Item? {
 		if(taker === this) throw IllegalArgumentException("taker is the container itself");
-		val item = inventory.getItem();  // https://stackoverflow.com/questions/44595529/smart-cast-to-type-is-impossible-because-variable-is-a-mutable-property-tha
+		val item = inventory.getItem();  // https://stackoverflow.com/questions/44595529
 		if(item == null) return null;
 		if(!taker.inventory.addItem(item)) return null;
 		isPlayerItem = false;
