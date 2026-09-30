@@ -86,9 +86,7 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 	override val remainingUses: Int
 		get() = bullets;
 	/**
-	 * 남은 쿨타임을 전체 공격 간격에 비례하여 0.0~1.0로 정규화하여 반환한다.
-	 * 
-	 * @return 정규화된 값
+	 * 남은 쿨타임
 	 */
 	override val remainingCooldown: Float
 		get() = if(fireInterval == 0f) 0f else max2(lastShoot + fireInterval - GameManager.gameTime, 0f);
