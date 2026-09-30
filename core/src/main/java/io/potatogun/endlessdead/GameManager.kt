@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Array as GdxArray;
 
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.timer.TimerManager;
+import io.potatogun.gdxhelper.util.ArraySuppliers;
 import io.potatogun.gdxhelper.util.Updatable;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
@@ -54,7 +55,7 @@ object GameManager : Updatable {
 	/**
 	 * 게임 상태 변경 감시자 목록
 	 */
-	private val stateObservers = GdxArray<Runnable>(false, 2);
+	private val stateObservers = GdxArray<Runnable>(false, 2, ArraySuppliers.runnable);
 	/**
 	 * 현재 라운드 (0이면 아직 게임이 시작되지 않은 것)
 	 */
@@ -93,7 +94,7 @@ object GameManager : Updatable {
 	// setter에서만 한 번 쓰이므로 인라인
 	private inline fun invokeStateObservers() {
 		for(i in 0 until stateObservers.size)
-			stateObservers[i].run();
+			stateObservers.items[i].run();
 	}
 
 	/**

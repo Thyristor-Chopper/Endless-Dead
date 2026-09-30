@@ -9,10 +9,6 @@ import org.jetbrains.annotations.NotNull;
  *   이렇게 해도 여전히 상수는 인라인으로 바로 대입된다. (디컴파일해서 확인)
  */
 public final class Constants {
-	private Constants() {
-		throw new UnsupportedOperationException("this class cannot be instantiated");
-	}
-
 	/**
 	 * 목표로 표시할 최대 FPS
 	 */
@@ -37,4 +33,8 @@ public final class Constants {
 	 * 아이템 텍스처의 한 변 크기
 	 */
 	public static final float ITEM_SIZE = 24f;
+
+	private Constants() {
+		throw new UnsupportedOperationException("this class cannot be instantiated");
+	}
 }

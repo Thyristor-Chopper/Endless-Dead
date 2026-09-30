@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 	try {
 		world.entities.getNearby(this, nearbyEntities);
 		for(i in 0 until nearbyEntities.size) {
-			val entity = nearbyEntities[i];
+			val entity = nearbyEntities.items[i];
 			callback(entity);
 		}
 	} finally {

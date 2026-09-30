@@ -3,6 +3,7 @@ package io.potatogun.endlessdead.world;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array as GdxArray;
 
+import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
@@ -59,7 +60,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	/**
 	 * 등록된 스포너 목록
 	 */
-	private val spawners = GdxArray<Spawner>(false, 2);
+	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
 	// 체스판 배경 설정 (drawBackground()에서 사용)
 	//   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
 	//   tile.bmp는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color를
@@ -186,7 +187,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		// 스포너 갱신
 		if(!isFrozen)
 			for(i in 0 until spawners.size)
-				spawners[i].update(delta);
+				spawners.items[i].update(delta);
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
 		if(!player.isAlive)

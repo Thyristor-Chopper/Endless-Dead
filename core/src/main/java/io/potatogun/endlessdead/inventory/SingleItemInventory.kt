@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.inventory;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
 
+import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.item.Item;
 
 import java.util.function.Consumer;
@@ -56,7 +57,7 @@ class SingleItemInventory : ObservableInventory() {
 
 	override fun indexOf(item: Item): Int = if(inventoryItem === item) 0 else -1;
 
-	override fun getItems(): GdxArray<Item> = inventoryItem?.let { GdxArray<Item>(false, 1).apply { add(it) } } ?: GdxArray<Item>(false, 0);
+	override fun getItems(): GdxArray<Item> = inventoryItem?.let { GdxArray<Item>(false, 1, ArraySuppliers.item).apply { add(it) } } ?: GdxArray<Item>(false, 0, ArraySuppliers.item);
 
 	override fun getItems(output: GdxArray<Item>) {
 		output.clear();

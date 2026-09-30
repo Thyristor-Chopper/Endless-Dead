@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.inventory;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
 
+import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.item.Item;
 
 import java.util.function.Consumer;
@@ -13,7 +14,7 @@ import java.util.function.Consumer;
  * @throws IllegalArgumentException 최대 아이템 개수가 잘못된 경우
  */
 class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1) : ObservableInventory() {
-	private val inventory = GdxArray<Item>();
+	private val inventory = GdxArray<Item>(true, if(maxSlots >= 0) maxSlots else 128, ArraySuppliers.item);
 	@Suppress("INAPPLICABLE_JVM_NAME")
 	@get:JvmName("size")
 	override val size: Int
@@ -39,7 +40,7 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 
 	override fun removeItem(index: Int): Boolean {
 		if(index < 0 || index >= inventory.size) return false;
-		val item = inventory[index];
+		val item = inventory.items[index];
 		inventory.removeIndex(index);
 		item.inventory = null;
 		invokeRemoveObservers(item);
@@ -53,14 +54,14 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 		return true;
 	}
 
-	override fun getItem(index: Int): Item = inventory[index];
+	override fun getItem(index: Int): Item = inventory.items[index];
 
 	override fun hasItem(item: Item): Boolean = inventory.contains(item, true);
 
 	override fun indexOf(item: Item): Int = inventory.indexOf(item, true);
 
 	override fun getItems(): GdxArray<Item> {
-		val output = GdxArray<Item>(false, inventory.size);
+		val output = GdxArray<Item>(false, inventory.size, ArraySuppliers.item);
 		getItems(output);
 		return output;
 	}
@@ -68,23 +69,23 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 	override fun getItems(output: GdxArray<Item>) {
 		output.clear();
 		for(i in 0 until inventory.size)
-			output.add(inventory[i]);
+			output.add(inventory.items[i]);
 	}
 
 	override fun forEachItems(callback: Consumer<Item>) {
 		for(i in 0 until inventory.size)
-			callback.accept(inventory[i]);
+			callback.accept(inventory.items[i]);
 	}
 
 	override fun forEachItemsReverse(callback: Consumer<Item>) {
 		for(i in (inventory.size - 1) downTo 0)
-			callback.accept(inventory[i]);
+			callback.accept(inventory.items[i]);
 	}
 
 	override fun clear() {
 		for(i in 0 until inventory.size) {
-			inventory[i].inventory = null;
-			invokeRemoveObservers(inventory[i]);
+			inventory.items[i].inventory = null;
+			invokeRemoveObservers(inventory.items[i]);
 		}
 		inventory.clear();
 		invokeClearObservers();

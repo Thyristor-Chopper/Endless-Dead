@@ -2,8 +2,10 @@ package io.potatogun.endlessdead.inventory;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
 
+import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.item.Item;
+import io.potatogun.gdxhelper.util.ArraySuppliers as HelperArraySuppliers;
 
 import java.util.function.Consumer;
 
@@ -11,16 +13,16 @@ import java.util.function.Consumer;
  * 이벤트 핸들러가 있는 인벤토리
  */
 abstract class ObservableInventory : Inventory {
-	private val addObservers = GdxArray<Consumer<Item>>(false, 2);
-	private val removeObservers = GdxArray<Consumer<Item>>(false, 2);
-	private val clearObservers = GdxArray<Runnable>(false, 2);
+	private val addObservers = GdxArray<Consumer<Item>>(false, 2, ArraySuppliers.itemConsumer);
+	private val removeObservers = GdxArray<Consumer<Item>>(false, 2, ArraySuppliers.itemConsumer);
+	private val clearObservers = GdxArray<Runnable>(false, 2, HelperArraySuppliers.runnable);
 
 	/**
 	 * 아이템 추가 이벤트 핸들러를 실행한다.
 	 */
 	protected fun invokeAddObservers(item: Item) {
 		for(i in 0 until addObservers.size)
-			addObservers[i].accept(item);
+			addObservers.items[i].accept(item);
 	}
 
 	/**
@@ -28,7 +30,7 @@ abstract class ObservableInventory : Inventory {
 	 */
 	protected fun invokeRemoveObservers(item: Item) {
 		for(i in 0 until removeObservers.size)
-			removeObservers[i].accept(item);
+			removeObservers.items[i].accept(item);
 	}
 
 	/**
@@ -36,7 +38,7 @@ abstract class ObservableInventory : Inventory {
 	 */
 	protected fun invokeClearObservers() {
 		for(i in 0 until clearObservers.size)
-			clearObservers[i].run();
+			clearObservers.items[i].run();
 	}
 
 	/**

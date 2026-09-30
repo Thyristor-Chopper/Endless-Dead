@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.inventory;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
 
+import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.item.Item;
 
 import java.util.function.Consumer;
@@ -14,9 +15,9 @@ import java.util.function.Consumer;
  * @throws IllegalArgumentException 열이나 행 개수가 잘못된 경우
  */
 class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
-	private val inventory = GdxArray<GdxArray<Item?>>(rows).apply {
+	private val inventory = GdxArray<GdxArray<Item?>>(true, rows, ArraySuppliers.itemArray).apply {
 		for(i in 0 until rows)
-			add(GdxArray<Item?>(columns).apply {
+			add(GdxArray<Item?>(true, columns, ArraySuppliers.item).apply {
 				for(j in 0 until columns)
 					add(null);
 			});
@@ -28,7 +29,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 			var ret = 0;
 			for(i in 0 until rows)
 				for(j in 0 until columns)
-					if(inventory[i][j] != null)
+					if(inventory.items[i].items[j] != null)
 						ret++;
 			return ret;
 		};
@@ -36,7 +37,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		get() {
 			for(i in 0 until rows)
 				for(j in 0 until columns)
-					if(inventory[i][j] != null)
+					if(inventory.items[i].items[j] != null)
 						return false;
 			return true;
 		};
@@ -53,7 +54,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		var emptyJ = -1;
 		rowloop@ for(i in 0 until rows)
 			for(j in 0 until columns)
-				if(inventory[i][j] == null) {
+				if(inventory.items[i].items[j] == null) {
 					emptyI = i;
 					emptyJ = j;
 					break@rowloop;
@@ -61,7 +62,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		if(emptyI == -1 || emptyJ == -1) return false;
 		val holder: Inventory? = item.inventory;
 		if(!(holder?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
-		inventory[emptyI][emptyJ] = item;
+		inventory.items[emptyI].items[emptyJ] = item;
 		item.inventory = this;
 		invokeAddObservers(item);
 		return true;
@@ -75,9 +76,9 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	 */
 	fun removeItem(i: Int, j: Int): Boolean {
 		if(i < 0 || i >= rows || j < 0 || j >= columns) return false;
-		val item = inventory[i][j];
+		val item = inventory.items[i].items[j];
 		if(item == null) return false;
-		inventory[i][j] = null;
+		inventory.items[i].items[j] = null;
 		item.inventory = null;
 		invokeRemoveObservers(item);
 		return true;
@@ -88,10 +89,10 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		var n = 0;
 		for(i in 0 until rows)
 			for(j in 0 until columns) {
-				val item: Item? = inventory[i][j];
+				val item: Item? = inventory.items[i].items[j];
 				if(item != null) {
 					if(n == index) {
-						inventory[i][j] = null;
+						inventory.items[i].items[j] = null;
 						item.inventory = null;
 						invokeRemoveObservers(item);
 						return true;
@@ -105,8 +106,8 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	override fun removeItem(item: Item): Boolean {
 		for(i in 0 until rows)
 			for(j in 0 until columns)
-				if(inventory[i][j] === item) {
-					inventory[i][j] = null;
+				if(inventory.items[i].items[j] === item) {
+					inventory.items[i].items[j] = null;
 					item.inventory = null;
 					invokeRemoveObservers(item);
 					return true;
@@ -123,7 +124,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	 */
 	fun getItem(i: Int, j: Int): Item? {
 		if(i < 0 || i >= rows || j < 0 || j >= columns) throw IndexOutOfBoundsException("column or row out of bounds");
-		return inventory[i][j];
+		return inventory.items[i].items[j];
 	}
 
 	override fun getItem(index: Int): Item {
@@ -131,7 +132,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		var n = 0;
 		for(i in 0 until rows)
 			for(j in 0 until columns) {
-				val item: Item? = inventory[i][j];
+				val item: Item? = inventory.items[i].items[j];
 				if(item != null) {
 					if(n == index)
 						return item;
@@ -144,7 +145,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	override fun hasItem(item: Item): Boolean {
 		for(i in 0 until rows)
 			for(j in 0 until columns)
-				if(inventory[i][j] === item)
+				if(inventory.items[i].items[j] === item)
 					return true;
 		return false;
 	}
@@ -153,8 +154,8 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		var n = 0;
 		for(i in 0 until rows)
 			for(j in 0 until columns)
-				if(inventory[i][j] != null) {
-					if(inventory[i][j] === item)
+				if(inventory.items[i].items[j] != null) {
+					if(inventory.items[i].items[j] === item)
 						return n;
 					n++;
 				}
@@ -171,7 +172,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		output.clear();
 		for(i in 0 until rows)
 			for(j in 0 until columns) {
-				val item: Item? = inventory[i][j];
+				val item: Item? = inventory.items[i].items[j];
 				if(item != null)
 					output.add(item);
 			}
@@ -180,7 +181,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	override fun forEachItems(callback: Consumer<Item>) {
 		for(i in 0 until rows)
 			for(j in 0 until columns) {
-				val item = inventory[i][j];
+				val item = inventory.items[i].items[j];
 				if(item != null)
 					callback.accept(item);
 			}
@@ -189,7 +190,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	override fun forEachItemsReverse(callback: Consumer<Item>) {
 		for(i in (rows - 1) downTo 0)
 			for(j in (columns - 1) downTo 0) {
-				val item = inventory[i][j];
+				val item = inventory.items[i].items[j];
 				if(item != null)
 					callback.accept(item);
 			}
@@ -198,9 +199,9 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	override fun clear() {
 		for(i in 0 until rows)
 			for(j in 0 until columns) {
-				val item = inventory[i][j];
+				val item = inventory.items[i].items[j];
 				if(item != null) {
-					inventory[i][j] = null;
+					inventory.items[i].items[j] = null;
 					item.inventory = null;
 					invokeRemoveObservers(item);
 				}
@@ -218,7 +219,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		for(i in 0 until rows) {
 			inventoryClone.add(GdxArray<Item?>(columns));
 			for(j in 0 until columns)
-				inventoryClone[i].add(inventory[i][j]);
+				inventoryClone[i].add(inventory.items[i].items[j]);
 		}
 		return inventoryClone;
 	}

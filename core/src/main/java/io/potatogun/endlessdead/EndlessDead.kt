@@ -19,6 +19,16 @@ class EndlessDead : Game() {
 
 	// 게임 시작 시 한 번 호출되는 메쏘드
 	override fun create() {
+		/*
+		val a = com.badlogic.gdx.utils.Array<String>(false, 4);
+		val b = com.badlogic.gdx.utils.Array<String>(false, 4, ArraySuppliers.string);
+		println(a.items.isArrayOf<String>());
+		println(b.items.isArrayOf<String>());
+		if(a.items::class.java.isArray && b.items::class.java.isArray) {
+			println(a.items::class.java.componentType === String::class.java);
+			println(b.items::class.java.componentType === String::class.java);
+		}
+		*/
 		GameManager.init(this);
 		setScreen(titleScreen);
 		Window.setBaseTitle(Constants.GAME_TITLE);
