@@ -40,11 +40,6 @@ class LandminePlacer : Item("landmine_placer", "Landmine Placer", Item.Propertie
 	override var remainingUses = maxUses
 		private set;
 
-	/**
-	 * 총을 든 개체가 보는 방향으로 총을 쏜다.
-	 *
-	 * @return 성공 여부
-	 */
 	override fun use(user: ItemSelectable): Boolean {
 		if(user.selectedItem !== this) return false;
 		if(user !is Entity) return false;
