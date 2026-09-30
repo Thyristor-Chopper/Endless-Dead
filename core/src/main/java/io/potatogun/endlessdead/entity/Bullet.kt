@@ -80,8 +80,10 @@ class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target
 			if(entity !== shooter && entity is LivingEntity && !entity.isInvincible && !isSameTeamWith(entity) && collidesWith(entity)) {
 				entity.takeDamage(damage, attacker = shooter);  // 무적 시간이 필요하면 추가...
 				if(isPenetrable) {
-					if(entity is PenetratorDamagable)
+					if(entity is PenetratorDamagable) {
 						this.takeDamage(entity.penetrationDamage, attacker = entity);
+						if(!isAlive) return;
+					}
 				} else {
 					this.remove();
 					return;
