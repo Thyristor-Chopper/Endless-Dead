@@ -25,13 +25,17 @@ class Landmine @JvmOverloads constructor(world: World, x: Float, y: Float, val i
 	override val damageInvincibilityDuration = 0.1f;
 	override val bodyDamage = damage;
 	val timers = TimerManager();
+	val healthTimer: RepeatingTimer;
 
 	init {
 		rotateToRandom();
 
-		timers.register(RepeatingTimer(1f) {
-			this@Landmine.health--;
-		});
+		healthTimer = RepeatingTimer(1f) {
+			if(this.health <= 1)
+				this.kill();
+			else
+				this.health--;
+		}.also { timers.register(it) };
 
 		if(installer is TeamMember)
 			team = installer.team;

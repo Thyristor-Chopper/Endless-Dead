@@ -166,6 +166,32 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 		return true;
 	}
 
+	/**
+	 * 개체를 즉시 죽인다.
+	 *
+	 * @param killer 실행자
+	 * @return 성공 여부
+	 */
+	@JvmOverloads fun kill(killer: Entity? = null): Boolean {
+		if(!isAlive) return false;
+
+		// 체력을 0으로 변경
+		health = 0;
+
+		// 사망 이벤트 발생
+		if(this is DamageListener)
+			onDeath(killer);
+
+		// 죽임 이벤트 발생
+		if(killer is AttackListener)
+			killer.onKill(this);
+
+		// 개체를 월드에서 제거
+		remove();
+
+		return true;
+	}
+
 	override fun forceUpdate(delta: Float) {
 		super.forceUpdate(delta);
 
