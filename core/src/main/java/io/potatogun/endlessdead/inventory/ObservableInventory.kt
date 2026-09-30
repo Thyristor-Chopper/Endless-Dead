@@ -21,24 +21,24 @@ abstract class ObservableInventory : Inventory {
 	 * 아이템 추가 이벤트 핸들러를 실행한다.
 	 */
 	protected fun invokeAddObservers(item: Item) {
-		for(observer in addObservers.items)
-			observer.accept(item);
+		for(i in 0 until addObservers.size)
+			addObservers.items[i].accept(item);
 	}
 
 	/**
 	 * 아이템 제거 이벤트 핸들러를 실행한다.
 	 */
 	protected fun invokeRemoveObservers(item: Item) {
-		for(observer in removeObservers.items)
-			observer.accept(item);
+		for(i in 0 until removeObservers.size)
+			removeObservers.items[i].accept(item);
 	}
 
 	/**
 	 * 인벤토리 초기화 이벤트 핸들러를 실행한다.
 	 */
 	protected fun invokeClearObservers() {
-		for(observer in clearObservers.items)
-			observer.run();
+		for(i in 0 until clearObservers.size)
+			clearObservers.items[i].run();
 	}
 
 	/**

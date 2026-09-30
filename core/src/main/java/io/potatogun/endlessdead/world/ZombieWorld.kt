@@ -186,8 +186,8 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 		// 스포너 갱신
 		if(!isFrozen)
-			for(spawner in spawners.items)
-				spawner.update(delta);
+			for(i in 0 until spawners.size)
+				spawners.items[i].update(delta);
 
 		// 피가 0 이하가 되면 진짜 게임 오버!
 		if(!player.isAlive)

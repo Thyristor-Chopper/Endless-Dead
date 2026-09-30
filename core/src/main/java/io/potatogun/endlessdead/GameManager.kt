@@ -93,8 +93,8 @@ object GameManager : Updatable {
 
 	// setter에서만 한 번 쓰이므로 인라인
 	private inline fun invokeStateObservers() {
-		for(observer in stateObservers.items)
-			observer.run();
+		for(i in 0 until stateObservers.size)
+			stateObservers.items[i].run();
 	}
 
 	/**

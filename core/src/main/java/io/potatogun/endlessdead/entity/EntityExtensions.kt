@@ -24,8 +24,10 @@ import java.util.function.Consumer;
 	val nearbyEntities = Pools.entityArray.obtain();
 	try {
 		world.entities.getNearby(this, nearbyEntities);
-		for(entity in nearbyEntities.items)
+		for(i in 0 until nearbyEntities.size) {
+			val entity = nearbyEntities.items[i];
 			callback(entity);
+		}
 	} finally {
 		Pools.entityArray.free(nearbyEntities);
 	}

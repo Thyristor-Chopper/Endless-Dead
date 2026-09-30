@@ -68,13 +68,13 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 
 	override fun getItems(output: GdxArray<Item>) {
 		output.clear();
-		for(item in inventory.items)
-			output.add(item);
+		for(i in 0 until inventory.size)
+			output.add(inventory.items[i]);
 	}
 
 	override fun forEachItems(callback: Consumer<Item>) {
-		for(item in inventory.items)
-			callback.accept(item);
+		for(i in 0 until inventory.size)
+			callback.accept(inventory.items[i]);
 	}
 
 	override fun forEachItemsReverse(callback: Consumer<Item>) {
@@ -83,9 +83,9 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 	}
 
 	override fun clear() {
-		for(item in inventory.items) {
-			item.inventory = null;
-			invokeRemoveObservers(item);
+		for(i in 0 until inventory.size) {
+			inventory.items[i].inventory = null;
+			invokeRemoveObservers(inventory.items[i]);
 		}
 		inventory.clear();
 		invokeClearObservers();
