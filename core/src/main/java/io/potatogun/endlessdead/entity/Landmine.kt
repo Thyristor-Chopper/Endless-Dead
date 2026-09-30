@@ -31,10 +31,12 @@ class Landmine @JvmOverloads constructor(world: World, x: Float, y: Float, val i
 		rotateToRandom();
 
 		healthTimer = RepeatingTimer(1f) {
-			if(this.health <= 1)
+			if(this.health <= 1) {
 				this.kill();
-			else
+				timers.unregister(healthTimer);
+			} else {
 				this.health--;
+			}
 		}.also { timers.register(it) };
 
 		if(installer is TeamMember)
