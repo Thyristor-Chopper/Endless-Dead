@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.entity.summoner;
 
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.InventoryHolder;
+import io.potatogun.endlessdead.entity.KillScorable;
 import io.potatogun.endlessdead.entity.Triggerman;
 import io.potatogun.endlessdead.entity.component.ItemDropComponent;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
@@ -28,13 +29,14 @@ import kotlin.random.Random;
  * @param x	 개체의 X 위치
  * @param y	 개체의 Y 위치
  */
-class TriggermanSummoner(world: World, x: Float, y: Float) : Summoner(world, "Triggerman Summoner", x, y, 26f, 32f, 8000, Textures.getShared("triggerman_summoner")), InventoryHolder, DamageListener {
+class TriggermanSummoner(world: World, x: Float, y: Float) : Summoner(world, "Triggerman Summoner", x, y, 26f, 32f, 8000, Textures.getShared("triggerman_summoner")), InventoryHolder, DamageListener, KillScorable {
 	override val damageInvincibilityDuration = 0.15f;
 	override val isActive: Boolean
 		get() = (findPlayer() != null);
 	override val inventory = LinearInventory();
 	private val dropComponent = ItemDropComponent(this);
 	override val summonInterval = 5f;
+	override val killScore = 10000;
 
 	init {
 		setOriginOffsetY(-3f);

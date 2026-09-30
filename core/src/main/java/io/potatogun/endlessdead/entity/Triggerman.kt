@@ -26,7 +26,7 @@ import kotlin.random.Random;
 /**
  * 총잡이 - 총을 쏘는 적
  */
-class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: Inventory) : LivingEntity(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, Movable, Targetable {
+class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: Inventory) : LivingEntity(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, Movable, Targetable, KillScorable {
 	private val moveComponent = MoveComponent(this, 140f);
 	override val speed: Float by moveComponent::speed;
 	private val rotator = RotateToTarget(this);
@@ -44,6 +44,7 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	};
 	override val target: LivingEntity? by autoTargeter::target;
 	override val followRange: Float by autoTargeter::followRange;
+	override val killScore = 30;
 
 	/**
 	 * 총잡이를 생성한다.

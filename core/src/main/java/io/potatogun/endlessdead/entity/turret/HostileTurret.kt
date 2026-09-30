@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead.entity.turret;
 
 import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.entity.KillScorable;
 import io.potatogun.endlessdead.entity.Landmine;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
@@ -21,7 +22,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param y           Y 좌표
  * @param isPermanent 포탑이 영구적인지의 여부(죽지 못하는지)
  */
-class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : Turret(world, "Turret", x, y, 83f, 106f, HostileTurretGun(), 600, isPermanent, Textures.getShared("turret_hostile")), DamageListener {
+class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : Turret(world, "Turret", x, y, 83f, 106f, HostileTurretGun(), 600, isPermanent, Textures.getShared("turret_hostile")), DamageListener, KillScorable {
 	private val autoTargeter = AutoTargeter(this, 384f) {
 		if(world is SinglePlayerWorld)
 			world.player
@@ -30,6 +31,7 @@ class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = fal
 	};
 	override val target: LivingEntity? by autoTargeter::target;
 	override val followRange: Float by autoTargeter::followRange;
+	override val killScore = 300;
 
 	init {
 		setOriginOffsetY(-9f);

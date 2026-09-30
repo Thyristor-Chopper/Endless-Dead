@@ -206,24 +206,11 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 
 	// 처치한 좀비 수를 갱신하고 점수를 준다.
 	override fun onKill(victim: LivingEntity) {
-		when(victim) {
-			is Zombie -> {
-				GameManager.scoreManager.addScore(10);
-				GameManager.statistics.killedZombieCount++;
-			}
-			is Triggerman -> {
-				GameManager.scoreManager.addScore(30);
-			}
-			is HostileTurret -> {
-				GameManager.scoreManager.addScore(300);
-			}
-			is StreamZombieSummoner -> {
-				GameManager.scoreManager.addScore(100);
-			}
-			is TriggermanSummoner -> {
-				GameManager.scoreManager.addScore(10000);
-			}
-		}
+		if(victim is KillScorable)
+			GameManager.scoreManager.addScore(victim.killScore);
+
+		if(victim is Zombie)
+			GameManager.statistics.killedZombieCount++;
 	}
 
 	override fun onAttack(victim: LivingEntity) {
