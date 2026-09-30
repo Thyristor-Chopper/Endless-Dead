@@ -215,6 +215,9 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 
 	override fun onAttack(victim: LivingEntity) {
 		_latestAttackVictim = WeakReference(victim);
+
+		if(victim is AttackScorable)
+			GameManager.scoreManager.addScore(victim.attackScore);
 	}
 
 	// ---- 그 외 유틸들 ----
