@@ -2,7 +2,7 @@
 
 del /q src_packed.txt >nul 2>&1
 
-for /r %%i in (*.kt *.java *.gradle *.kts *.cmd *.sh *.bat *.gitmodules *.gitignore *.md *.txt) do (
+for /r %%i in (*.kt *.java *.gradle *.kts *.cmd *.sh *.bat *.gitmodules *.gitignore *.md *.txt *.bak) do (
     if /i not "%%~nxi"=="gradlew.bat" (
 		if /i not "%%~nxi"=="src_packed.txt" (
 			echo Packing: %%i
