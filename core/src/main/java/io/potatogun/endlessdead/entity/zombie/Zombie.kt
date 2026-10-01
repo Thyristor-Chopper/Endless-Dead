@@ -41,7 +41,8 @@ abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Flo
 	private val moveComponent = MoveComponent(this, settings.speed);
 	override val speed: Float by moveComponent::speed;
 	private val autoTargeter = AutoTargeter(this) {
-		if(world is SinglePlayerWorld)
+		val world = level;
+		/* return */ if(world is SinglePlayerWorld)
 			world.player
 		else
 			world.entities.getClosestOf<Player>(this)

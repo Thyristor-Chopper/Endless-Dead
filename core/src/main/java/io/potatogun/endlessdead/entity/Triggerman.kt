@@ -37,7 +37,8 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	private val dropComponent: ItemDropComponent<Triggerman>? = if(Random.nextInt(1000) + 1 <= 1) ItemDropComponent(this) else null;  // 0.1% 확률로 총을 떨굴 수 있음
 	private val pickupComponent: ItemPickupComponent<Triggerman>? = if(Random.nextInt(10) + 1 <= 3) ItemPickupComponent(this) else null;  // 30% 확률
 	private val autoTargeter = AutoTargeter(this) {
-		if(world is SinglePlayerWorld)
+		val world = level;
+		/* return */ if(world is SinglePlayerWorld)
 			world.player
 		else
 			world.entities.getClosestOf<Player>(this)

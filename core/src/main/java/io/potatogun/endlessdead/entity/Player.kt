@@ -109,7 +109,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		if(Input.isKeyJustPressed(Input.DELETE))
 			selectedItem?.let {
 				if(it.destroy())
-					world.projector?.drawSubtitles("${it.name} destroyed");
+					level.projector?.drawSubtitles("${it.name} destroyed");
 			};
 
 		// 휠로 아이템 선택
@@ -131,7 +131,8 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		else
 			moveComponent.speedModifier = 1f;
 		val moved = updatePosition(delta);
-		if(moved) world.updateOffset();
+		if(moved)
+			level.updateOffset();
 	}
 
 	/**
@@ -157,8 +158,8 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		move(delta, dx, dy);
 
 		// 월드 경계 안쪽으로 가두기.
-		x = x.coerceIn(0f, world.width);
-		y = y.coerceIn(0f, world.height);
+		x = x.coerceIn(0f, level.width);
+		y = y.coerceIn(0f, level.height);
 
 		return x != originalX || y != originalY;
 	}
@@ -167,7 +168,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	 * 닿아 있는 상자와 상호작용한다.
 	 */
 	private inline fun interactContainer() {  // update()에서만 한 번 쓰이기 때문에 inline이다.
-		val projector = world.projector;
+		val projector = level.projector;
 		forEachNearby { entity ->
 			if(entity !is Container || !collidesWith(entity)) return@forEachNearby;
 			if(entity.inventory.isEmpty) {

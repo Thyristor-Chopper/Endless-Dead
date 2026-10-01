@@ -58,8 +58,8 @@ class TriggermanSummoner(world: World, x: Float, y: Float) : Summoner(world, "Tr
 
 		val rad = toRadians(getRotationAngle().toDouble() + 90.0 + Random.nextInt(30).toDouble() - 15.0).toFloat();
 		val distance = 32f;
-		val triggerman = Triggerman(world, x + distance * cos(rad), y + distance * sin(rad));  // 소환기가 있는 위치에 생성. 소환기 텍스처에 구멍이 있고 거기서 총잡이가 월드로 나온다는 컨셉이다.
-		world.entities.add(triggerman);
+		val triggerman = Triggerman(level, x + distance * cos(rad), y + distance * sin(rad));  // 소환기가 있는 위치에 생성. 소환기 텍스처에 구멍이 있고 거기서 총잡이가 월드로 나온다는 컨셉이다.
+		level.entities.add(triggerman);
 	}
 
 	// 죽으면 보상 떨구기

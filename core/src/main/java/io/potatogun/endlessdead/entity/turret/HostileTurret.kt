@@ -24,7 +24,8 @@ import io.potatogun.gdxhelper.world.World;
  */
 class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : Turret(world, "Turret", x, y, 83f, 106f, HostileTurretGun(), 600, isPermanent, Textures.getShared("turret_hostile")), DamageListener, KillScorable {
 	private val autoTargeter = AutoTargeter(this, 384f) {
-		if(world is SinglePlayerWorld)
+		val world = level;
+		/* return */ if(world is SinglePlayerWorld)
 			world.player
 		else
 			world.entities.getClosestOf<Player>(this)

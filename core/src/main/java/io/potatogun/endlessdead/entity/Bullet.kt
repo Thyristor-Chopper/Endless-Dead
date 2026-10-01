@@ -72,7 +72,7 @@ class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target
 
 		// 월드 밖으로 나가면 소멸
 		val maxHalfLength = max2(width, height) * 0.5f;
-		if(x < 0f - maxHalfLength || x > world.width + maxHalfLength || y < 0f - maxHalfLength || y > world.height + maxHalfLength)
+		if(x < 0f - maxHalfLength || x > level.width + maxHalfLength || y < 0f - maxHalfLength || y > level.height + maxHalfLength)
 			this.remove();
 
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지를 준다.

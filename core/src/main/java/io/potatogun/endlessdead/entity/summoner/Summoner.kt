@@ -76,7 +76,7 @@ abstract class Summoner @JvmOverloads constructor(world: World, name: String, x:
 	 * @return 가장 가까운 플레이어
 	 */
 	protected inline fun findPlayer(): Player? {
-		val world = this.world;
+		val world = this.level;
 		return if(world is SinglePlayerWorld) world.player else world.entities.getClosestOf<Player>(this);
 	}
 }
