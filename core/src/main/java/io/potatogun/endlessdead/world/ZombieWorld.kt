@@ -80,7 +80,7 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 		}
 
 		// 100~150개의 건물과 상자를 무작위로 배치
-		val trapChestGeneratable = (Random.nextInt(1000) + 1 <= 1);  // 0.1% 확률
+		val trapChestGeneratable = (!hasPortal && Random.nextInt(1000) + 1 <= 1);  // 0.1% 확률
 		val intWidth = this.width.toInt();
 		val intHeight = this.height.toInt();
 		for(i in 0 until Random.nextInt(51) + 100) {
