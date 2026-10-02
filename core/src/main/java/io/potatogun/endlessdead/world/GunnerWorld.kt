@@ -100,8 +100,6 @@ class GunnerWorld(mainWorld: World? = null) : World(Constants.WORLD_WIDTH, Const
 
 	/**
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다.
-	 *
-	 * @param allowRare 희귀 아이템 생성 가능 여부
 	 */
 	private fun generateLoot(): Item {
 		val rand = Random.nextInt(100) + 1;  // 1~100
