@@ -20,11 +20,11 @@ public final class Constants {
 	/**
 	 * 월드의 너비
 	 */
-	public static final float ZOMBIE_WORLD_WIDTH = 2000f;
+	public static final float WORLD_WIDTH = 2000f;
 	/**
 	 * 월드의 높이
 	 */
-	public static final float ZOMBIE_WORLD_HEIGHT = 2000f;
+	public static final float WORLD_HEIGHT = 2000f;
 	/**
 	 * 게임 제목
 	 */

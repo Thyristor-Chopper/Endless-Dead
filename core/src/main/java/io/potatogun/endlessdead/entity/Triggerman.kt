@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.ai.ApproachTarget;
 import io.potatogun.endlessdead.entity.ai.RotateToTarget;
@@ -16,7 +17,6 @@ import io.potatogun.endlessdead.inventory.LinearInventory;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.item.Shootable;
-import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.world.World;
@@ -36,13 +36,7 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	override val damageInvincibilityDuration = 0.15f;
 	private val dropComponent: ItemDropComponent<Triggerman>? = if(Random.nextInt(1000) + 1 <= 1) ItemDropComponent(this) else null;  // 0.1% 확률로 총을 떨굴 수 있음
 	private val pickupComponent: ItemPickupComponent<Triggerman>? = if(Random.nextInt(10) + 1 <= 3) ItemPickupComponent(this) else null;  // 30% 확률
-	private val autoTargeter = AutoTargeter(this) {
-		val world = level;
-		/* return */ if(world is SinglePlayerWorld)
-			world.player
-		else
-			world.entities.getClosestOf<Player>(this)
-	};
+	private val autoTargeter = AutoTargeter(this) { GameManager.player };
 	override val target: LivingEntity? by autoTargeter::target;
 	override val followRange: Float by autoTargeter::followRange;
 	override val killScore = 30;

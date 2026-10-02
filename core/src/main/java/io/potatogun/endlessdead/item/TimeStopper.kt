@@ -21,6 +21,7 @@ class TimeStopper : Item("time_stopper", "Ultra Stopwatch", Item.Properties().ra
 		if(user.selectedItem !== this) return false;
 		if(user !is Player) return false;
 		val world = user.world;
+		if(world == null) return false;
 		if(world !is Freezable || world !is TimerAttachable) {
 			world.projector?.drawSubtitles("Can't use this item here", Color.SALMON);
 			return false;

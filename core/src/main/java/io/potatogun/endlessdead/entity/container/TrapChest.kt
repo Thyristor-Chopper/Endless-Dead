@@ -15,12 +15,15 @@ import io.potatogun.gdxhelper.world.World;
  * @param y           개체의 처음 Y 위치
  * @param initialItem 처음 들어있는 아이템
  */
-class TrapChest(world: World, x: Float, y: Float, initialItem: Item? = null): Chest(world, x, y, initialItem) {
+class TrapChest(world: World? = null, x: Float = 0f, y: Float = 0f, initialItem: Item? = null): Chest(world, x, y, initialItem) {
 	init {
 		inventory.attachRemoveObserver {
-			Gdx.app.postRunnable { level.projector?.drawSubtitles("Turret trap activated!") };
-			level.entities.add(HostileTurret(level, x, y));
-			remove();
+			val world = level;
+			if(world != null) {
+				Gdx.app.postRunnable { world.projector?.drawSubtitles("Turret trap activated!") };
+				world.entities.add(HostileTurret(world, x, y));
+				remove();
+			}
 		};
 	}
 }

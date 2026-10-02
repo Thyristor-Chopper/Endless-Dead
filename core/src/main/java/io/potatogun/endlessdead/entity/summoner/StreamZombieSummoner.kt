@@ -1,9 +1,9 @@
 package io.potatogun.endlessdead.entity.summoner;
 
+import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.KillScorable;
 import io.potatogun.endlessdead.entity.zombie.WeakZombie;
-import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.TimerManager;
@@ -27,10 +27,7 @@ class StreamZombieSummoner(world: World, x: Float, y: Float) : Summoner(world, "
 	override val damageInvincibilityDuration = 0.15f;
 	override val summonInterval = 0.5f;
 	override val isActive: Boolean
-		get() {
-			val player = findPlayer();
-			return player != null && distanceTo(player) <= maxDistanceToPlayer;
-		};
+		get() = distanceTo(GameManager.player) <= maxDistanceToPlayer;
 	override val killScore = 100;
 
 	init {
@@ -45,9 +42,11 @@ class StreamZombieSummoner(world: World, x: Float, y: Float) : Summoner(world, "
 	}
 
 	override fun summon() {
+		val world = level;
+		if(world == null) return;
 		val rad = toRadians(getRotationAngle().toDouble() + 90.0 + Random.nextInt(30).toDouble() - 15.0).toFloat();
 		val distance = 24f;
-		val zombie = WeakZombie(level, x + distance * cos(rad), y + distance * sin(rad));  // 소환기가 있는 위치에 생성. 소환기 텍스처에 구멍이 있고 거기서 좀비가 월드로 나온다는 컨셉이다.
-		level.entities.add(zombie);
+		val zombie = WeakZombie(world, x + distance * cos(rad), y + distance * sin(rad));  // 소환기가 있는 위치에 생성. 소환기 텍스처에 구멍이 있고 거기서 좀비가 월드로 나온다는 컨셉이다.
+		world.entities.add(zombie);
 	}
 }

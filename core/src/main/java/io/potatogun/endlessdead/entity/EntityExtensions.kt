@@ -21,6 +21,7 @@ import java.util.function.Consumer;
  */
 @JvmSynthetic inline fun Entity.forEachNearby(callback: (Entity) -> Unit) {
 	val world = this.world;
+	if(world == null) return;
 	val nearbyEntities = Pools.entityArray.obtain();
 	try {
 		world.entities.getNearby(this, nearbyEntities);

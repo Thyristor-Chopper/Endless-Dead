@@ -7,7 +7,6 @@ import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
-import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
 import io.potatogun.endlessdead.entity.container.Container;
@@ -31,7 +30,6 @@ import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.collections.filter;
 import io.potatogun.gdxhelper.collections.randomOrNull;
 import io.potatogun.gdxhelper.entity.manager.SpatialGrid;
-import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
@@ -48,15 +46,9 @@ import kotlin.math.floor;
 import kotlin.random.Random;
 
 /**
- * 좀비 파밍 월드 구현체
+ * 좀비 파밍 월드
  */
-class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_HEIGHT, SpatialGrid(256, 128f)), Freezable by SimpleFreezer(), TimedWorld, SinglePlayerWorld, TimerAttachable {
-	/**
-	 * 플레이어
-	 *
-	 * 월드 중앙에서 시작.
-	 */
-	override val player = Player(this, width * 0.5f, height * 0.5f);
+class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, SpatialGrid(256, 128f)), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
 	/**
 	 * 등록된 스포너 목록
 	 */
@@ -65,7 +57,7 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 	//   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
 	//   tile.bmp는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color를
 	//   바꿔가며 두 가지 색으로 그리는 트릭(틴트)으로 체스판을 만든다.
-	private val tileTexture = loadTexture("world/tile.bmp");
+	private val tileTexture = loadTexture("world/grass.bmp");
 	private val bgColorDark = rgb(38, 92, 38);
 	private val bgColorLight = rgb(38, 107, 38);
 	private val bgTileSize = 64f;
@@ -112,9 +104,6 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		for(i in 1..3)
 			if(Random.nextInt(10000) + 1 <= 5)
 				entities.add(HostileTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
-
-		// 플레이어 등록
-		entities.add(player);
 
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this));
@@ -188,10 +177,6 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 		if(!isFrozen)
 			for(i in 0 until spawners.size)
 				spawners.items[i].update(delta);
-
-		// 피가 0 이하가 되면 진짜 게임 오버!
-		if(!player.isAlive)
-			GameManager.setGameOver();
 	}
 
 	// ────────────────────────────────────────────────────────
@@ -228,6 +213,8 @@ class ZombieWorld : World(Constants.ZOMBIE_WORLD_WIDTH, Constants.ZOMBIE_WORLD_H
 
 	// 플레이어 위치에 따라 카메라 위치 변경
 	override fun updateOffset() {
+		val player = GameManager.player;
+		if(player.world !== this) return;
 		val halfScreenWidth = Window.width * 0.5f;
 		val halfScreenHeight = Window.height * 0.5f;
 		cameraX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);

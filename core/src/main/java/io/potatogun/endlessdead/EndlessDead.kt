@@ -36,5 +36,6 @@ class EndlessDead : Game() {
 		Item.textures.dispose();
 		titleScreen.dispose();  // 이게 로딩이 안 됐을 리가 없다.
 		worldProjector.dispose();
+		GameManager.player.finalDispose();
 	}
 }

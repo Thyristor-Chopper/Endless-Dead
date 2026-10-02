@@ -18,12 +18,12 @@ class Bandage : Item("bandage", "Bandage"), Usable {
 		if(user.selectedItem !== this) return false;
 		if(user !is LivingEntity) return false;
 		if(user.health >= user.maxHealth) {
-			user.world.projector?.drawSubtitles("Can't heal anymore", Color.SALMON);
+			user.world?.projector?.drawSubtitles("Can't heal anymore", Color.SALMON);
 			return false;
 		}
 		user.heal(10);
 		if(user is Player)
-			user.world.projector?.drawSubtitles("Healed 10 HP");
+			user.world?.projector?.drawSubtitles("Healed 10 HP");
 		destroy();
 		return true;
 	}

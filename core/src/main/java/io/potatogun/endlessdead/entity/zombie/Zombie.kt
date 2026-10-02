@@ -3,6 +3,7 @@ package io.potatogun.endlessdead.entity.zombie;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
+import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.KillScorable;
 import io.potatogun.endlessdead.entity.Landmine;
@@ -18,7 +19,6 @@ import io.potatogun.endlessdead.entity.component.AutoTargeter;
 import io.potatogun.endlessdead.entity.component.MeleeAttackComponent;
 import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
-import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.world.World;
@@ -40,13 +40,7 @@ abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Flo
 	override val attackInterval: Float by meleeAttackComponent::attackInterval;
 	private val moveComponent = MoveComponent(this, settings.speed);
 	override val speed: Float by moveComponent::speed;
-	private val autoTargeter = AutoTargeter(this) {
-		val world = level;
-		/* return */ if(world is SinglePlayerWorld)
-			world.player
-		else
-			world.entities.getClosestOf<Player>(this)
-	};
+	private val autoTargeter = AutoTargeter(this) { GameManager.player };
 	override val target: LivingEntity? by autoTargeter::target;
 	override val followRange: Float by autoTargeter::followRange;
 	private val targetCenterFactor = 0.75f;

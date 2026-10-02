@@ -3,9 +3,9 @@ package io.potatogun.endlessdead.entity.summoner;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
+import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.rotateToRandom;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
@@ -47,7 +47,7 @@ abstract class Summoner @JvmOverloads constructor(world: World, name: String, x:
 
 		Gdx.app.postRunnable {  // abstract val은 생성자에서 바로 읽으면 0이 됨 abstract val로 하나 명시적 게터 함수로 하나 어차피 바이트코드는 둘 다 getter 함수가 되는데 뭐 이래 하 코틀린 진짜...
 			timers.register(RepeatingTimer(summonInterval) {
-				if(isActive)
+				if(level != null && isActive)
 					summon();
 			});
 		};
@@ -58,9 +58,8 @@ abstract class Summoner @JvmOverloads constructor(world: World, name: String, x:
 
 		timers.update(delta);
 
-		val player = findPlayer();
-		if(isActive && player != null)
-			rotateTo(player);
+		if(isActive)
+			rotateTo(GameManager.player);
 	}
 
 	/**
@@ -69,14 +68,4 @@ abstract class Summoner @JvmOverloads constructor(world: World, name: String, x:
 	 * 활성 상태 여부는 이 공통 클래스에서 검사하므로 구현체는 소환 로직만 구현하면 된다.
 	 */
 	protected abstract fun summon();
-
-	/**
-	 * 주변의 플레이어를 찾는다.
-	 *
-	 * @return 가장 가까운 플레이어
-	 */
-	protected inline fun findPlayer(): Player? {
-		val world = this.level;
-		return if(world is SinglePlayerWorld) world.player else world.entities.getClosestOf<Player>(this);
-	}
 }

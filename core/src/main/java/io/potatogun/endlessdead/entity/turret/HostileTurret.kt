@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.entity.turret;
 
+import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.KillScorable;
 import io.potatogun.endlessdead.entity.Landmine;
@@ -9,7 +10,6 @@ import io.potatogun.endlessdead.entity.component.AutoTargeter;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
-import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.world.World;
@@ -23,13 +23,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param isPermanent 포탑이 영구적인지의 여부(죽지 못하는지)
  */
 class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : Turret(world, "Turret", x, y, 83f, 106f, HostileTurretGun(), 600, isPermanent, Textures.getShared("turret_hostile")), DamageListener, KillScorable {
-	private val autoTargeter = AutoTargeter(this, 384f) {
-		val world = level;
-		/* return */ if(world is SinglePlayerWorld)
-			world.player
-		else
-			world.entities.getClosestOf<Player>(this)
-	};
+	private val autoTargeter = AutoTargeter(this, 384f) { GameManager.player };
 	override val target: LivingEntity? by autoTargeter::target;
 	override val followRange: Float by autoTargeter::followRange;
 	override val killScore = 300;

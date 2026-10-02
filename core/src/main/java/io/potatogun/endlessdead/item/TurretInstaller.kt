@@ -18,6 +18,7 @@ class TurretInstaller : Item("turret_installer", "Turret Installer", Item.Proper
 		if(user.selectedItem !== this) return false;
 		if(user !is Entity) return false;
 		val world = user.world;
+		if(world == null) return false;
 		world.entities.add(
 			if(user is TeamMember && user.team == "friends") FriendlyTurret(world, user.x, user.y)  // 플레이어도 포함
 			else HostileTurret(world, user.x, user.y)

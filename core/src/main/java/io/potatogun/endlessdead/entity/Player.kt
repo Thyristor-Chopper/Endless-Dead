@@ -38,7 +38,7 @@ import java.lang.ref.WeakReference;
 /**
  * 플레이어 — 화살표로 조종
  */
-class Player private constructor(world: World, x: Float, y: Float, override val inventory: Inventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable {
+class Player private constructor(world: World? = null, x: Float = 0f, y: Float = 0f, override val inventory: Inventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable {
 	override val isUpdatableWhileFrozen = true;
 	private val textureWithGun = loadTexture("entity/player_holding_gun.bmp");
 	// 타이머
@@ -61,7 +61,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	 * @param x     처음 X 좌표
 	 * @param y     처음 Y 좌표
 	 */
-	constructor(world: World, x: Float, y: Float) : this(world, x, y, LinearInventory(-1));
+	constructor(world: World? = null, x: Float = 0f, y: Float = 0f) : this(world, x, y, LinearInventory(-1));
 
 	init {
 		// 타이머
@@ -109,7 +109,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		if(Input.isKeyJustPressed(Input.DELETE))
 			selectedItem?.let {
 				if(it.destroy())
-					level.projector?.drawSubtitles("${it.name} destroyed");
+					level?.projector?.drawSubtitles("${it.name} destroyed");
 			};
 
 		// 휠로 아이템 선택
@@ -132,7 +132,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 			moveComponent.speedModifier = 1f;
 		val moved = updatePosition(delta);
 		if(moved)
-			level.updateOffset();
+			level?.updateOffset();
 	}
 
 	/**
@@ -158,8 +158,13 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		move(delta, dx, dy);
 
 		// 월드 경계 안쪽으로 가두기.
-		x = x.coerceIn(0f, level.width);
-		y = y.coerceIn(0f, level.height);
+		val world = level;
+		if(world != null) {
+			val finalX = x.coerceIn(0f, world.width);
+			val finalY = y.coerceIn(0f, world.height);
+			if(x != finalX) x = finalX;
+			if(y != finalY) y = finalY;
+		}
 
 		return x != originalX || y != originalY;
 	}
@@ -168,7 +173,7 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 	 * 닿아 있는 상자와 상호작용한다.
 	 */
 	private inline fun interactContainer() {  // update()에서만 한 번 쓰이기 때문에 inline이다.
-		val projector = level.projector;
+		val projector = level?.projector;
 		forEachNearby { entity ->
 			if(entity !is Container || !collidesWith(entity)) return@forEachNearby;
 			if(entity.inventory.isEmpty) {
@@ -260,8 +265,11 @@ class Player private constructor(world: World, x: Float, y: Float, override val 
 		super.draw(batch, textureOverride, null);
 	}
 
+	// 재사용되는 특수 개체이므로 일반 dispose하면 안 됨
+	override fun dispose() {}
+
 	// 자원 정리
-	override fun dispose() {
+	@JvmSynthetic internal fun finalDispose() {
 		super.dispose();
 		textureWithGun.dispose();
 	}

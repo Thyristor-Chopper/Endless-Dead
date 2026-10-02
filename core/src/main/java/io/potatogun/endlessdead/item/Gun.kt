@@ -120,6 +120,7 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 	 */
 	override fun shoot(target: Position, shooter: Entity): Int {
 		val world = shooter.world;
+		if(world == null) return 0;
 		var shooted = 0;
 
 		if(canFire) {
@@ -155,6 +156,7 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 
 		// 개체 회전 각도에 맞는 임의의 위치를 생성한다.
 		val world = user.world;
+		if(world == null) return false;
 		val radians = toRadians(user.getRotationAngle() + 90.0);
 		val distance = max2(world.width, world.height);  // 그냥 100f 이상 가능한 한 큰 수면 된다.
 		val targetX = cos(radians) * distance + user.x;

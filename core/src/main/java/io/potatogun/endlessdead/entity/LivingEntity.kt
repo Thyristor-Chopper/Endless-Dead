@@ -23,7 +23,7 @@ import io.potatogun.gdxhelper.world.World;
  * @property health  처음 체력
  * @param    texture 개체 텍스처(없을 수도 있음)
  */
-abstract class LivingEntity @JvmOverloads constructor(world: World, name: String, x: Float, y: Float, width: Float, height: Float, health: Int, texture: Texture? = null) : Entity(world, name, x, y, width, height, texture), TeamMember {
+abstract class LivingEntity @JvmOverloads constructor(world: World? = null, name: String, x: Float = 0f, y: Float = 0f, width: Float, height: Float, health: Int, texture: Texture? = null) : Entity(world, name, x, y, width, height, texture), TeamMember {
 	/**
 	 * 개체의 최대 체력
 	 */
@@ -163,6 +163,7 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 	fun heal(amount: Int): Boolean {
 		if(!isAlive) return false;
 		health += amount;
+		damagedIndicatorTimer = 0f;
 		return true;
 	}
 
@@ -190,6 +191,14 @@ abstract class LivingEntity @JvmOverloads constructor(world: World, name: String
 		remove();
 
 		return true;
+	}
+
+	/**
+	 * 체력을 초기화한다.
+	 */
+	fun resetHealth() {
+		health = maxHealth;
+		damagedIndicatorTimer = 0f;
 	}
 
 	override fun forceUpdate(delta: Float) {

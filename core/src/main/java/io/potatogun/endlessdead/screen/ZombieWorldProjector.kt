@@ -21,7 +21,6 @@ import io.potatogun.endlessdead.item.Cooldownable;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.LimitedUsable;
 import io.potatogun.endlessdead.item.Rarity;
-import io.potatogun.endlessdead.world.SinglePlayerWorld;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.manager.countOf;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
@@ -176,9 +175,9 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	private inline fun updatePlaying(delta: Float) {  // update에서만 한 번 쓰이기 때문에 inline이다.
 		super.update(delta);
 
-		val world: World? = projectingWorld;
-		if(world is SinglePlayerWorld) {
-			val player = world.player;
+		val player = GameManager.player;
+		val world = player.world;
+		if(world != null && projectingWorld === world) {
 			attackTarget = player.latestAttackVictim?.takeIf { isValidAttackTarget(it, player) }
 				?: run { world.entities.getClosestOf<LivingEntity>(player) { it !is Bullet && it !is Landmine && it !== player }?.takeIf { isValidAttackTarget(it, player) } };
 		}
@@ -195,7 +194,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	 */
 	private fun updateTitleBarInfo() {
 		val world: World? = projectingWorld;
-		if(world == null) {
+		if(world == null || world !== GameManager.player.world) {
 			Window.titleBarStats = null;
 			return;
 		}
@@ -227,15 +226,15 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		val ammoIndicator = getWidget("gun_ammo_indicator") as ProgressBar;
 		val cooldownIndicator = getWidget("gun_cooldown_indicator") as ProgressBar;
 
-		val world: World? = projectingWorld;
-		if(world !is SinglePlayerWorld) {
+		if(projectingWorld == null) {
 			hpIndicator.hide();
 			targetIndicator.hide();
 			ammoIndicator.hide();
 			cooldownIndicator.hide();
 			return;
 		}
-		val player = world.player;
+
+		val player = GameManager.player;
 
 		// 체력 미터기 처리
 		hpIndicator.apply {
@@ -512,50 +511,45 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 	 * 항상 화면에 표시되는 정보 — HP 표시와 월드 중앙 표지를 그린다.
 	 */
 	private inline fun drawHud() {  // drawContents에서만 한 번 쓰이기 때문에 inline이다.
-		val world: World? = projectingWorld;
-		if(world == null) return;
+		val player = GameManager.player;
+		// 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
+		//    카메라가 움직여도 항상 이 위치에 있다.
+		drawText(
+			text = "${player.name}  [ ${player.health} ]",
+			x = 10f,
+			y = Window.height - 8f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
+			color = playerNameColor,
+			scale = 1.0f
+		);
 
-		if(world is SinglePlayerWorld) {
-			val player = world.player;
-			// 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
-			//    카메라가 움직여도 항상 이 위치에 있다.
+		// 현재 플레이어가 들고 있는 아이템
+		player.selectedItem?.let {
+			val rarity = it.rarity;
+			batch.draw(it.texture, 8f, 4f, Constants.ITEM_SIZE, Constants.ITEM_SIZE);
 			drawText(
-				text = "${player.name}  [ ${player.health} ]",
-				x = 10f,
-				y = Window.height - 8f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
-				color = playerNameColor,
+				text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.size}]",
+				x = 40f,
+				y = 22f,
+				color =
+					if(rarity == Rarity.UNCOMMON)
+						Color.YELLOW  // 마인크래프트 따라함
+					else if(rarity == Rarity.RARE)
+						Color.MAGENTA
+					else
+						Color.WHITE,
+				scale = 1f
+			);
+		};
+
+		attackTarget?.let {
+			drawText(
+				text = "${it.name}  [ ${it.health} ]",
+				x = 211f,
+				y = Window.height - 8f,
+				color = if(player.isSameTeamWith(it)) friendNameColor else enemyNameColor,
 				scale = 1.0f
 			);
-
-			// 현재 플레이어가 들고 있는 아이템
-			player.selectedItem?.let {
-				val rarity = it.rarity;
-				batch.draw(it.texture, 8f, 4f, Constants.ITEM_SIZE, Constants.ITEM_SIZE);
-				drawText(
-					text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.size}]",
-					x = 40f,
-					y = 22f,
-					color =
-						if(rarity == Rarity.UNCOMMON)
-							Color.YELLOW  // 마인크래프트 따라함
-						else if(rarity == Rarity.RARE)
-							Color.MAGENTA
-						else
-							Color.WHITE,
-					scale = 1f
-				);
-			};
-
-			attackTarget?.let {
-				drawText(
-					text = "${it.name}  [ ${it.health} ]",
-					x = 211f,
-					y = Window.height - 8f,
-					color = if(player.isSameTeamWith(it)) friendNameColor else enemyNameColor,
-					scale = 1.0f
-				);
-			};
-		}
+		};
 
 		// 점수
 		drawText(

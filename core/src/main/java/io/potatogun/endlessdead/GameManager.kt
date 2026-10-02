@@ -7,6 +7,7 @@ import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.ArraySuppliers;
 import io.potatogun.gdxhelper.util.Updatable;
+import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
 import kotlin.properties.Delegates;
@@ -18,6 +19,10 @@ import kotlin.properties.Delegates;
  * 큰 위험성은 없다.
  */
 object GameManager : Updatable {
+	/**
+	 * 게임 플레이어
+	 */
+	val player = Player();
 	/**
 	 * 게임 인스턴스
 	 */
@@ -146,6 +151,7 @@ object GameManager : Updatable {
 			throw IllegalStateException("game manager is not initialised");
 
 		// 통계 및 시간 초기화
+		player.resetHealth();
 		resetAll();
 		round++;
 		gameTime = 0f;
@@ -154,7 +160,11 @@ object GameManager : Updatable {
 		state = GameState.PLAYING;
 
 		// 월드 생성 후 월드 표시기 화면으로 전환
-		game.worldProjector.loadWorld(ZombieWorld(), disposePreviousWorld = true);
+		val world = ZombieWorld();
+		player.world = world;
+		player.teleport(world.width * 0.5f, world.height * 0.5f);
+		world.entities.add(player);
+		game.worldProjector.loadWorld(world, disposePreviousWorld = true);
 		if(game.getScreen() !== game.worldProjector)
 			game.setScreen(game.worldProjector);
 	}
@@ -205,6 +215,9 @@ object GameManager : Updatable {
 	override fun update(delta: Float) {
 		tickGameTime(delta);
 		tickGlobalTimers(delta);
+
+		if(!player.isAlive)
+			setGameOver();
 	}
 
 	/**

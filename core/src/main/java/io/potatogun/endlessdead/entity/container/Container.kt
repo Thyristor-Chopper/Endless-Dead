@@ -24,7 +24,7 @@ import io.potatogun.gdxhelper.world.World;
  * @property emptyTexture 상자가 비어 있을 때 사용할 텍스처
  * @param    initialItem  처음 들어있는 아이템
  */
-abstract class Container(world: World, name: String, x: Float, y: Float, width: Float, height: Float, texture: Texture?, private val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, name, x, y, width, height, texture), InventoryHolder {
+abstract class Container(world: World? = null, name: String, x: Float = 0f, y: Float = 0f, width: Float, height: Float, texture: Texture?, private val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, name, x, y, width, height, texture), InventoryHolder {
 	override val inventory = SingleItemInventory();
 	/**
 	 * 플레이어가 직접 아이템을 넣었을 때의 텍스처

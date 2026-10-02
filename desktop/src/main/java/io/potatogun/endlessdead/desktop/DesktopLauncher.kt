@@ -28,7 +28,7 @@ fun main() {
 		setTitle("${Constants.GAME_TITLE} - Loading...");
 		setWindowedMode(800, 600);
 		setResizable(true);
-		setWindowSizeLimits(320, 240, Constants.ZOMBIE_WORLD_WIDTH.toInt(), Constants.ZOMBIE_WORLD_HEIGHT.toInt());
+		setWindowSizeLimits(320, 240, Constants.WORLD_WIDTH.toInt(), Constants.WORLD_HEIGHT.toInt());
 		useVsync(false);  // 수직동기화를 꺼야 랙이 줄어듦
 		setForegroundFPS(Constants.PASSIVE_FPS);  // 타이틀 화면에서는 낮은 fps로
 		setIdleFPS(Constants.PASSIVE_FPS);
