@@ -202,7 +202,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		val world = player.world;
 		if(world != null && projectingWorld === world) {
 			attackTarget = player.latestAttackVictim?.takeIf { isValidAttackTarget(it, player) }
-				?: run { world.entities.getClosestOf<LivingEntity>(player) { it !is Bullet && it !is Landmine && it !== player }?.takeIf { isValidAttackTarget(it, player) } };
+				?: run { world.entities.getClosestOf<LivingEntity>(player)?.takeIf { isValidAttackTarget(it, player) } };
 		}
 
 		// 미터기 정보 갱신
@@ -318,7 +318,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		}
 	}
 
-	private inline fun isValidAttackTarget(target: LivingEntity?, player: Player) = target != null && !target.isInvincible && target.isAlive && target.distanceTo(player) <= 456f;
+	private inline fun isValidAttackTarget(target: LivingEntity?, player: Player) = target != null && !target.isInvincible && target !is Bullet && target !is Landmine && target.isAlive && target.distanceTo(player) <= 456f;
 
 	/**
 	 * 일시 정지 상태에서 매 프레임 로직
