@@ -28,7 +28,7 @@ class Portal(world: World, x: Float = 0f, y: Float = 0f, private val destination
 
 		val player = GameManager.player;
 		forEachNearby { entity ->
-			if(collidesWith(entity)) {
+			if(entity is LivingEntity && entity !is Bullet && entity !is Landmine && collidesWith(entity)) {
 				if(entity === player)
 					entity.world?.projector?.loadWorld(destination);
 				entity.world = destination;
