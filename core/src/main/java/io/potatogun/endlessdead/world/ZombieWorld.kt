@@ -86,7 +86,7 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 		for(i in 0 until Random.nextInt(51) + 100) {
 			val x = Random.nextInt(intWidth).toFloat();
 			val y = Random.nextInt(intHeight).toFloat();
-			val item: Item = generateLoot();  // 들어있을 아이템
+			val item: Item = generateLoot(specialWorld == null);  // 들어있을 아이템
 			val rand = Random.nextInt(100) + 1;
 			entities.add(when {
 				rand <= 40	-> Building(this, x, y, item)  // 40% 확률
