@@ -4,6 +4,8 @@ import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.forEachNearby;
 import io.potatogun.endlessdead.entity.teleportToCenter;
+import io.potatogun.endlessdead.entity.summoner.Summoner;
+import io.potatogun.endlessdead.entity.turret.Turret;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.entity.rotateToRandom;
 import io.potatogun.gdxhelper.world.World;
@@ -28,7 +30,7 @@ class Portal(world: World, x: Float = 0f, y: Float = 0f, private val destination
 
 		val player = GameManager.player;
 		forEachNearby { entity ->
-			if(entity is LivingEntity && entity !is Bullet && entity !is Landmine && collidesWith(entity)) {
+			if(entity is LivingEntity && entity !is Bullet && entity !is Landmine && entity !is Turret && entity !is Summoner && collidesWith(entity)) {
 				if(entity === player)
 					entity.world?.projector?.loadWorld(destination);
 				entity.world = destination;
