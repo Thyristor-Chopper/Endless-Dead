@@ -70,6 +70,15 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 
 	// 생성자 본문 — 월드에 플레이어와 적을 등록한다. 이렇게 등록해야 update / draw 루프에 포함된다.
 	init {
+		// 0.5% 확률로 총잡이 월드로 가는 포탈 추가
+		val hasPortal: Boolean;
+		if(Random.nextInt(1000) + 1 <= 5) {
+			entities.add(Portal(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, GunnerWorld(this)));
+			hasPortal = true;
+		} else {
+			hasPortal = false;
+		}
+
 		// 100~150개의 건물과 상자를 무작위로 배치
 		val trapChestGeneratable = (Random.nextInt(1000) + 1 <= 1);  // 0.1% 확률
 		val intWidth = this.width.toInt();
@@ -90,37 +99,35 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 			});
 		}
 
-		// 각각 1% 확률로 좀비 공격 포탑(무적)을 임의 위치에 1~3대 설치
+		// 각각 1% 확률로 적 공격 포탑(무적)을 임의 위치에 1~3대 설치
 		for(i in 1..3)
 			if(Random.nextInt(100) == i * 24)
 				entities.add(FriendlyTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, true));
 
-		// 각각 2.5% 확률로 플레이어 공격 포탑(파괴 불가)을 월드의 각 모퉁이에 설치
-		if(Random.nextInt(40) == 8) entities.add(HostileTurret(this, 100f, 100f, true).apply { rotate(315f) });
-		if(Random.nextInt(40) == 12) entities.add(HostileTurret(this, width - 100f, 100f, true).apply { rotate(45f) });
-		if(Random.nextInt(40) == 15) entities.add(HostileTurret(this, 100f, height - 100f, true).apply { rotate(225f) });
-		if(Random.nextInt(40) == 21) entities.add(HostileTurret(this, width - 100f, height - 100f, true).apply { rotate(135f) });
+		if(!hasPortal) {
+			// 각각 2.5% 확률로 플레이어 공격 포탑(파괴 불가)을 월드의 각 모퉁이에 설치
+			if(Random.nextInt(40) == 8) entities.add(HostileTurret(this, 100f, 100f, true).apply { rotate(315f) });
+			if(Random.nextInt(40) == 12) entities.add(HostileTurret(this, width - 100f, 100f, true).apply { rotate(45f) });
+			if(Random.nextInt(40) == 15) entities.add(HostileTurret(this, 100f, height - 100f, true).apply { rotate(225f) });
+			if(Random.nextInt(40) == 21) entities.add(HostileTurret(this, width - 100f, height - 100f, true).apply { rotate(135f) });
 
-		// 각각 0.05% 확률로 플레이어 공격 포탑(공격, 파괴 가능)을 임의 위치에 1~3대 설치
-		for(i in 1..3)
-			if(Random.nextInt(10000) + 1 <= 5)
-				entities.add(HostileTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
+			// 각각 0.05% 확률로 플레이어 공격 포탑(공격, 파괴 가능)을 임의 위치에 1~3대 설치
+			for(i in 1..3)
+				if(Random.nextInt(10000) + 1 <= 5)
+					entities.add(HostileTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 
-		// 5% 확률로 총 쏘는 적도 나오는 월드
-		if(Random.nextInt(20) == 7)
-			for(i in 1..(Random.nextInt(3) + 1))  // 무작위로 1~3개
-				if(Random.nextInt(i) == 0)  // 첫째: 100%, 둘째: 50%, 셋째: 33.3%
-					entities.add(TriggermanSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
+			// 5% 확률로 총 쏘는 적도 나오는 월드
+			if(Random.nextInt(20) == 7)
+				for(i in 1..(Random.nextInt(3) + 1))  // 무작위로 1~3개
+					if(Random.nextInt(i) == 0)  // 첫째: 100%, 둘째: 50%, 셋째: 33.3%
+						entities.add(TriggermanSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
+		}
 
 		// 0.1% 확률로 스트림약좀비생성기가 있을 수 있음
 		if(Random.nextInt(1000) + 1 <= 1)
 			for(i in 1..(Random.nextInt(8) + 1))  // 무작위로 1~8개
 				if(Random.nextInt(2) == 0)  // 이 경우에 대해 50% 판정
 					entities.add(StreamZombieSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
-
-		// 0.5% 확률로 총잡이 월드로 가는 포탈이 있을 수 있음
-		if(Random.nextInt(1000) + 1 <= 5)
-			entities.add(Portal(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, GunnerWorld(this)));
 
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this));

@@ -8,7 +8,6 @@ import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.Portal;
-import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
 import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.entity.container.TrapChest;
@@ -55,8 +54,7 @@ class GunnerWorld(mainWorld: World? = null) : World(Constants.WORLD_WIDTH, Const
 		private set;
 
 	init {
-		// 30~80개의 건물과 상자를 무작위로 배치
-		val trapChestGeneratable = (Random.nextInt(100) + 1 <= 1);  // 1% 확률
+		// 30~80개의 상자를 무작위로 배치
 		val intWidth = this.width.toInt();
 		val intHeight = this.height.toInt();
 		for(i in 0 until Random.nextInt(51) + 30) {
@@ -65,17 +63,12 @@ class GunnerWorld(mainWorld: World? = null) : World(Constants.WORLD_WIDTH, Const
 			val item: Item = generateLoot();  // 들어있을 아이템
 			val rand = Random.nextInt(100) + 1;
 			entities.add(when {
-				rand <= 40	-> Building(this, x, y, item)  // 40% 확률
-				else		-> {
-					if(rand >= 98 && trapChestGeneratable)
-						TrapChest(this, x, y, item)  // 3% 확률
-					else
-						Chest(this, x, y, item)  // 60% 확률
-				}
+				rand >= 98	-> TrapChest(this, x, y, item)		// 3% 확률
+				else		-> Chest(this, x, y, item)			// 97% 확률
 			});
 		}
 
-		// 5% 확률로 좀비 공격 포탑(무적)을 임의 위치에 1~3대 설치
+		// 5% 확률로 적 공격 포탑(무적)을 임의 위치에 1~3대 설치
 		if(Random.nextInt(100) + 1 <= 5)
 			for(i in 1..(Random.nextInt(3) + 1))
 				entities.add(FriendlyTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, true));
