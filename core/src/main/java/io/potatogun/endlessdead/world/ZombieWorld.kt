@@ -67,20 +67,20 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 	// 이 월드의 시간
 	override var time = 0f
 		private set;
+	private val specialWorld: World?;
 
 	// 생성자 본문 — 월드에 플레이어와 적을 등록한다. 이렇게 등록해야 update / draw 루프에 포함된다.
 	init {
 		// 0.5% 확률로 총잡이 월드로 가는 포탈 추가
-		val hasPortal: Boolean;
 		if(Random.nextInt(1000) + 1 <= 5) {
-			entities.add(Portal(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, GunnerWorld(this)));
-			hasPortal = true;
+			specialWorld = GunnerWorld(this);
+			entities.add(Portal(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, specialWorld));
 		} else {
-			hasPortal = false;
+			specialWorld = null;
 		}
 
 		// 100~150개의 건물과 상자를 무작위로 배치
-		val trapChestGeneratable = (!hasPortal && Random.nextInt(1000) + 1 <= 1);  // 0.1% 확률
+		val trapChestGeneratable = (specialWorld == null && Random.nextInt(1000) + 1 <= 1);  // 0.1% 확률
 		val intWidth = this.width.toInt();
 		val intHeight = this.height.toInt();
 		for(i in 0 until Random.nextInt(51) + 100) {
@@ -104,7 +104,7 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 			if(Random.nextInt(100) == i * 24)
 				entities.add(FriendlyTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, true));
 
-		if(!hasPortal) {
+		if(specialWorld == null) {
 			// 각각 2.5% 확률로 플레이어 공격 포탑(파괴 불가)을 월드의 각 모퉁이에 설치
 			if(Random.nextInt(40) == 8) entities.add(HostileTurret(this, 100f, 100f, true).apply { rotate(315f) });
 			if(Random.nextInt(40) == 12) entities.add(HostileTurret(this, width - 100f, 100f, true).apply { rotate(45f) });
@@ -241,5 +241,6 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 	override fun dispose() {
 		super.dispose();
 		tileTexture.dispose();
+		specialWorld?.dispose();
 	}
 }
