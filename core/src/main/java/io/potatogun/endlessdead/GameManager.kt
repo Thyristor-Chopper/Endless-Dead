@@ -218,7 +218,7 @@ object GameManager : Updatable {
 		tickGameTime(delta);
 		tickGlobalTimers(delta);
 
-		if(!player.isAlive)
+		if(state == GameState.PLAYING && !player.isAlive)
 			setGameOver();
 	}
 
