@@ -7,6 +7,7 @@ import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
+import io.potatogun.endlessdead.entity.Portal;
 import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
 import io.potatogun.endlessdead.entity.container.Container;
@@ -105,18 +106,26 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 			if(Random.nextInt(10000) + 1 <= 5)
 				entities.add(HostileTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 
+		// 5% 확률로 총 쏘는 적도 나오는 월드
+		if(Random.nextInt(20) == 7)
+			for(i in 1..(Random.nextInt(3) + 1))  // 무작위로 1~3개
+				if(Random.nextInt(i) == 0)  // 첫째: 100%, 둘째: 50%, 셋째: 33.3%
+					entities.add(TriggermanSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
+
+		// 0.1% 확률로 스트림약좀비생성기가 있을 수 있음
+		if(Random.nextInt(1000) + 1 <= 1)
+			for(i in 1..(Random.nextInt(8) + 1))  // 무작위로 1~8개
+				if(Random.nextInt(2) == 0)  // 이 경우에 대해 50% 판정
+					entities.add(StreamZombieSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
+
+		// 0.5% 확률로 총잡이 월드로 가는 포탈이 있을 수 있음
+		if(Random.nextInt(1000) + 1 <= 5)
+			entities.add(Portal(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, GunnerWorld(this)));
+
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this));
 		if(Random.nextInt(10000) + 1 <= 1)  // 0.01% 확률로 왕좀비도 나오는 월드
 			spawners.add(GiantZombieSpawner(this));
-		if(Random.nextInt(20) == 7)  // 5% 확률로 총 쏘는 적도 나오는 월드
-			for(i in 1..(Random.nextInt(3) + 1))  // 무작위로 1~3개
-				if(Random.nextInt(i) == 0)  // 첫째: 100%, 둘째: 50%, 셋째: 33.3%
-					entities.add(TriggermanSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
-		if(Random.nextInt(1000) + 1 <= 1)  // 0.1% 확률로 스트림약좀비생성기가 있을 수 있음
-			for(i in 1..(Random.nextInt(8) + 1))  // 무작위로 1~8개
-				if(Random.nextInt(2) == 0)  // 이 경우에 대해 50% 판정
-					entities.add(StreamZombieSummoner(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 
 		// 10초마다 빈 상자 하나 리필
 		timers.register(RepeatingTimer(10f) {

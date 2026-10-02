@@ -44,3 +44,12 @@ import java.util.function.Consumer;
 @SinceKotlin("9999.9") fun Entity.forEachNearby(callback: Consumer<Entity>) {
 	forEachNearby(callback::accept);
 }
+
+/**
+ * 월드의 중심으로 순간이동한다.
+ */
+inline fun Entity.teleportToCenter() {
+	val world = this.world;
+	if(world == null) return;
+	teleport(world.width * 0.5f, world.height * 0.5f);
+}

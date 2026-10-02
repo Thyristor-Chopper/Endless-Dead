@@ -7,6 +7,7 @@ import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
+import io.potatogun.endlessdead.entity.Portal;
 import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
 import io.potatogun.endlessdead.entity.container.Container;
@@ -39,7 +40,7 @@ import kotlin.random.Random;
 /**
  * 총잡이나 포탑 등이 메인 주인공인 월드
  */
-class GunnerWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, SpatialGrid(256, 128f)), TimedWorld, TimerAttachable, TimeLimitedWorld {
+class GunnerWorld(mainWorld: World? = null) : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, SpatialGrid(256, 128f)), TimedWorld, TimerAttachable {
 	/**
 	 * 등록된 스포너 목록
 	 */
@@ -51,9 +52,6 @@ class GunnerWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 	private val timers = TimerManager();
 	// 이 월드의 시간
 	override var time = 0f
-		private set;
-	override val timeLimit = 600f;
-	override var remainingTime = timeLimit
 		private set;
 
 	init {
@@ -93,6 +91,9 @@ class GunnerWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 			if(Random.nextInt(100) + 1 <= 5)
 				entities.add(HostileTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 
+		if(mainWorld != null)
+			entities.add(Portal(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, mainWorld));
+
 		spawners.add(TriggermanSpawner(this));
 
 		timers.register(RepeatingTimer(10f) {
@@ -129,8 +130,6 @@ class GunnerWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 
 	override fun update(delta: Float) {
 		time += delta;
-
-		remainingTime -= delta;
 
 		timers.update(delta);
 

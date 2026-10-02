@@ -8,6 +8,7 @@ import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.ArraySuppliers;
 import io.potatogun.gdxhelper.util.Updatable;
 import io.potatogun.endlessdead.entity.Player;
+import io.potatogun.endlessdead.entity.teleportToCenter;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
 import kotlin.properties.Delegates;
@@ -163,7 +164,7 @@ object GameManager : Updatable {
 		// 월드 생성 후 월드 표시기 화면으로 전환
 		val world = ZombieWorld();
 		player.world = world;
-		player.teleport(world.width * 0.5f, world.height * 0.5f);
+		player.teleportToCenter();
 		world.entities.add(player);
 		game.worldProjector.loadWorld(world, disposePreviousWorld = true);
 		if(game.getScreen() !== game.worldProjector)
