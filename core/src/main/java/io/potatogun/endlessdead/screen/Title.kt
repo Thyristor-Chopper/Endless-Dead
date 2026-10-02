@@ -10,6 +10,7 @@ import io.potatogun.endlessdead.Textures;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.Screen;
 import io.potatogun.gdxhelper.util.Input;
+import io.potatogun.gdxhelper.util.InputListener;
 import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.widget.Button;
 
@@ -18,7 +19,7 @@ import io.potatogun.gdxhelper.widget.Button;
  *
  * @property game 게임 인스턴스
  */
-class Title(private val game: EndlessDead) : Screen() {
+class Title(private val game: EndlessDead) : Screen(), InputListener {
 	private val title = loadTexture("title/title.bmp");
 	private val stillCut = loadTexture("title/still_cut.bmp");
 	private var titleBlinkTimer = 0f;
@@ -30,6 +31,8 @@ class Title(private val game: EndlessDead) : Screen() {
 		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, { 120f }, caption = "Quit", skin = Textures.button) {
 			Gdx.app.exit();
 		});
+
+		Input.registerListener(this);
 	}
 
 	override fun update(delta: Float) {
@@ -38,9 +41,12 @@ class Title(private val game: EndlessDead) : Screen() {
 		titleBlinkTimer += delta;
 		if(titleBlinkTimer >= 1f)
 			titleBlinkTimer = 0f;
+	}
 
-		if(Input.isAnyKeyJustPressed())
-			GameManager.newGame();
+	override fun onKeyDown(code: Int): Boolean {
+		if(game.screen !== this) return false;
+		GameManager.newGame();
+		return true;
 	}
 
 	override fun drawBackground() {

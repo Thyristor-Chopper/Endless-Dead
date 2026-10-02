@@ -152,6 +152,7 @@ object GameManager : Updatable {
 
 		// 통계 및 시간 초기화
 		player.resetHealth();
+		player.inventory.clear();
 		resetAll();
 		round++;
 		gameTime = 0f;

@@ -30,6 +30,7 @@ import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.Input;
+import io.potatogun.gdxhelper.util.InputListener;
 import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.world.World;
 
@@ -38,7 +39,7 @@ import java.lang.ref.WeakReference;
 /**
  * 플레이어 — 화살표로 조종
  */
-class Player private constructor(world: World? = null, x: Float = 0f, y: Float = 0f, override val inventory: Inventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable {
+class Player private constructor(world: World? = null, x: Float = 0f, y: Float = 0f, override val inventory: Inventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable, InputListener {
 	override val isUpdatableWhileFrozen = true;
 	private val textureWithGun = loadTexture("entity/player_holding_gun.bmp");
 	// 타이머
@@ -78,6 +79,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		}.also { timers.register(it) };
 
 		team = "friends";
+
+		Input.registerListener(this);
 	}
 
 	override fun move(delta: Float, directionX: Float, directionY: Float) {
@@ -112,12 +115,6 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 					level?.projector?.drawSubtitles("${it.name} destroyed");
 			};
 
-		// 휠로 아이템 선택
-		if(Input.isScrolledDown())
-			selectNextItem();
-		if(Input.isScrolledUp())
-			selectPreviousItem();
-
 		// 주변 아이템 줍기
 		pickupComponent.pickupNearbyItems();
 
@@ -133,6 +130,19 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		val moved = updatePosition(delta);
 		if(moved)
 			level?.updateOffset();
+	}
+
+	// 휠로 아이템 선택
+	override fun onScroll(amountX: Float, amountY: Float): Boolean {
+		if(!GameManager.isPlaying) return false;
+		if(amountY > 0f) {
+			selectNextItem();
+			return true;
+		} else if(amountY < 0f) {
+			selectPreviousItem();
+			return true;
+		}
+		return false;
 	}
 
 	/**
