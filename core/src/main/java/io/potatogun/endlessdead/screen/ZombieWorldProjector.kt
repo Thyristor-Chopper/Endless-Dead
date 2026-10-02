@@ -21,6 +21,7 @@ import io.potatogun.endlessdead.item.Cooldownable;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.LimitedUsable;
 import io.potatogun.endlessdead.item.Rarity;
+import io.potatogun.endlessdead.world.SpecialWorld;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.manager.countOf;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
@@ -98,11 +99,21 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			GameManager.newGame();
 		}.apply { hide() });
 		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Textures.button) {
+			Gdx.app.postRunnable {
+				projectingWorld?.let {
+					if(it is SpecialWorld)
+						Gdx.app.postRunnable { it.mainWorld.dispose() };
+				};
+			};
 			unloadWorld(dispose = true);
 			clearSubtitles();
 			GameManager.standBy();
 		}.apply { hide() });
 		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Textures.button) {
+			projectingWorld?.let {
+				if(it is SpecialWorld)
+					Gdx.app.postRunnable { it.mainWorld.dispose() };
+			};
 			unloadWorld(dispose = true);
 			Gdx.app.exit();
 		}.apply { hide() });
