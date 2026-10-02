@@ -99,11 +99,16 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			GameManager.newGame();
 		}.apply { hide() });
 		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Textures.button) {
-			Gdx.app.postRunnable {
-				projectingWorld?.let {
-					if(it is SpecialWorld)
-						Gdx.app.postRunnable { it.mainWorld.dispose() };
-				};
+			projectingWorld?.let {
+				if(it is SpecialWorld) {
+					val mainWorld = it.mainWorld;
+					if(mainWorld != null)
+						Gdx.app.postRunnable {
+							try {
+								mainWorld.dispose();
+							} catch(e: IllegalArgumentException) {}
+						};
+				}
 			};
 			unloadWorld(dispose = true);
 			clearSubtitles();
@@ -111,8 +116,15 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		}.apply { hide() });
 		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Textures.button) {
 			projectingWorld?.let {
-				if(it is SpecialWorld)
-					Gdx.app.postRunnable { it.mainWorld.dispose() };
+				if(it is SpecialWorld) {
+					val mainWorld = it.mainWorld;
+					if(mainWorld != null)
+						Gdx.app.postRunnable {
+							try {
+								mainWorld.dispose();
+							} catch(e: IllegalArgumentException) {}
+						};
+				}
 			};
 			unloadWorld(dispose = true);
 			Gdx.app.exit();

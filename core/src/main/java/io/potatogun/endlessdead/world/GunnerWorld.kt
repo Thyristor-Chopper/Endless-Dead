@@ -39,7 +39,7 @@ import kotlin.random.Random;
 /**
  * 총잡이나 포탑 등이 메인 주인공인 월드
  */
-class GunnerWorld(override val mainWorld: World) : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, SpatialGrid(256, 128f)), TimedWorld, TimerAttachable, SpecialWorld {
+class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = null) : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, SpatialGrid(256, 128f)), TimedWorld, TimerAttachable, SpecialWorld {
 	/**
 	 * 등록된 스포너 목록
 	 */
@@ -84,7 +84,8 @@ class GunnerWorld(override val mainWorld: World) : World(Constants.WORLD_WIDTH, 
 			if(Random.nextInt(100) + 1 <= 5)
 				entities.add(HostileTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 
-		entities.add(Portal(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, mainWorld));
+		if(mainWorld != null)
+			entities.add(Portal(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, mainWorld));
 
 		spawners.add(TriggermanSpawner(this));
 
