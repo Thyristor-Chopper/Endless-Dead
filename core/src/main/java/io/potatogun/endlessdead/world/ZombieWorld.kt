@@ -31,6 +31,7 @@ import io.potatogun.gdxhelper.UpdateListeners;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.collections.filter;
 import io.potatogun.gdxhelper.collections.randomOrNull;
+import io.potatogun.gdxhelper.entity.isIn;
 import io.potatogun.gdxhelper.entity.manager.SpatialGrid;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.Timer;
@@ -146,7 +147,7 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 			Pools.entityArray.free(emptyContainers);
 		});
 
-		UpdateListeners.register(this) { GameManager.isPlaying };
+		UpdateListeners.register(this) { GameManager.isPlaying && GameManager.player.isIn(this) };
 	}
 
 	/**

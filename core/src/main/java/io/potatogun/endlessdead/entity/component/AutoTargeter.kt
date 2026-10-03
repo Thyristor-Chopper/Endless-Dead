@@ -4,6 +4,7 @@ import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Targetable;
 import io.potatogun.endlessdead.entity.isSameTeamWith;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.entity.isIn;
 
 import java.util.function.Supplier;
 
@@ -31,5 +32,5 @@ class AutoTargeter @JvmOverloads constructor(private val attacker: Entity, overr
 		if(followRange < 0f) throw IllegalArgumentException("invalid follow range");
 	}
 
-	fun isValidTarget(entity: LivingEntity?): Boolean = entity != null && entity.isAlive && !entity.isInvincible && !attacker.isSameTeamWith(entity) && (followRange == 0f || (followRange > 0f && entity.distanceTo(attacker) <= followRange)) && entity.world === attacker.world;
+	fun isValidTarget(entity: LivingEntity?): Boolean = entity != null && entity.isAlive && !entity.isInvincible && !attacker.isSameTeamWith(entity) && (followRange == 0f || (followRange > 0f && entity.distanceTo(attacker) <= followRange)) && entity.isIn(attacker.world);
 }
