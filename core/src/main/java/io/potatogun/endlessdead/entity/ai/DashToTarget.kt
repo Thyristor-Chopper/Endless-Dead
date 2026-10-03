@@ -33,6 +33,7 @@ class DashToTarget<T>(private val attacker: T, private val dashDamage: Int, priv
 			return;
 		}
 
+		// 원래 when 문으로 돼 있었는데 코틀린 컴파일러가 멍청해서 이걸 그냥 if(state == State.XXX) ... else ...로 안 바꾸고 쓰잘데기없이 WhenMappings같은 이상한 거 만들어서 if문으로 변경
 		if(state == State.STANDBY) {
 			val distance = attacker.distanceTo(target);
 			if(distance < minDistance) {
