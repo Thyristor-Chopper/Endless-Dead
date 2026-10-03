@@ -96,6 +96,17 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		}.apply { hide() });
 		addOverlayWidget("replay_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Textures.primaryButton) {
 			clearSubtitles();
+			projectingWorld?.let {
+				if(it is SpecialWorld) {
+					val mainWorld = it.mainWorld;
+					if(mainWorld != null)
+						Gdx.app.postRunnable {
+							try {
+								mainWorld.dispose();
+							} catch(e: IllegalArgumentException) {}
+						};
+				}
+			};
 			GameManager.newGame();
 		}.apply { hide() });
 		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Textures.button) {
