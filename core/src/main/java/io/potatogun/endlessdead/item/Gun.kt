@@ -92,6 +92,12 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 	 * 남은 총탄 개수 (내부용)
 	 */
 	@JvmField protected var bullets = 0;  // 생성자에서 다시 초기화됨
+	/**
+	 * 총알 소진 시 자동 파괴 여부
+	 */
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("isAutoDestroyable")
+	protected open val autoDestroy = true;
 
 	init {
 		if(settings !is Properties)
@@ -112,11 +118,8 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 	}
 
 	override fun update(delta: Float) {
-		if(remainingCooldown > 0f) {
-			remainingCooldown -= delta;
-			if(remainingCooldown < 0f)
-				remainingCooldown = 0f;
-		}
+		if(remainingCooldown > 0f)
+			remainingCooldown = max2(remainingCooldown - delta, 0f);
 	}
 
 	/**
@@ -141,12 +144,14 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 
 			if(!infiniteBullets)
 				bullets--;
+		} else if(shooter is Player && remainingCooldown <= 0f) {  // 쿨타임 외 다른 이유로 발사 실패 시
+			world.projector?.drawSubtitles("Can't shoot now", color = Color.SALMON);
 		}
 
 		// ammo가 다 떨어진 총은 파괴
-		if(!infiniteBullets && bullets <= 0) {
+		if(!infiniteBullets && bullets <= 0 && autoDestroy) {
 			if(shooter is Player)
-				world.projector?.drawSubtitles("Gun destroyed; no more bullets left", color=Color.SALMON);
+				world.projector?.drawSubtitles("Gun destroyed; no more bullets left", color = Color.SALMON);
 			destroy();
 		}
 
