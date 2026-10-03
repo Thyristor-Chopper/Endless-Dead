@@ -37,11 +37,6 @@ object GameManager : Updatable {
 	 */
 	@JvmStatic val statistics = StatisticsManager();
 	/**
-	 * 게임 진행 시간 (진행 중에만)
-	 */
-	@JvmStatic var gameTime = 0f
-		private set;
-	/**
 	 * 월드, 개체 등에 종속되지 않는 전역 타이머 관리자
 	 */
 	@JvmStatic val globalTimers = TimerManager();
@@ -135,7 +130,6 @@ object GameManager : Updatable {
 		resetAll();
 		round = 0;
 		Window.titleBarStats = null;
-		gameTime = 0f;
 
 		// 상태 전환
 		state = GameState.STANDBY;
@@ -156,7 +150,6 @@ object GameManager : Updatable {
 		player.inventory.clear();
 		resetAll();
 		round++;
-		gameTime = 0f;
 
 		// 상태 전환
 		state = GameState.PLAYING;
@@ -215,23 +208,10 @@ object GameManager : Updatable {
 	}
 
 	override fun update(delta: Float) {
-		tickGameTime(delta);
 		tickGlobalTimers(delta);
 
 		if(state == GameState.PLAYING && !player.isAlive)
 			setGameOver();
-	}
-
-	/**
-	 * 게임 진행 시간을 증가한다.
-	 *
-	 * update에서 한 번만 쓰이기 때문에 인라인이다.
-	 * 
-	 * @param delta 직전 프레임과의 간격(초)
-	 */
-	private inline fun tickGameTime(delta: Float) {
-		if(state != GameState.PLAYING) return;
-		gameTime += delta;
 	}
 
 	/**

@@ -26,6 +26,8 @@ class EndlessDead : Game() {
 
 	// 게임 시간 갱신
 	override fun update(delta: Float) {
+		super.update(delta);
+
 		GameManager.update(delta);
 	}
 

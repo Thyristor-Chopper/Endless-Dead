@@ -20,6 +20,7 @@ import io.potatogun.endlessdead.item.Shotgun;
 import io.potatogun.endlessdead.item.TurretInstaller;
 import io.potatogun.endlessdead.spawner.Spawner;
 import io.potatogun.endlessdead.spawner.TriggermanSpawner;
+import io.potatogun.gdxhelper.UpdateListeners;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.collections.filter;
 import io.potatogun.gdxhelper.collections.randomOrNull;
@@ -96,6 +97,8 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 			randomContainer?.putItem(generateLoot());
 			Pools.entityArray.free(emptyContainers);
 		});
+
+		UpdateListeners.register(this) { GameManager.isPlaying };
 	}
 
 	/**
@@ -160,5 +163,6 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 	override fun dispose() {
 		super.dispose();
 		tileTexture.dispose();
+		UpdateListeners.unregister(this);
 	}
 }

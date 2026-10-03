@@ -27,6 +27,7 @@ import io.potatogun.endlessdead.item.TurretInstaller;
 import io.potatogun.endlessdead.spawner.GiantZombieSpawner;
 import io.potatogun.endlessdead.spawner.Spawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
+import io.potatogun.gdxhelper.UpdateListeners;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.collections.filter;
 import io.potatogun.gdxhelper.collections.randomOrNull;
@@ -144,6 +145,8 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 			randomContainer?.putItem(generateLoot(false));
 			Pools.entityArray.free(emptyContainers);
 		});
+
+		UpdateListeners.register(this) { GameManager.isPlaying };
 	}
 
 	/**
@@ -244,5 +247,6 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 		super.dispose();
 		tileTexture.dispose();
 		specialWorld?.dispose();
+		UpdateListeners.unregister(this);
 	}
 }

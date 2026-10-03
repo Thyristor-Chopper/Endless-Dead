@@ -10,9 +10,11 @@ import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.Player;
+import io.potatogun.gdxhelper.UpdateListeners;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
+import io.potatogun.gdxhelper.util.Updatable;
 import io.potatogun.gdxhelper.util.max2;
 
 import java.lang.Math.toRadians;
@@ -28,7 +30,7 @@ import kotlin.math.sin;
  * @param settings 총 옵션
  * @throws IllegalArgumentException 총 옵션이 잘못된 경우
  */
-abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(id, name, settings), Shootable, LimitedUsable, Cooldownable {
+abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(id, name, settings), Shootable, LimitedUsable, Cooldownable, Updatable {
 	override val isContinuousUseAllowed = false;
 	/**
 	 * 총알 피해량
@@ -53,11 +55,21 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 		get() = fireInterval;
 	@JvmField protected val fireInterval: Float;  // X같은 코틀린 property must be initialized, be final, or be abstract
 	/**
+	 * 남은 쿨타임
+	 */
+	final override var remainingCooldown = 0f
+		private set;
+	/**
 	 * 최대 총알 개수
 	 */
 	override val maxUses: Int
 		get() = maxBullets;
 	@JvmField protected val maxBullets: Int;  // property must be initialized, be final, or be abstract 때문에 중복해서 선언
+	/**
+	 * 남은 총탄 개수 (외부용 API)
+	 */
+	override val remainingUses: Int
+		get() = bullets;
 	/**
 	 * 무한 총알 여부
 	 */
@@ -75,25 +87,11 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 	 */
 	@get:JvmName("canFire")
 	val canFire: Boolean
-		get() = (fireInterval == 0f || GameManager.gameTime >= lastShoot + fireInterval) && (infiniteBullets || bullets > 0);
+		get() = (fireInterval == 0f || remainingCooldown <= 0f) && (infiniteBullets || bullets > 0);
 	/**
 	 * 남은 총탄 개수 (내부용)
 	 */
 	@JvmField protected var bullets = 0;  // 생성자에서 다시 초기화됨
-	/**
-	 * 남은 총탄 개수 (외부용 API)
-	 */
-	override val remainingUses: Int
-		get() = bullets;
-	/**
-	 * 남은 쿨타임
-	 */
-	override val remainingCooldown: Float
-		get() = if(fireInterval == 0f) 0f else max2(lastShoot + fireInterval - GameManager.gameTime, 0f);
-	/**
-	 * 마지막으로 총을 쏜 시간
-	 */
-	private var lastShoot = 0f;
 
 	init {
 		if(settings !is Properties)
@@ -109,6 +107,16 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 		infiniteBullets = settings.isBulletsInfinite;
 		bulletSize = settings.bulletSize;
 		bulletTexture = settings.bulletFaceTexture;
+
+		UpdateListeners.register(this) { GameManager.isPlaying };
+	}
+
+	override fun update(delta: Float) {
+		if(remainingCooldown > 0f) {
+			remainingCooldown -= delta;
+			if(remainingCooldown < 0f)
+				remainingCooldown = 0f;
+		}
 	}
 
 	/**
@@ -128,8 +136,8 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 			world.entities.add(bullet);
 			shooted = 1;
 
-			if(interval != 0f)
-				lastShoot = GameManager.gameTime;
+			if(fireInterval > 0f)
+				remainingCooldown = fireInterval;
 
 			if(!infiniteBullets)
 				bullets--;
@@ -165,6 +173,11 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 		val result = shoot(target, user) > 0;
 		Pools.position.free(target);
 		return result;
+	}
+
+	override fun destroy(): Boolean {
+		UpdateListeners.unregister(this);
+		return super.destroy();
 	}
 
 	/**
