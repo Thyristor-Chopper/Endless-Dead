@@ -16,7 +16,7 @@ for /r %%i in (*.kt *.java *.gradle *.gradle.kts *.cmd *.sh *.bat *.gitmodules *
 	)
 )
 
-for /r %%i in (*.bmp *.dib *.pcx *.jpg *.tif *.gif *.png *.tga) do (
+for /r %%i in (*.bmp *.dib *.pcx *.jpg *.tif *.gif *.png *.tga *.exe *.com *.pif *.lnk) do (
 	echo Packing: %%i
 	echo ---- file: %%i ---->>src_packed.txt
 	echo(>>src_packed.txt
