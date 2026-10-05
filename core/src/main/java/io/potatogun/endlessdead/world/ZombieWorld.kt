@@ -138,6 +138,9 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 		if(Random.nextInt(10000) + 1 <= 1)  // 0.01% 확률로 왕좀비도 나오는 월드
 			spawners.add(GiantZombieSpawner(this));
 
+		// 등록된 개체 커밋
+		entities.commit();
+
 		// 10초마다 빈 상자 하나 리필
 		timers.register(RepeatingTimer(10f) {
 			val emptyContainers = Pools.entityArray.obtain();
