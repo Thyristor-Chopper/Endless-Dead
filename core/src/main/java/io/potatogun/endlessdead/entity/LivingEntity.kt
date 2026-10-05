@@ -138,7 +138,7 @@ abstract class LivingEntity @JvmOverloads constructor(world: World? = null, name
 		} else {
 			// 무적 피격 타이머 활성화 (중복 활성화/갱신 방지)
 			if(!isInvincibilityTimerActive && damageInvincibilityDuration > 0f) {
-				invincibilityTimer = damageInvincibilityDuration;
+				invincibilityTimer = damageInvincibilityDuration;  // 한 대 맞았으니 지정된 시간만큼 무적 켤게!
 				accumulatedDamage = 0;
 			}
 

@@ -91,7 +91,7 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 	/**
 	 * 남은 총탄 개수 (내부용)
 	 */
-	@JvmField protected var bullets = 0;  // 생성자에서 다시 초기화됨
+	@JvmField protected var bullets = 0;  // 샷건이라는 하위클래스에서도 사용해야할 것 같아 private를 protected로 변경
 	/**
 	 * 총알 소진 시 자동 파괴 여부
 	 */
