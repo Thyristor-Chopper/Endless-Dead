@@ -101,7 +101,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 				if(it is SpecialWorld) {
 					val mainWorld = it.mainWorld;
 					if(mainWorld != null)
-						Gdx.app.postRunnable { safeRun { mainWorld.dispose() } };
+						Gdx.app.postRunnable { safeRun<IllegalArgumentException> { mainWorld.dispose() } };
 				}
 			};
 			GameManager.newGame();
@@ -111,7 +111,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 				if(it is SpecialWorld) {
 					val mainWorld = it.mainWorld;
 					if(mainWorld != null)
-						Gdx.app.postRunnable { safeRun { mainWorld.dispose() } };
+						Gdx.app.postRunnable { safeRun<IllegalArgumentException> { mainWorld.dispose() } };
 				}
 			};
 			unloadWorld(dispose = true);
@@ -123,7 +123,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 				if(it is SpecialWorld) {
 					val mainWorld = it.mainWorld;
 					if(mainWorld != null)
-						Gdx.app.postRunnable { safeRun { mainWorld.dispose() } };
+						Gdx.app.postRunnable { safeRun<IllegalArgumentException> { mainWorld.dispose() } };
 				}
 			};
 			unloadWorld(dispose = true);
