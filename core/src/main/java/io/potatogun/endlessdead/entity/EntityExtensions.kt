@@ -39,7 +39,9 @@ import java.util.function.Consumer;
  *
  * @param callback 실행할 서브루틴
  */
-@SinceKotlin("9999.9") fun Entity.forEachNearby(callback: Consumer<Entity>) {
+@Deprecated(message = "using this function is discouraged due to lambda overhead such as variable capturing", level = DeprecationLevel.WARNING)
+@SinceKotlin("9999.9")
+fun Entity.forEachNearby(callback: Consumer<Entity>) {
 	forEachNearby(callback::accept);
 }
 
