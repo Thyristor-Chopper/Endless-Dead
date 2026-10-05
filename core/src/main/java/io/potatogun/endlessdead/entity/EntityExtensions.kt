@@ -3,6 +3,7 @@ package io.potatogun.endlessdead.entity;
 
 import io.potatogun.endlessdead.Pools;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.pools.use;
 
 import java.util.function.Consumer;
 
@@ -22,16 +23,13 @@ import java.util.function.Consumer;
 @JvmSynthetic inline fun Entity.forEachNearby(callback: (Entity) -> Unit) {
 	val world = this.world;
 	if(world == null) return;
-	val nearbyEntities = Pools.entityArray.obtain();
-	try {
+	Pools.entityArray.use { nearbyEntities ->
 		world.entities.getNearby(this, nearbyEntities);
 		for(i in 0 until nearbyEntities.size) {
 			val entity = nearbyEntities.items[i];
 			callback(entity);
 		}
-	} finally {
-		Pools.entityArray.free(nearbyEntities);
-	}
+	};
 }
 
 /**

@@ -34,6 +34,7 @@ import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.util.parseSeconds;
 import io.potatogun.gdxhelper.util.rgb;
+import io.potatogun.gdxhelper.util.safeRun;
 import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
 import io.potatogun.gdxhelper.world.World;
@@ -100,11 +101,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 				if(it is SpecialWorld) {
 					val mainWorld = it.mainWorld;
 					if(mainWorld != null)
-						Gdx.app.postRunnable {
-							try {
-								mainWorld.dispose();
-							} catch(e: IllegalArgumentException) {}
-						};
+						Gdx.app.postRunnable { safeRun { mainWorld.dispose() } };
 				}
 			};
 			GameManager.newGame();
@@ -114,11 +111,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 				if(it is SpecialWorld) {
 					val mainWorld = it.mainWorld;
 					if(mainWorld != null)
-						Gdx.app.postRunnable {
-							try {
-								mainWorld.dispose();
-							} catch(e: IllegalArgumentException) {}
-						};
+						Gdx.app.postRunnable { safeRun { mainWorld.dispose() } };
 				}
 			};
 			unloadWorld(dispose = true);
@@ -130,11 +123,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 				if(it is SpecialWorld) {
 					val mainWorld = it.mainWorld;
 					if(mainWorld != null)
-						Gdx.app.postRunnable {
-							try {
-								mainWorld.dispose();
-							} catch(e: IllegalArgumentException) {}
-						};
+						Gdx.app.postRunnable { safeRun { mainWorld.dispose() } };
 				}
 			};
 			unloadWorld(dispose = true);
