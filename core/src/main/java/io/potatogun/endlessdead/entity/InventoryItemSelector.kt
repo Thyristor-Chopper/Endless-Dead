@@ -13,11 +13,11 @@ import io.potatogun.endlessdead.item.Item;
 class InventoryItemSelector(private val inventory: Inventory) : ItemSelectable {
 	override val selectedItem: Item?
 		get() {
-			if(selectedItemIndex == -1) return null;
+			val size = inventory.size;
+			if(selectedItemIndex < 0 || selectedItemIndex >= size) return null;
 			try {
 				return inventory.getItem(selectedItemIndex);
 			} catch(e: IndexOutOfBoundsException) {
-				val size = inventory.size;
 				if(size == 0) {
 					selectedItemIndex = -1;
 					return null;
