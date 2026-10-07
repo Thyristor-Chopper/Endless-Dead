@@ -16,6 +16,7 @@ import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.world.World;
 
 import java.lang.Math.toRadians;
+import java.security.SecureRandom;
 
 import kotlin.math.cos;
 import kotlin.math.sin;
@@ -34,6 +35,7 @@ class TriggermanSummoner(world: World, x: Float, y: Float) : Summoner(world, "Tr
 	private val dropComponent = ItemDropComponent(this);
 	override val summonInterval = 5f;
 	override val killScore = 10000;
+	private val secureRandom = SecureRandom();
 
 	init {
 		setOriginOffsetY(-3f);
@@ -44,14 +46,14 @@ class TriggermanSummoner(world: World, x: Float, y: Float) : Summoner(world, "Tr
 		});
 
 		// 처치 시 보상
-		if(Random.nextInt(4) == 0)  // 25% 확률로 터보 스트림라이너
+		if(secureRandom.nextInt(4) == 0)  // 25% 확률로 터보 스트림라이너
 			inventory.addItem(TurboStreamliner());
-		for(i in 1..(Random.nextInt(21) + 10))  // 10~30개의 포탑설치기
+		for(i in 1..(secureRandom.nextInt(21) + 10))  // 10~30개의 포탑설치기
 			inventory.addItem(TurretInstaller());
 	}
 
 	override fun summon() {
-		if(Random.nextInt(2) != 0) return;  // 50% 확률로 소환
+		if(secureRandom.nextInt(2) != 0) return;  // 50% 확률로 소환
 		val world = level;
 		if(world == null) return;
 

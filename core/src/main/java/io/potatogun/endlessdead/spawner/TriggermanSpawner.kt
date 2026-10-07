@@ -3,9 +3,10 @@ package io.potatogun.endlessdead.spawner;
 import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.Triggerman;
 import io.potatogun.gdxhelper.position.distanceTo;
+import io.potatogun.gdxhelper.util.nextFloat;
 import io.potatogun.gdxhelper.world.World;
 
-import kotlin.random.Random;
+import java.security.SecureRandom;
 
 /**
  * 총잡이 소환 시스템 - 총잡이 월드에서 사용됨
@@ -14,9 +15,10 @@ import kotlin.random.Random;
  */
 class TriggermanSpawner(world: World) : Spawner(world) {
 	override val spawnInterval = 5f;
+	private val random = SecureRandom();
 
 	override fun spawn() {
-		if(Random.nextInt(2) != 0) return;  // 50% 확률로 소환
+		if(random.nextInt(2) != 0) return;  // 50% 확률로 소환
 
 		val triggerman = Triggerman(world, 0f, 0f);
 		var loopCount = 0;
@@ -24,8 +26,8 @@ class TriggermanSpawner(world: World) : Spawner(world) {
 		val position = Pools.position.obtain();
 		do {
 			position.set(
-				Random.nextFloat() * (world.width - 140f) + 70f,
-				Random.nextFloat() * (world.height - 140f) + 70f
+				random.nextFloat(70f, world.width - 70f),
+				random.nextFloat(70f, world.height - 70f)
 			);
 			loopCount++;
 		} while(target != null && position.distanceTo(target) < 408f && loopCount < 30);
