@@ -150,7 +150,7 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 			Pools.entityArray.free(emptyContainers);
 		});
 
-		UpdateListeners.register(this) { GameManager.isPlaying && GameManager.player.isIn(this) };
+		UpdateListeners.register(this) { GameManager.isPlaying && GameManager.player.isIn(this) };  // 람다 this 캡처는 등록 시 한 번만 발생한다고 함.
 	}
 
 	/**
