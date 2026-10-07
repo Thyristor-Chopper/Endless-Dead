@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Disposable;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.entity.InventoryHolder;
@@ -38,5 +39,8 @@ class DroppedItem(world: World, x: Float, y: Float, val item: Item) : Entity(wor
 	}
 
 	// 개체가 텍스처를 갖지 않고 아이템의 텍스처를 빌려 쓸 뿐이라 dispose하면 안 됨
-	override fun dispose() {}
+	override fun dispose() {
+		if(item is Disposable)
+			item.dispose();
+	}
 }
