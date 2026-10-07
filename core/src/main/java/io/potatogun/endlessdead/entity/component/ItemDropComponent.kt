@@ -45,8 +45,9 @@ class ItemDropComponent<T>(private val entity: T) where T : Entity, T : Inventor
 	 * @return 버린 아이템 수
 	 */
 	fun dropAll(): Int {
+		val inventory = entity.inventory;
 		var dropped = 0;
-		Pools.itemArray.use { items ->
+		Pools.itemArray.use(inventory.size) { items ->
 			entity.inventory.getItems(items);
 			for(i in 0 until items.size) {
 				val item = items[i];

@@ -26,6 +26,7 @@ import io.potatogun.gdxhelper.collections.filter;
 import io.potatogun.gdxhelper.collections.randomOrNull;
 import io.potatogun.gdxhelper.entity.isIn;
 import io.potatogun.gdxhelper.entity.manager.SpatialGrid;
+import io.potatogun.gdxhelper.pools.use;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
@@ -54,12 +55,14 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 	// 이 월드의 시간
 	override var time = 0f
 		private set;
+	private val containerCount: Int;
 
 	init {
 		// 30~80개의 상자를 무작위로 배치
 		val intWidth = this.width.toInt();
 		val intHeight = this.height.toInt();
-		for(i in 0 until Random.nextInt(51) + 30) {
+		containerCount = Random.nextInt(51) + 30;
+		for(i in 0 until containerCount) {
 			val x = Random.nextInt(intWidth).toFloat();
 			val y = Random.nextInt(intHeight).toFloat();
 			val item: Item = generateLoot();  // 들어있을 아이템
@@ -92,11 +95,11 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 		spawners.add(TriggermanSpawner(this));
 
 		timers.register(RepeatingTimer(10f) {
-			val emptyContainers = Pools.entityArray.obtain();
-			entities.view.filter(emptyContainers) { it is Container && it.inventory.isEmpty };
-			val randomContainer = emptyContainers.randomOrNull() as Container?;
-			randomContainer?.putItem(generateLoot());
-			Pools.entityArray.free(emptyContainers);
+			Pools.entityArray.use(containerCount) { emptyContainers ->
+				entities.view.filter(emptyContainers) { it is Container && it.inventory.isEmpty };
+				val randomContainer = emptyContainers.randomOrNull() as Container?;
+				randomContainer?.putItem(generateLoot());
+			};
 		});
 
 		UpdateListeners.register(this) { GameManager.isPlaying && GameManager.player.isIn(this) };

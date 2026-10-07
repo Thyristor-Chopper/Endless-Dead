@@ -17,8 +17,7 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 	private val inventory = GdxArray<Item>(true, if(maxSlots >= 0) maxSlots else 128, ArraySuppliers.item);
 	@Suppress("INAPPLICABLE_JVM_NAME")
 	@get:JvmName("size")
-	override val size: Int
-		get() = inventory.size;
+	override val size: Int by inventory::size;
 	override val isEmpty: Boolean
 		get() = (inventory.size == 0);
 
