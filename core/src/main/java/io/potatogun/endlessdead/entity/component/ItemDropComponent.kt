@@ -42,16 +42,18 @@ class ItemDropComponent<T>(private val entity: T) where T : Entity, T : Inventor
 	/**
 	 * 인벤토리의 모든 아이템을 떨군다. (주로 죽었을 때 LivingEntity#takeDamage에서 호출)
 	 *
-	 * @return 성공 여부
+	 * @return 버린 아이템 수
 	 */
-	fun dropAll(): Boolean {
+	fun dropAll(): Int {
+		var dropped = 0;
 		Pools.itemArray.use { items ->
 			entity.inventory.getItems(items);
 			for(i in 0 until items.size) {
 				val item = items[i];
-				dropItem(item);
+				if(dropItem(item))
+					dropped++;
 			}
 		};
-		return true;
+		return dropped;
 	}
 }
