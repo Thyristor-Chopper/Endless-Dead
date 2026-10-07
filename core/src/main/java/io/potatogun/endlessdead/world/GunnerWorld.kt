@@ -35,9 +35,10 @@ import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.world.TimedWorld;
 import io.potatogun.gdxhelper.world.World;
 
+import java.security.SecureRandom;
+
 import kotlin.math.ceil;
 import kotlin.math.floor;
-import kotlin.random.Random;
 
 /**
  * 총잡이나 포탑 등이 메인 주인공인 월드
@@ -56,17 +57,18 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 	override var time = 0f
 		private set;
 	private val containerCount: Int;
+	private val random = SecureRandom();
 
 	init {
 		// 30~80개의 상자를 무작위로 배치
 		val intWidth = this.width.toInt();
 		val intHeight = this.height.toInt();
-		containerCount = Random.nextInt(51) + 30;
+		containerCount = random.nextInt(51) + 30;
 		for(i in 0 until containerCount) {
-			val x = Random.nextInt(intWidth).toFloat();
-			val y = Random.nextInt(intHeight).toFloat();
+			val x = random.nextInt(intWidth).toFloat();
+			val y = random.nextInt(intHeight).toFloat();
 			val item: Item = generateLoot();  // 들어있을 아이템
-			val rand = Random.nextInt(100) + 1;
+			val rand = random.nextInt(100) + 1;
 			entities.add(when {
 				rand >= 98	-> TrapChest(this, x, y, item)		// 3% 확률
 				else		-> Chest(this, x, y, item)			// 97% 확률
@@ -74,23 +76,23 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 		}
 
 		// 5% 확률로 적 공격 포탑(무적)을 임의 위치에 1~3대 설치
-		if(Random.nextInt(100) + 1 <= 5)
-			for(i in 1..(Random.nextInt(3) + 1))
-				entities.add(FriendlyTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, true));
+		if(random.nextInt(100) + 1 <= 5)
+			for(i in 1..(random.nextInt(3) + 1))
+				entities.add(FriendlyTurret(this, random.nextInt((width - 300f).toInt()).toFloat() + 150f, random.nextInt((height - 300f).toInt()).toFloat() + 150f, true));
 
 		// 각각 50% 확률로 플레이어 공격 포탑(파괴 불가)을 월드의 각 모퉁이에 설치
-		if(Random.nextInt(2) == 0) entities.add(HostileTurret(this, 100f, 100f, true).apply { rotate(315f) });
-		if(Random.nextInt(2) == 0) entities.add(HostileTurret(this, width - 100f, 100f, true).apply { rotate(45f) });
-		if(Random.nextInt(2) == 0) entities.add(HostileTurret(this, 100f, height - 100f, true).apply { rotate(225f) });
-		if(Random.nextInt(2) == 0) entities.add(HostileTurret(this, width - 100f, height - 100f, true).apply { rotate(135f) });
+		if(random.nextInt(2) == 0) entities.add(HostileTurret(this, 100f, 100f, true).apply { rotate(315f) });
+		if(random.nextInt(2) == 0) entities.add(HostileTurret(this, width - 100f, 100f, true).apply { rotate(45f) });
+		if(random.nextInt(2) == 0) entities.add(HostileTurret(this, 100f, height - 100f, true).apply { rotate(225f) });
+		if(random.nextInt(2) == 0) entities.add(HostileTurret(this, width - 100f, height - 100f, true).apply { rotate(135f) });
 
 		// 각각 5% 확률로 플레이어 공격 포탑(공격, 파괴 가능)을 임의 위치에 1~3대 설치
 		for(i in 1..3)
-			if(Random.nextInt(100) + 1 <= 5)
-				entities.add(HostileTurret(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f));
+			if(random.nextInt(100) + 1 <= 5)
+				entities.add(HostileTurret(this, random.nextInt((width - 300f).toInt()).toFloat() + 150f, random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 
 		if(mainWorld != null)
-			entities.add(Portal(this, Random.nextInt((width - 300f).toInt()).toFloat() + 150f, Random.nextInt((height - 300f).toInt()).toFloat() + 150f, mainWorld));
+			entities.add(Portal(this, random.nextInt((width - 300f).toInt()).toFloat() + 150f, random.nextInt((height - 300f).toInt()).toFloat() + 150f, mainWorld));
 
 		spawners.add(TriggermanSpawner(this));
 
@@ -109,7 +111,7 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다.
 	 */
 	private fun generateLoot(): Item {
-		val rand = Random.nextInt(100) + 1;  // 1~100
+		val rand = random.nextInt(100) + 1;  // 1~100
 		return when {
 			rand <= 40	-> MachineGun()			// 40% 확률
 			rand <= 80	-> Shotgun()			// 40% 확률
