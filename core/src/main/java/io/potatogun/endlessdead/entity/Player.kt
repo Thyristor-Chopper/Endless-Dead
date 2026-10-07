@@ -1,11 +1,9 @@
 package io.potatogun.endlessdead.entity;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.GameManager;
-import io.potatogun.endlessdead.entity.Triggerman;
 import io.potatogun.endlessdead.entity.forEachNearby;
 import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.entity.component.ItemDropComponent;
@@ -13,9 +11,6 @@ import io.potatogun.endlessdead.entity.component.ItemPickupComponent;
 import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.entity.listener.AttackListener;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
-import io.potatogun.endlessdead.entity.summoner.StreamZombieSummoner;
-import io.potatogun.endlessdead.entity.summoner.TriggermanSummoner;
-import io.potatogun.endlessdead.entity.turret.HostileTurret;
 import io.potatogun.endlessdead.entity.zombie.Zombie;
 import io.potatogun.endlessdead.inventory.Inventory;
 import io.potatogun.endlessdead.inventory.LinearInventory;
@@ -25,7 +20,6 @@ import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.endlessdead.item.Usable;
 import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.Timer;

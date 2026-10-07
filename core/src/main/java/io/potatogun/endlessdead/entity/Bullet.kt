@@ -7,7 +7,6 @@ import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.forEachNearby;
 import io.potatogun.endlessdead.entity.component.MoveComponent;
-import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.util.max2;

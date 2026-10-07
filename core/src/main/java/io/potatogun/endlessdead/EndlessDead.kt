@@ -1,7 +1,5 @@
 package io.potatogun.endlessdead;
 
-import com.badlogic.gdx.Gdx;
-
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.screen.Title;
 import io.potatogun.endlessdead.screen.ZombieWorldProjector;
