@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.item;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Disposable;
 
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
@@ -30,7 +31,7 @@ import kotlin.math.sin;
  * @param settings 총 옵션
  * @throws IllegalArgumentException 총 옵션이 잘못된 경우
  */
-abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(id, name, settings), Shootable, LimitedUsable, Cooldownable, Updatable {
+abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(id, name, settings), Shootable, LimitedUsable, Cooldownable, Updatable, Disposable {
 	override val isContinuousUseAllowed = false;
 	/**
 	 * 총알 피해량
@@ -180,9 +181,8 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 		return result;
 	}
 
-	override fun destroy(): Boolean {
+	override fun dispose() {
 		UpdateListeners.unregister(this);
-		return super.destroy();
 	}
 
 	/**

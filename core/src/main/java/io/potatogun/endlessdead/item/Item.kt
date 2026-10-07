@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead.item;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectSet;
 
@@ -47,6 +48,10 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 	 * @return 성공 여부
 	 */
 	open fun destroy(): Boolean {
+		// 자원 등 해제
+		if(this is Disposable)
+			dispose();
+
 		return inventory?.removeItem(this) ?: true;  // 소유자가 없는 아이템은 그냥 없어지는 것이기 때문에 true로
 
 		// 나머지는 jvm이나 달빅이 알아서 gc 해주겠지.

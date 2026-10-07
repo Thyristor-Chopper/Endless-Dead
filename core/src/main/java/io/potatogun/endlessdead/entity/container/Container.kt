@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.entity.container;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.Disposable;
 
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.entity.Player;
@@ -95,5 +96,9 @@ abstract class Container(world: World? = null, name: String, x: Float = 0f, y: F
 		super.dispose();
 		playerItemTexture?.let { safeDispose(it) };
 		emptyTexture?.let { safeDispose(it) };
+		containedItem?.let {
+			if(it is Disposable)
+				it.dispose();
+		};
 	}
 }
