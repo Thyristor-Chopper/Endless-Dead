@@ -8,7 +8,7 @@ import io.potatogun.gdxhelper.world.World;
 import kotlin.random.Random;
 
 /**
- * 총잡이 소환 시스템
+ * 총잡이 소환 시스템 - 총잡이 월드에서 사용됨
  *
  * @property world 소속 월드
  */
