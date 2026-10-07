@@ -1,10 +1,12 @@
 package io.potatogun.endlessdead.entity.component;
 
 import io.potatogun.endlessdead.Constants;
+import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.DroppedItem;
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.pools.use;
 import io.potatogun.gdxhelper.util.max2;
 
 import java.lang.Math.toRadians;
@@ -43,7 +45,13 @@ class ItemDropComponent<T>(private val entity: T) where T : Entity, T : Inventor
 	 * @return 성공 여부
 	 */
 	fun dropAll(): Boolean {
-		entity.inventory.forEachItemsReverse { dropItem(it) };
+		Pools.itemArray.use { items ->
+			entity.inventory.getItems(items);
+			for(i in 0 until items.size) {
+				val item = items[i];
+				dropItem(item);
+			}
+		};
 		return true;
 	}
 }
