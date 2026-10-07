@@ -54,7 +54,11 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 		return true;
 	}
 
-	override fun getItem(index: Int): Item = inventory.items[index];
+	override fun getItem(index: Int): Item {
+		if(index < 0 || index >= inventory.size)
+			throw IndexOutOfBoundsException("index out of bounds");
+		return inventory.items[index];
+	}
 
 	override fun hasItem(item: Item): Boolean = inventory.contains(item, true);
 
