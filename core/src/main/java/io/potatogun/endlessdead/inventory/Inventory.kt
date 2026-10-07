@@ -91,20 +91,6 @@ interface Inventory {
 	fun getItems(output: GdxArray<Item>);
 
 	/**
-	 * 모든 아이템을 순회한다.
-	 *
-	 * @param callback 실행할 서브루틴
-	 */
-	fun forEachItems(callback: Consumer<Item>);
-
-	/**
-	 * 모든 아이템을 역순으로 순회한다.
-	 *
-	 * @param callback 실행할 서브루틴
-	 */
-	fun forEachItemsReverse(callback: Consumer<Item>);
-
-	/**
 	 * 인벤토리 비우기
 	 *
 	 * @return 성공 여부

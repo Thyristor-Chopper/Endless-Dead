@@ -64,14 +64,6 @@ class SingleItemInventory : ObservableInventory() {
 		inventoryItem?.let { output.add(it) };
 	}
 
-	override fun forEachItems(callback: Consumer<Item>) {
-		inventoryItem?.let { callback.accept(it) };
-	}
-
-	override fun forEachItemsReverse(callback: Consumer<Item>) {
-		inventoryItem?.let { callback.accept(it) };
-	}
-
 	override fun clear() {
 		inventoryItem?.let {
 			it.inventory = null;

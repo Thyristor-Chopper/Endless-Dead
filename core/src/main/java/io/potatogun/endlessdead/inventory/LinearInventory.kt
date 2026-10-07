@@ -83,16 +83,6 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 			output.add(inventory.items[i]);
 	}
 
-	override fun forEachItems(callback: Consumer<Item>) {
-		for(i in 0 until inventory.size)
-			callback.accept(inventory.items[i]);
-	}
-
-	override fun forEachItemsReverse(callback: Consumer<Item>) {
-		for(i in (inventory.size - 1) downTo 0)
-			callback.accept(inventory.items[i]);
-	}
-
 	override fun clear() {
 		for(i in 0 until inventory.size) {
 			inventory.items[i].inventory = null;

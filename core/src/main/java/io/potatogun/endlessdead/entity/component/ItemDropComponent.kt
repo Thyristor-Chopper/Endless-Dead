@@ -1,12 +1,11 @@
 package io.potatogun.endlessdead.entity.component;
 
 import io.potatogun.endlessdead.Constants;
-import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.entity.DroppedItem;
 import io.potatogun.endlessdead.entity.InventoryHolder;
+import io.potatogun.endlessdead.inventory.forEach;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.pools.use;
 import io.potatogun.gdxhelper.util.max2;
 
 import java.lang.Math.toRadians;
@@ -42,18 +41,13 @@ class ItemDropComponent<T>(private val entity: T) where T : Entity, T : Inventor
 	/**
 	 * 인벤토리의 모든 아이템을 떨군다. (주로 죽었을 때 LivingEntity#takeDamage에서 호출)
 	 *
-	 * @return 버린 아이템 수
+	 * @return 성공 여부
 	 */
 	fun dropAll(): Int {
-		val inventory = entity.inventory;
 		var dropped = 0;
-		Pools.itemArray.use(inventory.size) { items ->
-			entity.inventory.getItems(items);
-			for(i in 0 until items.size) {
-				val item = items[i];
-				if(dropItem(item))
-					dropped++;
-			}
+		entity.inventory.forEach {
+			if(dropItem(it))
+				dropped++;
 		};
 		return dropped;
 	}

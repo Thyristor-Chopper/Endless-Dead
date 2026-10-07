@@ -178,24 +178,6 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 			}
 	}
 
-	override fun forEachItems(callback: Consumer<Item>) {
-		for(i in 0 until rows)
-			for(j in 0 until columns) {
-				val item = inventory.items[i].items[j];
-				if(item != null)
-					callback.accept(item);
-			}
-	}
-
-	override fun forEachItemsReverse(callback: Consumer<Item>) {
-		for(i in (rows - 1) downTo 0)
-			for(j in (columns - 1) downTo 0) {
-				val item = inventory.items[i].items[j];
-				if(item != null)
-					callback.accept(item);
-			}
-	}
-
 	override fun clear() {
 		for(i in 0 until rows)
 			for(j in 0 until columns) {
