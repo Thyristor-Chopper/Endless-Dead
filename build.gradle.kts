@@ -38,6 +38,9 @@ subprojects {
 			//   -Xno-call-assertions: 자바 함수 호출 반환 값에 대해 null 검사를 제거한다. 이 정도는 내가 알아서 한다. (-Xno-param-assertions는 desktop을 제외하고는 안전을 위해 생략)
 			//   -Xno-receiver-assertions: 인라인 함수나 확장함수 호출 시 매개변수 null 검사를 제거한다. 어차피 함수 body 내에서 null 검사를 또 수행하며 인라인 함수는 컴파일러가 먼저 잡는다.
 			freeCompilerArgs.addAll(listOf("-Xlambdas=indy", "-Xstring-concat=indy", "-Xno-call-assertions", "-Xno-receiver-assertions", "-Xno-source-debug-extension"))
+
+			// NOTHING_TO_INLINE - 어차피 jvm이 자동으로 인라인 하고 뭐 효과가 미미하고 어쩌구 저쩌구 하는데 그건 내가 판단할 일이다. 내가 알아서 로우레벨까지 관리하고 신경 쓴다고.
+			// UNCHECKED_CAST - 자바 컴파일러도 입 다물고 조용히 있는데 코틀린만 참 귀찮게 한다니까.
 			freeCompilerArgs.addAll(listOf("-Xwarning-level=NOTHING_TO_INLINE:disabled", "-Xwarning-level=UNCHECKED_CAST:disabled"))
 
 			// SinceKotlin 트릭으로 자바 전용 API를 코틀린에서만 숨길 때 나오는 경고 죽이기
