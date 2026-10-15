@@ -59,9 +59,6 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 	 */
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
 	// 체스판 배경 설정 (drawBackground()에서 사용)
-	//   이게 없으면 검은 배경뿐이라 카메라(WASD) 이동이 눈에 안 보인다.
-	//   tile.bmp는 흰색 64x64 정사각형 한 장. 같은 텍스처에 batch.color를
-	//   바꿔가며 두 가지 색으로 그리는 트릭(틴트)으로 체스판을 만든다.
 	private val tileTexture = loadTexture("world/grass.bmp");
 	private val bgColorDark = rgb(38, 92, 38);
 	private val bgColorLight = rgb(38, 107, 38);
