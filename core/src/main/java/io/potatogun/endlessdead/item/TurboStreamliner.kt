@@ -8,7 +8,9 @@ import io.potatogun.gdxhelper.util.max2;
  * 총잡이 서모너를 (굳이...) 처치했을 때 보상으로 주는 총
  */
 class TurboStreamliner : Gun("turbo_streamliner", "Turbo Streamliner", Gun.Properties(7, 850f).penetrableBullets().fireInterval(0.04f).maxBullets(500).rarity(Rarity.RARE)) {
-	override val isContinuousUseAllowed = true;
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("isContinuousUseAllowed")
+	override val allowContinuousUse = true;
 	@Suppress("INAPPLICABLE_JVM_NAME")
 	@get:JvmName("isAutoDestroyable")
 	override val autoDestroy = false;

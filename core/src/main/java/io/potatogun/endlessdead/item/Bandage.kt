@@ -11,7 +11,9 @@ import io.potatogun.gdxhelper.screen.drawSubtitles;
  * 붕대 - 회복 아이템
  */
 class Bandage : Item("bandage", "Bandage"), Usable {
-	override val isContinuousUseAllowed = false;
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("isContinuousUseAllowed")
+	override val allowContinuousUse = false;
 
 	// 붕대를 사용하여 체력을 10만큼 회복한다.
 	override fun use(user: ItemSelectable): Boolean {

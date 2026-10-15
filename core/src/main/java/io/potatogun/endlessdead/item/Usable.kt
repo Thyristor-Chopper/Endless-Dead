@@ -9,7 +9,9 @@ interface Usable {
 	/**
 	 * 마우스를 꾹 누를 때 연속으로 발동 가능한지의 여부
 	 */
-	val isContinuousUseAllowed: Boolean;
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("isContinuousUseAllowed")
+	val allowContinuousUse: Boolean;
 
 	/**
 	 * 아이템을 사용한다.

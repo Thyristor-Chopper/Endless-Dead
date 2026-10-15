@@ -32,7 +32,9 @@ import kotlin.math.sin;
  * @throws IllegalArgumentException 총 옵션이 잘못된 경우
  */
 abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(id, name, settings), Shootable, LimitedUsable, Cooldownable, Updatable, Disposable {
-	override val isContinuousUseAllowed = false;
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("isContinuousUseAllowed")
+	override val allowContinuousUse = false;
 	/**
 	 * 총알 피해량
 	 */

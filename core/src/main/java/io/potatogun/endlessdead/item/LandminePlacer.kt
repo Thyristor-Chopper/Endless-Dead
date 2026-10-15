@@ -21,7 +21,9 @@ import kotlin.math.sin;
  * 지뢰 설치기
  */
 class LandminePlacer : Item("landmine_placer", "Landmine Placer", Item.Properties().rarity(Rarity.UNCOMMON)), LimitedUsable {
-	override val isContinuousUseAllowed = false;
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("isContinuousUseAllowed")
+	override val allowContinuousUse = false;
 	/**
 	 * 지뢰 피해량
 	 */

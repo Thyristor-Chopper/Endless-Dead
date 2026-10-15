@@ -8,7 +8,9 @@ import io.potatogun.gdxhelper.screen.drawSubtitles;
  * 속도 포션 - 속도 증가 아이템
  */
 class SpeedPotion : Item("speed_potion", "Speed Potion", Item.Properties().rarity(Rarity.UNCOMMON)), Usable {
-	override val isContinuousUseAllowed = false;
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("isContinuousUseAllowed")
+	override val allowContinuousUse = false;
 
 	// 포션을 사용하여 속도를 올린다.
 	override fun use(user: ItemSelectable): Boolean {

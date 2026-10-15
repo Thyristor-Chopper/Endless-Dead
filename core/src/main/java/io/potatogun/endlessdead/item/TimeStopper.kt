@@ -14,7 +14,9 @@ import io.potatogun.gdxhelper.world.World;
  * 시간 정지기 아이템
  */
 class TimeStopper : Item("time_stopper", "Ultra Stopwatch", Item.Properties().rarity(Rarity.UNCOMMON)), Usable {
-	override val isContinuousUseAllowed = false;
+	@Suppress("INAPPLICABLE_JVM_NAME")
+	@get:JvmName("isContinuousUseAllowed")
+	override val allowContinuousUse = false;
 
 	// 타이머를 사용해서 시간을 3초 멈춘다.
 	override fun use(user: ItemSelectable): Boolean {
