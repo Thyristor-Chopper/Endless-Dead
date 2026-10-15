@@ -12,10 +12,6 @@ import io.potatogun.gdxhelper.screen.drawSubtitles;
  * 좀비 공격 포탑 설치기 아이템
  */
 class TurretInstaller : Item("turret_installer", "Turret Installer", Item.Properties().rarity(Rarity.RARE)), Usable {
-	@Suppress("INAPPLICABLE_JVM_NAME")
-	@get:JvmName("isContinuousUseAllowed")
-	override val allowContinuousUse = false;
-
 	override fun use(user: ItemSelectable): Boolean {
 		if(user.selectedItem !== this) return false;
 		if(user !is Entity) return false;

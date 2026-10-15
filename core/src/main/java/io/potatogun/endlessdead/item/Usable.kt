@@ -11,7 +11,8 @@ interface Usable {
 	 */
 	@Suppress("INAPPLICABLE_JVM_NAME")
 	@get:JvmName("isContinuousUseAllowed")
-	val allowContinuousUse: Boolean;
+	val allowContinuousUse: Boolean
+		get() = false;
 
 	/**
 	 * 아이템을 사용한다.
