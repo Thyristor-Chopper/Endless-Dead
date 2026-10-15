@@ -34,7 +34,7 @@ class DroppedItem(world: World, x: Float, y: Float, val item: Item) : Entity(wor
 	 */
 	fun pickup(collector: InventoryHolder): Boolean {
 		val added = collector.inventory.addItem(item);
-		if(added) this.remove();
+		if(added) level.entities.remove(this);
 		return added;
 	}
 
