@@ -52,11 +52,11 @@ object Resources : Disposable {
 		}
 	};
 	/**
-	 * 기본 단추(흰색이지만 Button 생성자의 Color 매개변수로 색 변환) 스킨
+	 * 일반 단추(흰색이지만 Button 생성자의 Color 매개변수로 색 변환) 스킨
 	 */
 	@JvmField val button: Button.Skin;
 	/**
-	 * 푸른 단추 스킨
+	 * 기본 단추 스킨
 	 */
 	@JvmField val primaryButton: Button.Skin;
 	/**
