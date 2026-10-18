@@ -3,7 +3,7 @@ package io.potatogun.endlessdead.entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.GameManager;
-import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.ai.ApproachTarget;
 import io.potatogun.endlessdead.entity.ai.RotateToTarget;
 import io.potatogun.endlessdead.entity.ai.ShootTarget;
@@ -26,7 +26,7 @@ import kotlin.random.Random;
 /**
  * 총잡이 - 총을 쏘는 적
  */
-class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: Inventory) : LivingEntity(world, "Triggerman", x, y, 32f, 34f, 10, Textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, Movable, Targetable, KillScorable {
+class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: Inventory) : LivingEntity(world, "Triggerman", x, y, 32f, 34f, 10, Resources.textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, Movable, Targetable, KillScorable {
 	private val moveComponent = MoveComponent(this, 140f);
 	override val speed: Float by moveComponent::speed;
 	private val rotator = RotateToTarget(this);
@@ -95,5 +95,5 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	/**
 	 * 이 개체의 총
 	 */
-	private class TriggermanGun : Gun("triggerman_gun", "Triggerman's Gun", Gun.Properties(3, 400f).fireInterval(0.5f).bulletTexture(Textures.getShared("silver_bullet")).rarity(Rarity.RARE));
+	private class TriggermanGun : Gun("triggerman_gun", "Triggerman's Gun", Gun.Properties(3, 400f).fireInterval(0.5f).bulletTexture(Resources.textures.getShared("silver_bullet")).rarity(Rarity.RARE));
 }

@@ -2,7 +2,7 @@ package io.potatogun.endlessdead.entity;
 
 import com.badlogic.gdx.graphics.Texture;
 
-import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.Resources;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.entity.rotateToRandom;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
@@ -21,7 +21,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param    size         지뢰 지름
  * @param    texture      지뢰 텍스처
  */
-class Landmine @JvmOverloads constructor(world: World, x: Float, y: Float, val installer: Entity, val damage: Int, health: Int, size: Float = 32f, texture: Texture = Textures.getShared("landmine")) : LivingEntity(world, "Landmine", x, y, size, size, health, texture), BodyDamagable {
+class Landmine @JvmOverloads constructor(world: World, x: Float, y: Float, val installer: Entity, val damage: Int, health: Int, size: Float = 32f, texture: Texture = Resources.textures.getShared("landmine")) : LivingEntity(world, "Landmine", x, y, size, size, health, texture), BodyDamagable {
 	override val damageInvincibilityDuration = 0.1f;
 	override val bodyDamage = damage;
 	val timers = TimerManager();

@@ -22,8 +22,10 @@ import kotlin.properties.Delegates;
 object GameManager : Updatable {
 	/**
 	 * 게임 플레이어
+	 *
+	 * 자바에서는 getPlayer()를 쓴다.
 	 */
-	val player = Player();
+	@get:JvmStatic val player = Player();
 	/**
 	 * 게임 인스턴스
 	 */
@@ -31,15 +33,15 @@ object GameManager : Updatable {
 	/**
 	 * 점수 관리자
 	 */
-	@JvmStatic val scoreManager = ScoreManager();
+	@JvmField val scoreManager = ScoreManager();  // 디컴파일해서 확인한 결과 싱글톤에서 @JvmField를 하면 GameManager.INSTANCE.scoreManager가 아닌 GameManager.scoreManager로 바로 접근 가능(@JvmStatic 효과도 같이 있는 것)
 	/**
 	 * 통계 관리자
 	 */
-	@JvmStatic val statistics = StatisticsManager();
+	@JvmField val statistics = StatisticsManager();
 	/**
 	 * 월드, 개체 등에 종속되지 않는 전역 타이머 관리자
 	 */
-	@JvmStatic val globalTimers = TimerManager();
+	@JvmField val globalTimers = TimerManager();
 	/**
 	 * 게임의 현재 상태
 	 */

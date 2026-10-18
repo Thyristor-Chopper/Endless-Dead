@@ -3,7 +3,6 @@ package io.potatogun.endlessdead.entity.turret;
 import com.badlogic.gdx.graphics.Texture;
 
 import io.potatogun.endlessdead.Pools;
-import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.endlessdead.entity.isSameTeamWith;

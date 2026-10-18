@@ -10,7 +10,7 @@ import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
-import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Landmine;
 import io.potatogun.endlessdead.entity.LivingEntity;
@@ -86,16 +86,16 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 		};
 
 		// 미터기 추가
-		addWidget("hp_indicator", ProgressBar({ 9f }, { Window.height - 38f }, { 180f }, skin = Textures.smoothProgressBar, color = rgb(73, 186, 73)));
-		addWidget("attack_target_hp_indicator", ProgressBar({ 210f }, { Window.height - 38f }, { 180f }, skin = Textures.smoothProgressBar, color = enemyBarColor).apply { hide() });
-		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, { 130f }, skin = Textures.chunkedProgressBar, color = rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() });
-		addWidget("gun_cooldown_indicator", ProgressBar(gunCooldownBarX, { 10f }, { 60f }, skin = Textures.smoothProgressBar, color = Color.SCARLET).apply { hide() });
+		addWidget("hp_indicator", ProgressBar({ 9f }, { Window.height - 38f }, { 180f }, skin = Resources.smoothProgressBar, color = rgb(73, 186, 73)));
+		addWidget("attack_target_hp_indicator", ProgressBar({ 210f }, { Window.height - 38f }, { 180f }, skin = Resources.smoothProgressBar, color = enemyBarColor).apply { hide() });
+		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, { 130f }, skin = Resources.chunkedProgressBar, color = rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() });
+		addWidget("gun_cooldown_indicator", ProgressBar(gunCooldownBarX, { 10f }, { 60f }, skin = Resources.smoothProgressBar, color = Color.SCARLET).apply { hide() });
 
 		// 일시 중지 및 게임 오버 단추
-		addOverlayWidget("resume_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = Textures.primaryButton) {
+		addOverlayWidget("resume_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = Resources.primaryButton) {
 			GameManager.resume();
 		}.apply { hide() });
-		addOverlayWidget("replay_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Textures.primaryButton) {
+		addOverlayWidget("replay_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Resources.primaryButton) {
 			clearSubtitles();
 			projectingWorld?.let {
 				if(it is SpecialWorld) {
@@ -106,7 +106,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			};
 			GameManager.newGame();
 		}.apply { hide() });
-		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Textures.button) {
+		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Resources.button) {
 			projectingWorld?.let {
 				if(it is SpecialWorld) {
 					val mainWorld = it.mainWorld;
@@ -118,7 +118,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), Su
 			clearSubtitles();
 			GameManager.standBy();
 		}.apply { hide() });
-		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Textures.button) {
+		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Resources.button) {
 			projectingWorld?.let {
 				if(it is SpecialWorld) {
 					val mainWorld = it.mainWorld;

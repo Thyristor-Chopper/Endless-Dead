@@ -1,7 +1,7 @@
 package io.potatogun.endlessdead.entity;
 
 import io.potatogun.endlessdead.GameManager;
-import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.forEachNearby;
 import io.potatogun.endlessdead.entity.teleportToCenter;
 import io.potatogun.endlessdead.entity.summoner.Summoner;
@@ -18,7 +18,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param y           개체의 Y 위치
  * @param destination 이동 대상 월드
  */
-class Portal(world: World, x: Float = 0f, y: Float = 0f, private val destination: World) : Entity(world, "Warp Portal", x, y, 80f, 80f, Textures.getShared("portal")) {
+class Portal(world: World, x: Float = 0f, y: Float = 0f, private val destination: World) : Entity(world, "Warp Portal", x, y, 80f, 80f, Resources.textures.getShared("portal")) {
 	init {
 		rotateToRandom();
 	}

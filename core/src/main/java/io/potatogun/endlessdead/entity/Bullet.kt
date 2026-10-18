@@ -3,7 +3,7 @@ package io.potatogun.endlessdead.entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
-import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.forEachNearby;
 import io.potatogun.endlessdead.entity.component.MoveComponent;
@@ -27,7 +27,7 @@ import kotlin.math.sqrt;
  * @param    size         총알 지름
  * @param    texture      총알 텍스처
  */
-class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target: Position, speed: Float, val damage: Int, val isPenetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Textures.getShared("bullet")) : LivingEntity(world, "Bullet", shooter.position.x, shooter.position.y, size, size, health, texture), Movable {
+class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target: Position, speed: Float, val damage: Int, val isPenetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Resources.textures.getShared("bullet")) : LivingEntity(world, "Bullet", shooter.position.x, shooter.position.y, size, size, health, texture), Movable {
 	private val moveComponent = MoveComponent(this, speed);
 	override val speed: Float by moveComponent::speed;
 	override val isUpdatableWhileFrozen = (shooter is Player);

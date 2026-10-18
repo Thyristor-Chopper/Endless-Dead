@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 import io.potatogun.endlessdead.GameManager;
-import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.KillScorable;
 import io.potatogun.endlessdead.entity.Landmine;
 import io.potatogun.endlessdead.entity.LivingEntity;
@@ -34,7 +34,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param height   세로 크기 (픽셀)
  * @param settings 좀비 옵션
  */
-abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Float, height: Float, settings: Properties) : LivingEntity(world, name, x, y, width, height, settings.health, Textures.getShared("zombie")), MeleeAttackable, DamageListener, PenetratorDamagable, Movable, Targetable, KillScorable {
+abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Float, height: Float, settings: Properties) : LivingEntity(world, name, x, y, width, height, settings.health, Resources.textures.getShared("zombie")), MeleeAttackable, DamageListener, PenetratorDamagable, Movable, Targetable, KillScorable {
 	private val meleeAttackComponent = MeleeAttackComponent(this, settings.attackDamage, 0.3f);
 	override val attackDamage: Int by meleeAttackComponent::attackDamage;
 	override val attackInterval: Float by meleeAttackComponent::attackInterval;
@@ -46,7 +46,7 @@ abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Flo
 	private val targetCenterFactor = 0.75f;
 	private val approacher = ApproachTarget(this, targetCenterGapFactor = targetCenterFactor);
 	private val meleeAttacker = MeleeAttackTarget(this, targetCenterFactor);
-	private val attackingTexture = Textures.getShared("attacking_zombie");
+	private val attackingTexture = Resources.textures.getShared("attacking_zombie");
 	override val penetrationDamage = 1;
 	override val damageInvincibilityDuration = 0.15f;
 	private var attackTextureTimer = 0f;

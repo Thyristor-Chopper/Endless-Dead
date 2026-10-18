@@ -5,7 +5,6 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.ObjectSet;
 
-import io.potatogun.endlessdead.Textures;
 import io.potatogun.endlessdead.inventory.Inventory;
 import io.potatogun.gdxhelper.util.SharedTextureManager;
 import io.potatogun.gdxhelper.util.loadTexture;

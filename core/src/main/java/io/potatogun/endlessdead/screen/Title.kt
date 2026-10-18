@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
-import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.Resources;
 import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.Screen;
@@ -25,10 +25,10 @@ class Title(private val game: EndlessDead) : Screen(), InputListener {
 	private var titleBlinkTimer = 0f;
 
 	init {
-		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, { 120f }, caption = "Play", skin = Textures.primaryButton) {
+		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, { 120f }, caption = "Play", skin = Resources.primaryButton) {
 			GameManager.newGame();
 		});
-		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, { 120f }, caption = "Quit", skin = Textures.button) {
+		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, { 120f }, caption = "Quit", skin = Resources.button) {
 			Gdx.app.exit();
 		});
 

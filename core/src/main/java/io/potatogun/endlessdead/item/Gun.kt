@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.Disposable;
 
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
-import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.LivingEntity;
@@ -303,7 +303,7 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 		override fun fillDefaults() {
 			super.fillDefaults();
 			if(!::bulletFaceTexture.isInitialized)
-				bulletFaceTexture = Textures.getShared("bullet");
+				bulletFaceTexture = Resources.textures.getShared("bullet");
 		}
 	}
 }

@@ -1,7 +1,7 @@
 package io.potatogun.endlessdead.entity.turret;
 
 import io.potatogun.endlessdead.GameManager;
-import io.potatogun.endlessdead.Textures;
+import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.KillScorable;
 import io.potatogun.endlessdead.entity.Landmine;
 import io.potatogun.endlessdead.entity.LivingEntity;
@@ -22,7 +22,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param y           Y 좌표
  * @param isPermanent 포탑이 영구적인지의 여부(죽지 못하는지)
  */
-class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : Turret(world, "Turret", x, y, 83f, 106f, HostileTurretGun(), 600, isPermanent, Textures.getShared("turret_hostile")), DamageListener, KillScorable {
+class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : Turret(world, "Turret", x, y, 83f, 106f, HostileTurretGun(), 600, isPermanent, Resources.textures.getShared("turret_hostile")), DamageListener, KillScorable {
 	private val autoTargeter = AutoTargeter(this, 384f) { GameManager.player };
 	override val target: LivingEntity? by autoTargeter::target;
 	override val followRange: Float by autoTargeter::followRange;
@@ -42,5 +42,5 @@ class HostileTurret(world: World, x: Float, y: Float, isPermanent: Boolean = fal
 	/**
 	 * 이 터렛의 발사기
 	 */
-	private class HostileTurretGun : Gun("hostile_turret_shooter", "Hostile Turret Shooter", Gun.Properties(4, 190f).fireInterval(1.0f).bulletTexture(Textures.getShared("silver_bullet")).bulletSize(18f).rarity(Rarity.RARE));
+	private class HostileTurretGun : Gun("hostile_turret_shooter", "Hostile Turret Shooter", Gun.Properties(4, 190f).fireInterval(1.0f).bulletTexture(Resources.textures.getShared("silver_bullet")).bulletSize(18f).rarity(Rarity.RARE));
 }
