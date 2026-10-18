@@ -1,7 +1,5 @@
 package io.potatogun.endlessdead.entity;
 
-import com.badlogic.gdx.graphics.Texture;
-
 /**
  * 타겟을 정하여 공격하는 개체
  */
