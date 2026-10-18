@@ -45,7 +45,7 @@ import io.potatogun.gdxhelper.world.World;
  *
  * @property game 게임 인스턴스
  */
-class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(), SubtitlesDrawable {
+class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font = Resources.font), SubtitlesDrawable {
 	private val noWorldOverlay = rgb(255, 255, 255, 0.5f);
 	private val frozenOverlay = rgb(0, 0, 0, 0.5f);
 	private val solidColor: Texture;

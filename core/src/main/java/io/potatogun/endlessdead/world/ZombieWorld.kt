@@ -7,6 +7,7 @@ import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
+import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.Portal;
 import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
@@ -53,7 +54,7 @@ import kotlin.math.floor;
 /**
  * 좀비 파밍 월드
  */
-class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, SpatialGrid(256, 128f)), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
+class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, SpatialGrid(256, 128f), font = Resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
 	/**
 	 * 등록된 스포너 목록
 	 */

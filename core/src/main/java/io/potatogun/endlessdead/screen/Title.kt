@@ -19,7 +19,7 @@ import io.potatogun.gdxhelper.widget.Button;
  *
  * @property game 게임 인스턴스
  */
-class Title(private val game: EndlessDead) : Screen(), InputListener {
+class Title(private val game: EndlessDead) : Screen(font = Resources.font), InputListener {
 	private val title = loadTexture("title/title.bmp");
 	private val stillCut = loadTexture("title/still_cut.bmp");
 	private var titleBlinkTimer = 0f;
