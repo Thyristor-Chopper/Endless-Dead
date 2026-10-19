@@ -92,8 +92,6 @@ interface Inventory {
 
 	/**
 	 * 인벤토리 비우기
-	 *
-	 * @return 성공 여부
 	 */
 	fun clear();
 }
