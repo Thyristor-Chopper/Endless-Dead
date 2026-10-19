@@ -8,6 +8,9 @@ import io.potatogun.endlessdead.spawner.Spawner;
 
 import java.util.function.Consumer;
 
+/**
+ * libGDX 특정 자료형 배열의 생성자 모음이다. 코틀린은 ::new가 안 되므로 자바로 작성되었다.
+ */
 public final class ArraySuppliers {
 	public static final ArraySupplier<Item[]> item = Item[]::new;
 	public static final ArraySupplier<Array<Item>[]> itemArray = (ArraySupplier<Array<Item>[]>) Array[]::new;
