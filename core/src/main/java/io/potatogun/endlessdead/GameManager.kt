@@ -11,8 +11,6 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.teleportToCenter;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
-import kotlin.properties.Delegates;
-
 /**
  * 게임의 상태를 관리하는 싱글톤
  *

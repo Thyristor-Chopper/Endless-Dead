@@ -4,8 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 import io.potatogun.endlessdead.Resources;
-import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.entity.forEachNearby;
 import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
