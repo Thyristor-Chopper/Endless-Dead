@@ -91,7 +91,7 @@ interface Inventory {
 	fun getItems(output: GdxArray<Item>);
 
 	/**
-	 * 인벤토리 비우기
+	 * 인벤토리를 비운다.
 	 */
 	fun clear();
 }
