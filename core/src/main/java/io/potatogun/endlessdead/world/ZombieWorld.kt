@@ -358,9 +358,9 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 	 * 풀의 정보를 담는 비트필드 구조체
 	 */
 	@JvmInline private value class Grass(@JvmField val hash: Int) {
-		inline val x: Int  // 맨 위 16비트
+		inline val x: Int  // 상위 16비트
 			get() = hash shr 16;
-		inline val y: Int  // 중간 16비트
+		inline val y: Int  // 하위 16비트
 			get() = hash and 0xffff;
 
 		companion object {
