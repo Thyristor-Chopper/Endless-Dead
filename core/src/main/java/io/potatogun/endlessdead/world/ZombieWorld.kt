@@ -162,7 +162,7 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 		for(i in 1..treeCount) {
 			val x = Random.nextInt(intWidth);
 			val y = Random.nextInt(intHeight);
-			val positionHash = (x shl 16) or (y and 0xffff);
+			val positionHash = (x shl 16) or (y and 0xffff);  // 코틀린 놈들 그냥 <<, & 연산자 그대로 쓰면 되는데 쓸 데 없이 멋부리려고 저따구로 이상한 키워드 만들고 진짜
 			treeMap.put(positionHash, TreeSize.cachedEntries.random().index);
 		}
 
@@ -226,18 +226,23 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 
 	// 배경 그리기 - 카메라 위치에 따라 타일 위치가 바뀌어 이동감을 준다.
 	override fun drawBackground() {
-		// 화면 크기 캐시 (getter 오버헤드)
+		// 1) 필요한 화면 정보 캐시 (getter 오버헤드 감소)
+		// 화면 크기
 		val screenWidth = Window.width;
 		val screenHeight = Window.height;
+		val halfScreenWidth = screenWidth * 0.5f;
+		val halfScreenHeight = screenHeight * 0.5f;
+		// 카메라 위치
+		val offsetX = cameraX;
+		val offsetY = cameraY;
 
+		// 2) 타일 그리기
 		// 현재 카메라 시작점이 속한 타일 인덱스
-		val startCol = floor((cameraX - screenWidth * 0.5f) / bgTileSize).toInt();
-		val startRow = floor((cameraY - screenHeight * 0.5f) / bgTileSize).toInt();
-
+		val startCol = floor((offsetX - screenWidth * 0.5f) / bgTileSize).toInt();
+		val startRow = floor((offsetY - screenHeight * 0.5f) / bgTileSize).toInt();
 		// 화면을 채우는 데 필요한 타일 개수 (여유분으로 1)
 		val cols = ceil(screenWidth / bgTileSize).toInt() + 1;
 		val rows = ceil(screenHeight / bgTileSize).toInt() + 1;
-
 		for(row in startRow until startRow + rows)
 			for(col in startCol until startCol + cols) {
 				// 행+열이 짝수면 어둡게, 홀수면 밝게 (체스판 패턴)
@@ -247,21 +252,25 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 				val drawY = row * bgTileSize;
 				batch.draw(tileTexture, drawX, drawY, bgTileSize, bgTileSize);
 			}
-
 		// 배경에 입힌 색이 다음 그리기(게임 객체)에 영향을 주지 않도록 흰색으로 복원.
 		batch.color = Color.WHITE;
 
-		// 나무 그리기
+		// 3) 나무 그리기
+		val defaultTreeSize = TreeSize.NORMAL.index;
 		val iterator = treeMap.keys();
 		while(iterator.hasNext) {
 			val positionHash = iterator.next();
 			val x = (positionHash shr 16).toFloat();
 			val y = (positionHash and 0xffff).toFloat();
-			val size = TreeSize.byIndex(treeMap.get(positionHash, TreeSize.NORMAL.index));
-			if(size == TreeSize.SMALL)
-				batch.draw(smallTree, x, y, 18f, 28f);
-			else
-				batch.draw(tree, x, y, 24f, 42f);
+			val maxLength = 42f;  // 일단 하드코딩
+			// 보이는 나무만 그리기
+			if(x >= offsetX - halfScreenWidth - maxLength && x <= offsetX + halfScreenWidth + maxLength && y >= offsetY - halfScreenHeight - maxLength && y <= offsetY + halfScreenHeight + maxLength) {
+				val size = TreeSize.byIndex(treeMap.get(positionHash, defaultTreeSize));
+				if(size == TreeSize.SMALL)
+					batch.draw(smallTree, x, y, 18f, 28f);
+				else
+					batch.draw(tree, x, y, 24f, 42f);
+			}
 		}
 	}
 
