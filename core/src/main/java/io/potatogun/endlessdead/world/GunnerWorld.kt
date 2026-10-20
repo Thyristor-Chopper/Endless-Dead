@@ -48,7 +48,7 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 	 * 등록된 스포너 목록
 	 */
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
-	private val tileTexture = loadTexture("world/rivets.bmp");
+	private val tileTexture = loadTexture("world/rivets.bmp");  // 은색 리벳
 	private val bgTileWidth = 80f;
 	private val bgTileHeight = 46f;
 	// 타이머
