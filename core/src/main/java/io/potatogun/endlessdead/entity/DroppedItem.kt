@@ -1,13 +1,9 @@
 package io.potatogun.endlessdead.entity;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 
 import io.potatogun.endlessdead.Constants;
-import io.potatogun.endlessdead.entity.InventoryHolder;
-import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.inventory.SingleItemInventory;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.entity.rotateToRandom;

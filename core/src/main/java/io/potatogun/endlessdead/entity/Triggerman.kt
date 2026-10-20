@@ -1,7 +1,5 @@
 package io.potatogun.endlessdead.entity;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.ai.ApproachTarget;
@@ -16,9 +14,7 @@ import io.potatogun.endlessdead.inventory.Inventory;
 import io.potatogun.endlessdead.inventory.LinearInventory;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
-import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.gdxhelper.entity.Entity;
-import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.random.Random;

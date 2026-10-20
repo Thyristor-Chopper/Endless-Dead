@@ -8,7 +8,6 @@ import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.gdxhelper.entity.rotateToRandom;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.TimerManager;
-import io.potatogun.gdxhelper.util.nextFloat;
 import io.potatogun.gdxhelper.world.World;
 
 /**

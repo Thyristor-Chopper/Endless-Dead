@@ -2,8 +2,6 @@ package io.potatogun.endlessdead.entity;
 
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Resources;
-import io.potatogun.endlessdead.entity.forEachNearby;
-import io.potatogun.endlessdead.entity.teleportToCenter;
 import io.potatogun.endlessdead.entity.summoner.Summoner;
 import io.potatogun.endlessdead.entity.turret.Turret;
 import io.potatogun.gdxhelper.entity.Entity;
