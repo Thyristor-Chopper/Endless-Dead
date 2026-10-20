@@ -59,7 +59,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 	private var subtitlesTimer: Timer? = null;
 	private var subtitlesMessage: String = "";
 	private var subtitlesColor = Color.WHITE;
-	private val subtitlesVisible: Boolean
+	@get:JvmName("isSubtitlesVisible") private val subtitlesVisible: Boolean
 		inline get() = (subtitlesTimer != null);
 	private var attackTarget: LivingEntity? = null;  // 매 업데이트 시 개체가 죽으면 초기화되므로 굳이 WeakReference 쓸 필요 없음
 	private val enemyBarColor = rgb(205, 46, 46);
