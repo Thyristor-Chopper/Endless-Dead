@@ -146,6 +146,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 			updateTitleBarInfo();
 		});
 
+		// 오버레이 단추 표시 또는 숨기기
 		GameManager.attachStateObserver {
 			when {
 				GameManager.isPlaying -> {
