@@ -33,6 +33,7 @@ import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.TimerAttachable;
 import io.potatogun.gdxhelper.util.loadTexture;
+import io.potatogun.gdxhelper.util.min2;
 import io.potatogun.gdxhelper.world.TimedWorld;
 import io.potatogun.gdxhelper.world.World;
 
@@ -43,7 +44,7 @@ import kotlin.random.Random;
 /**
  * 총잡이나 포탑 등이 메인 주인공인 월드
  */
-class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = null) : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, SpatialGrid(256, 128f), font = Resources.font), TimedWorld, TimerAttachable, SpecialWorld {
+class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = null) : World(1400f, 1400f, SpatialGrid(256, 128f), font = Resources.font), TimedWorld, TimerAttachable, SpecialWorld {
 	/**
 	 * 등록된 스포너 목록
 	 */
@@ -159,8 +160,8 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 	override fun updateOffset() {
 		val player = GameManager.player;
 		if(player.world !== this) return;
-		val halfScreenWidth = Window.width * 0.5f;
-		val halfScreenHeight = Window.height * 0.5f;
+		val halfScreenWidth = min2(Window.width * 0.5f, width * 0.5f);
+		val halfScreenHeight = min2(Window.height * 0.5f, height * 0.5f);
 		cameraX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);
 		cameraY = player.y.coerceIn(halfScreenHeight, height - halfScreenHeight);
 	}

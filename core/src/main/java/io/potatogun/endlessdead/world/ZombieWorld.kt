@@ -41,6 +41,7 @@ import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.TimerAttachable;
 import io.potatogun.gdxhelper.util.loadTexture;
+import io.potatogun.gdxhelper.util.min2;
 import io.potatogun.gdxhelper.util.rgb;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.SimpleFreezer;
@@ -54,7 +55,7 @@ import kotlin.random.Random;
 /**
  * 좀비 파밍 월드
  */
-class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, SpatialGrid(256, 128f), font = Resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
+class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
 	// 등록된 스포너 목록
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
 	// 체스판 배경 설정 (drawTiles에서 사용)
@@ -336,8 +337,8 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 	override fun updateOffset() {
 		val player = GameManager.player;
 		if(player.world !== this) return;
-		val halfScreenWidth = Window.width * 0.5f;
-		val halfScreenHeight = Window.height * 0.5f;
+		val halfScreenWidth = min2(Window.width * 0.5f, width * 0.5f);
+		val halfScreenHeight = min2(Window.height * 0.5f, height * 0.5f);
 		cameraX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);
 		cameraY = player.y.coerceIn(halfScreenHeight, height - halfScreenHeight);
 	}
