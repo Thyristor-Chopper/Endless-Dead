@@ -75,7 +75,7 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 	private val containerCount: Int;
 	private val random = SecureRandom();  // non-blocking으로
 
-	// 생성자 본문 — 월드에 플레이어와 적을 등록한다. 이렇게 등록해야 update / draw 루프에 포함된다.
+	// 생성자 본문 — 월드에 개체들을 등록한다. 이렇게 등록해야 update / draw 루프에 포함된다.
 	init {
 		// 0.5% 확률로 총잡이 월드로 가는 포탈 추가
 		if(random.nextInt(1000) + 1 <= 5) {
