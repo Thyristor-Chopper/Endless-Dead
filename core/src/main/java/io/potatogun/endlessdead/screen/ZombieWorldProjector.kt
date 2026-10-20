@@ -50,12 +50,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 	private val frozenOverlay = rgb(0, 0, 0, 0.5f);
 	private val solidColor: Texture;
 	// 제목 표시줄에 표시할 정보의 인덱스
-	private var currentTitleInfo = 0
-		set(value) {
-			if(value >= TitleInfoType.size) field = 0;
-			else if(value < 0) field = TitleInfoType.size - 1;
-			else field = value;
-		};
+	private var currentTitleInfo = 0;
 	// 로드된 월드가 없을 때 보일 placeholder 배경
 	private val lazyStillCut = lazy { loadTexture("title/still_cut.bmp") };
 	// 타이머
@@ -125,6 +120,8 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		// 제목 표시줄 정보 전환
 		timers.register(RepeatingTimer(3f, { (GameManager.isPlaying || GameManager.isPaused) && projectingWorld != null }) {
 			currentTitleInfo++;
+			if(currentTitleInfo >= TitleInfoType.size)
+				currentTitleInfo = 0;
 			updateTitleBarInfo();
 		});
 
