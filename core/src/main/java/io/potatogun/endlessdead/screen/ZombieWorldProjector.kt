@@ -323,7 +323,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 	/**
 	 * 일시 정지 상태에서 매 프레임 로직
 	 *
-	 * 객체 업데이트(super.update)나 타이머(spawner.tick)를 호출하지 않음.
+	 * 객체 업데이트(super.update)를 호출하지 않음.
 	 *   세상이 그대로 멈춰있는 상태가 됨.
 	 */
 	private inline fun updatePaused() {  // update에서만 한 번 쓰이기 때문에 inline이다.
