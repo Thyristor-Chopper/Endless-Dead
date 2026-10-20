@@ -56,7 +56,7 @@ abstract class LivingEntity @JvmOverloads constructor(world: World? = null, name
 	/**
 	 * 대미지를 입었을 때 붉게 표시되는 기간
 	 */
-	protected open val damageIndicatorDuration = 0.5f;
+	private val damageIndicatorDuration = 0.5f;
 	/**
 	 * 무적 타이머 길이 (isInvincible과는 별개)
 	 */
