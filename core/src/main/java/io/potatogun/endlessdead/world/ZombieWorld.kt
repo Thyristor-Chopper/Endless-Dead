@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.world;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array as GdxArray;
+import com.badlogic.gdx.utils.IntArray;
 import com.badlogic.gdx.utils.IntIntMap;
 
 import io.potatogun.endlessdead.ArraySuppliers;
@@ -57,11 +58,15 @@ import kotlin.random.Random;
 class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, SpatialGrid(256, 128f), font = Resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
 	// 등록된 스포너 목록
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
-	// 체스판 배경 설정 (drawBackground()에서 사용)
-	private val tileTexture = loadTexture("world/grass.bmp");
-	private val bgColorDark = rgb(38, 92, 38);
-	private val bgColorLight = rgb(38, 107, 38);
-	private val bgTileSize = 64f;
+	// 체스판 배경 설정 (drawTiles에서 사용)
+	private val tile = loadTexture("world/tile.bmp");
+	private val bgColorDark = rgb(38, 94, 38);
+	private val bgColorLight = rgb(38, 106, 38);
+	private val tileSize = 64f;
+	// 풀 [艸]
+	private val grass = loadTexture("world/grass.bmp");
+	private val grassPositions: IntArray;
+	private val grassTint = rgb(255, 255, 255, 0.6f);
 	// 나무
 	private val tree = loadTexture("world/tree.bmp");
 	private val smallTree = loadTexture("world/tree_small.bmp");
@@ -157,18 +162,36 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 			};
 		});
 
+		// 풀 정보 등록
+		val grasseCount = Random.nextInt(101) + 200;  // 200~300개
+		grassPositions = IntArray(false, grasseCount);
+		for(i in 1..grasseCount) {
+			val x = Random.nextInt(intWidth);
+			val y = Random.nextInt(intHeight);
+			val positionHash = positionHashOf(x, y);
+			grassPositions.add(positionHash);
+		}
+
 		// 나무 정보 등록
 		val treeCount = Random.nextInt(41) + 80;  // 80~120개
 		treeInfo = IntIntMap(treeCount);
 		for(i in 1..treeCount) {
 			val x = Random.nextInt(intWidth);
 			val y = Random.nextInt(intHeight);
-			val positionHash = (x shl 16) or (y and 0xffff);  // 코틀린 놈들 그냥 <<, & 연산자 그대로 쓰면 되는데 쓸 데 없이 멋부리려고 저따구로 이상한 키워드 만들고 진짜
+			val positionHash = positionHashOf(x, y);
 			treeInfo.put(positionHash, TreeSize.cachedEntries.random().index);  // 자바랑 코틀린 원시(primitive) 구조체(struct)가 없고 클래스는 망할 놈의 GC 때문에 또 싫어서 해시로
 		}
 
 		UpdateListeners.register(this) { GameManager.isPlaying && GameManager.player.isIn(this) };  // 람다 this 캡처는 등록 시 한 번만 발생한다고 함.
 	}
+
+	private inline fun positionHashOf(x: Float, y: Float): Int = positionHashOf(x.toInt(), y.toInt());
+
+	private inline fun positionHashOf(x: Int, y: Int): Int = (x shl 16) or (y and 0xffff);  // 코틀린 놈들 그냥 <<, & 연산자 그대로 쓰면 되는데 쓸 데 없이 멋부리려고 저따구로 이상한 키워드 만들고 진짜
+
+	private inline fun xOfHash(positionHash: Int): Float = (positionHash shr 16).toFloat();
+
+	private inline fun yOfHash(positionHash: Int): Float = (positionHash and 0xffff).toFloat();
 
 	/**
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다.
@@ -227,22 +250,23 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 
 	// 배경 그리기 - 카메라 위치에 따라 타일 위치가 바뀌어 이동감을 준다.
 	override fun drawBackground() {
+		drawTiles();
 		drawGrass();
 		drawTrees();
 	}
 
-	private inline fun drawGrass() {  // 원래는 drawBackground에 직접 작성했던 코드라 인라인이다.
+	private inline fun drawTiles() {  // 원래는 drawBackground에 직접 작성했던 코드라 인라인이다.
 		// 화면 크기 캐시 (getter 오버헤드 감소)
 		val screenWidth = Window.width;
 		val screenHeight = Window.height;
 
 		// 현재 카메라 시작점이 속한 타일 인덱스
-		val startCol = floor((cameraX - screenWidth * 0.5f) / bgTileSize).toInt();
-		val startRow = floor((cameraY - screenHeight * 0.5f) / bgTileSize).toInt();
+		val startCol = floor((cameraX - screenWidth * 0.5f) / tileSize).toInt();
+		val startRow = floor((cameraY - screenHeight * 0.5f) / tileSize).toInt();
 
 		// 화면을 채우는 데 필요한 타일 개수 (여유분으로 1)
-		val cols = ceil(screenWidth / bgTileSize).toInt() + 1;
-		val rows = ceil(screenHeight / bgTileSize).toInt() + 1;
+		val cols = ceil(screenWidth / tileSize).toInt() + 1;
+		val rows = ceil(screenHeight / tileSize).toInt() + 1;
 
 		// 타일 그리기
 		for(row in startRow until startRow + rows)
@@ -250,12 +274,37 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 				// 행 + 열이 짝수면 어둡게, 홀수면 밝게 (체스판 패턴)
 				batch.color = if((row + col) % 2 == 0) bgColorDark else bgColorLight;
 
-				val drawX = col * bgTileSize;
-				val drawY = row * bgTileSize;
-				batch.draw(tileTexture, drawX, drawY, bgTileSize, bgTileSize);
+				val drawX = col * tileSize;
+				val drawY = row * tileSize;
+				batch.draw(tile, drawX, drawY, tileSize, tileSize);
 			}
 
 		// 배경에 입힌 색이 다음 그리기(게임 객체)에 영향을 주지 않도록 흰색으로 복원.
+		batch.color = Color.WHITE;
+	}
+
+	private inline fun drawGrass() {
+		// 화면 크기 캐시
+		val halfScreenWidth = Window.width * 0.5f;
+		val halfScreenHeight = Window.height * 0.5f;
+		// 카메라 위치 캐시
+		val offsetX = cameraX;
+		val offsetY = cameraY;
+
+		// 틴트 색 적용
+		batch.color = grassTint;
+
+		for(i in 0 until grassPositions.size) {
+			val positionHash = grassPositions.items[i];
+			val x = xOfHash(positionHash);
+			val y = yOfHash(positionHash);
+			val maxLength = 20f;  // 일단 하드코딩 - 20, 19 중 최댓값
+			// 보이는 풀만 그리기
+			if(x >= offsetX - halfScreenWidth - maxLength && x <= offsetX + halfScreenWidth + maxLength && y >= offsetY - halfScreenHeight - maxLength && y <= offsetY + halfScreenHeight + maxLength)
+				batch.draw(grass, x, y, 20f, 19f);
+		}
+
+		// 흰색으로 복원
 		batch.color = Color.WHITE;
 	}
 
@@ -277,8 +326,8 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 		val iterator = treeInfo.keys();
 		while(iterator.hasNext) {
 			val positionHash = iterator.next();
-			val x = (positionHash shr 16).toFloat();
-			val y = (positionHash and 0xffff).toFloat();
+			val x = xOfHash(positionHash);
+			val y = yOfHash(positionHash);
 			val maxLength = 42f;  // 일단 하드코딩 - 18, 28, 24, 42 중 최댓값
 			// 보이는 나무만 그리기
 			if(x >= offsetX - halfScreenWidth - maxLength && x <= offsetX + halfScreenWidth + maxLength && y >= offsetY - halfScreenHeight - maxLength && y <= offsetY + halfScreenHeight + maxLength) {
@@ -307,7 +356,8 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 	// 화면이 닫힐 때 — 부모도 dispose한 뒤 우리만의 자원도 해제.
 	override fun dispose() {
 		super.dispose();
-		tileTexture.dispose();
+		tile.dispose();
+		grass.dispose();
 		tree.dispose();
 		smallTree.dispose();
 		specialWorld?.dispose();
