@@ -55,27 +55,28 @@ import kotlin.random.Random;
  * 좀비 파밍 월드
  */
 class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, SpatialGrid(256, 128f), font = Resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
-	/**
-	 * 등록된 스포너 목록
-	 */
+	// 등록된 스포너 목록
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
 	// 체스판 배경 설정 (drawBackground()에서 사용)
 	private val tileTexture = loadTexture("world/grass.bmp");
 	private val bgColorDark = rgb(38, 92, 38);
 	private val bgColorLight = rgb(38, 107, 38);
 	private val bgTileSize = 64f;
-	// 나무 관련
+	// 나무
 	private val tree = loadTexture("world/tree.bmp");
 	private val smallTree = loadTexture("world/tree_small.bmp");
-	private val treeMap: IntIntMap;  // 이 월드는 한 변 크기가 2000 뿐이므로 더블 short:int(32비트)로 써도 됨, 값은 SMALL(0), NORMAL(1)
+	private val treeInfo: IntIntMap;  // 이 월드는 한 변 크기가 2000 뿐이므로 더블 short:int(32비트)로 써도 됨, 값은 SMALL(0), NORMAL(1)
+	private val treeTint = rgb(255, 255, 255, 0.85f);  // 나무를 반투명하게
 	// 타이머
 	private val timers = TimerManager();
 	// 이 월드의 시간
 	override var time = 0f
 		private set;
+	// 추가 월드
 	private val specialWorld: World?;
 	private val hasSpecialWorld: Boolean
 		inline get() = (specialWorld != null);
+	// 월드 내 상자 수
 	private val containerCount: Int;
 
 	// 생성자 본문 — 월드에 개체들을 등록한다. 이렇게 등록해야 update / draw 루프에 포함된다.
@@ -156,14 +157,14 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 			};
 		});
 
-		// 나무 추가
+		// 나무 정보 등록
 		val treeCount = Random.nextInt(41) + 80;  // 80~120개
-		treeMap = IntIntMap(treeCount);
+		treeInfo = IntIntMap(treeCount);
 		for(i in 1..treeCount) {
 			val x = Random.nextInt(intWidth);
 			val y = Random.nextInt(intHeight);
 			val positionHash = (x shl 16) or (y and 0xffff);  // 코틀린 놈들 그냥 <<, & 연산자 그대로 쓰면 되는데 쓸 데 없이 멋부리려고 저따구로 이상한 키워드 만들고 진짜
-			treeMap.put(positionHash, TreeSize.cachedEntries.random().index);
+			treeInfo.put(positionHash, TreeSize.cachedEntries.random().index);  // 자바랑 코틀린 원시(primitive) 구조체(struct)가 없고 클래스는 망할 놈의 GC 때문에 또 싫어서 해시로
 		}
 
 		UpdateListeners.register(this) { GameManager.isPlaying && GameManager.player.isIn(this) };  // 람다 this 캡처는 등록 시 한 번만 발생한다고 함.
@@ -226,52 +227,71 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 
 	// 배경 그리기 - 카메라 위치에 따라 타일 위치가 바뀌어 이동감을 준다.
 	override fun drawBackground() {
-		// 1) 필요한 화면 정보 캐시 (getter 오버헤드 감소)
-		// 화면 크기
+		drawGrass();
+		drawTrees();
+	}
+
+	private inline fun drawGrass() {  // 원래는 drawBackground에 직접 작성했던 코드라 인라인이다.
+		// 화면 크기 캐시 (getter 오버헤드 감소)
 		val screenWidth = Window.width;
 		val screenHeight = Window.height;
-		val halfScreenWidth = screenWidth * 0.5f;
-		val halfScreenHeight = screenHeight * 0.5f;
-		// 카메라 위치
-		val offsetX = cameraX;
-		val offsetY = cameraY;
 
-		// 2) 타일 그리기
 		// 현재 카메라 시작점이 속한 타일 인덱스
-		val startCol = floor((offsetX - screenWidth * 0.5f) / bgTileSize).toInt();
-		val startRow = floor((offsetY - screenHeight * 0.5f) / bgTileSize).toInt();
+		val startCol = floor((cameraX - screenWidth * 0.5f) / bgTileSize).toInt();
+		val startRow = floor((cameraY - screenHeight * 0.5f) / bgTileSize).toInt();
+
 		// 화면을 채우는 데 필요한 타일 개수 (여유분으로 1)
 		val cols = ceil(screenWidth / bgTileSize).toInt() + 1;
 		val rows = ceil(screenHeight / bgTileSize).toInt() + 1;
+
+		// 타일 그리기
 		for(row in startRow until startRow + rows)
 			for(col in startCol until startCol + cols) {
-				// 행+열이 짝수면 어둡게, 홀수면 밝게 (체스판 패턴)
+				// 행 + 열이 짝수면 어둡게, 홀수면 밝게 (체스판 패턴)
 				batch.color = if((row + col) % 2 == 0) bgColorDark else bgColorLight;
 
 				val drawX = col * bgTileSize;
 				val drawY = row * bgTileSize;
 				batch.draw(tileTexture, drawX, drawY, bgTileSize, bgTileSize);
 			}
+
 		// 배경에 입힌 색이 다음 그리기(게임 객체)에 영향을 주지 않도록 흰색으로 복원.
 		batch.color = Color.WHITE;
+	}
 
-		// 3) 나무 그리기
+	private inline fun drawTrees() {  // 원래는 drawBackground에 직접 작성했던 코드라 인라인이다.
+		// 화면 크기 캐시
+		val halfScreenWidth = Window.width * 0.5f;
+		val halfScreenHeight = Window.height * 0.5f;
+		// 카메라 위치 캐시
+		val offsetX = cameraX;
+		val offsetY = cameraY;
+
+		// 나무 크기 기본값 (Map#get용)
 		val defaultTreeSize = TreeSize.NORMAL.index;
-		val iterator = treeMap.keys();
+
+		// 틴트 색 적용
+		batch.color = treeTint;
+
+		// 각 나무 항목 처리
+		val iterator = treeInfo.keys();
 		while(iterator.hasNext) {
 			val positionHash = iterator.next();
 			val x = (positionHash shr 16).toFloat();
 			val y = (positionHash and 0xffff).toFloat();
-			val maxLength = 42f;  // 일단 하드코딩
+			val maxLength = 42f;  // 일단 하드코딩 - 18, 28, 24, 42 중 최댓값
 			// 보이는 나무만 그리기
 			if(x >= offsetX - halfScreenWidth - maxLength && x <= offsetX + halfScreenWidth + maxLength && y >= offsetY - halfScreenHeight - maxLength && y <= offsetY + halfScreenHeight + maxLength) {
-				val size = TreeSize.byIndex(treeMap.get(positionHash, defaultTreeSize));
+				val size = TreeSize.byIndex(treeInfo.get(positionHash, defaultTreeSize));
 				if(size == TreeSize.SMALL)
 					batch.draw(smallTree, x, y, 18f, 28f);
 				else
 					batch.draw(tree, x, y, 24f, 42f);
 			}
 		}
+
+		// 흰색으로 복원
+		batch.color = Color.WHITE;
 	}
 
 	// 플레이어 위치에 따라 카메라 위치 변경
