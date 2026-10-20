@@ -31,7 +31,7 @@ import io.potatogun.gdxhelper.world.World;
 import java.lang.ref.WeakReference;
 
 /**
- * 플레이어 — 화살표로 조종
+ * 플레이어 — 화살표나 WASD로 조종
  */
 class Player private constructor(world: World? = null, x: Float = 0f, y: Float = 0f, override val inventory: Inventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable, InputListener {
 	override val isUpdatableWhileFrozen = true;
