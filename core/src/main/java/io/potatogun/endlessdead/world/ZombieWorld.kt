@@ -167,8 +167,7 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 		for(i in 1..grasseCount) {
 			val x = Random.nextInt(intWidth);
 			val y = Random.nextInt(intHeight);
-			val positionHash = positionHashOf(x, y);
-			grassPositions.add(positionHash);
+			grassPositions.add(Grass.hashOf(x, y));
 		}
 
 		// 나무 정보 등록
@@ -177,21 +176,12 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 		for(i in 1..treeCount) {
 			val x = Random.nextInt(intWidth);
 			val y = Random.nextInt(intHeight);
-			val positionHash = positionHashOf(x, y);
-			val treeSize = TreeSize.cachedEntries.random().index;
-			treeInfo.add((positionHash shl 4) or (treeSize and 0xf));  // 자바랑 코틀린 원시(primitive) 구조체(struct)가 없고 클래스는 망할 놈의 GC 때문에 또 싫어서 해시로. C 비트필드 구조체같은 건데 이 월드의 크기상 한 변 크기가 12비트를 넘지 않아서 x, y를 모두 해시화하면 상위 4비트가 무조건 0이므로 하위 4비트에 나무 크기를 저장한다.
+			val treeSize = TreeSize.cachedEntries.random();
+			treeInfo.add(Tree.hashOf(x, y, treeSize));
 		}
 
 		UpdateListeners.register(this) { GameManager.isPlaying && GameManager.player.isIn(this) };  // 람다 this 캡처는 등록 시 한 번만 발생한다고 함.
 	}
-
-	private inline fun positionHashOf(x: Float, y: Float): Int = positionHashOf(x.toInt(), y.toInt());
-
-	private inline fun positionHashOf(x: Int, y: Int): Int = (x shl 16) or (y and 0xffff);  // 코틀린 놈들 그냥 <<, & 연산자 그대로 쓰면 되는데 쓸 데 없이 멋부리려고 저따구로 이상한 키워드 만들고 진짜
-
-	private inline fun xOfHash(positionHash: Int): Float = (positionHash shr 16).toFloat();
-
-	private inline fun yOfHash(positionHash: Int): Float = (positionHash and 0xffff).toFloat();
 
 	/**
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다.
@@ -295,9 +285,9 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 		batch.color = grassTint;
 
 		for(i in 0 until grassPositions.size) {
-			val positionHash = grassPositions.items[i];
-			val x = xOfHash(positionHash);
-			val y = yOfHash(positionHash);
+			val grassData = Grass(grassPositions.items[i]);
+			val x = grassData.x.toFloat();
+			val y = grassData.y.toFloat();
 			val maxLength = 20f;  // 일단 하드코딩 - 20, 19 중 최댓값
 			// 보이는 풀만 그리기
 			if(x >= offsetX - halfScreenWidth - maxLength && x <= offsetX + halfScreenWidth + maxLength && y >= offsetY - halfScreenHeight - maxLength && y <= offsetY + halfScreenHeight + maxLength)
@@ -324,14 +314,13 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 
 		// 각 나무 항목 처리
 		for(i in 0 until treeInfo.size) {
-			val treeData = treeInfo.items[i];
-			val positionHash = treeData shr 4;
-			val x = xOfHash(positionHash);
-			val y = yOfHash(positionHash);
+			val treeData = Tree(treeInfo.items[i]);
+			val x = treeData.x.toFloat();
+			val y = treeData.y.toFloat();
 			val maxLength = 42f;  // 일단 하드코딩 - 18, 28, 24, 42 중 최댓값
 			// 보이는 나무만 그리기
 			if(x >= offsetX - halfScreenWidth - maxLength && x <= offsetX + halfScreenWidth + maxLength && y >= offsetY - halfScreenHeight - maxLength && y <= offsetY + halfScreenHeight + maxLength) {
-				val size = TreeSize.byIndex(treeData and 0xf);
+				val size = treeData.size;
 				if(size == TreeSize.SMALL)
 					batch.draw(smallTree, x, y, 18f, 28f);
 				else
@@ -362,6 +351,36 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 		smallTree.dispose();
 		specialWorld?.dispose();
 		UpdateListeners.unregister(this);
+	}
+
+	/**
+	 * 풀의 정보를 담는 비트필드 구조체
+	 */
+	@JvmInline private value class Grass(@JvmField val hash: Int) {
+		inline val x: Int  // 맨 위 15비트
+			get() = hash shr 16;
+		inline val y: Int  // 중간 15비트
+			get() = hash and 0xffff;
+
+		companion object {
+			inline fun hashOf(x: Int, y: Int): Int = (x shl 16) or (y and 0xffff);
+		}
+	}
+
+	/**
+	 * 나무의 정보를 담는 비트필드 구조체
+	 */
+	@JvmInline private value class Tree(@JvmField val hash: Int) {
+		inline val x: Int  // 맨 위 15비트
+			get() = hash shr (15 + 2);
+		inline val y: Int  // 중간 15비트
+			get() = (hash shr 2) and 32767;
+		inline val size: TreeSize  // 하위 2비트
+			get() = TreeSize.byIndex(hash and 3);
+
+		companion object {
+			inline fun hashOf(x: Int, y: Int, size: TreeSize): Int = (x shl (15 + 2)) or (y shl 2) or (size.index and 3);
+		}
 	}
 
 	/**
