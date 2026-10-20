@@ -307,9 +307,6 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 		val offsetX = cameraX;
 		val offsetY = cameraY;
 
-		// 나무 크기 기본값 (Map#get용)
-		val defaultTreeSize = TreeSize.NORMAL.index;
-
 		// 틴트 색 적용
 		batch.color = treeTint;
 
@@ -384,16 +381,16 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 		companion object {
 			inline fun of(x: Int, y: Int, size: TreeSize): Tree = Tree(hashOf(x, y, size));
 
-			inline fun hashOf(x: Int, y: Int, size: TreeSize): Int = (x shl (15 + 2)) or (y shl 2) or (size.index and 3);
+			inline fun hashOf(x: Int, y: Int, size: TreeSize): Int = (x shl (15 + 2)) or (y shl 2) or (size.ordinal and 3);
 		}
 	}
 
 	/**
 	 * 배경의 나무 크기 열거형
 	 */
-	private enum class TreeSize(@JvmField val index: Int) {
-		SMALL(0),
-		NORMAL(1);
+	private enum class TreeSize {
+		SMALL,
+		NORMAL;
 
 		companion object {
 			@JvmField val cachedEntries = TreeSize.entries;
