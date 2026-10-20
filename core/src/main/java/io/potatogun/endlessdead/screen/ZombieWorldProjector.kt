@@ -156,11 +156,13 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 	}
 
 	private inline fun disposeParentWorld() {  // 원래는 세 군데에 직접 작성했던 코드라 인라인이다.
-		projectingWorld?.let {
-			if(it is SpecialWorld) {
-				val mainWorld = it.mainWorld;
+		projectingWorld?.let { world ->
+			if(world is SpecialWorld) {
+				val mainWorld = world.mainWorld;
 				if(mainWorld != null)
-					Gdx.app.postRunnable { safeRun<IllegalArgumentException> { mainWorld.dispose() } };
+					Gdx.app.postRunnable {
+						safeRun<IllegalArgumentException> { mainWorld.dispose() };
+					};
 			}
 		};
 	}
