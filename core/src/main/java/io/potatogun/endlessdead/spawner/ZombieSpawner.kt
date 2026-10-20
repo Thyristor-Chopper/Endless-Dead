@@ -7,6 +7,7 @@ import io.potatogun.endlessdead.entity.zombie.WeakZombie;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.position.distanceTo;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
+import io.potatogun.gdxhelper.util.nextFloat;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.random.Random;
@@ -55,8 +56,8 @@ class ZombieSpawner(world: World) : Spawner(world) {
 		val position = Pools.position.obtain();
 		do {
 			position.set(
-				Random.nextFloat() * (world.width - 140f) + 70f,
-				Random.nextFloat() * (world.height - 140f) + 70f
+				Random.nextFloat(70f, world.width - 70f),
+				Random.nextFloat(70f, world.height - 70f)
 			);
 			loopCount++;
 		} while(target != null && position.distanceTo(target) < 408f && loopCount < 30);
