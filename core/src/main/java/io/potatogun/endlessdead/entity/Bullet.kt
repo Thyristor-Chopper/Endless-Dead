@@ -25,7 +25,7 @@ import kotlin.math.sqrt;
  * @param    size         총알 지름
  * @param    texture      총알 텍스처
  */
-class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target: Position, speed: Float, val damage: Int, val isPenetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Resources.textures.getShared("bullet")) : LivingEntity(world, "Bullet", shooter.position.x, shooter.position.y, size, size, health, texture), Movable {
+class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target: Position?, speed: Float, val damage: Int, val isPenetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = Resources.textures.getShared("bullet")) : LivingEntity(world, "Bullet", shooter.position.x, shooter.position.y, size, size, health, texture), Movable {
 	private val moveComponent = MoveComponent(this, speed);
 	override val speed: Float by moveComponent::speed;
 	override val isUpdatableWhileFrozen = (shooter is Player);
@@ -43,19 +43,24 @@ class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target
 	private val directionY: Float;
 
 	init {
-		if(speed < 0f) throw IllegalArgumentException("invalid speed");
 		if(damage < 0) throw IllegalArgumentException("invalid damage");
+		if(target != null && speed == 0f) throw IllegalArgumentException("bullet with zero speed can't have a target");
 
-		val dx = target.x - shooter.x;
-		val dy = target.y - shooter.y;
-		val distance = sqrt(dx * dx + dy * dy);
-		if(distance > 0f) {
-			directionX = dx / distance;
-			directionY = dy / distance;
+		if(target != null) {
+			val dx = target.x - shooter.x;
+			val dy = target.y - shooter.y;
+			val distance = sqrt(dx * dx + dy * dy);
+			if(distance != 0f) {
+				directionX = dx / distance;
+				directionY = dy / distance;
+			} else {
+				directionX = 0f;
+				directionY = 0f;
+				Gdx.app.postRunnable { this.remove() };  // 이동해야 하는(속도가 있는) 총알이 이동하지 못하면 소멸
+			}
 		} else {
 			directionX = 0f;
 			directionY = 0f;
-			Gdx.app.postRunnable { this.remove() };  // 안 움직이는 총알 방지
 		}
 
 		if(shooter is TeamMember)
