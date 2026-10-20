@@ -364,6 +364,7 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 			get() = hash and 0xffff;
 
 		companion object {
+			inline fun of(x: Int, y: Int): Grass = Grass(hashOf(x, y));
 			inline fun hashOf(x: Int, y: Int): Int = (x shl 16) or (y and 0xffff);
 		}
 	}
@@ -380,6 +381,8 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 			get() = TreeSize.byIndex(hash and 3);
 
 		companion object {
+			inline fun of(x: Int, y: Int, size: TreeSize): Tree = Tree(hashOf(x, y, size));
+
 			inline fun hashOf(x: Int, y: Int, size: TreeSize): Int = (x shl (15 + 2)) or (y shl 2) or (size.index and 3);
 		}
 	}
