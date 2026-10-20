@@ -75,6 +75,11 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 	private val scoreColor = rgb(203, 241, 194);
 	private val gunCooldownBarX = { Window.width - 215f };
 	private val infiniteGunCooldownBarX = { Window.width - 75f };
+	// 단추들
+	private val resumeButton: Button;
+	private val replayButton: Button;
+	private val titleButton: Button;
+	private val quitButton: Button;
 	// 미터기들
 	private val hpIndicator: ProgressBar;
 	private val targetIndicator: ProgressBar;
@@ -97,10 +102,10 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		cooldownIndicator = ProgressBar(gunCooldownBarX, { 10f }, { 60f }, skin = Resources.smoothProgressBar, color = Color.SCARLET).apply { hide() }.also { addWidget("gun_cooldown_indicator", it) };
 
 		// 일시 중지 및 게임 오버 단추
-		addOverlayWidget("resume_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = Resources.primaryButton) {
+		resumeButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = Resources.primaryButton) {
 			GameManager.resume();
-		}.apply { hide() });
-		addOverlayWidget("replay_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Resources.primaryButton) {
+		}.apply { hide() }.also { addOverlayWidget("resume_button", it) };
+		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Resources.primaryButton) {
 			clearSubtitles();
 			projectingWorld?.let {
 				if(it is SpecialWorld) {
@@ -110,8 +115,8 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 				}
 			};
 			GameManager.newGame();
-		}.apply { hide() });
-		addOverlayWidget("title_button", Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Resources.button) {
+		}.apply { hide() }.also { addOverlayWidget("replay_button", it) };
+		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Resources.button) {
 			projectingWorld?.let {
 				if(it is SpecialWorld) {
 					val mainWorld = it.mainWorld;
@@ -122,8 +127,8 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 			unloadWorld(dispose = true);
 			clearSubtitles();
 			GameManager.standBy();
-		}.apply { hide() });
-		addOverlayWidget("quit_button", Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Resources.button) {
+		}.apply { hide() }.also { addOverlayWidget("title_button", it) };
+		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Resources.button) {
 			projectingWorld?.let {
 				if(it is SpecialWorld) {
 					val mainWorld = it.mainWorld;
@@ -133,7 +138,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 			};
 			unloadWorld(dispose = true);
 			Gdx.app.exit();
-		}.apply { hide() });
+		}.apply { hide() }.also { addOverlayWidget("quit_button", it) };
 
 		// 제목 표시줄 정보 전환
 		timers.register(RepeatingTimer(3f, { (GameManager.isPlaying || GameManager.isPaused) && projectingWorld != null }) {
@@ -144,24 +149,24 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		GameManager.attachStateObserver {
 			when {
 				GameManager.isPlaying -> {
-					hideWidget("replay_button");
-					hideWidget("resume_button");
-					hideWidget("title_button");
-					hideWidget("quit_button");
+					replayButton.hide();
+					resumeButton.hide();
+					titleButton.hide();
+					quitButton.hide();
 				}
 				GameManager.isPaused -> {
-					hideWidget("replay_button");
-					showWidget("resume_button");
-					showWidget("title_button");
-					showWidget("quit_button");
+					replayButton.hide();
+					resumeButton.show();
+					titleButton.show();
+					quitButton.show();
 				}
 				GameManager.isGameOver -> {
 					Window.titleBarStats = null;
 
-					showWidget("replay_button");
-					hideWidget("resume_button");
-					showWidget("title_button");
-					showWidget("quit_button");
+					replayButton.show();
+					resumeButton.hide();
+					titleButton.show();
+					quitButton.show();
 				}
 			}
 		};
