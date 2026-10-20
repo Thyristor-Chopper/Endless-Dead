@@ -64,6 +64,7 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 	private val bgColorDark = rgb(38, 92, 38);
 	private val bgColorLight = rgb(38, 107, 38);
 	private val bgTileSize = 64f;
+	// 나무 관련
 	private val tree = loadTexture("world/tree.bmp");
 	private val smallTree = loadTexture("world/tree_small.bmp");
 	private val treeMap: IntIntMap;  // 이 월드는 한 변 크기가 2000 뿐이므로 더블 short:int(32비트)로 써도 됨, 값은 SMALL(0), NORMAL(1)
