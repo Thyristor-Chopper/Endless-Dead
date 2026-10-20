@@ -3,7 +3,6 @@ package io.potatogun.endlessdead.world;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array as GdxArray;
 import com.badlogic.gdx.utils.IntArray;
-import com.badlogic.gdx.utils.IntIntMap;
 
 import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.Constants;
@@ -70,7 +69,7 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 	// 나무
 	private val tree = loadTexture("world/tree.bmp");
 	private val smallTree = loadTexture("world/tree_small.bmp");
-	private val treeInfo: IntIntMap;  // 이 월드는 한 변 크기가 2000 뿐이므로 더블 short->int(32비트)로 써도 됨, 값은 SMALL(0), NORMAL(1)
+	private val treeInfo: IntArray;  // 이 월드는 한 변 크기가 2000 뿐이므로 더블 short->int(32비트)로 써도 됨, 값은 SMALL(0), NORMAL(1)
 	private val treeTint = rgb(255, 255, 255, 0.85f);  // 나무를 반투명하게
 	// 타이머
 	private val timers = TimerManager();
@@ -174,12 +173,13 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 
 		// 나무 정보 등록
 		val treeCount = Random.nextInt(41) + 80;  // 80~120개
-		treeInfo = IntIntMap(treeCount);
+		treeInfo = IntArray(false, treeCount);
 		for(i in 1..treeCount) {
 			val x = Random.nextInt(intWidth);
 			val y = Random.nextInt(intHeight);
 			val positionHash = positionHashOf(x, y);
-			treeInfo.put(positionHash, TreeSize.cachedEntries.random().index);  // 자바랑 코틀린 원시(primitive) 구조체(struct)가 없고 클래스는 망할 놈의 GC 때문에 또 싫어서 해시로
+			val treeSize = TreeSize.cachedEntries.random().index;
+			treeInfo.add((positionHash shl 4) or (treeSize and 0xf));  // 자바랑 코틀린 원시(primitive) 구조체(struct)가 없고 클래스는 망할 놈의 GC 때문에 또 싫어서 해시로. C 비트필드 구조체같은 건데 이 월드의 크기상 한 변 크기가 12비트를 넘지 않아서 x, y를 모두 해시화하면 상위 4비트가 무조건 0이므로 하위 4비트에 나무 크기를 저장한다.
 		}
 
 		UpdateListeners.register(this) { GameManager.isPlaying && GameManager.player.isIn(this) };  // 람다 this 캡처는 등록 시 한 번만 발생한다고 함.
@@ -323,15 +323,15 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 		batch.color = treeTint;
 
 		// 각 나무 항목 처리
-		val iterator = treeInfo.keys();
-		while(iterator.hasNext) {
-			val positionHash = iterator.next();
+		for(i in 0 until treeInfo.size) {
+			val treeData = treeInfo.items[i];
+			val positionHash = treeData shr 4;
 			val x = xOfHash(positionHash);
 			val y = yOfHash(positionHash);
 			val maxLength = 42f;  // 일단 하드코딩 - 18, 28, 24, 42 중 최댓값
 			// 보이는 나무만 그리기
 			if(x >= offsetX - halfScreenWidth - maxLength && x <= offsetX + halfScreenWidth + maxLength && y >= offsetY - halfScreenHeight - maxLength && y <= offsetY + halfScreenHeight + maxLength) {
-				val size = TreeSize.byIndex(treeInfo.get(positionHash, defaultTreeSize));
+				val size = TreeSize.byIndex(treeData and 0xf);
 				if(size == TreeSize.SMALL)
 					batch.draw(smallTree, x, y, 18f, 28f);
 				else
