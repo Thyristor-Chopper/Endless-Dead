@@ -252,12 +252,12 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 		batch.color = Color.WHITE;
 
 		// 나무 그리기
-		val iterator = treeMap.iterator();
-		while(iterator.hasNext()) {
-			val treeInfo = iterator.next();
-			val x = (treeInfo.key shr 16).toFloat();
-			val y = (treeInfo.key and 0xffff).toFloat();
-			val size = TreeSize.byIndex(treeInfo.value);
+		val iterator = treeMap.keys();
+		while(iterator.hasNext) {
+			val positionHash = iterator.next();
+			val x = (positionHash shr 16).toFloat();
+			val y = (positionHash and 0xffff).toFloat();
+			val size = TreeSize.byIndex(treeMap.get(positionHash, TreeSize.NORMAL.index));
 			if(size == TreeSize.SMALL)
 				batch.draw(smallTree, x, y, 18f, 28f);
 			else
