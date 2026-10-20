@@ -75,6 +75,11 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 	private val scoreColor = rgb(203, 241, 194);
 	private val gunCooldownBarX = { Window.width - 215f };
 	private val infiniteGunCooldownBarX = { Window.width - 75f };
+	// 미터기들
+	private val hpIndicator: ProgressBar;
+	private val targetIndicator: ProgressBar;
+	private val ammoIndicator: ProgressBar;
+	private val cooldownIndicator: ProgressBar;
 
 	init {
 		// 단색용 텍스처 생성
@@ -86,10 +91,10 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		};
 
 		// 미터기 추가
-		addWidget("hp_indicator", ProgressBar({ 9f }, { Window.height - 38f }, { 180f }, skin = Resources.smoothProgressBar, color = rgb(73, 186, 73)));
-		addWidget("attack_target_hp_indicator", ProgressBar({ 210f }, { Window.height - 38f }, { 180f }, skin = Resources.smoothProgressBar, color = enemyBarColor).apply { hide() });
-		addWidget("gun_ammo_indicator", ProgressBar({ Window.width - 145f }, { 10f }, { 130f }, skin = Resources.chunkedProgressBar, color = rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() });
-		addWidget("gun_cooldown_indicator", ProgressBar(gunCooldownBarX, { 10f }, { 60f }, skin = Resources.smoothProgressBar, color = Color.SCARLET).apply { hide() });
+		hpIndicator = ProgressBar({ 9f }, { Window.height - 38f }, { 180f }, skin = Resources.smoothProgressBar, color = rgb(73, 186, 73)).also { addWidget("hp_indicator", it) };
+		targetIndicator = ProgressBar({ 210f }, { Window.height - 38f }, { 180f }, skin = Resources.smoothProgressBar, color = enemyBarColor).apply { hide() }.also { addWidget("attack_target_hp_indicator", it) };
+		ammoIndicator = ProgressBar({ Window.width - 145f }, { 10f }, { 130f }, skin = Resources.chunkedProgressBar, color = rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() }.also { addWidget("gun_ammo_indicator", it) };
+		cooldownIndicator = ProgressBar(gunCooldownBarX, { 10f }, { 60f }, skin = Resources.smoothProgressBar, color = Color.SCARLET).apply { hide() }.also { addWidget("gun_cooldown_indicator", it) };
 
 		// 일시 중지 및 게임 오버 단추
 		addOverlayWidget("resume_button", Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = Resources.primaryButton) {
@@ -244,11 +249,6 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 	 * 미터기 정보를 갱신한다.
 	 */
 	private inline fun updateProgressBars() {  // updatePlaying에서만 한 번 쓰이기 때문에 inline이다.
-		val hpIndicator = getWidget("hp_indicator") as ProgressBar;
-		val targetIndicator = getWidget("attack_target_hp_indicator") as ProgressBar;
-		val ammoIndicator = getWidget("gun_ammo_indicator") as ProgressBar;
-		val cooldownIndicator = getWidget("gun_cooldown_indicator") as ProgressBar;
-
 		if(projectingWorld == null) {
 			hpIndicator.hide();
 			targetIndicator.hide();
