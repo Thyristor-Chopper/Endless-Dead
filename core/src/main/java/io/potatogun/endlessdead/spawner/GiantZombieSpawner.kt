@@ -16,7 +16,7 @@ import kotlin.random.Random;
  * @property world 소속 월드
  */
 class GiantZombieSpawner(world: World) : Spawner(world) {
-	override val spawnInterval = 300f;
+	override val spawnInterval = 600f;
 
 	override fun spawn() {
 		val newZombie = GiantZombie(world, 0f, 0f);
