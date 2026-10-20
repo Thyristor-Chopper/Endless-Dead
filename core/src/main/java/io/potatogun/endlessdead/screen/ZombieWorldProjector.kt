@@ -107,17 +107,17 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		}.apply { hide() }.also { addOverlayWidget("resume_button", it) };
 		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Resources.primaryButton) {
 			clearSubtitles();
-			unloadParentWorld();
+			disposeParentWorld();
 			GameManager.newGame();
 		}.apply { hide() }.also { addOverlayWidget("replay_button", it) };
 		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Resources.button) {
-			unloadParentWorld();
+			disposeParentWorld();
 			unloadWorld(dispose = true);
 			clearSubtitles();
 			GameManager.standBy();
 		}.apply { hide() }.also { addOverlayWidget("title_button", it) };
 		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Resources.button) {
-			unloadParentWorld();
+			disposeParentWorld();
 			unloadWorld(dispose = true);
 			Gdx.app.exit();
 		}.apply { hide() }.also { addOverlayWidget("quit_button", it) };
@@ -155,7 +155,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		};
 	}
 
-	private inline fun unloadParentWorld() {  // 원래는 세 군데에 직접 작성했던 코드라 인라인이다.
+	private inline fun disposeParentWorld() {  // 원래는 세 군데에 직접 작성했던 코드라 인라인이다.
 		projectingWorld?.let {
 			if(it is SpecialWorld) {
 				val mainWorld = it.mainWorld;
