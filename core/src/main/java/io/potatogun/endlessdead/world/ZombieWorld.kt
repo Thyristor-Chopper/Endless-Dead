@@ -365,6 +365,7 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 
 		companion object {
 			inline fun of(x: Int, y: Int): Grass = Grass(hashOf(x, y));
+
 			inline fun hashOf(x: Int, y: Int): Int = (x shl 16) or (y and 0xffff);
 		}
 	}
