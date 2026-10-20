@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.world;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Array as GdxArray;
+import com.badlogic.gdx.utils.IntIntMap;
 
 import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.Constants;
@@ -63,6 +64,9 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 	private val bgColorDark = rgb(38, 92, 38);
 	private val bgColorLight = rgb(38, 107, 38);
 	private val bgTileSize = 64f;
+	private val tree = loadTexture("world/tree.bmp");
+	private val smallTree = loadTexture("world/tree_small.bmp");
+	private val treeMap: IntIntMap;  // 이 월드는 한 변 크기가 2000 뿐이므로 더블 short:int(32비트)로 써도 됨, 값은 SMALL(0), NORMAL(1)
 	// 타이머
 	private val timers = TimerManager();
 	// 이 월드의 시간
@@ -151,6 +155,16 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 			};
 		});
 
+		// 나무 추가
+		val treeCount = Random.nextInt(41) + 80;  // 80~120개
+		treeMap = IntIntMap(treeCount);
+		for(i in 1..treeCount) {
+			val x = Random.nextInt(intWidth);
+			val y = Random.nextInt(intHeight);
+			val positionHash = (x shl 16) or (y and 0xffff);
+			treeMap.put(positionHash, TreeSize.cachedEntries.random().index);
+		}
+
 		UpdateListeners.register(this) { GameManager.isPlaying && GameManager.player.isIn(this) };  // 람다 this 캡처는 등록 시 한 번만 발생한다고 함.
 	}
 
@@ -235,6 +249,19 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 
 		// 배경에 입힌 색이 다음 그리기(게임 객체)에 영향을 주지 않도록 흰색으로 복원.
 		batch.color = Color.WHITE;
+
+		// 나무 그리기
+		val iterator = treeMap.iterator();
+		while(iterator.hasNext()) {
+			val treeInfo = iterator.next();
+			val x = (treeInfo.key shr 16).toFloat();
+			val y = (treeInfo.key and 0xffff).toFloat();
+			val size = TreeSize.byIndex(treeInfo.value);
+			if(size == TreeSize.SMALL)
+				batch.draw(smallTree, x, y, 18f, 28f);
+			else
+				batch.draw(tree, x, y, 24f, 42f);
+		}
 	}
 
 	// 플레이어 위치에 따라 카메라 위치 변경
@@ -251,7 +278,24 @@ class ZombieWorld : World(Constants.WORLD_WIDTH, Constants.WORLD_HEIGHT, Spatial
 	override fun dispose() {
 		super.dispose();
 		tileTexture.dispose();
+		tree.dispose();
+		smallTree.dispose();
 		specialWorld?.dispose();
 		UpdateListeners.unregister(this);
+	}
+
+	/**
+	 * 배경의 나무 크기 열거형
+	 */
+	private enum class TreeSize(@JvmField val index: Int) {
+		SMALL(0),
+		NORMAL(1);
+
+		companion object {
+			@JvmField val cachedEntries = TreeSize.entries;
+			@JvmField val size = cachedEntries.size;
+
+			@JvmStatic inline fun byIndex(index: Int) = cachedEntries[index];
+		}
 	}
 }

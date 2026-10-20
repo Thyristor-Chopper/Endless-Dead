@@ -605,10 +605,10 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		ZOMBIES;
 
 		companion object {
-			private val enumEntries = TitleInfoType.entries;
-			val size = enumEntries.size;
+			@JvmField val cachedEntries = TitleInfoType.entries;
+			@JvmField val size = cachedEntries.size;
 
-			@JvmStatic fun byIndex(index: Int) = enumEntries[index];
+			@JvmStatic inline fun byIndex(index: Int) = cachedEntries[index];
 		}
 	}
 }
