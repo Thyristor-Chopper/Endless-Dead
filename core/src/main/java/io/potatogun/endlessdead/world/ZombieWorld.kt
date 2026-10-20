@@ -371,9 +371,9 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 	 * 나무의 정보를 담는 비트필드 구조체
 	 */
 	@JvmInline private value class Tree(@JvmField val hash: Int) {
-		val x: Int  // 맨 위 15비트
+		val x: Int  // 상위 15비트
 			inline get() = hash shr (15 + 2);
-		val y: Int  // 중간 15비트
+		val y: Int  // 다음 15비트
 			inline get() = (hash shr 2) and 32767;
 		val size: TreeSize  // 하위 2비트
 			inline get() = TreeSize.byIndex(hash and 3);
