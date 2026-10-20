@@ -24,7 +24,8 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 	/**
 	 * 아이템을 들고 있는 인벤토리 (캐시)
 	 */
-	@get:JvmSynthetic @set:JvmSynthetic internal var inventory: Inventory? = null;
+	@set:JvmSynthetic var inventory: Inventory? = null
+		internal set;
 	/**
 	 * 아이템 희귀도
 	 */

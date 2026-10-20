@@ -18,7 +18,12 @@ import io.potatogun.gdxhelper.world.World;
  * @property item  아이템
  */
 class DroppedItem(world: World, x: Float, y: Float, val item: Item) : Entity(world, item.name, x, y, Constants.ITEM_SIZE, Constants.ITEM_SIZE, item.texture) {
+	private var pickedUp = false;
+
 	init {
+		if(item.inventory != null)
+			throw IllegalArgumentException("can't create a dropped item entity with an item that has an owner");
+
 		rotateToRandom();
 	}
 
@@ -29,16 +34,19 @@ class DroppedItem(world: World, x: Float, y: Float, val item: Item) : Entity(wor
 	 * @return 성공 여부
 	 */
 	fun pickup(collector: InventoryHolder): Boolean {
-		val world = level;
 		val added = collector.inventory.addItem(item);
-		if(added && world != null)
-			world.entities.remove(this);  // this.remove()로 하면 dispose돼서 안 됨.
+		if(added) {
+			pickedUp = true;
+			val world = level;
+			if(world != null)
+				this.remove();  // this.remove()로 하면 dispose돼서 안 됨.
+		}
 		return added;
 	}
 
 	// 개체가 텍스처를 갖지 않고 아이템의 텍스처를 빌려 쓸 뿐이라 dispose하면 안 됨
 	override fun dispose() {
-		if(item is Disposable)
+		if(!pickedUp && item is Disposable && item.inventory == null)
 			item.dispose();
 	}
 }
