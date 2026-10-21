@@ -30,7 +30,7 @@ object GameManager : Updatable {
 	 */
 	private lateinit var game: EndlessDead;  // 초기화 후 바뀔 일 없음 코틀린이 원래 나 같은 개발자를 열받게 하는 언어라...
 	/**
-	 * 이 게임 인스턴스에 대한 무작위값 생성기
+	 * 이 게임 인스턴스에 대한 무작위값 생성기 (월드 요소 생성에서만 사용된다.)
 	 */
 	@JvmField var random: Random = Random.Default;
 	/**

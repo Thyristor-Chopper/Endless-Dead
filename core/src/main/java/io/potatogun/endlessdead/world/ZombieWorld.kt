@@ -178,7 +178,7 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 		for(i in 1..treeCount) {
 			val x = GameManager.random.nextInt(intWidth);
 			val y = GameManager.random.nextInt(intHeight);
-			val size = Tree.Size.cachedEntries.random();
+			val size = Tree.Size.byIndex(GameManager.random.nextInt(Tree.Size.size));
 			treeInfo.add(Tree.hashOf(x, y, size));
 		}
 
