@@ -10,6 +10,8 @@ import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.teleportToCenter;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
+import kotlin.random.Random;
+
 /**
  * 게임의 상태를 관리하는 싱글톤
  *
@@ -28,6 +30,10 @@ object GameManager : Updatable {
 	 */
 	private lateinit var game: EndlessDead;  // 초기화 후 바뀔 일 없음 코틀린이 원래 나 같은 개발자를 열받게 하는 언어라...
 	/**
+	 * 이 게임 인스턴스에 대한 무작위값 생성기
+	 */
+	@JvmField var random: Random = Random.Default;
+	/**
 	 * 점수 관리자
 	 */
 	@JvmField val scoreManager = ScoreManager();  // 디컴파일해서 확인한 결과 싱글톤에서 @JvmField를 하면 GameManager.INSTANCE.scoreManager가 아닌 GameManager.scoreManager로 바로 접근 가능(@JvmStatic 효과도 같이 있는 것)
@@ -39,6 +45,14 @@ object GameManager : Updatable {
 	 * 월드, 개체 등에 종속되지 않는 전역 타이머 관리자
 	 */
 	@JvmField val globalTimers = TimerManager();
+	/**
+	 * 라운드 숨김 여부
+	 */
+	@get:JvmName("isRoundHidden")
+	@get:JvmStatic
+	@set:JvmName("setRoundHidden")
+	@set:JvmStatic
+	var hideRound = false;
 	/**
 	 * 게임의 현재 상태
 	 */
@@ -62,7 +76,7 @@ object GameManager : Updatable {
 	@get:JvmStatic var round = 0
 		private set(value) {
 			field = value;
-			TitleBar.info = if(value > 0) "Round $value" else null;
+			TitleBar.info = if(value > 0 && !hideRound) "Round $value" else null;
 		};
 	/**
 	 * 현재 게임이 진행 중인지의 여부
@@ -113,6 +127,33 @@ object GameManager : Updatable {
 	 */
 	fun detachStateObserver(handler: Runnable) {
 		stateObservers.removeValue(handler, true);
+	}
+
+	/**
+	 * 게임의 무작위값 생성기를 지정한 시드의 생성기로 변경한다.
+	 *
+	 * @param seed 새 시드
+	 */
+	inline fun setSeed(seed: Int) {
+		random = Random(seed);
+	}
+
+	/**
+	 * 게임의 무작위값 생성기를 지정한 시드의 생성기로 변경한다.
+	 *
+	 * @param seed 새 시드
+	 */
+	inline fun setSeed(seed: Long) {
+		random = Random(seed);
+	}
+
+	/**
+	 * 게임의 무작위값 생성기를 기본 시드로 돌려놓는다.
+	 *
+	 * @param seed null만 가능
+	 */
+	inline fun setSeed(seed: Void?) {
+		random = Random.Default;
 	}
 
 	/**

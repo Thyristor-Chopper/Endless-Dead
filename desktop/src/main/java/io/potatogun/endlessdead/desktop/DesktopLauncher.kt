@@ -4,6 +4,7 @@ package io.potatogun.endlessdead.desktop;
 import com.badlogic.gdx.Files.FileType;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.utils.ObjectMap;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
@@ -18,10 +19,14 @@ import io.potatogun.endlessdead.EndlessDead;
  *
  * 실제 게임 내용은 EndlessDead 클래스와 각 Screen/World 클래스에서 정의된다.
  * 이 파일은 순수 'OS에 창 띄우기' 역할만 한다.
+ *
+ * @param args 명령줄 매개변수 - 현재는 시드만 받음.
  */
-fun main() {
+fun main(args: Array<String>) {
+	val options = parseArgs(args);
+
 	// 1) 게임 객체 만들기
-	val game = EndlessDead();
+	val game = EndlessDead(options);
 
 	// 2) 창(Window) 설정
 	val config = Lwjgl3ApplicationConfiguration().apply {
@@ -37,4 +42,14 @@ fun main() {
 
 	// 3) 실행
 	Lwjgl3Application(game, config);
+}
+
+private inline fun parseArgs(args: Array<String>): ObjectMap<String, String> {
+	val options = ObjectMap<String, String>(args.size);
+	for(argument in args) {  // Shotgun에서 배열은 C스타일 iteration이 됐으므로 여기서도 비슷할 거라 추측(디컴하기 귀찮...)
+		if(!argument.startsWith("-D") || !argument.contains('=')) continue;
+		val (key, value) = argument.removePrefix("-D").split("=", limit = 2);
+		options.put(key, value);
+	}
+	return options;
 }

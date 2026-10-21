@@ -583,6 +583,11 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		);
 	}
 
+	internal fun disableTitleControls() {
+		replayButton.disable();
+		titleButton.disable();
+	}
+
 	override fun dispose() {
 		super.dispose();
 		solidColor.dispose();
