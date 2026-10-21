@@ -181,7 +181,7 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 			treeInfo.add(Tree.hashOf(x, y, treeSize));
 		}
 
-		UpdateListeners.register(this) { GameManager.isPlaying && GameManager.player.isIn(this) };  // 람다 this 캡처는 등록 시 한 번만 발생한다고 함.
+		UpdateListeners.register(this) { GameManager.isPlaying && GameManager.player.isIn(this) };  // this 캡처 떄문에 약참조가 될 수 없어서 dispose에서 직접 확실히 해제함.
 	}
 
 	/**
