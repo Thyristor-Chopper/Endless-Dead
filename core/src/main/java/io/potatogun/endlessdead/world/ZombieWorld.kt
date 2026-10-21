@@ -336,8 +336,8 @@ class ZombieWorld : World(1984f, 1984f, SpatialGrid(256, 128f), font = Resources
 		if(player.world !== this) return;
 		val halfScreenWidth = min2(Window.width * 0.5f, width * 0.5f);
 		val halfScreenHeight = min2(Window.height * 0.5f, height * 0.5f);
-		cameraX = player.x.coerceIn(halfScreenWidth + 0.1f, width - halfScreenWidth - 0.1f);  // 0.1: 렌더링 버그를 막기 위한 미세 오프셋
-		cameraY = player.y.coerceIn(halfScreenHeight + 0.1f, height - halfScreenHeight - 0.1f);
+		cameraX = player.x.coerceIn(halfScreenWidth - 0.1f, width - halfScreenWidth + 0.1f);  // 0.1: 렌더링 버그를 막기 위한 미세 오프셋
+		cameraY = player.y.coerceIn(halfScreenHeight - 0.1f, height - halfScreenHeight + 0.1f);
 	}
 
 	// 화면이 닫힐 때 — 부모도 dispose한 뒤 우리만의 자원도 해제.
