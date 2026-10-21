@@ -164,8 +164,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		// 월드 경계 안쪽으로 가두기.
 		val world = level;
 		if(world != null) {
-			val finalX = x.coerceIn(0f, world.width);
-			val finalY = y.coerceIn(0f, world.height);
+			val finalX = x.coerceIn(0f - 0.1f, world.width + 0.1f);  // 0.1: 렌더링 버그를 막기 위한 미세 오프셋
+			val finalY = y.coerceIn(0f - 0.1f, world.height + 0.1f);
 			if(x != finalX) x = finalX;
 			if(y != finalY) y = finalY;
 		}

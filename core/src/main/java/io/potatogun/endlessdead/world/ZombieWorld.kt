@@ -63,7 +63,7 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 	private val bgColorDark = rgb(38, 96, 38);
 	private val bgColorLight = rgb(38, 104, 38);
 	private val bgColorDarkOuter = rgb(32, 72, 32);
-	private val bgColorLightOuter = rgb(32, 80, 32);
+	private val bgColorLightOuter = rgb(32, 76, 32);
 	private val tileSize = 64f;
 	// 풀 [艸]
 	private val grass = loadTexture("world/grass.bmp");
@@ -342,8 +342,8 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 		if(player.world !== this) return;
 		val halfScreenWidth = min2(Window.width * 0.5f, width * 0.5f);
 		val halfScreenHeight = min2(Window.height * 0.5f, height * 0.5f);
-		cameraX = player.x.coerceIn(halfScreenWidth - 0.1f, width - halfScreenWidth + 0.1f);  // 0.1: 렌더링 버그를 막기 위한 미세 오프셋
-		cameraY = player.y.coerceIn(halfScreenHeight - 0.1f, height - halfScreenHeight + 0.1f);
+		cameraX = player.x;
+		cameraY = player.y;
 	}
 
 	// 화면이 닫힐 때 — 부모도 dispose한 뒤 우리만의 자원도 해제.
