@@ -41,6 +41,7 @@ class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target
 	 * 총알 속도에 따른 세로 이동량
 	 */
 	private val directionY: Float;
+	private val slack = 128f;  // 경계 밖으로 이만큼은 나가도 살아있게
 
 	init {
 		if(damage < 0) throw IllegalArgumentException("invalid damage");
@@ -75,7 +76,7 @@ class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target
 		// 월드 밖으로 나가면 소멸
 		val world = level;
 		val maxHalfLength = max2(width, height) * 0.5f;
-		if(world != null && (x < 0f - maxHalfLength || x > world.width + maxHalfLength || y < 0f - maxHalfLength || y > world.height + maxHalfLength))
+		if(world != null && (x < 0f - maxHalfLength - slack || x > world.width + maxHalfLength + slack || y < 0f - maxHalfLength - slack || y > world.height + maxHalfLength + slack))
 			this.remove();
 
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지를 준다.

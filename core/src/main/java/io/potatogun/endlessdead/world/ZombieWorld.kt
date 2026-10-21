@@ -55,13 +55,15 @@ import kotlin.random.Random;
 /**
  * 좀비 파밍 월드
  */
-class ZombieWorld : World(1984f, 1984f, SpatialGrid(256, 128f), font = Resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
+class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
 	// 등록된 스포너 목록
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
 	// 체스판 배경 설정 (drawTiles에서 사용)
 	private val tile = loadTexture("world/tile_grain.bmp");
 	private val bgColorDark = rgb(38, 96, 38);
 	private val bgColorLight = rgb(38, 104, 38);
+	private val bgColorDarkOuter = rgb(32, 72, 32);
+	private val bgColorLightOuter = rgb(32, 80, 32);
 	private val tileSize = 64f;
 	// 풀 [艸]
 	private val grass = loadTexture("world/grass.bmp");
@@ -262,11 +264,15 @@ class ZombieWorld : World(1984f, 1984f, SpatialGrid(256, 128f), font = Resources
 		// 타일 그리기
 		for(row in startRow until startRow + rows)
 			for(col in startCol until startCol + cols) {
-				// 행 + 열이 짝수면 어둡게, 홀수면 밝게 (체스판 패턴)
-				batch.color = if((row + col) % 2 == 0) bgColorDark else bgColorLight;
-
 				val drawX = col * tileSize;
 				val drawY = row * tileSize;
+
+				// 행 + 열이 짝수면 어둡게, 홀수면 밝게 (체스판 패턴)
+				if(drawX >= width || drawY >= height || drawX <= -tileSize || drawY <= -tileSize)
+					batch.color = if((row + col) % 2 == 0) bgColorDarkOuter else bgColorLightOuter;
+				else
+					batch.color = if((row + col) % 2 == 0) bgColorDark else bgColorLight;
+
 				batch.draw(tile, drawX, drawY, tileSize, tileSize);
 			}
 

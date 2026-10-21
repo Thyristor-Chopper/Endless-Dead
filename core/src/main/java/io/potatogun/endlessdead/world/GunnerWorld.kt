@@ -34,6 +34,7 @@ import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.TimerAttachable;
 import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.util.min2;
+import io.potatogun.gdxhelper.util.rgb;
 import io.potatogun.gdxhelper.world.TimedWorld;
 import io.potatogun.gdxhelper.world.World;
 
@@ -44,14 +45,16 @@ import kotlin.random.Random;
 /**
  * 총잡이나 포탑 등이 메인 주인공인 월드
  */
-class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = null) : World(1440f, 1426f, SpatialGrid(256, 128f), font = Resources.font), TimedWorld, TimerAttachable, SpecialWorld {
+class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = null) : World(1440f, 1440f, SpatialGrid(256, 128f), font = Resources.font), TimedWorld, TimerAttachable, SpecialWorld {
 	/**
 	 * 등록된 스포너 목록
 	 */
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
 	private val tileTexture = loadTexture("world/rivets.bmp");  // 은색 리벳
 	private val bgTileWidth = 80f;
-	private val bgTileHeight = 46f;
+	private val bgTileHeight = 40f;
+	private val bgColor = Color.WHITE;  // 원래 텍스처 색 그대로 사용
+	private val bgColorOuter = rgb(224, 224, 224);  // 원래 색보다 좀더 어둡게
 	// 타이머
 	private val timers = TimerManager();
 	// 이 월드의 시간
@@ -153,8 +156,14 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 			for(col in startCol until startCol + cols) {
 				val drawX = col * bgTileWidth;
 				val drawY = row * bgTileHeight;
+				if(drawX >= width || drawY >= height || drawX <= -bgTileWidth || drawY <= -bgTileHeight)
+					batch.color = bgColorOuter;
+				else
+					batch.color = bgColor;
 				batch.draw(tileTexture, drawX, drawY, bgTileWidth, bgTileHeight);
 			}
+
+		batch.color = Color.WHITE;
 	}
 
 	override fun updateOffset() {
