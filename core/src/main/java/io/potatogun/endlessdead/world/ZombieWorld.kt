@@ -340,8 +340,6 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 	override fun updateOffset() {
 		val player = GameManager.player;
 		if(player.world !== this) return;
-		val halfScreenWidth = min2(Window.width * 0.5f, width * 0.5f);
-		val halfScreenHeight = min2(Window.height * 0.5f, height * 0.5f);
 		cameraX = player.x;
 		cameraY = player.y;
 	}

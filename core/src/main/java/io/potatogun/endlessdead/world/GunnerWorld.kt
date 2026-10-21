@@ -169,8 +169,6 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 	override fun updateOffset() {
 		val player = GameManager.player;
 		if(player.world !== this) return;
-		val halfScreenWidth = min2(Window.width * 0.5f, width * 0.5f);
-		val halfScreenHeight = min2(Window.height * 0.5f, height * 0.5f);
 		cameraX = player.x;
 		cameraY = player.y;
 	}
