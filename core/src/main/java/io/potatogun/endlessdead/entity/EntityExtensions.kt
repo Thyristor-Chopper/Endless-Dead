@@ -51,5 +51,5 @@ fun Entity.forEachNearby(callback: Consumer<Entity>) {
 inline fun Entity.teleportToCenter() {
 	val world = this.world;
 	if(world == null) return;
-	teleport(world.width * 0.5f, world.height * 0.5f);
+	teleport(world.width * 0.5f + 0.1f, world.height * 0.5f + 0.1f);  // 0.1: 렌더링 버그를 막기 위한 미세 오프셋
 }

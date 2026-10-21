@@ -162,8 +162,8 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 		if(player.world !== this) return;
 		val halfScreenWidth = min2(Window.width * 0.5f, width * 0.5f);
 		val halfScreenHeight = min2(Window.height * 0.5f, height * 0.5f);
-		cameraX = player.x.coerceIn(halfScreenWidth, width - halfScreenWidth);
-		cameraY = player.y.coerceIn(halfScreenHeight, height - halfScreenHeight);
+		cameraX = player.x.coerceIn(halfScreenWidth + 0.1f, width - halfScreenWidth - 0.1f);
+		cameraY = player.y.coerceIn(halfScreenHeight + 0.1f, height - halfScreenHeight - 0.1f);
 	}
 
 	override fun dispose() {
