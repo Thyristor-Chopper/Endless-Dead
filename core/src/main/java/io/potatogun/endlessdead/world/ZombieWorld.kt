@@ -60,8 +60,8 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
 	// 체스판 배경 설정 (drawTiles에서 사용)
 	private val tile = loadTexture("world/tile_grain.bmp");
-	private val bgColorDark = rgb(38, 98, 38);
-	private val bgColorLight = rgb(38, 100, 38);
+	private val bgColorDark = rgb(38, 94, 38);
+	private val bgColorLight = rgb(38, 106, 38);
 	private val tileSize = 64f;
 	// 풀 [艸]
 	private val grass = loadTexture("world/grass.bmp");
