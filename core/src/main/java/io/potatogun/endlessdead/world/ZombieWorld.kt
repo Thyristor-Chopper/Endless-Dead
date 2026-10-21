@@ -177,8 +177,8 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 		for(i in 1..treeCount) {
 			val x = Random.nextInt(intWidth);
 			val y = Random.nextInt(intHeight);
-			val treeSize = Tree.Size.cachedEntries.random();
-			treeInfo.add(Tree.hashOf(x, y, treeSize));
+			val size = Tree.Size.cachedEntries.random();
+			treeInfo.add(Tree.hashOf(x, y, size));
 		}
 
 		UpdateListeners.register(this) { GameManager.isPlaying && GameManager.player.isIn(this) };  // this 캡처 떄문에 약참조가 될 수 없어서 dispose에서 직접 확실히 해제함.
