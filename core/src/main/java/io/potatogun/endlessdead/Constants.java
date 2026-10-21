@@ -18,14 +18,6 @@ public final class Constants {
 	 */
 	public static final int PASSIVE_FPS = 20;
 	/**
-	 * 월드의 너비
-	 */
-	public static final float WORLD_WIDTH = 2000f;
-	/**
-	 * 월드의 높이
-	 */
-	public static final float WORLD_HEIGHT = 2000f;
-	/**
 	 * 게임 제목
 	 */
 	@NotNull public static final String GAME_TITLE = "Endless Dead";
