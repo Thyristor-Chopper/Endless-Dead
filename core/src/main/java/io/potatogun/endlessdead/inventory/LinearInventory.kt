@@ -77,7 +77,7 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 	override fun indexOf(item: Item): Int = inventory.indexOf(item, true);
 
 	override fun getItems(): GdxArray<Item> {
-		val output = GdxArray<Item>(false, inventory.size, ArraySuppliers.item);
+		val output = GdxArray<Item>(true, inventory.size, ArraySuppliers.item);
 		getItems(output);
 		return output;
 	}
@@ -93,7 +93,9 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 		for(i in inventory.size - 1 downTo 0) {
 			val item = inventory.items[i];
 			item.inventory = null;
+			inventory.ordered = false;  // System.arraycopy 호출 오버헤드 제거
 			inventory.removeIndex(i);
+			inventory.ordered = true;
 			invokeRemoveObservers(item);
 			if(item is Disposable)
 				item.dispose();
