@@ -31,7 +31,7 @@ fun main() {
 		setWindowSizeLimits(640, 480, -1, -1);  // -1: 제한 없음
 		useVsync(false);  // 수직동기화를 꺼야 랙이 줄어듦
 		setForegroundFPS(Constants.PASSIVE_FPS);  // 타이틀 화면에서는 낮은 fps로
-		setIdleFPS(Constants.PASSIVE_FPS);
+		setIdleFPS(1);
 		setWindowIcon(FileType.Internal, "assets/icon_16.bmp", "assets/icon_32.bmp", "assets/icon_128.bmp");
 	};
 
