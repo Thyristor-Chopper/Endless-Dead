@@ -20,7 +20,7 @@ import io.potatogun.endlessdead.EndlessDead;
  * 실제 게임 내용은 EndlessDead 클래스와 각 Screen/World 클래스에서 정의된다.
  * 이 파일은 순수 'OS에 창 띄우기' 역할만 한다.
  *
- * @param args 명령줄 매개변수 - 현재는 시드만 받음.
+ * @param args 명령줄 매개변수
  */
 fun main(args: Array<String>) {
 	val options = parseArgs(args);
@@ -47,8 +47,8 @@ fun main(args: Array<String>) {
 private inline fun parseArgs(args: Array<String>): ObjectMap<String, String> {
 	val options = ObjectMap<String, String>(args.size);
 	for(argument in args) {  // Shotgun에서 배열은 C스타일 iteration이 됐으므로 여기서도 비슷할 거라 추측(디컴하기 귀찮...)
-		if(!argument.startsWith("-D") || !argument.contains('=')) continue;
-		val (key, value) = argument.removePrefix("-D").split("=", limit = 2);
+		if(!argument.startsWith("--") || !argument.contains('=')) continue;
+		val (key, value) = argument.removePrefix("--").split("=", limit = 2);
 		options.put(key, value);
 	}
 	return options;

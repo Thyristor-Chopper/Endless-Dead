@@ -47,7 +47,7 @@ class EndlessDead(options: ObjectMap<String, String>) : Game() {
 		*/
 
 		// 시드 설정
-		val rawSeed = options.get("zombie.seed");
+		val rawSeed = options.get("seed");
 		if(rawSeed != null) {
 			try {
 				seed = rawSeed.toLong();
@@ -61,7 +61,7 @@ class EndlessDead(options: ObjectMap<String, String>) : Game() {
 		}
 
 		// 타이틀 건너뛰기 설정
-		skipTitle = options.get("zombie.singleGame")?.toBoolean() ?: false;
+		skipTitle = options.get("single-game")?.toBoolean() ?: false;
 	}
 
 	// 게임 시작 시 한 번 호출되는 메쏘드
