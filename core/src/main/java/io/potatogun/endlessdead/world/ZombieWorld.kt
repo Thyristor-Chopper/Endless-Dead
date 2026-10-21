@@ -55,7 +55,7 @@ import kotlin.random.Random;
 /**
  * 좀비 파밍 월드
  */
-class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
+class ZombieWorld : World(1984f, 1984f, SpatialGrid(256, 128f), font = Resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
 	// 등록된 스포너 목록
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
 	// 체스판 배경 설정 (drawTiles에서 사용)

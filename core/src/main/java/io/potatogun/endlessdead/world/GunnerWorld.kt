@@ -44,7 +44,7 @@ import kotlin.random.Random;
 /**
  * 총잡이나 포탑 등이 메인 주인공인 월드
  */
-class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = null) : World(1400f, 1400f, SpatialGrid(256, 128f), font = Resources.font), TimedWorld, TimerAttachable, SpecialWorld {
+class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = null) : World(1440f, 1426f, SpatialGrid(256, 128f), font = Resources.font), TimedWorld, TimerAttachable, SpecialWorld {
 	/**
 	 * 등록된 스포너 목록
 	 */
