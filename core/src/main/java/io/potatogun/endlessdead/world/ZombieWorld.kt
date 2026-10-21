@@ -177,7 +177,7 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 		for(i in 1..treeCount) {
 			val x = Random.nextInt(intWidth);
 			val y = Random.nextInt(intHeight);
-			val treeSize = TreeSize.cachedEntries.random();
+			val treeSize = Tree.Size.cachedEntries.random();
 			treeInfo.add(Tree.hashOf(x, y, treeSize));
 		}
 
@@ -319,7 +319,7 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 			// 보이는 나무만 그리기
 			if(x >= offsetX - halfScreenWidth - maxLength && x <= offsetX + halfScreenWidth + maxLength && y >= offsetY - halfScreenHeight - maxLength && y <= offsetY + halfScreenHeight + maxLength) {
 				val size = treeData.size;
-				if(size == TreeSize.SMALL)
+				if(size == Tree.Size.SMALL)
 					batch.draw(smallTree, x, y, 18f, 28f);
 				else
 					batch.draw(tree, x, y, 24f, 42f);
@@ -375,28 +375,28 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 			inline get() = hash shr (15 + 2);
 		val y: Int  // 다음 15비트
 			inline get() = (hash shr 2) and 32767;
-		val size: TreeSize  // 하위 2비트
-			inline get() = TreeSize.byIndex(hash and 3);
+		val size: Tree.Size  // 하위 2비트
+			inline get() = Tree.Size.byIndex(hash and 3);
 
-		companion object {
-			inline fun of(x: Int, y: Int, size: TreeSize): Tree = Tree(hashOf(x, y, size));
+		/**
+		 * 배경의 나무 크기 열거형
+		 */
+		enum class Size {
+			SMALL,
+			NORMAL;
 
-			inline fun hashOf(x: Int, y: Int, size: TreeSize): Int = (x shl (15 + 2)) or (y shl 2) or (size.ordinal and 3);
+			companion object {
+				@JvmField val cachedEntries = Tree.Size.entries;
+				@JvmField val size = cachedEntries.size;
+
+				@JvmStatic inline fun byIndex(index: Int) = cachedEntries[index];
+			}
 		}
-	}
-
-	/**
-	 * 배경의 나무 크기 열거형
-	 */
-	private enum class TreeSize {
-		SMALL,
-		NORMAL;
 
 		companion object {
-			@JvmField val cachedEntries = TreeSize.entries;
-			@JvmField val size = cachedEntries.size;
+			inline fun of(x: Int, y: Int, size: Tree.Size): Tree = Tree(hashOf(x, y, size));
 
-			@JvmStatic inline fun byIndex(index: Int) = cachedEntries[index];
+			inline fun hashOf(x: Int, y: Int, size: Tree.Size): Int = (x shl (15 + 2)) or (y shl 2) or (size.ordinal and 3);
 		}
 	}
 }
