@@ -65,7 +65,7 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 	private val tileSize = 64f;
 	// 풀 [艸]
 	private val grass = loadTexture("world/grass.bmp");
-	private val grassPositions: IntArray;
+	private val grassInfo: IntArray;
 	private val grassTint = rgb(255, 255, 255, 0.6f);
 	// 나무
 	private val tree = loadTexture("world/tree.bmp");
@@ -164,11 +164,11 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 
 		// 풀 정보 등록
 		val grassCount = Random.nextInt(101) + 200;  // 200~300개
-		grassPositions = IntArray(false, grassCount);
+		grassInfo = IntArray(false, grassCount);
 		for(i in 1..grassCount) {
 			val x = Random.nextInt(intWidth);
 			val y = Random.nextInt(intHeight);
-			grassPositions.add(Grass.hashOf(x, y));
+			grassInfo.add(Grass.hashOf(x, y));
 		}
 
 		// 나무 정보 등록
@@ -285,8 +285,8 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 		// 틴트 색 적용
 		batch.color = grassTint;
 
-		for(i in 0 until grassPositions.size) {
-			val grassData = Grass(grassPositions.items[i]);
+		for(i in 0 until grassInfo.size) {
+			val grassData = Grass(grassInfo.items[i]);
 			val x = grassData.x.toFloat();
 			val y = grassData.y.toFloat();
 			val maxLength = 20f;  // 일단 하드코딩 - 20, 19 중 최댓값
