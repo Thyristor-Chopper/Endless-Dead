@@ -48,6 +48,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	override val speed: Float by moveComponent::speed;  // 디컴파일해서 확인한 결과 수동 get() = moveComponent.speed와 오버헤드는 똑같음
 	private val dropComponent = ItemDropComponent(this);
 	private val pickupComponent = ItemPickupComponent(this);
+	private val slack = 64f;  // 경계 밖으로 이만큼은 나갈 수 있게
 
 	/**
 	 * 플레이어를 생성한다.
@@ -164,8 +165,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		// 월드 경계 안쪽으로 가두기.
 		val world = level;
 		if(world != null) {
-			val finalX = x.coerceIn(0f - 0.1f, world.width + 0.1f);  // 0.1: 렌더링 버그를 막기 위한 미세 오프셋
-			val finalY = y.coerceIn(0f - 0.1f, world.height + 0.1f);
+			val finalX = x.coerceIn(0f - slack - 0.1f, world.width + slack + 0.1f);  // 0.1: 렌더링 버그를 막기 위한 미세 오프셋
+			val finalY = y.coerceIn(0f - slack - 0.1f, world.height + slack + 0.1f);
 			if(x != finalX) x = finalX;
 			if(y != finalY) y = finalY;
 		}
