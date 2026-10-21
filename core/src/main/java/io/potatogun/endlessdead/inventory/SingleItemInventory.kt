@@ -97,10 +97,11 @@ class SingleItemInventory : ObservableInventory() {
 	/**
 	 * 아이템을 교체한다.
 	 *
-	 * @param item 새 아이템
+	 * @param item            새 아이템
+	 * @param disposePrevious 기존 아이템 자원 해제 여부
 	 * @return 성공 여부
 	 */
-	fun replaceItem(item: Item): Boolean {
+	@JvmOverloads fun replaceItem(item: Item, disposePrevious: Boolean = true): Boolean {
 		if(inventoryItem == null) return false;
 		val holder: Inventory? = item.inventory;
 		if(!(holder?.removeItem(item, false) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
@@ -108,7 +109,7 @@ class SingleItemInventory : ObservableInventory() {
 			it.inventory = null;
 			inventoryItem = item;
 			invokeRemoveObservers(it);
-			if(it is Disposable)
+			if(disposePrevious && it is Disposable)
 				it.dispose();
 		};
 		item.inventory = this;

@@ -4,7 +4,6 @@ import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.screen.Title;
 import io.potatogun.endlessdead.screen.ZombieWorldProjector;
 import io.potatogun.gdxhelper.Game;
-import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.WorldProjector;
 
 /**
@@ -19,7 +18,7 @@ class EndlessDead : Game() {
 	override fun create() {
 		GameManager.init(this);
 		setScreen(titleScreen);
-		Window.setBaseTitle(Constants.GAME_TITLE);
+		TitleBar.base = Constants.GAME_TITLE;
 	}
 
 	// 게임 시간 갱신

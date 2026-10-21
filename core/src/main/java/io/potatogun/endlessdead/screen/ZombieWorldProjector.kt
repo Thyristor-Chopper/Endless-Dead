@@ -10,6 +10,7 @@ import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.Resources;
+import io.potatogun.endlessdead.TitleBar;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Landmine;
 import io.potatogun.endlessdead.entity.LivingEntity;
@@ -140,7 +141,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 					quitButton.show();
 				}
 				GameManager.isGameOver -> {
-					Window.titleBarStats = null;
+					TitleBar.stats = null;
 
 					replayButton.show();
 					resumeButton.hide();
@@ -163,8 +164,8 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		};
 	}
 
-	override fun loadWorld(world: World, disposePreviousWorld: Boolean) {
-		super.loadWorld(world, disposePreviousWorld);
+	override fun loadWorld(world: World, disposePrevious: Boolean) {
+		super.loadWorld(world, disposePrevious);
 		updateTitleBarInfo();
 	}
 
@@ -219,12 +220,12 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 	private fun updateTitleBarInfo() {
 		val world: World? = projectingWorld;
 		if(world == null || world !== GameManager.player.world) {
-			Window.titleBarStats = null;
+			TitleBar.stats = null;
 			return;
 		}
 
 		val currentTitleType = TitleInfoType.byIndex(currentTitleInfo);
-		Window.titleBarStats =
+		TitleBar.stats =
 			if(currentTitleType == TitleInfoType.OPENED)
 				"Opened chests: ${GameManager.statistics.openedContainerCount}"
 			else if(currentTitleType == TitleInfoType.KILLED)
@@ -238,7 +239,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 			else if(currentTitleType == TitleInfoType.ZOMBIES)
 				"Current zombies: ${world.entities.countOf<Zombie>()}"
 			else
-				"";
+				null;
 	}
 
 	/**

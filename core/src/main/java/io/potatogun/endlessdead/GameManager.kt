@@ -3,7 +3,6 @@ package io.potatogun.endlessdead;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array as GdxArray;
 
-import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.ArraySuppliers;
 import io.potatogun.gdxhelper.util.Updatable;
@@ -63,7 +62,7 @@ object GameManager : Updatable {
 	@get:JvmStatic var round = 0
 		private set(value) {
 			field = value;
-			Window.titleBarInfo = if(value > 0) "Round $value" else null;
+			TitleBar.info = if(value > 0) "Round $value" else null;
 		};
 	/**
 	 * 현재 게임이 진행 중인지의 여부
@@ -129,7 +128,7 @@ object GameManager : Updatable {
 		// 통계, 시간 및 라운드 초기화
 		resetAll();
 		round = 0;
-		Window.titleBarStats = null;
+		TitleBar.stats = null;
 
 		// 상태 전환
 		state = GameState.STANDBY;
@@ -159,7 +158,7 @@ object GameManager : Updatable {
 		player.world = world;
 		player.teleportToCenter();
 		world.entities.add(player);
-		game.worldProjector.loadWorld(world, disposePreviousWorld = true);
+		game.worldProjector.loadWorld(world, disposePrevious = true);
 		if(game.getScreen() !== game.worldProjector)
 			game.setScreen(game.worldProjector);
 	}
