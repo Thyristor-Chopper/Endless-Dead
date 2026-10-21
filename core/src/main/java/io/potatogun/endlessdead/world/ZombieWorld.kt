@@ -378,6 +378,12 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 		val size: Tree.Size  // 하위 2비트
 			inline get() = Tree.Size.byIndex(hash and 3);
 
+		companion object {
+			inline fun of(x: Int, y: Int, size: Tree.Size): Tree = Tree(hashOf(x, y, size));
+
+			inline fun hashOf(x: Int, y: Int, size: Tree.Size): Int = (x shl (15 + 2)) or (y shl 2) or (size.ordinal and 3);
+		}
+
 		/**
 		 * 배경의 나무 크기 열거형
 		 */
@@ -391,12 +397,6 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 
 				@JvmStatic inline fun byIndex(index: Int) = cachedEntries[index];
 			}
-		}
-
-		companion object {
-			inline fun of(x: Int, y: Int, size: Tree.Size): Tree = Tree(hashOf(x, y, size));
-
-			inline fun hashOf(x: Int, y: Int, size: Tree.Size): Int = (x shl (15 + 2)) or (y shl 2) or (size.ordinal and 3);
 		}
 	}
 }
