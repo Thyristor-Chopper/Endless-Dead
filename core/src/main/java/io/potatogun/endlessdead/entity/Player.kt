@@ -274,7 +274,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 	// 자원 정리
 	@JvmSynthetic internal fun finalDispose() {
-		super.dispose();
+		super<LivingEntity>.dispose();
+		super<InventoryHolder>.dispose();
 		textureWithGun.dispose();
 	}
 }

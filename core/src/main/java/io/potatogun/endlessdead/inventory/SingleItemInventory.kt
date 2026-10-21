@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead.inventory;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
+import com.badlogic.gdx.utils.Disposable;
 
 import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.item.Item;
@@ -23,27 +24,31 @@ class SingleItemInventory : ObservableInventory() {
 	override fun addItem(item: Item): Boolean {
 		if(inventoryItem != null) return false;
 		val holder: Inventory? = item.inventory;
-		if(!(holder?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
+		if(!(holder?.removeItem(item, false) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
 		inventoryItem = item;
 		item.inventory = this;
 		invokeAddObservers(item);
 		return true;
 	}
 
-	override fun removeItem(index: Int): Boolean {
+	override fun removeItem(index: Int, dispose: Boolean): Boolean {
 		val item = inventoryItem;
 		if(index != 0 || item == null) return false;
 		inventoryItem = null;
 		item.inventory = null;
 		invokeRemoveObservers(item);
+		if(dispose && item is Disposable)
+			item.dispose();
 		return true;
 	}
 
-	override fun removeItem(item: Item): Boolean {
+	override fun removeItem(item: Item, dispose: Boolean): Boolean {
 		if(inventoryItem !== item) return false;
 		inventoryItem = null;
 		item.inventory = null;
 		invokeRemoveObservers(item);
+		if(dispose && item is Disposable)
+			item.dispose();
 		return true;
 	}
 
@@ -69,8 +74,17 @@ class SingleItemInventory : ObservableInventory() {
 			it.inventory = null;
 			inventoryItem = null;
 			invokeRemoveObservers(it);
+			if(it is Disposable)
+				it.dispose();
 		}
 		invokeClearObservers();
+	}
+
+	override fun dispose() {
+		inventoryItem?.let {
+			if(it is Disposable)
+				it.dispose();
+		}
 	}
 
 	/**
@@ -94,6 +108,8 @@ class SingleItemInventory : ObservableInventory() {
 			it.inventory = null;
 			inventoryItem = item;
 			invokeRemoveObservers(it);
+			if(it is Disposable)
+				it.dispose();
 		};
 		item.inventory = this;
 		invokeAddObservers(item);

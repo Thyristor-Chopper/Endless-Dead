@@ -32,7 +32,7 @@ class ItemDropComponent<T>(private val entity: T) where T : Entity, T : Inventor
 		val maxHalfLength = max2(entity.width, entity.height) * 0.5f;
 		val rad = toRadians(entity.getRotationAngle().toDouble() + 90.0 + Random.nextInt(30).toDouble() - 15.0).toFloat();
 		val distance = Random.nextInt(16) + 16 + maxHalfLength + Item.sideLength * 0.5f;
-		entity.inventory.removeItem(item);
+		entity.inventory.removeItem(item, false);
 		world.entities.add(DroppedItem(world, entity.x + distance * cos(rad), entity.y + distance * sin(rad), item));
 		return true;
 	}

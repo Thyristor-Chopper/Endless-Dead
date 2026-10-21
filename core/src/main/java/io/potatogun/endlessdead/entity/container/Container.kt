@@ -93,12 +93,9 @@ abstract class Container(world: World? = null, name: String, x: Float = 0f, y: F
 
 	// 추가적인 두 텍스처도 비운다.
 	override fun dispose() {
-		super.dispose();
+		super<Entity>.dispose();
+		super<InventoryHolder>.dispose();
 		playerItemTexture?.let { safeDispose(it) };
 		emptyTexture?.let { safeDispose(it) };
-		containedItem?.let {
-			if(it is Disposable)
-				it.dispose();
-		};
 	}
 }

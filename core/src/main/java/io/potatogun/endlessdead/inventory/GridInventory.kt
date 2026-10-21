@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead.inventory;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
+import com.badlogic.gdx.utils.Disposable;
 
 import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.item.Item;
@@ -15,13 +16,7 @@ import java.util.function.Consumer;
  * @throws IllegalArgumentException 열이나 행 개수가 잘못된 경우
  */
 class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
-	private val inventory = GdxArray<GdxArray<Item?>>(true, rows, ArraySuppliers.itemArray).apply {
-		for(i in 0 until rows)
-			add(GdxArray<Item?>(true, columns, ArraySuppliers.item).apply {
-				for(j in 0 until columns)
-					add(null);
-			});
-	};
+	private val inventory: GdxArray<GdxArray<Item?>>;
 	@Suppress("INAPPLICABLE_JVM_NAME")
 	@get:JvmName("size")
 	override val size: Int
@@ -46,6 +41,14 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	init {
 		if(columns <= 0 || rows <= 0)
 			throw IllegalArgumentException("invalid row or column count");
+
+		inventory = GdxArray<GdxArray<Item?>>(true, rows, ArraySuppliers.itemArray).apply {
+			for(i in 0 until rows)
+				add(GdxArray<Item?>(true, columns, ArraySuppliers.item).apply {
+					for(j in 0 until columns)
+						add(null);
+				});
+		};
 	}
 
 	override fun addItem(item: Item): Boolean {
@@ -61,7 +64,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 				}
 		if(emptyI == -1 || emptyJ == -1) return false;
 		val holder: Inventory? = item.inventory;
-		if(!(holder?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
+		if(!(holder?.removeItem(item, false) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
 		inventory.items[emptyI].items[emptyJ] = item;
 		item.inventory = this;
 		invokeAddObservers(item);
@@ -73,18 +76,31 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 	 *
 	 * @param i 행
 	 * @param j 열
+	 * @return 성공 여부
 	 */
-	fun removeItem(i: Int, j: Int): Boolean {
+	fun removeItem(i: Int, j: Int): Boolean = removeItem(i, j, true);
+
+	/**
+	 * 지정한 행과 열의 아이템을 삭제한다.
+	 *
+	 * @param i       행
+	 * @param j       열
+	 * @param dispose 자원 해제 여부
+	 * @return 성공 여부
+	 */
+	fun removeItem(i: Int, j: Int, dispose: Boolean): Boolean {
 		if(i < 0 || i >= rows || j < 0 || j >= columns) return false;
 		val item = inventory.items[i].items[j];
 		if(item == null) return false;
 		inventory.items[i].items[j] = null;
 		item.inventory = null;
 		invokeRemoveObservers(item);
+		if(dispose && item is Disposable)
+			item.dispose();
 		return true;
 	}
 
-	override fun removeItem(index: Int): Boolean {
+	override fun removeItem(index: Int, dispose: Boolean): Boolean {
 		if(index < 0) return false;
 		var n = 0;
 		for(i in 0 until rows)
@@ -95,6 +111,8 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 						inventory.items[i].items[j] = null;
 						item.inventory = null;
 						invokeRemoveObservers(item);
+						if(dispose && item is Disposable)
+							item.dispose();
 						return true;
 					}
 					n++;
@@ -103,13 +121,15 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 		return false;
 	}
 
-	override fun removeItem(item: Item): Boolean {
+	override fun removeItem(item: Item, dispose: Boolean): Boolean {
 		for(i in 0 until rows)
 			for(j in 0 until columns)
 				if(inventory.items[i].items[j] === item) {
 					inventory.items[i].items[j] = null;
 					item.inventory = null;
 					invokeRemoveObservers(item);
+					if(dispose && item is Disposable)
+						item.dispose();
 					return true;
 				}
 		return false;
@@ -186,7 +206,19 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 					inventory.items[i].items[j] = null;
 					item.inventory = null;
 					invokeRemoveObservers(item);
+					if(item is Disposable)
+						item.dispose();
 				}
+			}
+		invokeClearObservers();
+	}
+
+	override fun dispose() {
+		for(i in 0 until rows)
+			for(j in 0 until columns) {
+				val item = inventory.items[i].items[j];
+				if(item is Disposable)
+					item.dispose();
 			}
 		invokeClearObservers();
 	}

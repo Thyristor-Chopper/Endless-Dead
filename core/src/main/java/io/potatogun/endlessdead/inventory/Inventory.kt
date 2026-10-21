@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead.inventory;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
+import com.badlogic.gdx.utils.Disposable;
 
 import io.potatogun.endlessdead.item.Item;
 
@@ -9,7 +10,7 @@ import java.util.function.Consumer;
 /**
  * 인벤토리 인터페이스
  */
-interface Inventory {
+interface Inventory : Disposable {
 	/**
 	 * 인벤토리 내 아이템 개수
 	 * 
@@ -43,7 +44,16 @@ interface Inventory {
 	 * @param index 아이템 위치
 	 * @return 성공 여부
 	 */
-	fun removeItem(index: Int): Boolean;
+	fun removeItem(index: Int): Boolean = removeItem(index, true);
+
+	/**
+	 * 인벤토리에서 아이템 빼기
+	 *
+	 * @param index   아이템 위치
+	 * @param dispose 자원 해제 여부
+	 * @return 성공 여부
+	 */
+	fun removeItem(index: Int, dispose: Boolean): Boolean;
 
 	/**
 	 * 인벤토리에서 아이템 빼기
@@ -51,7 +61,16 @@ interface Inventory {
 	 * @param item 제거할 아이템
 	 * @return 성공 여부
 	 */
-	fun removeItem(item: Item): Boolean;
+	fun removeItem(item: Item): Boolean = removeItem(item, true);
+
+	/**
+	 * 인벤토리에서 아이템 빼기
+	 *
+	 * @param item    제거할 아이템
+	 * @param dispose 자원 해제 여부
+	 * @return 성공 여부
+	 */
+	fun removeItem(item: Item, dispose: Boolean): Boolean;
 
 	/**
 	 * 지정한 아이템 가져오기
@@ -94,4 +113,9 @@ interface Inventory {
 	 * 인벤토리를 비운다.
 	 */
 	fun clear();
+
+	/**
+	 * 인벤토리 내 아이템들의 자원을 해제한다.
+	 */
+	override fun dispose();
 }

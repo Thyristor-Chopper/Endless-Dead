@@ -88,6 +88,11 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 		dropComponent?.dropAll();
 	}
 
+	override fun dispose() {
+		super<LivingEntity>.dispose();
+		super<InventoryHolder>.dispose();
+	}
+
 	/**
 	 * 이 개체의 총
 	 */

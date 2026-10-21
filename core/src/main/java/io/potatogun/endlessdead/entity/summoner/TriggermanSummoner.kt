@@ -65,4 +65,9 @@ class TriggermanSummoner(world: World, x: Float, y: Float) : Summoner(world, "Tr
 	override fun onDeath(killer: Entity?) {
 		dropComponent.dropAll();
 	}
+
+	override fun dispose() {
+		super<Summoner>.dispose();
+		super<InventoryHolder>.dispose();
+	}
 }

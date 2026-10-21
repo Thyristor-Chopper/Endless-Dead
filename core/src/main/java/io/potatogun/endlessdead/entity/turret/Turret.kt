@@ -58,4 +58,9 @@ abstract class Turret private constructor(world: World, name: String, x: Float, 
 		rotator.update(delta);
 		shooter.update(delta);
 	}
+
+	override fun dispose() {
+		super<LivingEntity>.dispose();
+		super<InventoryHolder>.dispose();
+	}
 }

@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead.inventory;
 
 import com.badlogic.gdx.utils.Array as GdxArray;
+import com.badlogic.gdx.utils.Disposable;
 
 import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.item.Item;
@@ -30,7 +31,7 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 		if(maxSlots != -1 && inventory.size >= maxSlots) return false;
 		if(hasItem(item)) return false;
 		val holder: Inventory? = item.inventory;
-		if(!(holder?.removeItem(item) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
+		if(!(holder?.removeItem(item, false) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
 
 		// 무한 보관함이 꽉 찼으면 두 배로 늘린다. (128개 이후 추가할 때마다 매번 배열을 새로 만드는 오버헤드 줄이기)
 		if(maxSlots == -1) {
@@ -45,19 +46,23 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 		return true;
 	}
 
-	override fun removeItem(index: Int): Boolean {
+	override fun removeItem(index: Int, dispose: Boolean): Boolean {
 		if(index < 0 || index >= inventory.size) return false;
 		val item = inventory.items[index];
 		inventory.removeIndex(index);
 		item.inventory = null;
 		invokeRemoveObservers(item);
+		if(dispose && item is Disposable)
+			item.dispose();
 		return true;
 	}
 
-	override fun removeItem(item: Item): Boolean {
+	override fun removeItem(item: Item, dispose: Boolean): Boolean {
 		if(!inventory.removeValue(item, true)) return false;
 		item.inventory = null;
 		invokeRemoveObservers(item);
+		if(dispose && item is Disposable)
+			item.dispose();
 		return true;
 	}
 
@@ -83,12 +88,24 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 			output.add(inventory.items[i]);
 	}
 
+	// 주의: remove event는 역순으로 호출된다.
 	override fun clear() {
-		for(i in 0 until inventory.size) {
-			inventory.items[i].inventory = null;
-			invokeRemoveObservers(inventory.items[i]);
+		for(i in inventory.size - 1 downTo 0) {
+			val item = inventory.items[i];
+			item.inventory = null;
+			inventory.removeIndex(i);
+			invokeRemoveObservers(item);
+			if(item is Disposable)
+				item.dispose();
 		}
-		inventory.clear();
 		invokeClearObservers();
+	}
+
+	override fun dispose() {
+		for(i in 0 until inventory.size) {
+			val item = inventory.items[i];
+			if(item is Disposable)
+				item.dispose();
+		}
 	}
 }
