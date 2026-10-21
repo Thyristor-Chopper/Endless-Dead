@@ -66,9 +66,13 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 
 	companion object {
 		/**
+		 * 아이템의 표준 변 길이
+		 */
+		const val sideLength = 24f;  // 디컴파일해서 확인한 결과 public 자바 field로 바뀜
+		/**
 		 * 재사용하기 위한 아이템 텍스처들이다.
 		 */
-		@JvmField val textures = ItemTextures();
+		@JvmField val textures = Textures();
 	}
 
 	/**
@@ -95,7 +99,7 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 	/**
 	 * 아이템 텍스처 관리자
 	 */
-	class ItemTextures internal constructor() : SharedTextureManager() {
+	class Textures internal constructor() : SharedTextureManager() {
 		private val nonExistent = ObjectSet<String>(16);
 		val defaultTexture: Texture by lazy { getShared("default") };
 

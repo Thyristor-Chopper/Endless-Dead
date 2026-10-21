@@ -1,6 +1,5 @@
 package io.potatogun.endlessdead.entity.component;
 
-import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.entity.DroppedItem;
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.inventory.forEach;
@@ -32,7 +31,7 @@ class ItemDropComponent<T>(private val entity: T) where T : Entity, T : Inventor
 		if(world == null) return false;
 		val maxHalfLength = max2(entity.width, entity.height) * 0.5f;
 		val rad = toRadians(entity.getRotationAngle().toDouble() + 90.0 + Random.nextInt(30).toDouble() - 15.0).toFloat();
-		val distance = Random.nextInt(16) + 16 + maxHalfLength + Constants.ITEM_SIZE * 0.5f;
+		val distance = Random.nextInt(16) + 16 + maxHalfLength + Item.sideLength * 0.5f;
 		entity.inventory.removeItem(item);
 		world.entities.add(DroppedItem(world, entity.x + distance * cos(rad), entity.y + distance * sin(rad), item));
 		return true;

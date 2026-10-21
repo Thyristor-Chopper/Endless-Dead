@@ -3,7 +3,6 @@ package io.potatogun.endlessdead.entity;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Disposable;
 
-import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.entity.rotateToRandom;
@@ -17,7 +16,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param    y     개체의 Y 위치
  * @property item  아이템
  */
-class DroppedItem(world: World, x: Float, y: Float, val item: Item) : Entity(world, item.name, x, y, Constants.ITEM_SIZE, Constants.ITEM_SIZE, item.texture) {
+class DroppedItem(world: World, x: Float, y: Float, val item: Item) : Entity(world, item.name, x, y, Item.sideLength, Item.sideLength, item.texture) {
 	private var pickedUp = false;
 
 	init {
