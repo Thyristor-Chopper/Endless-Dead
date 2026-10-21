@@ -163,9 +163,9 @@ class ZombieWorld : World(2000f, 2000f, SpatialGrid(256, 128f), font = Resources
 		});
 
 		// 풀 정보 등록
-		val grasseCount = Random.nextInt(101) + 200;  // 200~300개
-		grassPositions = IntArray(false, grasseCount);
-		for(i in 1..grasseCount) {
+		val grassCount = Random.nextInt(101) + 200;  // 200~300개
+		grassPositions = IntArray(false, grassCount);
+		for(i in 1..grassCount) {
 			val x = Random.nextInt(intWidth);
 			val y = Random.nextInt(intHeight);
 			grassPositions.add(Grass.hashOf(x, y));
