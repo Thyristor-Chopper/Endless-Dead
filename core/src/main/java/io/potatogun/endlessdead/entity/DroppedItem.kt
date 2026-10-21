@@ -39,7 +39,7 @@ class DroppedItem(world: World, x: Float, y: Float, val item: Item) : Entity(wor
 			pickedUp = true;
 			val world = level;
 			if(world != null)
-				this.remove();  // this.remove()로 하면 dispose돼서 안 됨.
+				this.remove();
 		}
 		return added;
 	}
