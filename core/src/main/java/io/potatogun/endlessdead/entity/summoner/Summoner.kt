@@ -3,7 +3,7 @@ package io.potatogun.endlessdead.entity.summoner;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
-import io.potatogun.endlessdead.GameManager;
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.gdxhelper.entity.rotateToRandom;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
@@ -56,7 +56,7 @@ abstract class Summoner @JvmOverloads constructor(world: World, name: String, x:
 		timers.update(delta);
 
 		if(isActive)
-			rotateTo(GameManager.player);
+			rotateTo(EndlessDead.instance.player);
 	}
 
 	/**

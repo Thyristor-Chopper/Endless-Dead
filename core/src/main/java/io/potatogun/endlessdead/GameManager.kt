@@ -6,37 +6,19 @@ import com.badlogic.gdx.utils.Array as GdxArray;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.ArraySuppliers;
 import io.potatogun.gdxhelper.util.Updatable;
-import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.teleportToCenter;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
-import kotlin.random.Random;
-
 /**
- * 게임의 상태를 관리하는 싱글톤
+ * 게임 상태 관리자
  *
- * libGDX는 Game()의 인스턴스가 두 개 이상일 이유가 없고 창을 두 개 이상 띄우지 못하므로
- * 큰 위험성은 없다.
+ * @property game 게임 인스턴스
  */
-object GameManager : Updatable {
-	/**
-	 * 게임 플레이어
-	 *
-	 * 자바에서는 getPlayer()를 쓴다.
-	 */
-	@get:JvmStatic val player = Player();
-	/**
-	 * 게임 인스턴스
-	 */
-	private lateinit var game: EndlessDead;  // 초기화 후 바뀔 일 없음 코틀린이 원래 나 같은 개발자를 열받게 하는 언어라...
-	/**
-	 * 이 게임 인스턴스에 대한 무작위값 생성기 (월드의 생성자에서 요소를 생성할 때만 사용된다.)
-	 */
-	@JvmField var random: Random = Random.Default;
+class GameManager(private val game: EndlessDead) : Updatable {
 	/**
 	 * 점수 관리자
 	 */
-	@JvmField val scoreManager = ScoreManager();  // 디컴파일해서 확인한 결과 싱글톤에서 @JvmField를 하면 GameManager.INSTANCE.scoreManager가 아닌 GameManager.scoreManager로 바로 접근 가능(@JvmStatic 효과도 같이 있는 것)
+	@JvmField val scoreManager = ScoreManager();  // 디컴파일해서 확인한 결과 싱글톤에서 @JvmField를 하면 GameManager.INSTANCE.scoreManager가 아닌 GameManager.scoreManager로 바로 접근 가능(효과도 같이 있는 것)
 	/**
 	 * 통계 관리자
 	 */
@@ -48,11 +30,7 @@ object GameManager : Updatable {
 	/**
 	 * 라운드 숨김 여부
 	 */
-	@get:JvmName("isRoundHidden")
-	@get:JvmStatic
-	@set:JvmName("setRoundHidden")
-	@set:JvmStatic
-	var hideRound = false;
+	private var hideRound = java.lang.Boolean.getBoolean("zombie.instantGame");
 	/**
 	 * 게임의 현재 상태
 	 */
@@ -73,7 +51,7 @@ object GameManager : Updatable {
 	/**
 	 * 현재 라운드 (0이면 아직 게임이 시작되지 않은 것)
 	 */
-	@get:JvmStatic var round = 0
+	var round = 0
 		private set(value) {
 			field = value;
 			TitleBar.info = if(value > 0 && !hideRound) "Round $value" else null;
@@ -81,29 +59,18 @@ object GameManager : Updatable {
 	/**
 	 * 현재 게임이 진행 중인지의 여부
 	 */
-	@JvmStatic val isPlaying: Boolean
+	val isPlaying: Boolean
 		get() = (state == GameState.PLAYING);
 	/**
 	 * 현재 게임이 끝났는지의 여부
 	 */
-	@JvmStatic val isGameOver: Boolean
+	val isGameOver: Boolean
 		get() = (state == GameState.GAME_OVER);
 	/**
 	 * 현재 게임이 일시 중지된 상태인지의 여부
 	 */
-	@JvmStatic val isPaused: Boolean
+	val isPaused: Boolean
 		get() = (state == GameState.PAUSED);
-
-	/**
-	 * 게임 관리자를 초기화한다.
-	 *
-	 * @param game 게임 인스턴스
-	 */
-	@JvmSynthetic internal fun init(game: EndlessDead) {
-		if(::game.isInitialized)
-			throw IllegalStateException("game manager is already initialised");
-		this.game = game;
-	}
 
 	// setter에서만 한 번 쓰이므로 인라인
 	private inline fun invokeStateObservers() {
@@ -130,39 +97,9 @@ object GameManager : Updatable {
 	}
 
 	/**
-	 * 게임의 무작위값 생성기를 지정한 시드의 생성기로 변경한다.
-	 *
-	 * @param seed 새 시드
-	 */
-	inline fun setSeed(seed: Int) {
-		random = Random(seed);
-	}
-
-	/**
-	 * 게임의 무작위값 생성기를 지정한 시드의 생성기로 변경한다.
-	 *
-	 * @param seed 새 시드
-	 */
-	inline fun setSeed(seed: Long) {
-		random = Random(seed);
-	}
-
-	/**
-	 * 게임의 무작위값 생성기를 기본 시드로 돌려놓는다.
-	 *
-	 * @param seed null만 가능
-	 */
-	inline fun setSeed(seed: Void?) {
-		random = Random.Default;
-	}
-
-	/**
 	 * 준비 상태(타이틀 화면)로 전환한다.
 	 */
-	@JvmStatic fun standBy() {
-		if(!::game.isInitialized)
-			throw IllegalStateException("game manager is not initialised");
-
+	fun standBy() {
 		// 월드를 메모리에서 내리기
 		game.worldProjector.unloadWorld(true);
 
@@ -181,9 +118,8 @@ object GameManager : Updatable {
 	/**
 	 * 새 게임을 시작한다.
 	 */
-	@JvmStatic fun newGame() {
-		if(!::game.isInitialized)
-			throw IllegalStateException("game manager is not initialised");
+	fun newGame() {
+		val player = game.player;
 
 		// 통계 및 시간 초기화
 		player.resetHealth();
@@ -207,28 +143,21 @@ object GameManager : Updatable {
 	/**
 	 * 게임을 종료 상태로 전환한다.
 	 */
-	@JvmStatic fun setGameOver() {
-		if(!::game.isInitialized)
-			throw IllegalStateException("game manager is not initialised");
+	fun setGameOver() {
 		state = GameState.GAME_OVER;
 	}
 
 	/**
 	 * 게임을 일시 중지한다.
 	 */
-	@JvmStatic fun pause() {
-		if(!::game.isInitialized)
-			throw IllegalStateException("game manager is not initialised");
-
+	fun pause() {
 		state = GameState.PAUSED;
 	}
 
 	/**
 	 * 일시 중지된 게임을 계속한다.
 	 */
-	@JvmStatic fun resume() {
-		if(!::game.isInitialized)
-			throw IllegalStateException("game manager is not initialised");
+	fun resume() {
 		if(state != GameState.PAUSED)
 			throw IllegalStateException("game is not paused");
 
@@ -238,7 +167,7 @@ object GameManager : Updatable {
 	/**
 	 * 점수 및 통계 초기화
 	 */
-	@JvmStatic fun resetAll() {
+	fun resetAll() {
 		scoreManager.resetScore();
 		statistics.survivedDuration = 0;
 		statistics.openedContainerCount = 0;
@@ -250,7 +179,7 @@ object GameManager : Updatable {
 	override fun update(delta: Float) {
 		tickGlobalTimers(delta);
 
-		if(state == GameState.PLAYING && !player.isAlive)
+		if(state == GameState.PLAYING && !game.player.isAlive)
 			setGameOver();
 	}
 

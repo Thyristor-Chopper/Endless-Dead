@@ -1,6 +1,6 @@
 package io.potatogun.endlessdead.entity.summoner;
 
-import io.potatogun.endlessdead.GameManager;
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.KillScorable;
 import io.potatogun.endlessdead.entity.zombie.WeakZombie;
@@ -26,7 +26,7 @@ class StreamZombieSummoner(world: World, x: Float, y: Float) : Summoner(world, "
 	override val damageInvincibilityDuration = 0.15f;
 	override val summonInterval = 0.5f;
 	override val isActive: Boolean
-		get() = distanceTo(GameManager.player) <= maxDistanceToPlayer;
+		get() = distanceTo(EndlessDead.instance.player) <= maxDistanceToPlayer;
 	override val killScore = 100;
 
 	init {

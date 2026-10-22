@@ -1,6 +1,6 @@
 package io.potatogun.endlessdead.entity;
 
-import io.potatogun.endlessdead.GameManager;
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.summoner.Summoner;
 import io.potatogun.endlessdead.entity.turret.Turret;
@@ -26,7 +26,7 @@ class Portal(world: World, x: Float = 0f, y: Float = 0f, private val destination
 
 		rotateBy(90f * delta);
 
-		val player = GameManager.player;
+		val player = EndlessDead.instance.player;
 		forEachNearby { entity ->
 			if(entity is LivingEntity && entity !is Bullet && entity !is Landmine && entity !is Turret && entity !is Summoner && collidesWith(entity)) {
 				if(entity === player)

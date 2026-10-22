@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.EndlessDead;
-import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.TitleBar;
@@ -100,18 +99,18 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 
 		// 일시 중지 및 게임 오버 단추
 		resumeButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = Resources.primaryButton) {
-			GameManager.resume();
+			game.gameManager.resume();
 		}.apply { hide() }.also { addOverlayWidget("resume_button", it) };
 		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Resources.primaryButton) {
 			clearSubtitles();
 			disposeParentWorld();
-			GameManager.newGame();
+			game.gameManager.newGame();
 		}.apply { hide() }.also { addOverlayWidget("replay_button", it) };
 		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Resources.button) {
 			disposeParentWorld();
 			unloadWorld(dispose = true);
 			clearSubtitles();
-			GameManager.standBy();
+			game.gameManager.standBy();
 		}.apply { hide() }.also { addOverlayWidget("title_button", it) };
 		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Resources.button) {
 			disposeParentWorld();
@@ -119,8 +118,13 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 			Gdx.app.exit();
 		}.apply { hide() }.also { addOverlayWidget("quit_button", it) };
 
+		if(java.lang.Boolean.getBoolean("zombie.instantGame")) {
+			replayButton.disable();
+			titleButton.disable();
+		}
+
 		// 제목 표시줄 정보 전환
-		timers.register(RepeatingTimer(3f, { (GameManager.isPlaying || GameManager.isPaused) && projectingWorld != null }) {
+		timers.register(RepeatingTimer(3f, { (game.gameManager.isPlaying || game.gameManager.isPaused) && projectingWorld != null }) {
 			currentTitleInfo++;
 			if(currentTitleInfo >= TitleInfoType.size)
 				currentTitleInfo = 0;
@@ -128,21 +132,21 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		});
 
 		// 오버레이 단추 표시 또는 숨기기
-		GameManager.attachStateObserver {
+		game.gameManager.attachStateObserver {
 			when {
-				GameManager.isPlaying -> {
+				game.gameManager.isPlaying -> {
 					replayButton.hide();
 					resumeButton.hide();
 					titleButton.hide();
 					quitButton.hide();
 				}
-				GameManager.isPaused -> {
+				game.gameManager.isPaused -> {
 					replayButton.hide();
 					resumeButton.show();
 					titleButton.show();
 					quitButton.show();
 				}
-				GameManager.isGameOver -> {
+				game.gameManager.isGameOver -> {
 					TitleBar.stats = null;
 
 					replayButton.show();
@@ -180,17 +184,17 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 
 	// 창 최소화(아이콘 표시) 시 자동 일시 중지
 	override fun pause() {
-		if(GameManager.isPlaying)
-			GameManager.pause();
+		if(game.gameManager.isPlaying)
+			game.gameManager.pause();
 	}
 
 	override fun update(delta: Float) {
 		timers.update(delta);
 
 		when {
-			GameManager.isPlaying	-> updatePlaying(delta);
-			GameManager.isPaused	-> updatePaused();
-			GameManager.isGameOver	-> updateGameOver();
+			game.gameManager.isPlaying	-> updatePlaying(delta);
+			game.gameManager.isPaused	-> updatePaused();
+			game.gameManager.isGameOver	-> updateGameOver();
 		}
 	}
 
@@ -202,7 +206,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 	private inline fun updatePlaying(delta: Float) {  // update에서만 한 번 쓰이기 때문에 inline이다.
 		super.update(delta);
 
-		val player = GameManager.player;
+		val player = game.player;
 		val world = player.world;
 		if(world != null && projectingWorld === world) {
 			attackTarget = player.latestAttackVictim?.takeIf { isValidAttackTarget(it, player) }
@@ -221,7 +225,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 	 */
 	private fun updateTitleBarInfo() {
 		val world: World? = projectingWorld;
-		if(world == null || world !== GameManager.player.world) {
+		if(world == null || world !== game.player.world) {
 			TitleBar.stats = null;
 			return;
 		}
@@ -229,15 +233,15 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		val currentTitleType = TitleInfoType.byIndex(currentTitleInfo);
 		TitleBar.stats =
 			if(currentTitleType == TitleInfoType.OPENED)
-				"Opened chests: ${GameManager.statistics.openedContainerCount}"
+				"Opened chests: ${game.gameManager.statistics.openedContainerCount}"
 			else if(currentTitleType == TitleInfoType.KILLED)
-				"Killed zombies: ${GameManager.statistics.killedZombieCount}"
+				"Killed zombies: ${game.gameManager.statistics.killedZombieCount}"
 			else if(currentTitleType == TitleInfoType.FIRED)
-				"Fired: ${GameManager.statistics.fireCount}"
+				"Fired: ${game.gameManager.statistics.fireCount}"
 			else if(currentTitleType == TitleInfoType.SURVIVED)
-				"Survived duration: ${parseSeconds(GameManager.statistics.survivedDuration, "m", "s")}"
+				"Survived duration: ${parseSeconds(game.gameManager.statistics.survivedDuration, "m", "s")}"
 			else if(currentTitleType == TitleInfoType.DAMAGE)
-				"Total damage: ${GameManager.statistics.totalDamage}"
+				"Total damage: ${game.gameManager.statistics.totalDamage}"
 			else if(currentTitleType == TitleInfoType.ZOMBIES)
 				"Current zombies: ${world.entities.countOf<Zombie>()}"
 			else
@@ -256,7 +260,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 			return;
 		}
 
-		val player = GameManager.player;
+		val player = game.player;
 
 		// 체력 미터기 처리
 		hpIndicator.apply {
@@ -342,7 +346,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		// R 키나 사이띄개를 누르면 다시 시작
 		if(Input.isKeyJustPressed(Input.R) || Input.isKeyJustPressed(Input.SPACE)) {
 			clearSubtitles();
-			GameManager.newGame();
+			game.gameManager.newGame();
 		}
 	}
 
@@ -353,10 +357,10 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		// P키를 누르면 일시 정지 <-> 게임 진행 중 상태 토글!
 		val resumeKeyPressed = Input.isKeyJustPressed(Input.SPACE);
 		if(Input.isKeyJustPressed(Input.P) || Input.isKeyJustPressed(Input.ESCAPE) || resumeKeyPressed) {
-			if(GameManager.isPlaying && !resumeKeyPressed)
-				GameManager.pause();
-			else if(GameManager.isPaused)
-				GameManager.resume();
+			if(game.gameManager.isPlaying && !resumeKeyPressed)
+				game.gameManager.pause();
+			else if(game.gameManager.isPaused)
+				game.gameManager.resume();
 		}
 	}
 
@@ -365,14 +369,14 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 	 */
 	override fun drawOverlay() {
 		// 일시 정지 시 어둡게 변경
-		if(!GameManager.isPlaying)
+		if(!game.gameManager.isPlaying)
 			drawFrozenOverlay();
 
 		// ── 상태별로 그리는 것이 다름 ──
 		when {
 			// 플레이 중에는 추가로 그릴 것 없음
-			GameManager.isPaused	-> drawPausedMessage();  // 일시정지 화면 그리기
-			GameManager.isGameOver	-> drawGameOverMessage();
+			game.gameManager.isPaused	-> drawPausedMessage();  // 일시정지 화면 그리기
+			game.gameManager.isGameOver	-> drawGameOverMessage();
 		}
 	}
 
@@ -434,42 +438,42 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 
 		// 통계
 		drawText(
-			text = "Opened containers: ${GameManager.statistics.openedContainerCount}",
+			text = "Opened containers: ${game.gameManager.statistics.openedContainerCount}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 20f,
 			color = Color.LIGHT_GRAY,
 			scale = 1.0f
 		);
 		drawText(
-			text = "Killed zombies: ${GameManager.statistics.killedZombieCount}",
+			text = "Killed zombies: ${game.gameManager.statistics.killedZombieCount}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 35f,
 			color = Color.LIGHT_GRAY,
 			scale = 1.0f
 		);
 		drawText(
-			text = "Fired: ${GameManager.statistics.fireCount}",
+			text = "Fired: ${game.gameManager.statistics.fireCount}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 50f,
 			color = Color.LIGHT_GRAY,
 			scale = 1.0f
 		);
 		drawText(
-			text = "Survived duration: ${parseSeconds(GameManager.statistics.survivedDuration, "m", "s")}",
+			text = "Survived duration: ${parseSeconds(game.gameManager.statistics.survivedDuration, "m", "s")}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 65f,
 			color = Color.LIGHT_GRAY,
 			scale = 1.0f
 		);
 		drawText(
-			text = "Total damage: ${GameManager.statistics.totalDamage}",
+			text = "Total damage: ${game.gameManager.statistics.totalDamage}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 80f,
 			color = Color.LIGHT_GRAY,
 			scale = 1.0f
 		);
 		drawText(
-			text = "Final score: ${GameManager.scoreManager.score}",
+			text = "Final score: ${game.gameManager.scoreManager.score}",
 			x = Window.width * 0.5f - 70f,
 			y = Window.height * 0.5f - 95f,
 			color = Color.LIGHT_GRAY,
@@ -514,7 +518,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		};
 		currentSubtitlesMessage = message;
 		currentSubtitlesColor = color;
-		subtitlesTimer = Timer(duration, { GameManager.isPlaying }) {
+		subtitlesTimer = Timer(duration, { game.gameManager.isPlaying }) {
 			currentSubtitlesMessage = "";
 			currentSubtitlesColor = Color.WHITE;  // 초깃값으로 복원하여 메모리를 점유하지 않게 함
 			subtitlesTimer = null;
@@ -533,7 +537,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 	 * 항상 화면에 표시되는 정보 — HP 표시와 월드 중앙 표지를 그린다.
 	 */
 	private inline fun drawHud() {  // drawContents에서만 한 번 쓰이기 때문에 inline이다.
-		val player = GameManager.player;
+		val player = game.player;
 		// 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
 		//    카메라가 움직여도 항상 이 위치에 있다.
 		drawText(
@@ -575,7 +579,7 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 
 		// 점수
 		drawText(
-			text = "Score: ${GameManager.scoreManager.score}",
+			text = "Score: ${game.gameManager.scoreManager.score}",
 			x = Window.width - 130f,
 			y = Window.height - 10f,
 			color = scoreColor,
@@ -583,11 +587,6 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 			width = 120f,
 			align = Align.right
 		);
-	}
-
-	internal fun disableTitleControls() {
-		replayButton.disable();
-		titleButton.disable();
 	}
 
 	override fun dispose() {

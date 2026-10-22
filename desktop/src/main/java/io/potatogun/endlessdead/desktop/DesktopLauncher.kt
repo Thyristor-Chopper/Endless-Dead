@@ -7,9 +7,6 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
-import io.potatogun.gdxhelper.collections.CharMap;
-import io.potatogun.gdxhelper.collections.put;
-import io.potatogun.gdxhelper.util.parseArguments;
 
 /**
  * 데스크톱에서 게임을 실행시키는 진입점(main 함수)이다.
@@ -21,20 +18,10 @@ import io.potatogun.gdxhelper.util.parseArguments;
  *
  * 실제 게임 내용은 EndlessDead 클래스와 각 Screen/World 클래스에서 정의된다.
  * 이 파일은 순수 'OS에 창 띄우기' 역할만 한다.
- *
- * @param args 명령줄 매개변수
  */
-fun main(args: Array<String>) {
-	// 짧은 명령줄 키 별칭 등록
-	val shortArgumentMap = CharMap<String>(2);
-	shortArgumentMap.put('s', "seed");
-	shortArgumentMap.put('i', "instant");
-
-	// 명령줄 옵션 파싱
-	val options = parseArguments(args, shortArgumentMap);
-
+fun main() {
 	// 게임 객체 만들기
-	val game = EndlessDead(options);
+	val game = EndlessDead();
 
 	// 창(Window) 설정
 	val config = Lwjgl3ApplicationConfiguration().apply {

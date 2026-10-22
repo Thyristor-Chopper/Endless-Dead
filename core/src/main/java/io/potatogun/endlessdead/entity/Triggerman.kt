@@ -1,6 +1,6 @@
 package io.potatogun.endlessdead.entity;
 
-import io.potatogun.endlessdead.GameManager;
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.ai.ApproachTarget;
 import io.potatogun.endlessdead.entity.ai.RotateToTarget;
@@ -32,7 +32,7 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	override val damageInvincibilityDuration = 0.15f;
 	private val dropComponent: ItemDropComponent<Triggerman>? = if(Random.nextInt(1000) + 1 <= 1) ItemDropComponent(this) else null;  // 0.1% 확률로 총을 떨굴 수 있음
 	private val pickupComponent: ItemPickupComponent<Triggerman>? = if(Random.nextInt(10) + 1 <= 3) ItemPickupComponent(this) else null;  // 30% 확률
-	private val autoTargeter = AutoTargeter(this) { GameManager.player };
+	private val autoTargeter = AutoTargeter(this) { EndlessDead.instance.player };
 	override val target: LivingEntity? by autoTargeter::target;
 	override val followRange: Float by autoTargeter::followRange;
 	override val killScore = 30;

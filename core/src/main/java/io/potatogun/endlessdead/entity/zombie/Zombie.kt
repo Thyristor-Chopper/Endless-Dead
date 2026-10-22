@@ -3,7 +3,7 @@ package io.potatogun.endlessdead.entity.zombie;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.potatogun.endlessdead.GameManager;
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.KillScorable;
 import io.potatogun.endlessdead.entity.Landmine;
@@ -40,7 +40,7 @@ abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Flo
 	override val attackInterval: Float by meleeAttackComponent::attackInterval;
 	private val moveComponent = MoveComponent(this, settings.speed);
 	override val speed: Float by moveComponent::speed;
-	private val autoTargeter = AutoTargeter(this) { GameManager.player };
+	private val autoTargeter = AutoTargeter(this) { EndlessDead.instance.player };
 	override val target: LivingEntity? by autoTargeter::target;
 	override val followRange: Float by autoTargeter::followRange;
 	private val targetCenterFactor = 0.75f;

@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.EndlessDead;
-import io.potatogun.endlessdead.GameManager;
 import io.potatogun.endlessdead.Resources;
 import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Window;
@@ -26,7 +25,7 @@ class Title(private val game: EndlessDead) : Screen(font = Resources.font), Inpu
 
 	init {
 		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, { 120f }, caption = "Play", skin = Resources.primaryButton) {
-			GameManager.newGame();
+			game.gameManager.newGame();
 		});
 		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, { 120f }, caption = "Quit", skin = Resources.button) {
 			Gdx.app.exit();
@@ -45,7 +44,7 @@ class Title(private val game: EndlessDead) : Screen(font = Resources.font), Inpu
 
 	override fun onKeyDown(code: Int): Boolean {
 		if(game.screen !== this) return false;
-		GameManager.newGame();
+		game.gameManager.newGame();
 		return true;
 	}
 

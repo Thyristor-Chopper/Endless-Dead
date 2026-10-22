@@ -3,7 +3,7 @@ package io.potatogun.endlessdead.entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.potatogun.endlessdead.GameManager;
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.entity.forEachNearby;
 import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.entity.component.ItemDropComponent;
@@ -64,8 +64,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 		// 1. 생존 시간 기록 & 생존 시간 보너스
 		timers.register(RepeatingTimer(1f) {
-			GameManager.statistics.survivedDuration++;
-			GameManager.scoreManager.addScore(1);
+			EndlessDead.instance.gameManager.statistics.survivedDuration++;
+			EndlessDead.instance.gameManager.scoreManager.addScore(1);
 		});
 
 		// 2. 30초마다 자연 회복
@@ -129,7 +129,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 	// 휠로 아이템 선택
 	override fun onScroll(amountX: Float, amountY: Float): Boolean {
-		if(!GameManager.isPlaying) return false;
+		if(!EndlessDead.instance.gameManager.isPlaying) return false;
 		if(amountY > 0f) {
 			selectNextItem();
 			return true;
@@ -195,7 +195,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 					selectItem(item);
 					projector?.drawSubtitles("Took ${item.name} from the container");
 					if(!isPlayerItem)
-						GameManager.statistics.openedContainerCount++;
+						EndlessDead.instance.gameManager.statistics.openedContainerCount++;
 				}
 			}
 		};
@@ -206,8 +206,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	// 대미지를 받았을 때 자연 회복 타이머를 초기화하고 점수를 감점한다
 	override fun onDamage(damage: Int, attacker: Entity?) {
 		healTimer.reset();
-		GameManager.scoreManager.subtractScore(5);
-		GameManager.statistics.totalDamage += damage;
+		EndlessDead.instance.gameManager.scoreManager.subtractScore(5);
+		EndlessDead.instance.gameManager.statistics.totalDamage += damage;
 	}
 
 	// 죽으면 모든 템 떨구기
@@ -218,17 +218,17 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	// 처치한 좀비 수를 갱신하고 점수를 준다.
 	override fun onKill(victim: LivingEntity) {
 		if(victim is KillScorable)
-			GameManager.scoreManager.addScore(victim.killScore);
+			EndlessDead.instance.gameManager.scoreManager.addScore(victim.killScore);
 
 		if(victim is Zombie)
-			GameManager.statistics.killedZombieCount++;
+			EndlessDead.instance.gameManager.statistics.killedZombieCount++;
 	}
 
 	override fun onAttack(victim: LivingEntity) {
 		_latestAttackVictim = WeakReference(victim);
 
 		if(victim is AttackScorable)
-			GameManager.scoreManager.addScore(victim.attackScore);
+			EndlessDead.instance.gameManager.scoreManager.addScore(victim.attackScore);
 	}
 
 	// ---- 그 외 유틸들 ----
@@ -246,7 +246,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		val succeeded = item.use(this);
 		if(succeeded)
 			if(item is Shootable)
-				GameManager.statistics.fireCount++;
+				EndlessDead.instance.gameManager.statistics.fireCount++;
 		return succeeded;
 	}
 

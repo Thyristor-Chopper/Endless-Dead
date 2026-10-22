@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Disposable;
 
-import io.potatogun.endlessdead.GameManager;
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.Bullet;
@@ -114,7 +114,7 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 		bulletSize = settings.bulletSize;
 		bulletTexture = settings.bulletFaceTexture;
 
-		UpdateListeners.register(this) { GameManager.isPlaying };
+		UpdateListeners.register(this) { EndlessDead.instance.gameManager.isPlaying };
 	}
 
 	override fun update(delta: Float) {

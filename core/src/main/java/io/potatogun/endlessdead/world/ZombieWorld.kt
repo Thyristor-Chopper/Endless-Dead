@@ -6,7 +6,7 @@ import com.badlogic.gdx.utils.IntArray;
 
 import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.Constants;
-import io.potatogun.endlessdead.GameManager;
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.Pools;
 import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.Portal;
@@ -50,6 +50,7 @@ import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.ceil;
 import kotlin.math.floor;
+import kotlin.random.Random;
 
 /**
  * 좀비 파밍 월드
@@ -84,27 +85,39 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 		inline get() = (specialWorld != null);
 	// 월드 내 상자 수
 	private val containerCount: Int;
+	// 무작위값 생성기
+	private val random: Random;
 
 	// 생성자 본문 — 월드에 개체들을 등록한다. 이렇게 등록해야 update / draw 루프에 포함된다.
 	init {
+		val rawSeed = System.getProperty("zombie.worldSeed");
+		if(rawSeed != null)
+			random = try {
+				Random(rawSeed.toLong())
+			} catch(e: NumberFormatException) {  // 난 Long이 박싱되는 게 stack trace가 생성되는 비용보다 더 싫음. 어차피 사용자가 제대로 값만 넘기면 발생하지도 않을 문제.
+				Random.Default
+			};
+		else
+			random = Random.Default;
+
 		// 0.5% 확률로 총잡이 월드로 가는 포탈 추가
-		if(GameManager.random.nextInt(1000) + 1 <= 5) {
+		if(random.nextInt(1000) + 1 <= 5) {
 			specialWorld = GunnerWorld(this);
-			entities.add(Portal(this, GameManager.random.nextInt((width - 300f).toInt()).toFloat() + 150f, GameManager.random.nextInt((height - 300f).toInt()).toFloat() + 150f, specialWorld));
+			entities.add(Portal(this, random.nextInt((width - 300f).toInt()).toFloat() + 150f, random.nextInt((height - 300f).toInt()).toFloat() + 150f, specialWorld));
 		} else {
 			specialWorld = null;
 		}
 
 		// 100~150개의 건물과 상자를 무작위로 배치
-		val trapChestGeneratable = (!hasSpecialWorld && GameManager.random.nextInt(1000) + 1 <= 1);  // 0.1% 확률
+		val trapChestGeneratable = (!hasSpecialWorld && random.nextInt(1000) + 1 <= 1);  // 0.1% 확률
 		val intWidth = this.width.toInt();
 		val intHeight = this.height.toInt();
-		containerCount = GameManager.random.nextInt(51) + 100;
+		containerCount = random.nextInt(51) + 100;
 		for(i in 0 until containerCount) {
-			val x = GameManager.random.nextInt(intWidth).toFloat();
-			val y = GameManager.random.nextInt(intHeight).toFloat();
+			val x = random.nextInt(intWidth).toFloat();
+			val y = random.nextInt(intHeight).toFloat();
 			val item: Item = generateLoot(!hasSpecialWorld);  // 들어있을 아이템
-			val rand = GameManager.random.nextInt(100) + 1;
+			val rand = random.nextInt(100) + 1;
 			entities.add(when {
 				rand <= 40	-> Building(this, x, y, item)  // 40% 확률
 				else		-> {
@@ -118,37 +131,37 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 
 		// 각각 1% 확률로 적 공격 포탑(무적)을 임의 위치에 1~3대 설치
 		for(i in 1..3)
-			if(GameManager.random.nextInt(100) == i * 24)
-				entities.add(FriendlyTurret(this, GameManager.random.nextInt((width - 300f).toInt()).toFloat() + 150f, GameManager.random.nextInt((height - 300f).toInt()).toFloat() + 150f, true));
+			if(random.nextInt(100) == i * 24)
+				entities.add(FriendlyTurret(this, random.nextInt((width - 300f).toInt()).toFloat() + 150f, random.nextInt((height - 300f).toInt()).toFloat() + 150f, true));
 
 		if(!hasSpecialWorld) {
 			// 각각 2.5% 확률로 플레이어 공격 포탑(파괴 불가)을 월드의 각 모퉁이에 설치
-			if(GameManager.random.nextInt(40) == 8) entities.add(HostileTurret(this, 100f, 100f, true).apply { rotate(315f) });
-			if(GameManager.random.nextInt(40) == 12) entities.add(HostileTurret(this, width - 100f, 100f, true).apply { rotate(45f) });
-			if(GameManager.random.nextInt(40) == 15) entities.add(HostileTurret(this, 100f, height - 100f, true).apply { rotate(225f) });
-			if(GameManager.random.nextInt(40) == 21) entities.add(HostileTurret(this, width - 100f, height - 100f, true).apply { rotate(135f) });
+			if(random.nextInt(40) == 8) entities.add(HostileTurret(this, 100f, 100f, true).apply { rotate(315f) });
+			if(random.nextInt(40) == 12) entities.add(HostileTurret(this, width - 100f, 100f, true).apply { rotate(45f) });
+			if(random.nextInt(40) == 15) entities.add(HostileTurret(this, 100f, height - 100f, true).apply { rotate(225f) });
+			if(random.nextInt(40) == 21) entities.add(HostileTurret(this, width - 100f, height - 100f, true).apply { rotate(135f) });
 
 			// 각각 0.05% 확률로 플레이어 공격 포탑(공격, 파괴 가능)을 임의 위치에 1~3대 설치
 			for(i in 1..3)
-				if(GameManager.random.nextInt(10000) + 1 <= 5)
-					entities.add(HostileTurret(this, GameManager.random.nextInt((width - 300f).toInt()).toFloat() + 150f, GameManager.random.nextInt((height - 300f).toInt()).toFloat() + 150f));
+				if(random.nextInt(10000) + 1 <= 5)
+					entities.add(HostileTurret(this, random.nextInt((width - 300f).toInt()).toFloat() + 150f, random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 
 			// 5% 확률로 총 쏘는 적도 나오는 월드
-			if(GameManager.random.nextInt(20) == 7)
-				for(i in 1..(GameManager.random.nextInt(3) + 1))  // 무작위로 1~3개
-					if(GameManager.random.nextInt(i) == 0)  // 첫째: 100%, 둘째: 50%, 셋째: 33.3%
-						entities.add(TriggermanSummoner(this, GameManager.random.nextInt((width - 300f).toInt()).toFloat() + 150f, GameManager.random.nextInt((height - 300f).toInt()).toFloat() + 150f));
+			if(random.nextInt(20) == 7)
+				for(i in 1..(random.nextInt(3) + 1))  // 무작위로 1~3개
+					if(random.nextInt(i) == 0)  // 첫째: 100%, 둘째: 50%, 셋째: 33.3%
+						entities.add(TriggermanSummoner(this, random.nextInt((width - 300f).toInt()).toFloat() + 150f, random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 		}
 
 		// 0.1% 확률로 스트림약좀비생성기가 있을 수 있음
-		if(GameManager.random.nextInt(1000) + 1 <= 1)
-			for(i in 1..(GameManager.random.nextInt(8) + 1))  // 무작위로 1~8개
-				if(GameManager.random.nextInt(2) == 0)  // 이 경우에 대해 50% 판정
-					entities.add(StreamZombieSummoner(this, GameManager.random.nextInt((width - 300f).toInt()).toFloat() + 150f, GameManager.random.nextInt((height - 300f).toInt()).toFloat() + 150f));
+		if(random.nextInt(1000) + 1 <= 1)
+			for(i in 1..(random.nextInt(8) + 1))  // 무작위로 1~8개
+				if(random.nextInt(2) == 0)  // 이 경우에 대해 50% 판정
+					entities.add(StreamZombieSummoner(this, random.nextInt((width - 300f).toInt()).toFloat() + 150f, random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 
 		// 스포너 등록
 		spawners.add(ZombieSpawner(this));
-		if(GameManager.random.nextInt(10000) + 1 <= 1)  // 0.01% 확률로 왕좀비도 나오는 월드
+		if(random.nextInt(10000) + 1 <= 1)  // 0.01% 확률로 왕좀비도 나오는 월드
 			spawners.add(GiantZombieSpawner(this));
 
 		// 등록된 개체 커밋
@@ -164,25 +177,25 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 		});
 
 		// 풀 정보 등록
-		val grassCount = GameManager.random.nextInt(101) + 200;  // 200~300개
+		val grassCount = random.nextInt(101) + 200;  // 200~300개
 		grassInfo = IntArray(false, grassCount);
 		for(i in 1..grassCount) {
-			val x = GameManager.random.nextInt(intWidth);
-			val y = GameManager.random.nextInt(intHeight);
+			val x = random.nextInt(intWidth);
+			val y = random.nextInt(intHeight);
 			grassInfo.add(Grass.hashOf(x, y));
 		}
 
 		// 나무 정보 등록
-		val treeCount = GameManager.random.nextInt(41) + 80;  // 80~120개
+		val treeCount = random.nextInt(41) + 80;  // 80~120개
 		treeInfo = IntArray(false, treeCount);
 		for(i in 1..treeCount) {
-			val x = GameManager.random.nextInt(intWidth);
-			val y = GameManager.random.nextInt(intHeight);
-			val size = Tree.Size.byIndex(GameManager.random.nextInt(Tree.Size.size));
+			val x = random.nextInt(intWidth);
+			val y = random.nextInt(intHeight);
+			val size = Tree.Size.byIndex(random.nextInt(Tree.Size.size));
 			treeInfo.add(Tree.hashOf(x, y, size));
 		}
 
-		UpdateListeners.register(this) { GameManager.isPlaying && GameManager.player.isIn(this) };  // this 캡처 떄문에 약참조가 될 수 없어서 dispose에서 직접 확실히 해제함.
+		UpdateListeners.register(this) { EndlessDead.instance.gameManager.isPlaying && EndlessDead.instance.player.isIn(this) };  // this 캡처 떄문에 약참조가 될 수 없어서 dispose에서 직접 확실히 해제함.
 	}
 
 	/**
@@ -191,7 +204,7 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 	 * @param allowRare 희귀 아이템 생성 가능 여부
 	 */
 	private fun generateLoot(allowRare: Boolean = true): Item {
-		val rand = GameManager.random.nextInt(1000) + 1;  // 1~1000
+		val rand = random.nextInt(1000) + 1;  // 1~1000
 		return when {
 			rand <= 350	-> MachineGun()			// 35% 확률
 			rand <= 650	-> Shotgun()			// 30% 확률
@@ -337,7 +350,7 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 
 	// 플레이어 위치에 따라 카메라 위치 변경
 	override fun updateOffset() {
-		val player = GameManager.player;
+		val player = EndlessDead.instance.player;
 		if(player.world !== this) return;
 		cameraX = player.x;
 		cameraY = player.y;
