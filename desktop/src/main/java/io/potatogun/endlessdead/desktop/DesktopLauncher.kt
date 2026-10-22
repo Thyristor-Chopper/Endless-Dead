@@ -29,7 +29,7 @@ fun main(args: Array<String>) {
 	// 짧은 명령줄 키 별칭 등록
 	val shortArgumentMap = CharMap<String>(2);
 	shortArgumentMap.put('s', "seed");
-	shortArgumentMap.put('i', "single-game");
+	shortArgumentMap.put('i', "instant-game");
 
 	// 명령줄 옵션 파싱
 	val options = parseArguments(args, shortArgumentMap);
