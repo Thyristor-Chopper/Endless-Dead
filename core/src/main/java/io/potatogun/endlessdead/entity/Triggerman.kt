@@ -23,6 +23,7 @@ import kotlin.random.Random;
  * 총잡이 - 총을 쏘는 적
  */
 class Triggerman private constructor(world: World, x: Float, y: Float, override val inventory: Inventory) : LivingEntity(world, "Triggerman", x, y, 32f, 34f, 10, Resources.textures.getShared("triggerman")), InventoryHolder, DamageListener, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, Movable, Targetable, KillScorable {
+	private val game = EndlessDead.instance;
 	private val moveComponent = MoveComponent(this, 140f);
 	override val speed: Float by moveComponent::speed;
 	private val rotator = RotateToTarget(this);
@@ -32,7 +33,7 @@ class Triggerman private constructor(world: World, x: Float, y: Float, override 
 	override val damageInvincibilityDuration = 0.15f;
 	private val dropComponent: ItemDropComponent<Triggerman>? = if(Random.nextInt(1000) + 1 <= 1) ItemDropComponent(this) else null;  // 0.1% 확률로 총을 떨굴 수 있음
 	private val pickupComponent: ItemPickupComponent<Triggerman>? = if(Random.nextInt(10) + 1 <= 3) ItemPickupComponent(this) else null;  // 30% 확률
-	private val autoTargeter = AutoTargeter(this) { EndlessDead.instance.player };
+	private val autoTargeter = AutoTargeter(this) { game.player };
 	override val target: LivingEntity? by autoTargeter::target;
 	override val followRange: Float by autoTargeter::followRange;
 	override val killScore = 30;

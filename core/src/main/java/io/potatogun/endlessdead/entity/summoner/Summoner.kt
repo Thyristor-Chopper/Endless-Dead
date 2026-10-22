@@ -23,6 +23,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param texture 개체의 텍스처
  */
 abstract class Summoner @JvmOverloads constructor(world: World, name: String, x: Float, y: Float, width: Float, height: Float, health: Int, texture: Texture? = null) : LivingEntity(world, name, x, y, width, height, health, texture) {
+	private val game = EndlessDead.instance;
 	/**
 	 * 이 소환기에 대한 타이머
 	 *
@@ -56,7 +57,7 @@ abstract class Summoner @JvmOverloads constructor(world: World, name: String, x:
 		timers.update(delta);
 
 		if(isActive)
-			rotateTo(EndlessDead.instance.player);
+			rotateTo(game.player);
 	}
 
 	/**

@@ -35,12 +35,13 @@ import io.potatogun.gdxhelper.world.World;
  * @param settings 좀비 옵션
  */
 abstract class Zombie(world: World, name: String, x: Float, y: Float, width: Float, height: Float, settings: Properties) : LivingEntity(world, name, x, y, width, height, settings.health, Resources.textures.getShared("zombie")), MeleeAttackable, DamageListener, PenetratorDamagable, Movable, Targetable, KillScorable {
+	private val game = EndlessDead.instance;
 	private val meleeAttackComponent = MeleeAttackComponent(this, settings.attackDamage, 0.3f);
 	override val attackDamage: Int by meleeAttackComponent::attackDamage;
 	override val attackInterval: Float by meleeAttackComponent::attackInterval;
 	private val moveComponent = MoveComponent(this, settings.speed);
 	override val speed: Float by moveComponent::speed;
-	private val autoTargeter = AutoTargeter(this) { EndlessDead.instance.player };
+	private val autoTargeter = AutoTargeter(this) { game.player };
 	override val target: LivingEntity? by autoTargeter::target;
 	override val followRange: Float by autoTargeter::followRange;
 	private val targetCenterFactor = 0.75f;

@@ -22,11 +22,12 @@ import kotlin.random.Random;
  * @param y	 개체의 Y 위치
  */
 class StreamZombieSummoner(world: World, x: Float, y: Float) : Summoner(world, "Stream Zombie Summoner", x, y, 26f, 32f, 100, Resources.textures.getShared("stream_zombie_summoner")), KillScorable {
+	private val game = EndlessDead.instance;
 	private val maxDistanceToPlayer = 456f;
 	override val damageInvincibilityDuration = 0.15f;
 	override val summonInterval = 0.5f;
 	override val isActive: Boolean
-		get() = distanceTo(EndlessDead.instance.player) <= maxDistanceToPlayer;
+		get() = distanceTo(game.player) <= maxDistanceToPlayer;
 	override val killScore = 100;
 
 	init {

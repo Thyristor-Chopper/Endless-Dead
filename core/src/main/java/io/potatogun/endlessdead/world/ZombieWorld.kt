@@ -56,6 +56,7 @@ import kotlin.random.Random;
  * 좀비 파밍 월드
  */
 class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
+	private val game = EndlessDead.instance;
 	// 등록된 스포너 목록
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
 	// 체스판 배경 설정 (drawTiles에서 사용)
@@ -195,7 +196,7 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 			treeInfo.add(Tree.hashOf(x, y, size));
 		}
 
-		UpdateListeners.register(this) { EndlessDead.instance.gameManager.isPlaying && EndlessDead.instance.player.isIn(this) };  // this 캡처 떄문에 약참조가 될 수 없어서 dispose에서 직접 확실히 해제함.
+		UpdateListeners.register(this) { EndlessDead.instance.gameManager.isPlaying && game.player.isIn(this) };  // this 캡처 떄문에 약참조가 될 수 없어서 dispose에서 직접 확실히 해제함.
 	}
 
 	/**
@@ -350,7 +351,7 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 
 	// 플레이어 위치에 따라 카메라 위치 변경
 	override fun updateOffset() {
-		val player = EndlessDead.instance.player;
+		val player = game.player;
 		if(player.world !== this) return;
 		cameraX = player.x;
 		cameraY = player.y;

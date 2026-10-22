@@ -16,18 +16,6 @@ import io.potatogun.endlessdead.world.ZombieWorld;
  */
 class GameManager(private val game: EndlessDead) : Updatable {
 	/**
-	 * 점수 관리자
-	 */
-	@JvmField val scoreManager = ScoreManager();  // 디컴파일해서 확인한 결과 싱글톤에서 @JvmField를 하면 GameManager.INSTANCE.scoreManager가 아닌 GameManager.scoreManager로 바로 접근 가능(효과도 같이 있는 것)
-	/**
-	 * 통계 관리자
-	 */
-	@JvmField val statistics = StatisticsManager();
-	/**
-	 * 월드, 개체 등에 종속되지 않는 전역 타이머 관리자
-	 */
-	@JvmField val globalTimers = TimerManager();
-	/**
 	 * 라운드 숨김 여부
 	 */
 	private var hideRound = java.lang.Boolean.getBoolean("zombie.instantGame");
@@ -168,30 +156,17 @@ class GameManager(private val game: EndlessDead) : Updatable {
 	 * 점수 및 통계 초기화
 	 */
 	fun resetAll() {
-		scoreManager.resetScore();
-		statistics.survivedDuration = 0;
-		statistics.openedContainerCount = 0;
-		statistics.killedZombieCount = 0;
-		statistics.fireCount = 0;
-		statistics.totalDamage = 0;
+		game.scoreManager.resetScore();
+		game.statistics.survivedDuration = 0;
+		game.statistics.openedContainerCount = 0;
+		game.statistics.killedZombieCount = 0;
+		game.statistics.fireCount = 0;
+		game.statistics.totalDamage = 0;
 	}
 
 	override fun update(delta: Float) {
-		tickGlobalTimers(delta);
-
 		if(state == GameState.PLAYING && !game.player.isAlive)
 			setGameOver();
-	}
-
-	/**
-	 * 전역 타이머 관리자를 갱신한다.
-	 *
-	 * update에서 한 번만 쓰이기 때문에 인라인이다.
-	 * 
-	 * @param delta 직전 프레임과의 간격(초)
-	 */
-	private inline fun tickGlobalTimers(delta: Float) {
-		globalTimers.update(delta);
 	}
 
 	/**
@@ -202,62 +177,5 @@ class GameManager(private val game: EndlessDead) : Updatable {
 		PLAYING,
 		PAUSED,
 		GAME_OVER;
-	}
-
-	/**
-	 * 점수 관리자
-	 */
-	class ScoreManager internal constructor() {
-		/**
-		 * 현재 점수
-		 */
-		var score: Int = 0
-			private set(value) {
-				if(value < 0) field = 0;
-				else field = value;
-			};
-
-		/**
-		 * 점수를 준다.
-		 *
-		 * @param amount 줄 점수
-		 */
-		fun addScore(amount: Int) {
-			if(amount < 0) throw IllegalArgumentException("invalid score amount");
-			score += amount;
-		}
-
-		/**
-		 * 점수를 감점한다.
-		 *
-		 * @param amount 차감할 점수
-		 */
-		fun subtractScore(amount: Int) {
-			if(amount < 0) throw IllegalArgumentException("invalid score amount");
-			score -= amount;
-		}
-
-		/**
-		 * 점수를 초기화한다.
-		 */
-		fun resetScore() {
-			score = 0;
-		}
-	}
-
-	/**
-	 * 게임 통계 관리자
-	 */
-	class StatisticsManager internal constructor() {
-		var survivedDuration = 0
-			@JvmSynthetic internal set;
-		var openedContainerCount = 0
-			@JvmSynthetic internal set;
-		var killedZombieCount = 0
-			@JvmSynthetic internal set;
-		var fireCount = 0
-			@JvmSynthetic internal set;
-		var totalDamage = 0
-			@JvmSynthetic internal set;
 	}
 }

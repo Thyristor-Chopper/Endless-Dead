@@ -13,18 +13,26 @@ import io.potatogun.gdxhelper.screen.WorldProjector;
 class EndlessDead : Game() {
 	// lazy 정의
 	private val lzPlayer = lazy { Player() };
-	private val lzTitleScreen = lazy { Title(this) };
-	private val lzWorldProjector = lazy { ZombieWorldProjector(this) };
+	private val lzTitleScreen = lazy { Title() };
+	private val lzWorldProjector = lazy { ZombieWorldProjector() };
 	/**
 	 * 게임 플레이어
 	 *
-	 * 자바에서는 getPlayer()를 쓴다.
+	 * 자바에서는 getPlayer()로 가져온다.
 	 */
 	val player: Player by lzPlayer;
 	/**
 	 * 게임 관리자
 	 */
 	@JvmField val gameManager = GameManager(this);
+	/**
+	 * 점수 관리자
+	 */
+	@JvmField val scoreManager = ScoreManager();
+	/**
+	 * 통계 관리자
+	 */
+	@JvmField val statistics = StatisticsManager();
 	// 미리 등록된 스크린. val은 lateinit이 불가하여 lazy 위임 사용.
 	@get:JvmSynthetic internal val titleScreen: Title by lzTitleScreen;
 	@get:JvmSynthetic internal val worldProjector: WorldProjector by lzWorldProjector;
@@ -42,14 +50,14 @@ class EndlessDead : Game() {
 		TitleBar.base = Constants.GAME_TITLE;
 	}
 
-	// 게임 시간 갱신
+	// 게임 갱신
 	override fun update(delta: Float) {
 		super.update(delta);
 
 		gameManager.update(delta);
 	}
 
-	// 자원을 정리한다.
+	// 자원 정리
 	override fun dispose() {
 		super.dispose();
 		Resources.dispose();  // 공유 자원 정리

@@ -46,9 +46,8 @@ import kotlin.random.Random;
  * 총잡이나 포탑 등이 메인 주인공인 월드
  */
 class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = null) : World(1440f, 1440f, SpatialGrid(256, 128f), font = Resources.font), TimedWorld, TimerAttachable, SpecialWorld {
-	/**
-	 * 등록된 스포너 목록
-	 */
+	private val game = EndlessDead.instance;
+	// 등록된 스포너 목록
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
 	private val tileTexture = loadTexture("world/rivets.bmp");  // 은색 리벳
 	private val bgTileWidth = 80f;
@@ -120,7 +119,7 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 			};
 		});
 
-		UpdateListeners.register(this) { EndlessDead.instance.gameManager.isPlaying && EndlessDead.instance.player.isIn(this) };
+		UpdateListeners.register(this) { EndlessDead.instance.gameManager.isPlaying && game.player.isIn(this) };
 	}
 
 	/**
@@ -180,7 +179,7 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 	}
 
 	override fun updateOffset() {
-		val player = EndlessDead.instance.player;
+		val player = game.player;
 		if(player.world !== this) return;
 		cameraX = player.x;
 		cameraY = player.y;
