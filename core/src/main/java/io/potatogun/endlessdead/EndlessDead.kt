@@ -61,7 +61,7 @@ class EndlessDead(options: ObjectMap<String, String>) : Game() {
 		}
 
 		// 타이틀 건너뛰기 설정
-		skipTitle = options.get("single-game")?.toBoolean() ?: false;
+		skipTitle = options.containsKey("single-game");
 	}
 
 	// 게임 시작 시 한 번 호출되는 메쏘드

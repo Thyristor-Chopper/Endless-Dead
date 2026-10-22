@@ -8,6 +8,9 @@ import com.badlogic.gdx.utils.ObjectMap;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
+import io.potatogun.gdxhelper.collections.CharMap;
+import io.potatogun.gdxhelper.collections.put;
+import io.potatogun.gdxhelper.util.parseArguments;
 
 /**
  * 데스크톱에서 게임을 실행시키는 진입점(main 함수)이다.
@@ -23,12 +26,18 @@ import io.potatogun.endlessdead.EndlessDead;
  * @param args 명령줄 매개변수
  */
 fun main(args: Array<String>) {
-	val options = parseArgs(args);
+	// 짧은 명령줄 키 별칭 등록
+	val shortArgumentMap = CharMap<String>(2);
+	shortArgumentMap.put('s', "seed");
+	shortArgumentMap.put('i', "single-game");
 
-	// 1) 게임 객체 만들기
+	// 명령줄 옵션 파싱
+	val options = parseArguments(args, shortArgumentMap);
+
+	// 게임 객체 만들기
 	val game = EndlessDead(options);
 
-	// 2) 창(Window) 설정
+	// 창(Window) 설정
 	val config = Lwjgl3ApplicationConfiguration().apply {
 		setTitle("${Constants.GAME_TITLE} - Loading...");
 		setWindowedMode(800, 600);
@@ -40,16 +49,6 @@ fun main(args: Array<String>) {
 		setWindowIcon(FileType.Internal, "assets/icon_16.bmp", "assets/icon_32.bmp", "assets/icon_128.bmp");
 	};
 
-	// 3) 실행
+	// 실행
 	Lwjgl3Application(game, config);
-}
-
-private inline fun parseArgs(args: Array<String>): ObjectMap<String, String> {
-	val options = ObjectMap<String, String>(args.size);
-	for(argument in args) {  // Shotgun에서 배열은 C스타일 iteration이 됐으므로 여기서도 비슷할 거라 추측(디컴하기 귀찮...)
-		if(!argument.startsWith("--") || !argument.contains('=')) continue;
-		val (key, value) = argument.removePrefix("--").split("=", limit = 2);
-		options.put(key, value);
-	}
-	return options;
 }
