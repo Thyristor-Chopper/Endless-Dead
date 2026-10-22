@@ -35,7 +35,17 @@ JDK가 설치된 환경에서 `build.bat`를 실행하거나
 ```bash
 ./gradlew :desktop:shadowJar
 ```
-로 shadowed JAR를 빌드하고 자바가 설치된 환경에서 `java -jar endless-dead.jar` 하면 된다.
+로 shadowed JAR를 빌드하고 자바가 설치된 환경에서 `java -jar endless-dead-<빌드 날짜>.jar` 하면 된다.
+
+### 매개변수
+
+`java [속성 정의] -jar endless-dead-<빌드 날짜>.jar [매개변수]`로 실행할 떄 지정할 수 있는 매개변수들이다.
+
+속성 정의:
+- `-Dzombie.worldSeed=<시드>`: 월드의 시드를 지정한다.
+- `-Dzombie.instantGame=true`: 일회성 게임 모드로 실행한다.
+
+매개변수: 아직 없다.
 
 ## 조작법
 
