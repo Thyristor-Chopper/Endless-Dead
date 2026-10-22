@@ -57,8 +57,10 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 	private val timers = TimerManager();
 	// 자막 관련 필드들.
 	private var subtitlesTimer: Timer? = null;
-	private var subtitlesMessage: String = "";
-	private var subtitlesColor = Color.WHITE;
+	override val subtitlesDuration = 3f;
+	override val subtitlesColor = Color.WHITE;
+	private var currentSubtitlesMessage: String = "";
+	private var currentSubtitlesColor = subtitlesColor;
 	@get:JvmName("isSubtitlesVisible") private val subtitlesVisible: Boolean
 		inline get() = (subtitlesTimer != null);
 	private var attackTarget: LivingEntity? = null;  // 매 업데이트 시 개체가 죽으면 초기화되므로 굳이 WeakReference 쓸 필요 없음
@@ -492,10 +494,10 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 		// 자막이 있으면 표시
 		if(subtitlesVisible)
 			drawText(
-				text = subtitlesMessage,
+				text = currentSubtitlesMessage,
 				x = 0f,
 				y = 20f,
-				color = subtitlesColor,
+				color = currentSubtitlesColor,
 				scale = 1.0f,
 				width = Window.width,
 				align = Align.center
@@ -510,11 +512,11 @@ class ZombieWorldProjector(private val game: EndlessDead) : WorldProjector(font 
 			timers.unregister(it);
 			subtitlesTimer = null;
 		};
-		subtitlesMessage = message;
-		subtitlesColor = color;
+		currentSubtitlesMessage = message;
+		currentSubtitlesColor = color;
 		subtitlesTimer = Timer(duration, { GameManager.isPlaying }) {
-			subtitlesMessage = "";
-			subtitlesColor = Color.WHITE;  // 초깃값으로 복원하여 메모리를 점유하지 않게 함
+			currentSubtitlesMessage = "";
+			currentSubtitlesColor = Color.WHITE;  // 초깃값으로 복원하여 메모리를 점유하지 않게 함
 			subtitlesTimer = null;
 		}.also { timers.register(it) };
 	}
