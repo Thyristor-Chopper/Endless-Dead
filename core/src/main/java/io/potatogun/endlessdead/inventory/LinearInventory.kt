@@ -35,9 +35,9 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 
 		// 무한 보관함이 꽉 찼으면 두 배로 늘린다. (128개 이후 추가할 때마다 매번 배열을 새로 만드는 오버헤드 줄이기)
 		if(maxSlots == -1) {
-			val maxSize = inventory.items.size;
-			if(maxSize == inventory.size)
-				inventory.ensureCapacity(maxSize);  // 원래 (maxSize * 2 - maxSize)임
+			val capacity = inventory.items.size;
+			if(capacity == inventory.size)
+				inventory.setSize(capacity * 2);
 		}
 
 		inventory.add(item);
