@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.item;
 
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
@@ -8,12 +9,15 @@ import io.potatogun.gdxhelper.screen.drawSubtitles;
  * 속도 포션 - 속도 증가 아이템
  */
 class SpeedPotion : Item("speed_potion", "Speed Potion", Item.Properties().rarity(Rarity.UNCOMMON)), Usable {
+	private val game = EndlessDead.instance;
+
 	// 포션을 사용하여 속도를 올린다.
 	override fun use(user: ItemSelectable): Boolean {
 		if(user.selectedItem !== this) return false;
 		if(user !is Player) return false;
 		user.increaseSpeed(30f, 30f);
-		user.world?.projector?.drawSubtitles("Speed up!");
+		if(user === game.player)
+			user.world?.projector?.drawSubtitles("Speed up!");
 		destroy();
 		return true;
 	}

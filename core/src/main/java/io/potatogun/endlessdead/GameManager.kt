@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Array as GdxArray;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.ArraySuppliers;
 import io.potatogun.gdxhelper.util.Updatable;
+import io.potatogun.gdxhelper.util.beep3;
 import io.potatogun.endlessdead.entity.teleportToCenter;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
@@ -165,8 +166,10 @@ class GameManager(private val game: EndlessDead) : Updatable {
 	}
 
 	override fun update(delta: Float) {
-		if(state == GameState.PLAYING && !game.player.isAlive)
+		if(state == GameState.PLAYING && !game.player.isAlive) {
+			beep3();
 			setGameOver();
+		}
 	}
 
 	/**

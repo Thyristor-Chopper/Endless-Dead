@@ -25,6 +25,7 @@ import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.InputListener;
+import io.potatogun.gdxhelper.util.beep2;
 import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.world.World;
 
@@ -185,12 +186,16 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 				selectedItem?.let {
 					projector?.drawSubtitles("Put ${it.name} into the container");
 					entity.putItem(it, true);
-				} ?: projector?.drawSubtitles("Can't take any item; container is empty", Color.SALMON);
+				} ?: run {
+					projector?.drawSubtitles("Can't take any item; container is empty", Color.SALMON);
+					beep2();
+				};
 			} else {
 				val isPlayerItem = entity.isPlayerItem;
 				val item: Item? = entity.takeItem(this);
 				if(item == null) {
 					projector?.drawSubtitles("Failed to take the item in the container", Color.SALMON);
+					beep2();
 				} else {
 					selectItem(item);
 					projector?.drawSubtitles("Took ${item.name} from the container");

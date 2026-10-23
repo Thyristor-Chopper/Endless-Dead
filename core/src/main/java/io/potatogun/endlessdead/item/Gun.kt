@@ -10,12 +10,13 @@ import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.LivingEntity;
-import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.UpdateListeners;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.util.Updatable;
+import io.potatogun.gdxhelper.util.beep;
+import io.potatogun.gdxhelper.util.beep2;
 import io.potatogun.gdxhelper.util.max2;
 
 import java.lang.Math.toRadians;
@@ -32,6 +33,7 @@ import kotlin.math.sin;
  * @throws IllegalArgumentException 총 옵션이 잘못된 경우
  */
 abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(id, name, settings), Shootable, LimitedUsable, Cooldownable, Updatable, Disposable {
+	private val game = EndlessDead.instance;
 	/**
 	 * 총알 피해량
 	 */
@@ -114,7 +116,7 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 		bulletSize = settings.bulletSize;
 		bulletTexture = settings.bulletFaceTexture;
 
-		UpdateListeners.register(this) { EndlessDead.instance.gameManager.isPlaying };
+		UpdateListeners.register(this) { game.gameManager.isPlaying };
 	}
 
 	override fun update(delta: Float) {
@@ -144,14 +146,17 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 
 			if(!infiniteBullets)
 				bullets--;
-		} else if(shooter is Player && remainingCooldown <= 0f) {  // 쿨타임 외 다른 이유로 발사 실패 시
+		} else if(shooter === game.player && remainingCooldown <= 0f) {  // 쿨타임 외 다른 이유로 발사 실패 시
 			world.projector?.drawSubtitles("Can't shoot now", color = Color.SALMON);
+			beep2();
 		}
 
 		// ammo가 다 떨어진 총은 파괴
 		if(!infiniteBullets && bullets <= 0 && autoDestroy) {
-			if(shooter is Player)
+			if(shooter === game.player) {
 				world.projector?.drawSubtitles("Gun destroyed; no more bullets left", color = Color.SALMON);
+				beep();
+			}
 			destroy();
 		}
 

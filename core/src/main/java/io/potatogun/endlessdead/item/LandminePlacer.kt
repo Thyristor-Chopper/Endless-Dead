@@ -3,12 +3,13 @@ package io.potatogun.endlessdead.item;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.Landmine;
-import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
+import io.potatogun.gdxhelper.util.beep;
 
 import java.lang.Math.toRadians;
 
@@ -19,6 +20,7 @@ import kotlin.math.sin;
  * 지뢰 설치기
  */
 class LandminePlacer : Item("landmine_placer", "Landmine Placer", Item.Properties().rarity(Rarity.UNCOMMON)), LimitedUsable {
+	private val game = EndlessDead.instance;
 	/**
 	 * 지뢰 피해량
 	 */
@@ -51,8 +53,10 @@ class LandminePlacer : Item("landmine_placer", "Landmine Placer", Item.Propertie
 		world.entities.add(Landmine(world, targetX, targetY, user, landmineDamage, landmineHealth));
 		remainingUses--;
 		if(remainingUses <= 0) {
-			if(user is Player)
+			if(user === game.player) {
 				world.projector?.drawSubtitles("Landmine placer broken; no more mines left", color=Color.SALMON);
+				beep();
+			}
 			destroy();
 		}
 		return true;

@@ -2,11 +2,12 @@ package io.potatogun.endlessdead.item
 
 import com.badlogic.gdx.graphics.Color;
 
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.entity.ItemSelectable;
-import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.util.TimerAttachable;
+import io.potatogun.gdxhelper.util.beep2;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
 
@@ -14,18 +15,22 @@ import io.potatogun.gdxhelper.world.World;
  * 시간 정지기 아이템
  */
 class TimeStopper : Item("time_stopper", "Ultra Stopwatch", Item.Properties().rarity(Rarity.UNCOMMON)), Usable {
+	private val game = EndlessDead.instance;
+
 	// 타이머를 사용해서 시간을 3초 멈춘다.
 	override fun use(user: ItemSelectable): Boolean {
 		if(user.selectedItem !== this) return false;
-		if(user !is Player) return false;
+		if(user !== game.player) return false;
 		val world = user.world;
 		if(world == null) return false;
 		if(world !is Freezable || world !is TimerAttachable) {
 			world.projector?.drawSubtitles("Can't use this item here", Color.SALMON);
+			beep2();
 			return false;
 		}
 		if(world.isFrozen) {
 			world.projector?.drawSubtitles("Time is already stopped", Color.SALMON);
+			beep2();
 			return false;
 		}
 		world.projector?.drawSubtitles("Time stop!");

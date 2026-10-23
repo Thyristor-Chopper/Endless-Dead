@@ -70,6 +70,7 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 			random = try {
 				Random(rawSeed.toLong())
 			} catch(e: NumberFormatException) {  // 난 Long이 박싱되는 게 stack trace가 생성되는 비용보다 더 싫음. 어차피 사용자가 제대로 값만 넘기면 발생하지도 않을 문제.
+				println("warning: invalid world seed specified");
 				Random.Default
 			};
 		else
