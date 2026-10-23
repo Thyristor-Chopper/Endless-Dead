@@ -7,6 +7,7 @@ import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.ArraySuppliers;
 import io.potatogun.gdxhelper.util.Updatable;
 import io.potatogun.gdxhelper.util.beep3;
+import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.entity.teleportToCenter;
 import io.potatogun.endlessdead.world.ZombieWorld;
 
@@ -93,7 +94,7 @@ class GameManager(private val game: EndlessDead) : Updatable {
 		game.worldProjector.unloadWorld(true);
 
 		// 통계, 시간 및 라운드 초기화
-		resetAll();
+		game.deletePlayer();
 		round = 0;
 		TitleBar.stats = null;
 
@@ -108,26 +109,22 @@ class GameManager(private val game: EndlessDead) : Updatable {
 	 * 새 게임을 시작한다.
 	 */
 	fun newGame() {
-		val player = game.player;
-
 		// 통계 및 시간 초기화
-		player.resetSpeed();
-		player.resetHealth();
-		player.inventory.clear();
-		resetAll();
+		game.deletePlayer();
 		round++;
+
+		// 월드 및 플레이어 생성
+		val world = ZombieWorld();
+		val player = game.createPlayer(world).apply { teleportToCenter() };
+		world.entities.add(player);
 
 		// 상태 전환
 		state = GameState.PLAYING;
 
 		// 월드 생성 후 월드 표시기 화면으로 전환
-		val world = ZombieWorld();
-		player.world = world;
-		player.teleportToCenter();
-		world.entities.add(player);
-		game.worldProjector.loadWorld(world, disposePrevious = true);
 		if(game.getScreen() !== game.worldProjector)
 			game.setScreen(game.worldProjector);
+		game.worldProjector.loadWorld(world, disposePrevious = true);
 	}
 
 	/**
@@ -135,6 +132,7 @@ class GameManager(private val game: EndlessDead) : Updatable {
 	 */
 	fun setGameOver() {
 		state = GameState.GAME_OVER;
+		game.deletePlayer();
 	}
 
 	/**
@@ -154,20 +152,9 @@ class GameManager(private val game: EndlessDead) : Updatable {
 		state = GameState.PLAYING;
 	}
 
-	/**
-	 * 점수 및 통계 초기화
-	 */
-	fun resetAll() {
-		game.scoreManager.resetScore();
-		game.statistics.survivedDuration = 0;
-		game.statistics.openedContainerCount = 0;
-		game.statistics.killedZombieCount = 0;
-		game.statistics.fireCount = 0;
-		game.statistics.totalDamage = 0;
-	}
-
 	override fun update(delta: Float) {
-		if(state == GameState.PLAYING && !game.player.isAlive) {
+		val player = game.player;
+		if(state == GameState.PLAYING && player != null && !player.isAlive) {
 			beep3();
 			setGameOver();
 		}

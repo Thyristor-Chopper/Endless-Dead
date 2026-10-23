@@ -1,5 +1,7 @@
 package io.potatogun.endlessdead;
 
+import io.potatogun.gdxhelper.util.max2;
+
 /**
  * 점수 관리자
  */
@@ -8,10 +10,7 @@ class ScoreManager {
 	 * 현재 점수
 	 */
 	var score: Int = 0
-		private set(value) {
-			if(value < 0) field = 0;
-			else field = value;
-		};
+		private set;
 
 	/**
 	 * 점수를 준다.
@@ -30,7 +29,7 @@ class ScoreManager {
 	 */
 	fun subtractScore(amount: Int) {
 		if(amount < 0) throw IllegalArgumentException("invalid score amount");
-		score -= amount;
+		score = max2(0, score - amount);
 	}
 
 	/**

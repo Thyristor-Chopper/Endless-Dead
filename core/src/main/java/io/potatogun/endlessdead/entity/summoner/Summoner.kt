@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.entity.LivingEntity;
+import io.potatogun.gdxhelper.entity.isIn;
 import io.potatogun.gdxhelper.entity.rotateToRandom;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.TimerManager;
@@ -56,8 +57,9 @@ abstract class Summoner @JvmOverloads constructor(world: World, name: String, x:
 
 		timers.update(delta);
 
-		if(isActive)
-			rotateTo(game.player);
+		val player = game.player;
+		if(player != null && isActive && player.isIn(level))
+			rotateTo(player);
 	}
 
 	/**

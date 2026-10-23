@@ -197,7 +197,7 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 			treeInfo.add(Tree.hashOf(x, y, size));
 		}
 
-		UpdateListeners.register(this) { EndlessDead.instance.gameManager.isPlaying && game.player.isIn(this) };  // this 캡처 떄문에 약참조가 될 수 없어서 dispose에서 직접 확실히 해제함.
+		UpdateListeners.register(this) { EndlessDead.instance.gameManager.isPlaying && game.player?.isIn(this) ?: false };  // this 캡처 떄문에 약참조가 될 수 없어서 dispose에서 직접 확실히 해제함.
 	}
 
 	/**
@@ -353,7 +353,7 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 	// 플레이어 위치에 따라 카메라 위치 변경
 	override fun updateOffset() {
 		val player = game.player;
-		if(player.world !== this) return;
+		if(player == null || !player.isIn(this)) return;
 		cameraX = player.x;
 		cameraY = player.y;
 	}

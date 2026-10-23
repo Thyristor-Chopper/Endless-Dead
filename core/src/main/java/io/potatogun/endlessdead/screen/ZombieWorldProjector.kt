@@ -23,6 +23,7 @@ import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.world.SpecialWorld;
 import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Window;
+import io.potatogun.gdxhelper.entity.isIn;
 import io.potatogun.gdxhelper.entity.manager.countOf;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.screen.SubtitlesDrawable;
@@ -67,7 +68,7 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 	private val playerNameColor = rgb(156, 213, 155);
 	private val enemyNameColor = rgb(247, 215, 215);
 	private val friendNameColor = rgb(215, 247, 215);
-	private val scoreColor = rgb(203, 241, 194);
+	private val scoreColor = rgb(240, 240, 240);
 	private val gunCooldownBarX = { Window.width - 215f };
 	private val infiniteGunCooldownBarX = { Window.width - 75f };
 	// 단추들
@@ -206,11 +207,9 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 		super.update(delta);
 
 		val player = game.player;
-		val world = player.world;
-		if(world != null && projectingWorld === world) {
-			attackTarget = player.latestAttackVictim?.takeIf { isValidAttackTarget(it, player) }
-				?: run { world.entities.getClosestOf<LivingEntity>(player)?.takeIf { isValidAttackTarget(it, player) } };
-		}
+		val world = player?.world;
+		if(world != null && isProjecting(world))
+			attackTarget = player.latestAttackVictim?.takeIf { isValidAttackTarget(it, player) } ?: run { world.entities.getClosestOf<LivingEntity>(player)?.takeIf { isValidAttackTarget(it, player) } };
 
 		// 미터기 정보 갱신
 		updateProgressBars();
@@ -224,7 +223,8 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 	 */
 	private fun updateTitleBarInfo() {
 		val world: World? = projectingWorld;
-		if(world == null || world !== game.player.world) {
+		val player = game.player;
+		if(world == null || player == null || !player.isIn(world)) {
 			TitleBar.stats = null;
 			return;
 		}
@@ -232,15 +232,15 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 		val currentTitleType = TitleInfoType.byIndex(currentTitleInfo);
 		TitleBar.stats =
 			if(currentTitleType == TitleInfoType.OPENED)
-				"Opened chests: ${game.statistics.openedContainerCount}"
+				"Opened chests: ${player.statistics.openedContainerCount}"
 			else if(currentTitleType == TitleInfoType.KILLED)
-				"Killed zombies: ${game.statistics.killedZombieCount}"
+				"Killed zombies: ${player.statistics.killedZombieCount}"
 			else if(currentTitleType == TitleInfoType.FIRED)
-				"Fired: ${game.statistics.fireCount}"
+				"Fired: ${player.statistics.fireCount}"
 			else if(currentTitleType == TitleInfoType.SURVIVED)
-				"Survived duration: ${parseSeconds(game.statistics.survivedDuration, "m", "s")}"
+				"Survived duration: ${parseSeconds(player.statistics.survivedDuration, "m", "s")}"
 			else if(currentTitleType == TitleInfoType.DAMAGE)
-				"Total damage: ${game.statistics.totalDamage}"
+				"Total damage: ${player.statistics.totalDamage}"
 			else if(currentTitleType == TitleInfoType.ZOMBIES)
 				"Current zombies: ${world.entities.countOf<Zombie>()}"
 			else
@@ -260,62 +260,68 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 		}
 
 		val player = game.player;
-
-		// 체력 미터기 처리
-		hpIndicator.apply {
-			value = player.health.toFloat() / player.maxHealth;
-			show();
-		};
-
-		targetIndicator.apply {
-			val target = attackTarget;
-			if(target != null) {
-				color = if(target.isSameTeamWith(player)) friendBarColor else enemyBarColor;
-				value = target.health.toFloat() / target.maxHealth;
+		if(player != null) {
+			// 체력 미터기 처리
+			hpIndicator.apply {
+				value = player.health.toFloat() / player.maxHealth;
 				show();
-			} else {
-				hide();
-			}
-		};
+			};
 
-		// 총 관련 미터기 처리
-		val holding: Item? = player.selectedItem;
-		if(holding is LimitedUsable) {
-			val remaining = holding.remainingUses;
-			val maxUses = holding.maxUses;
-			// 총의 ammo를 미터기로 표시
-			ammoIndicator.apply {
-				if(maxUses > 0) {
-					value = remaining.toFloat() / holding.maxUses;
+			targetIndicator.apply {
+				val target = attackTarget;
+				if(target != null) {
+					color = if(target.isSameTeamWith(player)) friendBarColor else enemyBarColor;
+					value = target.health.toFloat() / target.maxHealth;
 					show();
 				} else {
 					hide();
 				}
 			};
-		} else {
-			ammoIndicator.hide();
-		}
 
-		if(holding is Cooldownable) {
-			// 총의 공격 쿨타임 표시
-			if(holding.interval > 0.2f) {
-				val cooldown = holding.remainingCooldown;
-				val interval = holding.interval;
-				if(interval > 0f && cooldown > 0f)
-					cooldownIndicator.apply {
-						value = cooldown / interval;
-						if(holding is LimitedUsable && holding.maxUses > 0)
-							cooldownIndicator.setX(gunCooldownBarX);
-						else
-							cooldownIndicator.setX(infiniteGunCooldownBarX);
+			// 총 관련 미터기 처리
+			val holding: Item? = player.selectedItem;
+			if(holding is LimitedUsable) {
+				val remaining = holding.remainingUses;
+				val maxUses = holding.maxUses;
+				// 총의 ammo를 미터기로 표시
+				ammoIndicator.apply {
+					if(maxUses > 0) {
+						value = remaining.toFloat() / holding.maxUses;
 						show();
-					};
-				else
+					} else {
+						hide();
+					}
+				};
+			} else {
+				ammoIndicator.hide();
+			}
+
+			if(holding is Cooldownable) {
+				// 총의 공격 쿨타임 표시
+				if(holding.interval > 0.2f) {
+					val cooldown = holding.remainingCooldown;
+					val interval = holding.interval;
+					if(interval > 0f && cooldown > 0f)
+						cooldownIndicator.apply {
+							value = cooldown / interval;
+							if(holding is LimitedUsable && holding.maxUses > 0)
+								cooldownIndicator.setX(gunCooldownBarX);
+							else
+								cooldownIndicator.setX(infiniteGunCooldownBarX);
+							show();
+						};
+					else
+						cooldownIndicator.hide();
+				} else {
 					cooldownIndicator.hide();
+				}
 			} else {
 				cooldownIndicator.hide();
 			}
 		} else {
+			hpIndicator.hide();
+			targetIndicator.hide();
+			ammoIndicator.hide();
 			cooldownIndicator.hide();
 		}
 	}
@@ -436,48 +442,51 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 		);
 
 		// 통계
-		drawText(
-			text = "Opened containers: ${game.statistics.openedContainerCount}",
-			x = Window.width * 0.5f - 70f,
-			y = Window.height * 0.5f - 20f,
-			color = Color.LIGHT_GRAY,
-			scale = 1.0f
-		);
-		drawText(
-			text = "Killed zombies: ${game.statistics.killedZombieCount}",
-			x = Window.width * 0.5f - 70f,
-			y = Window.height * 0.5f - 35f,
-			color = Color.LIGHT_GRAY,
-			scale = 1.0f
-		);
-		drawText(
-			text = "Fired: ${game.statistics.fireCount}",
-			x = Window.width * 0.5f - 70f,
-			y = Window.height * 0.5f - 50f,
-			color = Color.LIGHT_GRAY,
-			scale = 1.0f
-		);
-		drawText(
-			text = "Survived duration: ${parseSeconds(game.statistics.survivedDuration, "m", "s")}",
-			x = Window.width * 0.5f - 70f,
-			y = Window.height * 0.5f - 65f,
-			color = Color.LIGHT_GRAY,
-			scale = 1.0f
-		);
-		drawText(
-			text = "Total damage: ${game.statistics.totalDamage}",
-			x = Window.width * 0.5f - 70f,
-			y = Window.height * 0.5f - 80f,
-			color = Color.LIGHT_GRAY,
-			scale = 1.0f
-		);
-		drawText(
-			text = "Final score: ${game.scoreManager.score}",
-			x = Window.width * 0.5f - 70f,
-			y = Window.height * 0.5f - 95f,
-			color = Color.LIGHT_GRAY,
-			scale = 1.0f
-		);
+		val player = game.player;
+		if(player != null) {
+			drawText(
+				text = "Opened containers: ${player.statistics.openedContainerCount}",
+				x = Window.width * 0.5f - 70f,
+				y = Window.height * 0.5f - 20f,
+				color = Color.LIGHT_GRAY,
+				scale = 1.0f
+			);
+			drawText(
+				text = "Killed zombies: ${player.statistics.killedZombieCount}",
+				x = Window.width * 0.5f - 70f,
+				y = Window.height * 0.5f - 35f,
+				color = Color.LIGHT_GRAY,
+				scale = 1.0f
+			);
+			drawText(
+				text = "Fired: ${player.statistics.fireCount}",
+				x = Window.width * 0.5f - 70f,
+				y = Window.height * 0.5f - 50f,
+				color = Color.LIGHT_GRAY,
+				scale = 1.0f
+			);
+			drawText(
+				text = "Survived duration: ${parseSeconds(player.statistics.survivedDuration, "m", "s")}",
+				x = Window.width * 0.5f - 70f,
+				y = Window.height * 0.5f - 65f,
+				color = Color.LIGHT_GRAY,
+				scale = 1.0f
+			);
+			drawText(
+				text = "Total damage: ${player.statistics.totalDamage}",
+				x = Window.width * 0.5f - 70f,
+				y = Window.height * 0.5f - 80f,
+				color = Color.LIGHT_GRAY,
+				scale = 1.0f
+			);
+			drawText(
+				text = "Final score: ${player.scoreManager.score}",
+				x = Window.width * 0.5f - 70f,
+				y = Window.height * 0.5f - 95f,
+				color = Color.LIGHT_GRAY,
+				scale = 1.0f
+			);
+		}
 	}
 
 	// 로딩된 월드가 없을 때 placeholder 배경
@@ -537,55 +546,57 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 	 */
 	private inline fun drawHud() {  // drawContents에서만 한 번 쓰이기 때문에 inline이다.
 		val player = game.player;
-		// 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
-		//    카메라가 움직여도 항상 이 위치에 있다.
-		drawText(
-			text = "${player.name}  [ ${player.health} ]",
-			x = 10f,
-			y = Window.height - 8f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
-			color = playerNameColor,
-			scale = 1.0f
-		);
-
-		// 현재 플레이어가 들고 있는 아이템
-		player.selectedItem?.let {
-			val rarity = it.rarity;
-			batch.draw(it.texture, 8f, 4f, Item.sideLength, Item.sideLength);
+		if(player != null) {
+			// 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
+			//    카메라가 움직여도 항상 이 위치에 있다.
 			drawText(
-				text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.size}]",
-				x = 40f,
-				y = 22f,
-				color =
-					if(rarity == Rarity.UNCOMMON)
-						Color.YELLOW  // 마인크래프트 따라함
-					else if(rarity == Rarity.RARE)
-						Color.MAGENTA
-					else
-						Color.WHITE,
-				scale = 1f
-			);
-		};
-
-		attackTarget?.let {
-			drawText(
-				text = "${it.name}  [ ${it.health} ]",
-				x = 211f,
-				y = Window.height - 8f,
-				color = if(player.isSameTeamWith(it)) friendNameColor else enemyNameColor,
+				text = "${player.name}  [ ${player.health} ]",
+				x = 10f,
+				y = Window.height - 8f,   // 화면 y 축은 위로 증가 → 맨 위가 screenHeight
+				color = playerNameColor,
 				scale = 1.0f
 			);
-		};
 
-		// 점수
-		drawText(
-			text = "Score: ${game.scoreManager.score}",
-			x = Window.width - 130f,
-			y = Window.height - 10f,
-			color = scoreColor,
-			scale = 1.2f,
-			width = 120f,
-			align = Align.right
-		);
+			// 현재 플레이어가 들고 있는 아이템
+			player.selectedItem?.let {
+				val rarity = it.rarity;
+				batch.draw(it.texture, 8f, 4f, Item.sideLength, Item.sideLength);
+				drawText(
+					text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.size}]",
+					x = 40f,
+					y = 22f,
+					color =
+						if(rarity == Rarity.UNCOMMON)
+							Color.YELLOW  // 마인크래프트 따라함
+						else if(rarity == Rarity.RARE)
+							Color.MAGENTA
+						else
+							Color.WHITE,
+					scale = 1f
+				);
+			};
+
+			attackTarget?.let {
+				drawText(
+					text = "${it.name}  [ ${it.health} ]",
+					x = 211f,
+					y = Window.height - 8f,
+					color = if(player.isSameTeamWith(it)) friendNameColor else enemyNameColor,
+					scale = 1.0f
+				);
+			};
+
+			// 점수
+			drawText(
+				text = "Score: ${player.scoreManager.score}",
+				x = Window.width - 130f,
+				y = Window.height - 10f,
+				color = scoreColor,
+				scale = 1.2f,
+				width = 120f,
+				align = Align.right
+			);
+		}
 	}
 
 	override fun dispose() {

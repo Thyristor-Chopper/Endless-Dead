@@ -120,7 +120,7 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 			};
 		});
 
-		UpdateListeners.register(this) { EndlessDead.instance.gameManager.isPlaying && game.player.isIn(this) };
+		UpdateListeners.register(this) { EndlessDead.instance.gameManager.isPlaying && game.player?.isIn(this) ?: false };
 	}
 
 	/**
@@ -181,7 +181,7 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 
 	override fun updateOffset() {
 		val player = game.player;
-		if(player.world !== this) return;
+		if(player == null || !player.isIn(this)) return;
 		cameraX = player.x;
 		cameraY = player.y;
 	}

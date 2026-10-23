@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.IdentitySet;
 
 import io.potatogun.endlessdead.EndlessDead;
+import io.potatogun.endlessdead.ScoreManager;
+import io.potatogun.endlessdead.StatisticsManager;
 import io.potatogun.endlessdead.entity.forEachNearby;
 import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.entity.component.ItemDropComponent;
@@ -36,6 +38,7 @@ import java.lang.ref.WeakReference;
  * 플레이어 — 화살표나 WASD로 조종
  */
 class Player private constructor(world: World? = null, x: Float = 0f, y: Float = 0f, override val inventory: Inventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable, InputListener {
+	private val game = EndlessDead.instance;
 	override val isUpdatableWhileFrozen = true;
 	private val textureWithGun = loadTexture("entity/player_holding_gun.bmp");
 	// 타이머
@@ -52,6 +55,14 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	private val pickupComponent = ItemPickupComponent(this);
 	private val slack = 64f;  // 경계 밖으로 이만큼은 나갈 수 있게
 	private val speedPotionTimers = IdentitySet<Timer>(16);
+	/**
+	 * 점수 관리자
+	 */
+	@JvmField val scoreManager = ScoreManager();
+	/**
+	 * 통계 관리자
+	 */
+	@JvmField val statistics = StatisticsManager();
 
 	/**
 	 * 플레이어를 생성한다.
@@ -67,8 +78,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 		// 1. 생존 시간 기록 & 생존 시간 보너스
 		timers.register(RepeatingTimer(1f) {
-			EndlessDead.instance.statistics.survivedDuration++;
-			EndlessDead.instance.scoreManager.addScore(1);
+			statistics.survivedDuration++;
+			scoreManager.addScore(1);
 		});
 
 		// 2. 30초마다 자연 회복
@@ -132,7 +143,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 	// 휠로 아이템 선택
 	override fun onScroll(amountX: Float, amountY: Float): Boolean {
-		if(!EndlessDead.instance.gameManager.isPlaying) return false;
+		if(!game.gameManager.isPlaying) return false;
 		if(amountY > 0f) {
 			selectNextItem();
 			return true;
@@ -181,28 +192,35 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	 * 닿아 있는 상자와 상호작용한다.
 	 */
 	private inline fun interactContainer() {  // update()에서만 한 번 쓰이기 때문에 inline이다.
+		val mainPlayer = game.player;
 		val projector = level?.projector;
 		forEachNearby { entity ->
 			if(entity !is Container || !collidesWith(entity)) return@forEachNearby;
 			if(entity.inventory.isEmpty) {
 				selectedItem?.let {
-					projector?.drawSubtitles("Put ${it.name} into the container");
+					if(this === mainPlayer)
+						projector?.drawSubtitles("Put ${it.name} into the container");
 					entity.putItem(it, true);
 				} ?: run {
-					projector?.drawSubtitles("Can't take any item; container is empty", Color.SALMON);
-					beep2();
+					if(this === mainPlayer) {
+						projector?.drawSubtitles("Can't take any item; container is empty", Color.SALMON);
+						beep2();
+					}
 				};
 			} else {
 				val isPlayerItem = entity.isPlayerItem;
 				val item: Item? = entity.takeItem(this);
 				if(item == null) {
-					projector?.drawSubtitles("Failed to take the item in the container", Color.SALMON);
-					beep2();
+					if(this === mainPlayer) {
+						projector?.drawSubtitles("Failed to take the item in the container", Color.SALMON);
+						beep2();
+					}
 				} else {
 					selectItem(item);
-					projector?.drawSubtitles("Took ${item.name} from the container");
+					if(this === mainPlayer)
+						projector?.drawSubtitles("Took ${item.name} from the container");
 					if(!isPlayerItem)
-						EndlessDead.instance.statistics.openedContainerCount++;
+						statistics.openedContainerCount++;
 				}
 			}
 		};
@@ -213,8 +231,9 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	// 대미지를 받았을 때 자연 회복 타이머를 초기화하고 점수를 감점한다
 	override fun onDamage(damage: Int, attacker: Entity?) {
 		healTimer.reset();
-		EndlessDead.instance.scoreManager.subtractScore(5);
-		EndlessDead.instance.statistics.totalDamage += damage;
+
+		scoreManager.subtractScore(5);
+		statistics.totalDamage += damage;
 	}
 
 	// 죽으면 모든 템 떨구기
@@ -225,17 +244,17 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	// 처치한 좀비 수를 갱신하고 점수를 준다.
 	override fun onKill(victim: LivingEntity) {
 		if(victim is KillScorable)
-			EndlessDead.instance.scoreManager.addScore(victim.killScore);
+			scoreManager.addScore(victim.killScore);
 
 		if(victim is Zombie)
-			EndlessDead.instance.statistics.killedZombieCount++;
+			statistics.killedZombieCount++;
 	}
 
 	override fun onAttack(victim: LivingEntity) {
 		_latestAttackVictim = WeakReference(victim);
 
 		if(victim is AttackScorable)
-			EndlessDead.instance.scoreManager.addScore(victim.attackScore);
+			scoreManager.addScore(victim.attackScore);
 	}
 
 	// ---- 그 외 유틸들 ----
@@ -251,9 +270,10 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	fun useItem(item: Item): Boolean {
 		if(!inventory.hasItem(item) || item !is Usable) return false;
 		val succeeded = item.use(this);
-		if(succeeded)
+		if(succeeded) {
 			if(item is Shootable)
-				EndlessDead.instance.statistics.fireCount++;
+				statistics.fireCount++;
+		}
 		return succeeded;
 	}
 
@@ -266,7 +286,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	fun increaseSpeed(amount: Float, duration: Float) {
 		moveComponent.speedAddend += amount;
 
-		val timer = Timer(duration) {
+		lateinit var timer: Timer;  // 바뀔 일 없는 변수
+		timer = Timer(duration) {
 			moveComponent.speedAddend -= amount;
 			speedPotionTimers.remove(timer);
 		}.also { speedPotionTimers.add(it) };
@@ -296,11 +317,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		super.draw(batch, textureOverride, null);
 	}
 
-	// 재사용되는 특수 개체이므로 일반 dispose하면 안 됨
-	override fun dispose() {}
-
-	// 자원 정리
-	@JvmSynthetic internal fun finalDispose() {
+	override fun dispose() {
 		super<LivingEntity>.dispose();
 		super<InventoryHolder>.dispose();
 		textureWithGun.dispose();
