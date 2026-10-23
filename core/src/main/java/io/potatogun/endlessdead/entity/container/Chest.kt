@@ -12,6 +12,4 @@ import io.potatogun.gdxhelper.world.World;
  * @param y           개체의 처음 Y 위치
  * @param initialItem 처음 들어있는 아이템
  */
-open class Chest(world: World? = null, x: Float = 0f, y: Float = 0f, initialItem: Item? = null): Container(world, "Chest", x, y, 24f, 25f, Resources.textures.getShared("chest"), Resources.textures.getShared("empty_chest"), initialItem) {
-	override val playerItemTexture = Resources.textures.getShared("chest_player_item");
-}
+open class Chest(world: World? = null, x: Float = 0f, y: Float = 0f, initialItem: Item? = null): Container(world, "Chest", x, y, 24f, 25f, Resources.textures.getShared("chest"), Resources.textures.getShared("empty_chest"), initialItem);

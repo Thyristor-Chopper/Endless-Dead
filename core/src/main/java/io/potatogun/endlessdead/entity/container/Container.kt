@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 
+import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.inventory.SingleItemInventory;
@@ -28,9 +29,9 @@ import io.potatogun.gdxhelper.world.World;
 abstract class Container(world: World? = null, name: String, x: Float = 0f, y: Float = 0f, width: Float, height: Float, texture: Texture?, private val emptyTexture: Texture? = null, initialItem: Item? = null) : Entity(world, name, x, y, width, height, texture), InventoryHolder {
 	override val inventory = SingleItemInventory();
 	/**
-	 * 플레이어가 직접 아이템을 넣었을 때의 텍스처
+	 * 플레이어가 직접 아이템을 넣었을 때의 표시자
 	 */
-	protected open val playerItemTexture: Texture? = null;
+	private val playerItemIndicator: Texture = Resources.textures.getShared("player_item_indicator");
 	/**
 	 * 현재 들어있는 아이템
 	 */
@@ -53,11 +54,11 @@ abstract class Container(world: World? = null, name: String, x: Float = 0f, y: F
 
 	// 상자를 화면에 그린다. 비어 있을 때와 아닐 때 텍스처가 다르기 때문에 override해서 처리한다.
 	override fun draw(batch: SpriteBatch) {
-		val textureOverride: Texture? = 
-			if(inventory.isEmpty) emptyTexture
-			else if(isPlayerItem) playerItemTexture
-			else null;
+		val textureOverride: Texture? = if(inventory.isEmpty) emptyTexture else null;
 		super.draw(batch, textureOverride, null);
+
+		if(isPlayerItem)
+			batch.draw(playerItemIndicator, x + width * 0.5f - 7f, y - height * 0.5f, 7f, 7f);
 	}
 
 	/**
@@ -95,7 +96,6 @@ abstract class Container(world: World? = null, name: String, x: Float = 0f, y: F
 	override fun dispose() {
 		super<Entity>.dispose();
 		super<InventoryHolder>.dispose();
-		playerItemTexture?.let { safeDispose(it) };
 		emptyTexture?.let { safeDispose(it) };
 	}
 }

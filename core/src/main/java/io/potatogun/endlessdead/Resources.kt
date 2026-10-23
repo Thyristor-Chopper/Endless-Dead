@@ -24,14 +24,13 @@ object Resources : Disposable {
 	@JvmField val textures = object : SharedTextureManager() {
 		init {
 			register("attacking_zombie", "entity/zombie_attacking.bmp");
-			register("building", "entity/building.bmp");
-			register("building_player_item", "entity/building_player_added.bmp");
+			register("building", "entity/container/building.bmp");
 			register("bullet", "entity/bullet.bmp");
-			register("chest", "entity/chest.bmp");
-			register("chest_player_item", "entity/chest_player_added.bmp");
-			register("empty_building", "entity/building_empty.bmp");
-			register("empty_chest", "entity/chest_empty.bmp");
+			register("chest", "entity/container/chest.bmp");
+			register("empty_building", "entity/container/building_empty.bmp");
+			register("empty_chest", "entity/container/chest_empty.bmp");
 			register("landmine", "entity/landmine.bmp");
+			register("player_item_indicator", "entity/container/player_item.bmp");
 			register("portal", "entity/portal.bmp");
 			register("silver_bullet", "entity/bullet_silver.bmp");
 			register("stream_zombie_summoner", "entity/stream_zombie_summoner.bmp");
