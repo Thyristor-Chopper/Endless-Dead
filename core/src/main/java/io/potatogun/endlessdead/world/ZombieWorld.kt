@@ -41,6 +41,7 @@ import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.TimerAttachable;
 import io.potatogun.gdxhelper.util.loadTexture;
+import io.potatogun.gdxhelper.util.max2;
 import io.potatogun.gdxhelper.util.min2;
 import io.potatogun.gdxhelper.util.rgb;
 import io.potatogun.gdxhelper.world.Freezable;
@@ -55,7 +56,7 @@ import kotlin.random.Random;
 /**
  * 좀비 파밍 월드
  */
-class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
+class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = Resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
 	private val game = EndlessDead.instance;
 	// 등록된 스포너 목록
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
@@ -63,8 +64,6 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 	private val tile = loadTexture("world/tile_grain.bmp");
 	private val bgColorDark = rgb(38, 96, 38);
 	private val bgColorLight = rgb(38, 104, 38);
-	private val bgColorDarkOuter = rgb(32, 72, 32);
-	private val bgColorLightOuter = rgb(32, 76, 32);
 	private val tileSize = 64f;
 	// 풀 [艸]
 	private val grass = loadTexture("world/grass.bmp");
@@ -75,6 +74,15 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 	private val smallTree = loadTexture("world/tree_small.bmp");
 	private val treeInfo: IntArray;  // 이 월드는 한 변 크기가 2000 뿐이므로 더블 short->int(32비트)로 써도 됨, 값은 SMALL(0), NORMAL(1)
 	private val treeTint = rgb(255, 255, 255, 0.85f);  // 나무를 반투명하게
+	// 담장
+	private val horizontalBorder = loadTexture("world/horizontal_border.bmp");
+	private val verticalBorder = loadTexture("world/vertical_border.bmp");
+	private val borderSize = 32f;
+	private val borderThickness = 8f;
+	// 무(無)의 공간
+	private val void = loadTexture("world/void.bmp");
+	private val voidTint = rgb(32, 76, 32);
+	private val voidSize = 128f;
 	// 타이머
 	private val timers = TimerManager();
 	// 이 월드의 시간
@@ -91,30 +99,32 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 
 	// 생성자 본문 — 월드에 개체들을 등록한다. 이렇게 등록해야 update / draw 루프에 포함된다.
 	init {
+		// 시드 및 랜덤 객체 초기화
 		val rawSeed = System.getProperty("zombie.worldSeed");
-		if(rawSeed != null)
+		if(rawSeed != null) {
 			random = try {
 				Random(rawSeed.toLong())
 			} catch(e: NumberFormatException) {  // 난 Long이 박싱되는 게 stack trace가 생성되는 비용보다 더 싫음. 어차피 사용자가 제대로 값만 넘기면 발생하지도 않을 문제.
 				println("warning: invalid world seed specified");
 				Random.Default
 			};
-		else
+		} else {
 			random = Random.Default;
+		}
 
-		// 0.5% 확률로 총잡이 월드로 가는 포탈 추가
-		if(random.nextInt(1000) + 1 <= 5) {
+		// 5% 확률로 총잡이 월드로 가는 포탈 추가
+		if(random.nextInt(100) + 1 <= 5) {
 			specialWorld = GunnerWorld(this);
 			entities.add(Portal(this, random.nextInt((width - 300f).toInt()).toFloat() + 150f, random.nextInt((height - 300f).toInt()).toFloat() + 150f, specialWorld));
 		} else {
 			specialWorld = null;
 		}
 
-		// 100~150개의 건물과 상자를 무작위로 배치
+		// 150~240개의 건물과 상자를 무작위로 배치
 		val trapChestGeneratable = (!hasSpecialWorld && random.nextInt(1000) + 1 <= 1);  // 0.1% 확률
 		val intWidth = this.width.toInt();
 		val intHeight = this.height.toInt();
-		containerCount = random.nextInt(51) + 100;
+		containerCount = random.nextInt(91) + 150;
 		for(i in 0 until containerCount) {
 			val x = random.nextInt(intWidth).toFloat();
 			val y = random.nextInt(intHeight).toFloat();
@@ -179,7 +189,7 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 		});
 
 		// 풀 정보 등록
-		val grassCount = random.nextInt(101) + 200;  // 200~300개
+		val grassCount = random.nextInt(171) + 300;  // 300~470개
 		grassInfo = IntArray(false, grassCount);
 		for(i in 1..grassCount) {
 			val x = random.nextInt(intWidth);
@@ -188,7 +198,7 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 		}
 
 		// 나무 정보 등록
-		val treeCount = random.nextInt(41) + 80;  // 80~120개
+		val treeCount = random.nextInt(56) + 125;  // 125~180개
 		treeInfo = IntArray(false, treeCount);
 		for(i in 1..treeCount) {
 			val x = random.nextInt(intWidth);
@@ -282,12 +292,10 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 				val drawY = row * tileSize;
 
 				// 행 + 열이 짝수면 어둡게, 홀수면 밝게 (체스판 패턴)
-				if(drawX >= width || drawY >= height || drawX <= -tileSize || drawY <= -tileSize)
-					batch.color = if((row + col) % 2 == 0) bgColorDarkOuter else bgColorLightOuter;
-				else
+				if(drawX < width && drawY < height && drawX > -tileSize && drawY > -tileSize) {
 					batch.color = if((row + col) % 2 == 0) bgColorDark else bgColorLight;
-
-				batch.draw(tile, drawX, drawY, tileSize, tileSize);
+					batch.draw(tile, drawX, drawY, tileSize, tileSize);
+				}
 			}
 
 		// 배경에 입힌 색이 다음 그리기(게임 객체)에 영향을 주지 않도록 흰색으로 복원.
@@ -350,6 +358,63 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 		batch.color = Color.WHITE;
 	}
 
+	override fun drawContents() {
+		super.drawContents();
+		drawVoid();
+		drawBorders();
+	}
+
+	private inline fun drawVoid() {
+		val screenWidth = Window.width;
+		val screenHeight = Window.height;
+
+		val startCol = floor((cameraX - screenWidth * 0.5f) / voidSize).toInt();
+		val startRow = floor((cameraY - screenHeight * 0.5f) / voidSize).toInt();
+
+		val cols = ceil(screenWidth / voidSize).toInt() + 1;
+		val rows = ceil(screenHeight / voidSize).toInt() + 1;
+
+		batch.color = voidTint;
+		for(row in startRow until startRow + rows)
+			for(col in startCol until startCol + cols) {
+				val drawX = col * voidSize;
+				val drawY = row * voidSize;
+				if(drawX >= width || drawY >= height || drawX <= -voidSize || drawY <= -voidSize)
+					batch.draw(void, drawX, drawY, voidSize, voidSize);
+			}
+
+		batch.color = Color.WHITE;
+	}
+
+	private inline fun drawBorders() {
+		val screenWidth = Window.width;
+		val screenHeight = Window.height;
+
+		val startCol = max2(0, floor((cameraX - screenWidth * 0.5f) / borderSize).toInt());
+		val startRow = max2(0, floor((cameraY - screenHeight * 0.5f) / borderSize).toInt());
+
+		val horizontalBorderCount = ceil(screenWidth / borderSize).toInt() + 1;
+		val verticalBorderCount = ceil(screenHeight / borderSize).toInt() + 1;
+
+		val halfBorderThickness = borderThickness * 0.5f;
+
+		for(k in 0..1) {
+			val drawY = k * height - halfBorderThickness;
+			for(i in startCol until startCol + horizontalBorderCount) {
+				val drawX = i * borderSize;
+				if(drawX >= width) break;
+				batch.draw(horizontalBorder, drawX, drawY, borderSize, borderThickness);
+			}
+
+			val drawX = k * width - halfBorderThickness;
+			for(i in startRow until startRow + verticalBorderCount) {
+				val drawY = i * borderSize;
+				if(drawY >= height) break;
+				batch.draw(verticalBorder, drawX, drawY, borderThickness, borderSize);
+			}
+		}
+	}
+
 	// 플레이어 위치에 따라 카메라 위치 변경
 	override fun updateOffset() {
 		val player = game.player;
@@ -365,6 +430,9 @@ class ZombieWorld : World(2048f, 2048f, SpatialGrid(256, 128f), font = Resources
 		grass.dispose();
 		tree.dispose();
 		smallTree.dispose();
+		horizontalBorder.dispose();
+		verticalBorder.dispose();
+		void.dispose();
 		specialWorld?.dispose();
 		UpdateListeners.unregister(this);
 	}

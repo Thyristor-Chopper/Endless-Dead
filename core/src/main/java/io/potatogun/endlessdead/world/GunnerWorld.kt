@@ -33,6 +33,7 @@ import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.TimerAttachable;
 import io.potatogun.gdxhelper.util.loadTexture;
+import io.potatogun.gdxhelper.util.max2;
 import io.potatogun.gdxhelper.util.min2;
 import io.potatogun.gdxhelper.util.rgb;
 import io.potatogun.gdxhelper.world.TimedWorld;
@@ -45,15 +46,23 @@ import kotlin.random.Random;
 /**
  * 총잡이나 포탑 등이 메인 주인공인 월드
  */
-class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = null) : World(1440f, 1440f, SpatialGrid(256, 128f), font = Resources.font), TimedWorld, TimerAttachable, SpecialWorld {
+class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = null) : World(1920f, 1920f, SpatialGrid(256, 128f), font = Resources.font), TimedWorld, TimerAttachable, SpecialWorld {
 	private val game = EndlessDead.instance;
 	// 등록된 스포너 목록
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
-	private val tileTexture = loadTexture("world/rivets.bmp");  // 은색 리벳
-	private val bgTileWidth = 80f;
-	private val bgTileHeight = 40f;
-	private val bgColor = Color.WHITE;  // 원래 텍스처 색 그대로 사용
-	private val bgColorOuter = rgb(224, 224, 224);  // 원래 색보다 좀더 어둡게
+	// 배경
+	private val tile = loadTexture("world/rivets.bmp");  // 은색 리벳
+	private val tileWidth = 80f;
+	private val tileHeight = 40f;
+	// 담장
+	private val horizontalBorder = loadTexture("world/horizontal_border.bmp");
+	private val verticalBorder = loadTexture("world/vertical_border.bmp");
+	private val borderSize = 32f;
+	private val borderThickness = 8f;
+	// 무(無)의 공간
+	private val void = loadTexture("world/void.bmp");
+	private val voidTint = rgb(32, 40, 80);
+	private val voidSize = 128f;
 	// 타이머
 	private val timers = TimerManager();
 	// 이 월드의 시간
@@ -65,16 +74,18 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 	private val random: Random;
 
 	init {
+		// 시드 및 랜덤 객체 초기화
 		val rawSeed = System.getProperty("zombie.worldSeed");
-		if(rawSeed != null)
+		if(rawSeed != null) {
 			random = try {
 				Random(rawSeed.toLong())
 			} catch(e: NumberFormatException) {  // 난 Long이 박싱되는 게 stack trace가 생성되는 비용보다 더 싫음. 어차피 사용자가 제대로 값만 넘기면 발생하지도 않을 문제.
 				println("warning: invalid world seed specified");
 				Random.Default
 			};
-		else
+		} else {
 			random = Random.Default;
+		}
 
 		// 30~80개의 상자를 무작위로 배치
 		val intWidth = this.width.toInt();
@@ -159,24 +170,76 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 		val screenWidth = Window.width;
 		val screenHeight = Window.height;
 
-		val startCol = floor((cameraX - screenWidth * 0.5f) / bgTileWidth).toInt();
-		val startRow = floor((cameraY - screenHeight * 0.5f) / bgTileHeight).toInt();
+		val startCol = floor((cameraX - screenWidth * 0.5f) / tileWidth).toInt();
+		val startRow = floor((cameraY - screenHeight * 0.5f) / tileHeight).toInt();
 
-		val cols = ceil(screenWidth / bgTileWidth).toInt() + 1;
-		val rows = ceil(screenHeight / bgTileHeight).toInt() + 1;
+		val cols = ceil(screenWidth / tileWidth).toInt() + 1;
+		val rows = ceil(screenHeight / tileHeight).toInt() + 1;
 
 		for(row in startRow until startRow + rows)
 			for(col in startCol until startCol + cols) {
-				val drawX = col * bgTileWidth;
-				val drawY = row * bgTileHeight;
-				if(drawX >= width || drawY >= height || drawX <= -bgTileWidth || drawY <= -bgTileHeight)
-					batch.color = bgColorOuter;
-				else
-					batch.color = bgColor;
-				batch.draw(tileTexture, drawX, drawY, bgTileWidth, bgTileHeight);
+				val drawX = col * tileWidth;
+				val drawY = row * tileHeight;
+				if(drawX < width && drawY < height && drawX > -tileWidth && drawY > -tileHeight)
+					batch.draw(tile, drawX, drawY, tileWidth, tileHeight);
+			}
+	}
+
+	override fun drawContents() {
+		super.drawContents();
+		drawVoid();
+		drawBorders();
+	}
+
+	private inline fun drawVoid() {
+		val screenWidth = Window.width;
+		val screenHeight = Window.height;
+
+		val startCol = floor((cameraX - screenWidth * 0.5f) / voidSize).toInt();
+		val startRow = floor((cameraY - screenHeight * 0.5f) / voidSize).toInt();
+
+		val cols = ceil(screenWidth / voidSize).toInt() + 1;
+		val rows = ceil(screenHeight / voidSize).toInt() + 1;
+
+		batch.color = voidTint;
+		for(row in startRow until startRow + rows)
+			for(col in startCol until startCol + cols) {
+				val drawX = col * voidSize;
+				val drawY = row * voidSize;
+				if(drawX >= width || drawY >= height || drawX <= -voidSize || drawY <= -voidSize)
+					batch.draw(void, drawX, drawY, voidSize, voidSize);
 			}
 
 		batch.color = Color.WHITE;
+	}
+
+	private inline fun drawBorders() {
+		val screenWidth = Window.width;
+		val screenHeight = Window.height;
+
+		val startCol = max2(0, floor((cameraX - screenWidth * 0.5f) / borderSize).toInt());
+		val startRow = max2(0, floor((cameraY - screenHeight * 0.5f) / borderSize).toInt());
+
+		val horizontalBorderCount = ceil(screenWidth / borderSize).toInt() + 1;
+		val verticalBorderCount = ceil(screenHeight / borderSize).toInt() + 1;
+
+		val halfBorderThickness = borderThickness * 0.5f;
+
+		for(k in 0..1) {
+			val drawY = k * height - halfBorderThickness;
+			for(i in startCol until startCol + horizontalBorderCount) {
+				val drawX = i * borderSize;
+				if(drawX >= width) break;
+				batch.draw(horizontalBorder, drawX, drawY, borderSize, borderThickness);
+			}
+
+			val drawX = k * width - halfBorderThickness;
+			for(i in startRow until startRow + verticalBorderCount) {
+				val drawY = i * borderSize;
+				if(drawY >= height) break;
+				batch.draw(verticalBorder, drawX, drawY, borderThickness, borderSize);
+			}
+		}
 	}
 
 	override fun updateOffset() {
@@ -188,7 +251,10 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 
 	override fun dispose() {
 		super.dispose();
-		tileTexture.dispose();
+		tile.dispose();
+		horizontalBorder.dispose();
+		verticalBorder.dispose();
+		void.dispose();
 		UpdateListeners.unregister(this);
 	}
 }
