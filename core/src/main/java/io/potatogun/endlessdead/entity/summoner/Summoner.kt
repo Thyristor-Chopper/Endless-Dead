@@ -3,7 +3,6 @@ package io.potatogun.endlessdead.entity.summoner;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
-import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.gdxhelper.entity.isIn;
 import io.potatogun.gdxhelper.entity.rotateToRandom;
@@ -12,7 +11,7 @@ import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.world.World;
 
 /**
- * 플레이어를 보면서 일정한 간격으로 개체를 소환하는 기계
+ * 일정한 간격으로 개체를 소환하는 기계
  *
  * @param world   개체가 속한 세계
  * @param name    개체 이름
@@ -24,7 +23,6 @@ import io.potatogun.gdxhelper.world.World;
  * @param texture 개체의 텍스처
  */
 abstract class Summoner @JvmOverloads constructor(world: World, name: String, x: Float, y: Float, width: Float, height: Float, health: Int, texture: Texture? = null) : LivingEntity(world, name, x, y, width, height, health, texture) {
-	private val game = EndlessDead.instance;
 	/**
 	 * 이 소환기에 대한 타이머
 	 *
@@ -56,10 +54,6 @@ abstract class Summoner @JvmOverloads constructor(world: World, name: String, x:
 		super.update(delta);
 
 		timers.update(delta);
-
-		val player = game.player;
-		if(player != null && isActive && player.isIn(level))
-			rotateTo(player);
 	}
 
 	/**

@@ -41,8 +41,11 @@ class StreamZombieSummoner(world: World, x: Float, y: Float) : Summoner(world, "
 	override fun update(delta: Float) {
 		super.update(delta);
 
+		val player = game.player;
 		if(!isActive)
 			rotateBy(30f * delta);  // 30 == 0.5 / (1 / 60) - 60fps 기준으로 0.5도씩 회전하되 프레임률에 영향을 받지 않게 한다.
+		else if(player != null)  // player != null는 없어도 되지만 코틀린의 한계로...
+			rotateTo(player);
 	}
 
 	override fun summon() {

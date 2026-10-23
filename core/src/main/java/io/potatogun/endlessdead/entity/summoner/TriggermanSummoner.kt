@@ -1,5 +1,6 @@
 package io.potatogun.endlessdead.entity.summoner;
 
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.entity.KillScorable;
@@ -10,6 +11,7 @@ import io.potatogun.endlessdead.inventory.LinearInventory;
 import io.potatogun.endlessdead.item.TurboStreamliner;
 import io.potatogun.endlessdead.item.TurretInstaller;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.entity.isIn;
 import io.potatogun.gdxhelper.entity.manager.getClosestOf;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.TimerManager;
@@ -29,10 +31,16 @@ import kotlin.random.Random;
  * @param y	 개체의 Y 위치
  */
 class TriggermanSummoner(world: World, x: Float, y: Float) : Summoner(world, "Triggerman Summoner", x, y, 26f, 32f, 8000, Resources.textures.getShared("triggerman_summoner")), InventoryHolder, DamageListener, KillScorable {
+	private val game = EndlessDead.instance;
 	override val damageInvincibilityDuration = 0.15f;
 	override val inventory = LinearInventory();
 	private val dropComponent = ItemDropComponent(this);
 	override val summonInterval = 5f;
+	override val isActive: Boolean
+		get() {
+			val player = game.player;
+			return player != null && player.isIn(level);
+		};
 	override val killScore = 10000;
 
 	init {
@@ -48,6 +56,15 @@ class TriggermanSummoner(world: World, x: Float, y: Float) : Summoner(world, "Tr
 			inventory.addItem(TurboStreamliner());
 		for(i in 1..(Random.nextInt(21) + 10))  // 10~30개의 포탑설치기
 			inventory.addItem(TurretInstaller());
+	}
+
+	override fun update(delta: Float) {
+		super.update(delta);
+
+		game.player?.let {
+			if(isActive)
+				rotateTo(it);
+		};
 	}
 
 	override fun summon() {
