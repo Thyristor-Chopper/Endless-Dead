@@ -46,6 +46,9 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	private val healTimer: RepeatingTimer;
 	override val damageInvincibilityDuration = 0.2f;
 	private var _latestAttackVictim: WeakReference<LivingEntity>? = null;
+	/**
+	 * 마지막 공객 대산
+	 */
 	val latestAttackVictim: LivingEntity?
 		get() = _latestAttackVictim?.get();
 	// 컴포넌트
