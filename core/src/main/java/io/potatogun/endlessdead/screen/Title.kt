@@ -20,6 +20,7 @@ class Title : Screen(font = Resources.font), InputListener {
 	private val game = EndlessDead.instance;
 	private val title = loadTexture("title/title.bmp");
 	private val stillCut = loadTexture("title/still_cut.bmp");
+	private val stillCutTint = Color.GRAY;  // 원래보다 반 정도 어둡게
 	private var titleBlinkTimer = 0f;
 
 	init {
@@ -48,7 +49,9 @@ class Title : Screen(font = Resources.font), InputListener {
 	}
 
 	override fun drawBackground() {
+		batch.color = stillCutTint;
 		batch.draw(stillCut, 0f, 0f, Window.width, Window.height);
+		batch.color = Color.WHITE;
 	}
 
 	override fun drawContents() {
