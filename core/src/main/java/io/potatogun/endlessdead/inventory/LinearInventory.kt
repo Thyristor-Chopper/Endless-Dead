@@ -5,6 +5,7 @@ import com.badlogic.gdx.utils.Disposable;
 
 import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.item.Item;
+import io.potatogun.gdxhelper.collections.ensureFullCapacity;
 
 import java.util.function.Consumer;
 
@@ -37,7 +38,7 @@ class LinearInventory @JvmOverloads constructor(override val maxSlots: Int = -1)
 		if(maxSlots == -1) {
 			val capacity = inventory.items.size;
 			if(capacity == inventory.size)
-				inventory.setSize(capacity * 2);
+				inventory.ensureFullCapacity(capacity * 2);
 		}
 
 		inventory.add(item);
