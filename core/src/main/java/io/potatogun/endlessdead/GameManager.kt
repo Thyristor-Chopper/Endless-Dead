@@ -111,6 +111,7 @@ class GameManager(private val game: EndlessDead) : Updatable {
 		val player = game.player;
 
 		// 통계 및 시간 초기화
+		player.resetSpeed();
 		player.resetHealth();
 		player.inventory.clear();
 		resetAll();

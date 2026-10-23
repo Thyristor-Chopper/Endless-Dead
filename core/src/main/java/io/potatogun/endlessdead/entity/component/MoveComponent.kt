@@ -28,4 +28,12 @@ class MoveComponent(private val entity: Entity, override val speed: Float) : Mov
 		val speed = this.speed * speedModifier + speedAddend;
 		entity.position.add(directionX / length * speed * delta, directionY / length * speed * delta);
 	}
+
+	/**
+	 * 속도 증감치와 배수를 초기화한다.
+	 */
+	fun reset() {
+		speedModifier = 1f;
+		speedAddend = 0f;
+	}
 }

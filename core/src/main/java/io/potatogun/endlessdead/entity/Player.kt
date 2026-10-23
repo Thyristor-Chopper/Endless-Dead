@@ -2,6 +2,7 @@ package io.potatogun.endlessdead.entity;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.utils.IdentitySet;
 
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.entity.forEachNearby;
@@ -50,6 +51,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	private val dropComponent = ItemDropComponent(this);
 	private val pickupComponent = ItemPickupComponent(this);
 	private val slack = 64f;  // 경계 밖으로 이만큼은 나갈 수 있게
+	private val speedPotionTimers = IdentitySet<Timer>(16);
 
 	/**
 	 * 플레이어를 생성한다.
@@ -263,7 +265,26 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	 */
 	fun increaseSpeed(amount: Float, duration: Float) {
 		moveComponent.speedAddend += amount;
-		timers.register(Timer(duration) { moveComponent.speedAddend -= amount });
+
+		val timer = Timer(duration) {
+			moveComponent.speedAddend -= amount;
+			speedPotionTimers.remove(timer);
+		}.also { speedPotionTimers.add(it) };
+		timers.register(timer);
+	}
+
+	/**
+	 * 속도 증감치와 배수를 초기화한다.
+	 */
+	fun resetSpeed() {
+		moveComponent.reset();
+
+		val iterator = speedPotionTimers.iterator();
+		while(iterator.hasNext) {
+			val timer = iterator.next();
+			timers.unregister(timer);
+			iterator.remove();
+		}
 	}
 
 	// 플레이어를 들고 있는 아이템에 맞게 그린다.
