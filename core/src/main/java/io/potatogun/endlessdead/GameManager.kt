@@ -132,7 +132,6 @@ class GameManager(private val game: EndlessDead) : Updatable {
 	 */
 	fun setGameOver() {
 		state = GameState.GAME_OVER;
-		game.deletePlayer();
 	}
 
 	/**
