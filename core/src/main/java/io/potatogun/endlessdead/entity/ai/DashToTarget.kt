@@ -60,9 +60,15 @@ class DashToTarget<T>(private val attacker: T, private val dashDamage: Int, priv
 		} else if(state == State.DASHING) {
 			dashComponent.move(delta, dashDirX, dashDirY);
 
-			// 돌진 중에 플레이어랑 부딪히면 대미지 주고 즉시 쿨타임으로 넘어감
-			if(attacker.collidesWith(target)) {
-				target.takeDamage(dashDamage, attacker = attacker);
+			// 돌진 중에 플레이어랑 부딪치거나 월드 경계에 닿으면 대미지 주고 즉시 쿨타임으로 넘어감
+			val x = attacker.x;
+			val y = attacker.y;
+			val world = attacker.world;
+			val pathBlocked = (world != null && (x < 0f || y < 0f || x > world.width || y > world.height));
+			val collided = attacker.collidesWith(target);
+			if(collided || pathBlocked) {
+				if(collided)
+					target.takeDamage(dashDamage, attacker = attacker);
 				state = State.COOLDOWN;
 				stateTimer = 5.0f;
 			} else {
