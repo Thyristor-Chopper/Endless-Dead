@@ -30,6 +30,11 @@ class EndlessDead : Game() {
 	@get:JvmSynthetic internal val titleScreen: Title by lzTitleScreen;
 	@get:JvmSynthetic internal val worldProjector: WorldProjector by lzWorldProjector;
 
+	init {
+		if(isCreated)
+			throw IllegalStateException("an instance of the game has already been created");
+	}
+
 	// 게임 시작 시 한 번 호출되는 메쏘드
 	override fun create() {
 		super.create();
@@ -96,5 +101,7 @@ class EndlessDead : Game() {
 		 */
 		@get:JvmStatic lateinit var instance: EndlessDead  // 바뀌지 않는 필드임.
 			private set;
+		private val isCreated: Boolean
+			get() = ::instance.isInitialized;
 	}
 }
