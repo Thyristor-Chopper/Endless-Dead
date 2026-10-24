@@ -13,6 +13,7 @@ import io.potatogun.endlessdead.entity.Portal;
 import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
 import io.potatogun.endlessdead.entity.container.Container;
+import io.potatogun.endlessdead.entity.container.HardContainer;
 import io.potatogun.endlessdead.entity.container.TrapChest;
 import io.potatogun.endlessdead.entity.summoner.StreamZombieSummoner;
 import io.potatogun.endlessdead.entity.summoner.TriggermanSummoner;
@@ -182,7 +183,7 @@ class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = Resources
 		// 10초마다 빈 상자 하나 리필
 		timers.register(RepeatingTimer(10f) {
 			Pools.entityArray.use(containerCount) { emptyContainers ->
-				entities.view.filter(emptyContainers) { it is Container && it.inventory.isEmpty };
+				entities.view.filter(emptyContainers) { container -> container is Container && container !is HardContainer && container.isEmpty };
 				val randomContainer = emptyContainers.randomOrNull() as Container?;
 				randomContainer?.putItem(generateLoot(false));
 			};
@@ -227,7 +228,7 @@ class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = Resources
 				if(rand >= 1000 && allowRare)
 					TurretInstaller()			// 0.1% 확률
 				else
-					TimeStopper()				// 약 5% 확률
+					TimeStopper()				// 5% 확률
 			}
 		};
 	}

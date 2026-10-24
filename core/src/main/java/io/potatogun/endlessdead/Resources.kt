@@ -65,6 +65,10 @@ object Resources : Disposable {
 	 */
 	@JvmField val smoothProgressBar: ProgressBar.Skin;
 	/**
+	 * 작은 연속적 미터기 스킨
+	 */
+	@JvmField val smallProgressBar: ProgressBar.Skin;
+	/**
 	 * 청크 미터기 스킨
 	 */
 	@JvmField val chunkedProgressBar: ProgressBar.Skin;
@@ -80,6 +84,7 @@ object Resources : Disposable {
 		val progressBar = NinePatch(textures.getShared("progress_bar"), 2, 2, 5, 6);
 		val progressFill = textures.getShared("progress_fill");
 		smoothProgressBar = ProgressBar.Skin(progressBar, NinePatch(progressFill, 1, 1, 1, 1), 3f, 3f);
+		smallProgressBar = ProgressBar.Skin(progressBar, NinePatch(progressFill, 1, 1, 1, 1), 2f, 2f);
 		chunkedProgressBar = ProgressBar.Skin(progressBar, NinePatch(TextureRegion(progressFill, 1, 0, 1, progressFill.getHeight()), 0, 0, 1, 1), 3f, 3f, 6f, 2f);
 	}
 

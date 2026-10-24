@@ -42,6 +42,11 @@ abstract class Container(world: World? = null, name: String, x: Float = 0f, y: F
 	 */
 	var isPlayerItem = false
 		private set;
+	/**
+	 * 보관함이 비어 있는지의 여부
+	 */
+	val isEmpty: Boolean
+		inline get() = inventory.isEmpty;
 
 	init {
 		initialItem?.let { inventory.addItem(it) };

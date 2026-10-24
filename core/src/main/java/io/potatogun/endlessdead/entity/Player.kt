@@ -200,13 +200,22 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		val projector = level?.projector;
 		forEachNearby { container ->
 			if(container !is Container || !collidesWith(container)) return@forEachNearby;
-			if(container.inventory.isEmpty) {
+			if(container.isEmpty) {
 				putItemToContainer(container, mainPlayer, projector);
 			} else {
-				if(container is HardContainer && !container.opened)
+				if(container is HardContainer && !container.opened) {
+					if(this === mainPlayer) {
+						if(container.opening) {
+							projector?.drawSubtitles("Waiting for the vault to unlock", Color.SALMON);
+							beep2();
+						} else {
+							projector?.drawSubtitles("Opening the vault...");
+						}
+					}
 					container.open { takeItemFromContainer(container, mainPlayer, projector) };  // 구현의 귀찮음으로 플레이어가 금고가 있는 곳을 벗어나도 그냥 지급됨
-				else
+				} else {
 					takeItemFromContainer(container, mainPlayer, projector);
+				}
 			}
 		};
 	}

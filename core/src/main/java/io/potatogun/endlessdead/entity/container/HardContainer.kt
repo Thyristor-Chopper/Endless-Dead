@@ -20,7 +20,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param    width        개체 너비
  * @param    height       개체 높이
  * @param    texture      개체 텍스처
- * @property emptyTexture 상자가 비어 있을 때 사용할 텍스처
+ * @param    emptyTexture 상자가 비어 있을 때 사용할 텍스처
  * @param    initialItem  처음 들어있는 아이템
  * @property openDuration 여는 데 걸리는 시간
  */
@@ -31,7 +31,7 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 	@get:JvmName("isOpened") var opened = false
 		private set;
 	private var openCallback: Runnable? = null;
-	private val openingProgressBar = ProgressBar({ x - 18f }, { y + height * 0.5f }, { 36f }, { 10f }, skin = Resources.smoothProgressBar, color = Color.BLUE);
+	private val openingProgressBar = ProgressBar({ x - 18f + originOffsetX }, { y + height * 0.5f + originOffsetY }, { 36f }, { 8f }, skin = Resources.smallProgressBar, color = Color.SLATE);
 
 	init {
 		if(openDuration < 0f)
@@ -51,7 +51,7 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 					openCallback = null;
 				};
 			}
-			openingProgressBar.value = openTimer / openDuration;
+			openingProgressBar.value = 1f - openTimer / openDuration;
 		}
 	}
 

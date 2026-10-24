@@ -11,6 +11,7 @@ import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.Portal;
 import io.potatogun.endlessdead.entity.container.Chest;
 import io.potatogun.endlessdead.entity.container.Container;
+import io.potatogun.endlessdead.entity.container.HardContainer;
 import io.potatogun.endlessdead.entity.container.TrapChest;
 import io.potatogun.endlessdead.entity.container.Vault;
 import io.potatogun.endlessdead.entity.turret.FriendlyTurret;
@@ -99,8 +100,8 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 			val rand = random.nextInt(100) + 1;
 			entities.add(when {
 				rand >= 98	-> TrapChest(this, x, y, item)		// 3% 확률
-				rand >= 61	-> Chest(this, x, y, item)			// 37% 확률 (상자 전체: 40%)
-				else		-> Vault(this, x, y, item)			// 60% 확률
+				rand >= 36	-> Chest(this, x, y, item)			// 62% 확률 (상자 전체: 65%)
+				else		-> Vault(this, x, y, item)			// 35% 확률
 			});
 		}
 
@@ -125,9 +126,10 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 
 		spawners.add(TriggermanSpawner(this));
 
-		timers.register(RepeatingTimer(10f) {
+		// 15초마다 빈 상자 재지급
+		timers.register(RepeatingTimer(15f) {
 			Pools.entityArray.use(containerCount) { emptyContainers ->
-				entities.view.filter(emptyContainers) { it is Container && it.inventory.isEmpty };
+				entities.view.filter(emptyContainers) { container -> container is Container && container !is HardContainer && container.isEmpty };
 				val randomContainer = emptyContainers.randomOrNull() as Container?;
 				randomContainer?.putItem(generateLoot());
 			};
