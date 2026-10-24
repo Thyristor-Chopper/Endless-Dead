@@ -18,8 +18,10 @@ import io.potatogun.endlessdead.EndlessDead;
  *
  * 실제 게임 내용은 EndlessDead 클래스와 각 Screen/World 클래스에서 정의된다.
  * 이 파일은 순수 'OS에 창 띄우기' 역할만 한다.
+ *
+ * @param args 명령줄 매개변수
  */
-fun main() {
+fun main(args: Array<String>) {
 	// 게임 객체 만들기
 	val game = EndlessDead();
 
