@@ -14,6 +14,14 @@ dependencies {
 	implementation(project(":core"))
 	implementation("com.badlogicgames.gdx:gdx-backend-lwjgl3:1.10.0")  // 1.11.0 이상은 Windows XP에서 OpenAL 초기화 실패 (실행 자체는 되지만 오류 메시지가 도스창에 뜨는 게 거슬리고 나중에 효과음을 추가할 수도 있어서)
 	implementation("com.badlogicgames.gdx:gdx-platform:1.14.2:natives-desktop")
+
+	implementation("org.lwjgl:lwjgl-tinyfd:3.2.3")
+	runtimeOnly("org.lwjgl:lwjgl-tinyfd:3.2.3:natives-windows")
+	runtimeOnly("org.lwjgl:lwjgl-tinyfd:3.2.3:natives-windows-x86")
+	runtimeOnly("org.lwjgl:lwjgl-tinyfd:3.2.3:natives-macos")
+	runtimeOnly("org.lwjgl:lwjgl-tinyfd:3.2.3:natives-linux")
+	runtimeOnly("org.lwjgl:lwjgl-tinyfd:3.2.3:natives-linux-arm32")
+	runtimeOnly("org.lwjgl:lwjgl-tinyfd:3.2.3:natives-linux-arm64")
 }
 
 application {
