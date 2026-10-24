@@ -76,6 +76,7 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 		openTimer = openDuration;
 		openCallback = callback;
 		this.opener = opener;
+		openingProgressBar.value = 0f;
 	}
 
 	override fun takeItem(taker: InventoryHolder): Item? {
