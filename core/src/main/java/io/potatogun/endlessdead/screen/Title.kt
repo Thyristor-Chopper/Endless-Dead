@@ -43,7 +43,6 @@ class Title : Screen(font = Resources.font), InputListener {
 	}
 
 	override fun onKeyDown(code: Int): Boolean {
-		if(game.screen !== this) return false;
 		game.gameManager.newGame();
 		return true;
 	}

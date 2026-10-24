@@ -208,7 +208,7 @@ class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = Resources
 			treeInfo.add(Tree.hashOf(x, y, size));
 		}
 
-		UpdateListeners.register(this) { EndlessDead.instance.gameManager.isPlaying && game.player?.isIn(this) ?: false };  // this 캡처 떄문에 약참조가 될 수 없어서 dispose에서 직접 확실히 해제함.
+		UpdateListeners.register(this) { world, game -> game is EndlessDead && game.gameManager.isPlaying && game.player?.isIn(world as World) ?: false };
 	}
 
 	/**

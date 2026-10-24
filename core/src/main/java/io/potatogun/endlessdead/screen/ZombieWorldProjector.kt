@@ -37,6 +37,7 @@ import io.potatogun.gdxhelper.util.rgb;
 import io.potatogun.gdxhelper.util.safeRun;
 import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
+import io.potatogun.gdxhelper.widget.Widget;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -69,8 +70,8 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 	private val enemyNameColor = rgb(247, 215, 215);
 	private val friendNameColor = rgb(215, 247, 215);
 	private val scoreColor = rgb(255, 255, 255, 0.8f);
-	private val gunCooldownBarX = { Window.width - 215f };
-	private val infiniteGunCooldownBarX = { Window.width - 75f };
+	private val gunCooldownBarX: Widget.DimensionSupplier = { Window.width - 215f };
+	private val infiniteGunCooldownBarX: Widget.DimensionSupplier = { Window.width - 75f };
 	// 단추들
 	private val resumeButton: Button;
 	private val replayButton: Button;

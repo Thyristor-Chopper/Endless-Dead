@@ -116,7 +116,7 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 		bulletSize = settings.bulletSize;
 		bulletTexture = settings.bulletFaceTexture;
 
-		UpdateListeners.register(this) { game.gameManager.isPlaying };
+		UpdateListeners.register(this) { _, game -> game is EndlessDead && game.gameManager.isPlaying };
 	}
 
 	override fun update(delta: Float) {

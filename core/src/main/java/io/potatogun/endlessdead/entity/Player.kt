@@ -93,7 +93,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 		team = "friends";
 
-		Input.registerListener(this);
+		Input.registerListener(this) { _, game -> game is EndlessDead && game.gameManager.isPlaying };
 	}
 
 	override fun move(delta: Float, directionX: Float, directionY: Float) {
@@ -147,7 +147,6 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 	// 휠로 아이템 선택
 	override fun onScroll(amountX: Float, amountY: Float): Boolean {
-		if(!game.gameManager.isPlaying) return false;
 		if(amountY > 0f) {
 			selectNextItem();
 			return true;
