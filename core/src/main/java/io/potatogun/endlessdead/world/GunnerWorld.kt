@@ -96,12 +96,13 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 		for(i in 0 until containerCount) {
 			val x = random.nextInt(intWidth).toFloat();
 			val y = random.nextInt(intHeight).toFloat();
-			val item: Item = generateLoot();  // 들어있을 아이템
 			val rand = random.nextInt(100) + 1;
+			val isVault = rand <= 35;  // 35% 확률
+			val item: Item = generateLoot(isVault);  // 들어있을 아이템
 			entities.add(when {
+				isVault		-> Vault(this, x, y, item)			// 35% 확률
 				rand >= 96	-> TrapChest(this, x, y, item)		// 5% 확률
-				rand >= 36	-> Chest(this, x, y, item)			// 60% 확률 (상자 전체: 65%)
-				else		-> Vault(this, x, y, item)			// 35% 확률
+				else		-> Chest(this, x, y, item)			// 60% 확률 (상자 전체: 65%)
 			});
 		}
 
@@ -133,8 +134,8 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 		timers.register(RepeatingTimer(15f) {
 			Pools.entityArray.use(containerCount) { emptyContainers ->
 				entities.view.filter(emptyContainers) { container -> container is Container && container !is HardContainer && container.isEmpty };
-				val randomContainer = emptyContainers.randomOrNull() as Container?;
-				randomContainer?.putItem(generateLoot());
+				val container = emptyContainers.randomOrNull() as Container?;
+				container?.putItem(generateLoot());
 			};
 		});
 
@@ -144,13 +145,17 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 	/**
 	 * 상자에 들어갈 수 있는 아이템을 무작위로 생성한다.
 	 */
-	private fun generateLoot(): Item {
+	private fun generateLoot(allowRare: Boolean = false): Item {
 		val rand = random.nextInt(100) + 1;  // 1~100
 		return when {
 			rand <= 40	-> MachineGun()			// 40% 확률
 			rand <= 80	-> Shotgun()			// 40% 확률
-			rand <= 95	-> Bandage()			// 15% 확률
-			else		-> TurretInstaller()	// 5% 확률
+			else		-> {
+				if(allowRare && rand > 95)
+					TurretInstaller()			// 5% 확률
+				else
+					Bandage()					// 15%/20% 확률
+			}
 		};
 	}
 

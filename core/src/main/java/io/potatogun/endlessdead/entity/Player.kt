@@ -93,7 +93,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 		team = "friends";
 
-		Input.registerListener(this) { _, game -> game is EndlessDead && game.gameManager.isPlaying };
+		Input.registerListener(this) { player, game -> game is EndlessDead && player === game.player && game.gameManager.isPlaying };
 	}
 
 	override fun move(delta: Float, directionX: Float, directionY: Float) {
@@ -200,50 +200,50 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		forEachNearby { container ->
 			if(container !is Container || !collidesWith(container)) return@forEachNearby;
 			if(container.isEmpty) {
-				putItemToContainer(container, mainPlayer, projector);
+				putItemToContainer(container);
 			} else {
 				if(container is HardContainer && !container.opened) {
 					if(this === mainPlayer) {
 						if(container.opening) {
-							projector?.drawSubtitles("Waiting for the vault to unlock", Color.SALMON);
+							projector?.drawSubtitles("Waiting for the container to unlock", Color.YELLOW);
 							beep2();
 						} else {
-							projector?.drawSubtitles("Opening the vault...");
+							projector?.drawSubtitles("Opening the container...");
 						}
 					}
-					container.open(this) { takeItemFromContainer(container, mainPlayer, projector) };
+					container.open(this) { container, _ -> takeItemFromContainer(container) };
 				} else {
-					takeItemFromContainer(container, mainPlayer, projector);
+					takeItemFromContainer(container);
 				}
 			}
 		};
 	}
 
-	private inline fun putItemToContainer(container: Container, mainPlayer: Player?, projector: WorldProjector?) {
+	private inline fun putItemToContainer(container: Container) {
 		selectedItem?.let {
-			if(this === mainPlayer)
-				projector?.drawSubtitles("Put ${it.name} into the container");
+			if(this === game.player)
+				level?.projector?.drawSubtitles("Put ${it.name} into the container");
 			container.putItem(it, true);
 		} ?: run {
-			if(this === mainPlayer) {
-				projector?.drawSubtitles("Can't take any item; container is empty", Color.SALMON);
+			if(this === game.player) {
+				level?.projector?.drawSubtitles("Can't take any item; container is empty", Color.SALMON);
 				beep2();
 			}
 		};
 	}
 
-	private inline fun takeItemFromContainer(container: Container, mainPlayer: Player?, projector: WorldProjector?) {
+	private inline fun takeItemFromContainer(container: Container) {
 		val isPlayerItem = container.isPlayerItem;
 		val item: Item? = container.takeItem(this);
 		if(item == null) {
-			if(this === mainPlayer) {
-				projector?.drawSubtitles("Failed to take the item in the container", Color.SALMON);
+			if(this === game.player) {
+				level?.projector?.drawSubtitles("Failed to take the item in the container", Color.SALMON);
 				beep2();
 			}
 		} else {
 			selectItem(item);
-			if(this === mainPlayer)
-				projector?.drawSubtitles("Took ${item.name} from the container");
+			if(this === game.player)
+				level?.projector?.drawSubtitles("Took ${item.name} from the container");
 			if(!isPlayerItem)
 				statistics.openedContainerCount++;
 		}

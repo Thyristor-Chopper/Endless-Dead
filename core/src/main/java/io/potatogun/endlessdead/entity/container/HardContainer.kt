@@ -37,7 +37,7 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 	 */
 	@get:JvmName("isOpened") var opened = false
 		private set;
-	private var openCallback: Runnable? = null;
+	private var openCallback: OpenCallback? = null;
 	private val openingProgressBar = ProgressBar({ x - 18f + originOffsetX }, { y + height * 0.5f + originOffsetY }, { 36f }, { 8f }, skin = Resources.smallProgressBar, color = Color.SLATE);
 	private var opener: Entity? = null;
 
@@ -60,11 +60,11 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 				if(openTimer <= 0f) {
 					openTimer = 0f;
 					opened = true;
-					opener = null;
 					openCallback?.let {
-						it.run();
+						it.accept(this, opener);
 						openCallback = null;
 					};
+					opener = null;
 				}
 				openingProgressBar.value = 1f - openTimer / openDuration;
 			}
@@ -78,7 +78,7 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 			openingProgressBar.draw(batch);
 	}
 
-	@JvmOverloads fun open(opener: Entity? = null, callback: Runnable? = null) {
+	@JvmOverloads fun open(opener: Entity? = null, callback: OpenCallback? = null) {
 		if(opened || opening) return;
 		openTimer = openDuration;
 		openCallback = callback;
@@ -101,5 +101,9 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 	override fun dispose() {
 		super.dispose();
 		openingProgressBar.dispose();
+	}
+
+	fun interface OpenCallback {
+		fun accept(container: HardContainer, opener: Entity?);
 	}
 }
