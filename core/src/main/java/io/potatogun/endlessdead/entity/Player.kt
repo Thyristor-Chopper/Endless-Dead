@@ -232,22 +232,19 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		};
 	}
 
-	companion object {  // 빌어먹을 코틀린 컴파일러가 왜 이렇게 멍청해! 인라인이고 외부 변수를 하나도 안 쓰는데 캡처하는 줄 알고 싱글톤을 안 만드네 그리고 코틀린 빌어먹을 왜 static 없는 거야 대체
-		private inline fun takeItemFromContainer(container: Container, taker: Player) {  // 이게 좋은 코드가 아니라는 건 알지만 람다 캡처 때문에...
-			val game = EndlessDead.instance;
-			val item: Item? = container.takeItem(taker);
-			if(item == null) {
-				if(taker === game.player) {
-					taker.world?.projector?.drawSubtitles("Failed to take the item in the container", Color.SALMON);
-					beep2();
-				}
-			} else {
-				taker.selectItem(item);
-				if(taker === game.player)
-					taker.world?.projector?.drawSubtitles("Took ${item.name} from the container");
-				if(!container.isPlayerItem)
-					taker.statistics.openedContainerCount++;
+	private inline fun <InventoryEntity> takeItemFromContainer(container: Container, taker: InventoryEntity) where InventoryEntity : Entity, InventoryEntity : InventoryHolder {  // 이게 좋은 코드가 아니라는 건 알지만 람다 캡처 때문에...
+		val item: Item? = container.takeItem(taker);
+		if(item == null) {
+			if(taker === game.player) {
+				taker.world?.projector?.drawSubtitles("Failed to take the item in the container", Color.SALMON);
+				beep2();
 			}
+		} else {
+			selectItem(item);
+			if(taker === game.player)
+				taker.world?.projector?.drawSubtitles("Took ${item.name} from the container");
+			if(taker is Player && !container.isPlayerItem)
+				taker.statistics.openedContainerCount++;
 		}
 	}
 
