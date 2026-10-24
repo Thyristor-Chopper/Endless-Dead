@@ -545,7 +545,7 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 	 * 항상 화면에 표시되는 정보 — HP 표시와 월드 중앙 표지를 그린다.
 	 */
 	private inline fun drawHud() {  // drawContents에서만 한 번 쓰이기 때문에 inline이다.
-		if(!isProjecting()) return;
+		if(!isProjecting) return;
 		val player = game.player;
 		if(player != null) {
 			// 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
