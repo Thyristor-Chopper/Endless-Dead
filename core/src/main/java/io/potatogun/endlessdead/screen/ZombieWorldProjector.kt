@@ -45,13 +45,13 @@ import io.potatogun.gdxhelper.world.World;
  */
 class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDrawable {
 	private val game = EndlessDead.instance;
-	private val noWorldOverlay = rgb(255, 255, 255, 0.5f);
+	private val noWorldOverlay = rgb(64, 64, 64);  // 원래보다 많이 어둡게
 	private val frozenOverlay = rgb(0, 0, 0, 0.5f);
 	private val solidColor: Texture;
 	// 제목 표시줄에 표시할 정보의 인덱스
 	private var currentTitleInfo = 0;
 	// 로드된 월드가 없을 때 보일 placeholder 배경
-	private val lazyStillCut = lazy { loadTexture("title/still_cut.bmp") };
+	private val lzStillCut = lazy { loadTexture("title/still_cut.bmp") };
 	// 타이머
 	private val timers = TimerManager();
 	// 자막 관련 필드들.
@@ -68,7 +68,7 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 	private val playerNameColor = rgb(156, 213, 155);
 	private val enemyNameColor = rgb(247, 215, 215);
 	private val friendNameColor = rgb(215, 247, 215);
-	private val scoreColor = rgb(240, 240, 240);
+	private val scoreColor = rgb(255, 255, 255, 0.8f);
 	private val gunCooldownBarX = { Window.width - 215f };
 	private val infiniteGunCooldownBarX = { Window.width - 75f };
 	// 단추들
@@ -495,7 +495,7 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 
 		// 표시할 월드가 없을 때 보일 placeholder (일반적으로 볼 일은 없다.)
 		batch.color = noWorldOverlay;
-		batch.draw(lazyStillCut.value, 0f, 0f, Window.width, Window.height);
+		batch.draw(lzStillCut.value, 0f, 0f, Window.width, Window.height);
 		batch.color = Color.WHITE;
 	}
 
@@ -545,6 +545,7 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 	 * 항상 화면에 표시되는 정보 — HP 표시와 월드 중앙 표지를 그린다.
 	 */
 	private inline fun drawHud() {  // drawContents에서만 한 번 쓰이기 때문에 inline이다.
+		if(!isProjecting()) return;
 		val player = game.player;
 		if(player != null) {
 			// 1) UI 텍스트 (화면 고정) — 좌측 상단 HP 표시.
@@ -602,8 +603,8 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 	override fun dispose() {
 		super.dispose();
 		solidColor.dispose();
-		if(lazyStillCut.isInitialized())
-			lazyStillCut.value.dispose();
+		if(lzStillCut.isInitialized())
+			lzStillCut.value.dispose();
 	}
 
 	/**

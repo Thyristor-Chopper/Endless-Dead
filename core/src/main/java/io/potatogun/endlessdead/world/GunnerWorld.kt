@@ -99,8 +99,8 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 			val item: Item = generateLoot();  // 들어있을 아이템
 			val rand = random.nextInt(100) + 1;
 			entities.add(when {
-				rand >= 98	-> TrapChest(this, x, y, item)		// 3% 확률
-				rand >= 36	-> Chest(this, x, y, item)			// 62% 확률 (상자 전체: 65%)
+				rand >= 96	-> TrapChest(this, x, y, item)		// 5% 확률
+				rand >= 36	-> Chest(this, x, y, item)			// 60% 확률 (상자 전체: 65%)
 				else		-> Vault(this, x, y, item)			// 35% 확률
 			});
 		}
@@ -125,6 +125,9 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 			entities.add(Portal(this, random.nextInt((width - 300f).toInt()).toFloat() + 150f, random.nextInt((height - 300f).toInt()).toFloat() + 150f, mainWorld));
 
 		spawners.add(TriggermanSpawner(this));
+
+		// 등록된 개체 커밋
+		entities.commit();
 
 		// 15초마다 빈 상자 재지급
 		timers.register(RepeatingTimer(15f) {

@@ -149,10 +149,10 @@ class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = Resources
 
 		if(!hasSpecialWorld) {
 			// 각각 2.5% 확률로 플레이어 공격 포탑(파괴 불가)을 월드의 각 모퉁이에 설치
-			if(random.nextInt(40) == 8) entities.add(HostileTurret(this, 100f, 100f, true).apply { rotate(315f) });
-			if(random.nextInt(40) == 12) entities.add(HostileTurret(this, width - 100f, 100f, true).apply { rotate(45f) });
-			if(random.nextInt(40) == 15) entities.add(HostileTurret(this, 100f, height - 100f, true).apply { rotate(225f) });
-			if(random.nextInt(40) == 21) entities.add(HostileTurret(this, width - 100f, height - 100f, true).apply { rotate(135f) });
+			if(random.nextInt(40) == 12) entities.add(HostileTurret(this, 100f, 100f, true).apply { rotate(315f) });
+			if(random.nextInt(40) == 15) entities.add(HostileTurret(this, width - 100f, 100f, true).apply { rotate(45f) });
+			if(random.nextInt(40) == 24) entities.add(HostileTurret(this, 100f, height - 100f, true).apply { rotate(225f) });
+			if(random.nextInt(40) == 36) entities.add(HostileTurret(this, width - 100f, height - 100f, true).apply { rotate(135f) });
 
 			// 각각 0.05% 확률로 플레이어 공격 포탑(공격, 파괴 가능)을 임의 위치에 1~3대 설치
 			for(i in 1..3)
@@ -166,8 +166,8 @@ class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = Resources
 						entities.add(TriggermanSummoner(this, random.nextInt((width - 300f).toInt()).toFloat() + 150f, random.nextInt((height - 300f).toInt()).toFloat() + 150f));
 		}
 
-		// 0.1% 확률로 스트림약좀비생성기가 있을 수 있음
-		if(random.nextInt(1000) + 1 <= 1)
+		// 1% 확률로 물살식 약좀비 생성기가 있을 수 있음
+		if(random.nextInt(100) + 1 <= 1)
 			for(i in 1..(random.nextInt(8) + 1))  // 무작위로 1~8개
 				if(random.nextInt(2) == 0)  // 이 경우에 대해 50% 판정
 					entities.add(StreamZombieSummoner(this, random.nextInt((width - 300f).toInt()).toFloat() + 150f, random.nextInt((height - 300f).toInt()).toFloat() + 150f));
