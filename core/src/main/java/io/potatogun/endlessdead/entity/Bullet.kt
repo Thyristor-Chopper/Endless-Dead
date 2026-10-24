@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.component.MoveComponent;
+import io.potatogun.gdxhelper.TaskQueue;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.util.max2;
@@ -59,7 +60,7 @@ class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target
 			} else {
 				directionX = 0f;
 				directionY = 0f;
-				Gdx.app.postRunnable { this.remove() };  // 이동해야 하는(속도가 있는) 총알이 이동하지 못하면 소멸
+				TaskQueue.post(this) { bullet -> (bullet as Bullet).remove() };  // 이동해야 하는(속도가 있는) 총알이 이동하지 못하면 소멸
 			}
 		} else {
 			directionX = 0f;

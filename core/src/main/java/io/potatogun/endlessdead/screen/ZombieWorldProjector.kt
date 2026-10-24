@@ -22,6 +22,7 @@ import io.potatogun.endlessdead.item.LimitedUsable;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.world.SpecialWorld;
 import io.potatogun.gdxhelper.Input;
+import io.potatogun.gdxhelper.TaskQueue;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.isIn;
 import io.potatogun.gdxhelper.entity.manager.countOf;
@@ -34,7 +35,6 @@ import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.util.parseSeconds;
 import io.potatogun.gdxhelper.util.rgb;
-import io.potatogun.gdxhelper.util.safeRun;
 import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
 import io.potatogun.gdxhelper.widget.Widget;
@@ -125,7 +125,7 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 		}
 
 		// 제목 표시줄 정보 전환
-		timers.register(RepeatingTimer(3f, { (game.gameManager.isPlaying || game.gameManager.isPaused) && projectingWorld != null }) {
+		timers.register(RepeatingTimer(3f, { (game.gameManager.isPlaying || game.gameManager.isPaused) && isProjecting }) {
 			currentTitleInfo++;
 			if(currentTitleInfo >= TitleInfoType.size)
 				currentTitleInfo = 0;
@@ -164,9 +164,7 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 			if(world is SpecialWorld) {
 				val mainWorld = world.mainWorld;
 				if(mainWorld != null)
-					Gdx.app.postRunnable {
-						safeRun<IllegalArgumentException> { mainWorld.dispose() };
-					};
+					TaskQueue.post(mainWorld, WorldProjector.safeDisposeWorld);
 			}
 		};
 	}
@@ -527,7 +525,7 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 		};
 		currentSubtitlesMessage = message;
 		currentSubtitlesColor = color;
-		subtitlesTimer = Timer(duration, { game.gameManager.isPlaying }) {
+		subtitlesTimer = Timer(duration, { EndlessDead.instance.gameManager.isPlaying }) {
 			currentSubtitlesMessage = "";
 			currentSubtitlesColor = Color.WHITE;  // 초깃값으로 복원하여 메모리를 점유하지 않게 함
 			subtitlesTimer = null;

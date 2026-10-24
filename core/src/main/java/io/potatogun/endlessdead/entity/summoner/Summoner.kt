@@ -1,6 +1,5 @@
 package io.potatogun.endlessdead.entity.summoner;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
 import io.potatogun.endlessdead.entity.LivingEntity;
@@ -13,16 +12,17 @@ import io.potatogun.gdxhelper.world.World;
 /**
  * 일정한 간격으로 개체를 소환하는 기계
  *
- * @param world   개체가 속한 세계
- * @param name    개체 이름
- * @param x       개체의 X 위치
- * @param y       개체의 Y 위치
- * @param width   가로 크기
- * @param height  세로 크기
- * @param health  최대 체력
- * @param texture 개체의 텍스처
+ * @param world    개체가 속한 세계
+ * @param name     개체 이름
+ * @param x        개체의 X 위치
+ * @param y        개체의 Y 위치
+ * @param width    가로 크기
+ * @param height   세로 크기
+ * @param health   최대 체력
+ * @param texture  개체의 텍스처
+ * @param interval 개체 소환 간격
  */
-abstract class Summoner @JvmOverloads constructor(world: World, name: String, x: Float, y: Float, width: Float, height: Float, health: Int, texture: Texture? = null) : LivingEntity(world, name, x, y, width, height, health, texture) {
+abstract class Summoner @JvmOverloads constructor(world: World, name: String, x: Float, y: Float, width: Float, height: Float, health: Int, texture: Texture? = null, interval: Float) : LivingEntity(world, name, x, y, width, height, health, texture) {
 	/**
 	 * 이 소환기에 대한 타이머
 	 *
@@ -34,20 +34,14 @@ abstract class Summoner @JvmOverloads constructor(world: World, name: String, x:
 	 */
 	open val isActive: Boolean
 		get() = true;
-	/**
-	 * 개체 소환 간격
-	 */
-	abstract val summonInterval: Float;
 
 	init {
 		rotateToRandom();
 
-		Gdx.app.postRunnable {  // abstract val은 생성자에서 바로 읽으면 0이 됨 abstract val로 하나 명시적 게터 함수로 하나 어차피 바이트코드는 둘 다 getter 함수가 되는데 뭐 이래 하 코틀린 진짜...
-			timers.register(RepeatingTimer(summonInterval) {
-				if(level != null && isActive)
-					summon();
-			});
-		};
+		timers.register(RepeatingTimer(interval) {
+			if(level != null && isActive)
+				summon();
+		});
 	}
 
 	override fun update(delta: Float) {

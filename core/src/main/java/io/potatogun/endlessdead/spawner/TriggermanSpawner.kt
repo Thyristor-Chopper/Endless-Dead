@@ -13,9 +13,7 @@ import kotlin.random.Random;
  *
  * @property world 소속 월드
  */
-class TriggermanSpawner(world: World) : Spawner(world) {
-	override val spawnInterval = 5f;
-
+class TriggermanSpawner(world: World) : Spawner(world, 5f) {
 	override fun spawn() {
 		if(Random.nextInt(2) != 0) return;  // 50% 확률로 소환
 

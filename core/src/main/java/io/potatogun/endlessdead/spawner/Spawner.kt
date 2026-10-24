@@ -10,13 +10,10 @@ import io.potatogun.gdxhelper.world.World;
 /**
  * 일정한 간격으로 개체를 소환하는 (보이지 않는) 시스템적 객체
  *
- * @property world 소환기가 속하는 월드
+ * @property world    속하는 월드
+ * @param    interval 개체 소환 간격
  */
-abstract class Spawner(@JvmField protected val world: World) : Updatable {
-	/**
-	 * 개체 소환 간격
-	 */
-	abstract val spawnInterval: Float;
+abstract class Spawner(@JvmField protected val world: World, interval: Float) : Updatable {
 	/**
 	 * 이 소환기에 대한 타이머
 	 *
@@ -25,7 +22,7 @@ abstract class Spawner(@JvmField protected val world: World) : Updatable {
 	@JvmField protected val timers = TimerManager();
 
 	init {
-		Gdx.app.postRunnable { timers.register(RepeatingTimer(spawnInterval, this::spawn)) };  // abstract val은 생성자에서 바로 읽으면 0이 됨
+		timers.register(RepeatingTimer(interval, this::spawn));  // abstract val은 생성자에서 바로 읽으면 0이 됨
 	}
 
 	override fun update(delta: Float) {
