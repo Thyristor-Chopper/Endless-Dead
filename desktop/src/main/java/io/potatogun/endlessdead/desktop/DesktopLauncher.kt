@@ -34,7 +34,7 @@ fun main(args: Array<String>) {
 		useVsync(false);  // 수직동기화를 꺼야 랙이 줄어듦
 		setForegroundFPS(Constants.PASSIVE_FPS);  // 타이틀 화면에서는 낮은 fps로
 		setIdleFPS(1);
-		setWindowIcon(FileType.Internal, "assets/icon_16.bmp", "assets/icon_32.bmp", "assets/icon_128.bmp");
+		setWindowIcon(FileType.Internal, "assets/icon_16.bmp", "assets/icon_32.bmp");
 	};
 
 	// 실행
