@@ -48,6 +48,7 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 				openTimer = 0f;
 				opener = null;
 				openCallback = null;
+				openingProgressBar.value = 0f;
 			} else {
 				openTimer -= delta;
 				if(openTimer <= 0f) {
