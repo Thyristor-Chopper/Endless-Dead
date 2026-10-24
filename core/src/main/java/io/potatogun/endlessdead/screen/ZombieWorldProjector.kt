@@ -70,8 +70,8 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 	private val enemyNameColor = rgb(247, 215, 215);
 	private val friendNameColor = rgb(215, 247, 215);
 	private val scoreColor = rgb(255, 255, 255, 0.8f);
-	private val gunCooldownBarX: Widget.DimensionSupplier = { Window.width - 215f };
-	private val infiniteGunCooldownBarX: Widget.DimensionSupplier = { Window.width - 75f };
+	private val gunCooldownBarX = Widget.DimensionSupplier { Window.width - 215f };
+	private val infiniteGunCooldownBarX = Widget.DimensionSupplier { Window.width - 75f };
 	// 단추들
 	private val resumeButton: Button;
 	private val replayButton: Button;
