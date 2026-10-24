@@ -47,12 +47,12 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	private val timers = TimerManager();
 	private val healTimer: RepeatingTimer;
 	override val damageInvincibilityDuration = 0.2f;
-	private var _latestAttackVictim: WeakReference<LivingEntity>? = null;
+	private var wrLastAttackVictim: WeakReference<LivingEntity>? = null;
 	/**
 	 * 마지막 공객 대상
 	 */
-	val latestAttackVictim: LivingEntity?
-		get() = _latestAttackVictim?.get();
+	val lastAttackVictim: LivingEntity?
+		get() = wrLastAttackVictim?.get();
 	// 컴포넌트
 	private val moveComponent = MoveComponent(this, 200f);
 	override val speed: Float by moveComponent::speed;  // 디컴파일해서 확인한 결과 수동 get() = moveComponent.speed와 오버헤드는 똑같음
@@ -266,7 +266,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	}
 
 	override fun onAttack(victim: LivingEntity) {
-		_latestAttackVictim = WeakReference(victim);
+		if(victim !is Bullet && victim !is Landmine && lastAttackVictim !== victim)
+			wrLastAttackVictim = WeakReference(victim);
 
 		if(victim is AttackScorable)
 			scoreManager.addScore(victim.attackScore);

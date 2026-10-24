@@ -209,7 +209,7 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 		val player = game.player;
 		val world = player?.world;
 		if(world != null && isProjecting(world))
-			attackTarget = player.latestAttackVictim?.takeIf { isValidAttackTarget(it, player) } ?: run { world.entities.getClosestOf<LivingEntity>(player)?.takeIf { isValidAttackTarget(it, player) } };
+			attackTarget = player.lastAttackVictim?.takeIf { isValidAttackTarget(it, player) } ?: run { world.entities.getClosestOf<LivingEntity>(player) { isValidAttackTarget(it, player) } };
 
 		// 미터기 정보 갱신
 		updateProgressBars();
