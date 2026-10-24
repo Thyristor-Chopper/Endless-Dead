@@ -211,9 +211,9 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 							projector?.drawSubtitles("Opening the container...");
 						}
 					}
-					container.open(this) { container, _ -> takeItemFromContainer(container) };
+					container.open(this) { container, opener -> takeItemFromContainer(container, opener!! as Player) };  // 이게 좋은 코드가 아니라는 건 알지만 람다 캡처 때문에...
 				} else {
-					takeItemFromContainer(container);
+					takeItemFromContainer(container, this);
 				}
 			}
 		};
@@ -232,20 +232,19 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		};
 	}
 
-	private inline fun takeItemFromContainer(container: Container) {
-		val isPlayerItem = container.isPlayerItem;
-		val item: Item? = container.takeItem(this);
+	private inline fun <InventoryEntity> takeItemFromContainer(container: Container, taker: InventoryEntity) where InventoryEntity : Entity, InventoryEntity : InventoryHolder {  // 이게 좋은 코드가 아니라는 건 알지만 람다 캡처 때문에...
+		val item: Item? = container.takeItem(taker);
 		if(item == null) {
-			if(this === game.player) {
-				level?.projector?.drawSubtitles("Failed to take the item in the container", Color.SALMON);
+			if(taker === game.player) {
+				taker.world?.projector?.drawSubtitles("Failed to take the item in the container", Color.SALMON);
 				beep2();
 			}
 		} else {
 			selectItem(item);
-			if(this === game.player)
-				level?.projector?.drawSubtitles("Took ${item.name} from the container");
-			if(!isPlayerItem)
-				statistics.openedContainerCount++;
+			if(taker === game.player)
+				taker.world?.projector?.drawSubtitles("Took ${item.name} from the container");
+			if(taker is Player && !container.isPlayerItem)
+				taker.statistics.openedContainerCount++;
 		}
 	}
 
