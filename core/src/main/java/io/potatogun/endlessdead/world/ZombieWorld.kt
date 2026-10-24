@@ -227,7 +227,7 @@ class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = Resources
 				if(rand >= 1000 && allowRare)
 					TurretInstaller()			// 0.1% 확률
 				else
-					TimeStopper()				// 5% 확률
+					TimeStopper()				// 약 5% 확률
 			}
 		};
 	}

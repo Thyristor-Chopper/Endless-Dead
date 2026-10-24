@@ -12,6 +12,7 @@ import io.potatogun.endlessdead.entity.component.MoveComponent;
 import io.potatogun.endlessdead.entity.component.ItemDropComponent;
 import io.potatogun.endlessdead.entity.component.ItemPickupComponent;
 import io.potatogun.endlessdead.entity.container.Container;
+import io.potatogun.endlessdead.entity.container.HardContainer;
 import io.potatogun.endlessdead.entity.listener.AttackListener;
 import io.potatogun.endlessdead.entity.listener.DamageListener;
 import io.potatogun.endlessdead.entity.zombie.Zombie;
@@ -23,6 +24,7 @@ import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.endlessdead.item.Usable;
 import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.gdxhelper.screen.WorldProjector;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.Timer;
@@ -196,36 +198,47 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	private inline fun interactContainer() {  // update()에서만 한 번 쓰이기 때문에 inline이다.
 		val mainPlayer = game.player;
 		val projector = level?.projector;
-		forEachNearby { entity ->
-			if(entity !is Container || !collidesWith(entity)) return@forEachNearby;
-			if(entity.inventory.isEmpty) {
-				selectedItem?.let {
-					if(this === mainPlayer)
-						projector?.drawSubtitles("Put ${it.name} into the container");
-					entity.putItem(it, true);
-				} ?: run {
-					if(this === mainPlayer) {
-						projector?.drawSubtitles("Can't take any item; container is empty", Color.SALMON);
-						beep2();
-					}
-				};
+		forEachNearby { container ->
+			if(container !is Container || !collidesWith(container)) return@forEachNearby;
+			if(container.inventory.isEmpty) {
+				putItemToContainer(container, mainPlayer, projector);
 			} else {
-				val isPlayerItem = entity.isPlayerItem;
-				val item: Item? = entity.takeItem(this);
-				if(item == null) {
-					if(this === mainPlayer) {
-						projector?.drawSubtitles("Failed to take the item in the container", Color.SALMON);
-						beep2();
-					}
-				} else {
-					selectItem(item);
-					if(this === mainPlayer)
-						projector?.drawSubtitles("Took ${item.name} from the container");
-					if(!isPlayerItem)
-						statistics.openedContainerCount++;
-				}
+				if(container is HardContainer && !container.opened)
+					container.open { takeItemFromContainer(container, mainPlayer, projector) };
+				else
+					takeItemFromContainer(container, mainPlayer, projector);
 			}
 		};
+	}
+
+	private inline fun putItemToContainer(container: Container, mainPlayer: Player?, projector: WorldProjector?) {
+		selectedItem?.let {
+			if(this === mainPlayer)
+				projector?.drawSubtitles("Put ${it.name} into the container");
+			container.putItem(it, true);
+		} ?: run {
+			if(this === mainPlayer) {
+				projector?.drawSubtitles("Can't take any item; container is empty", Color.SALMON);
+				beep2();
+			}
+		};
+	}
+
+	private inline fun takeItemFromContainer(container: Container, mainPlayer: Player?, projector: WorldProjector?) {
+		val isPlayerItem = container.isPlayerItem;
+		val item: Item? = container.takeItem(this);
+		if(item == null) {
+			if(this === mainPlayer) {
+				projector?.drawSubtitles("Failed to take the item in the container", Color.SALMON);
+				beep2();
+			}
+		} else {
+			selectItem(item);
+			if(this === mainPlayer)
+				projector?.drawSubtitles("Took ${item.name} from the container");
+			if(!isPlayerItem)
+				statistics.openedContainerCount++;
+		}
 	}
 
 	// ---- 콜백(이벤트) 처리 ----

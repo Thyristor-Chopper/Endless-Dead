@@ -68,7 +68,7 @@ abstract class Container(world: World? = null, name: String, x: Float = 0f, y: F
 	 * @return 성공하면 들어있는 아이템, 실패하면 null
 	 * @throws IllegalArgumentException	taker가 자기 자신인 경우
 	 */
-	fun takeItem(taker: InventoryHolder): Item? {
+	open fun takeItem(taker: InventoryHolder): Item? {
 		if(taker === this) throw IllegalArgumentException("taker is the container itself");
 		val item = inventory.getItem();  // https://stackoverflow.com/questions/44595529
 		if(item == null) return null;
@@ -84,7 +84,7 @@ abstract class Container(world: World? = null, name: String, x: Float = 0f, y: F
 	 * @param isPlayerItem 플레이어가 직접 아이템을 넣었는지의 여부
 	 * @return 성공 여부
 	 */
-	@JvmOverloads fun putItem(item: Item, isPlayerItem: Boolean = false): Boolean {
+	@JvmOverloads open fun putItem(item: Item, isPlayerItem: Boolean = false): Boolean {
 		if(inventory.addItem(item)) {
 			if(isPlayerItem) this.isPlayerItem = true;
 			return true;

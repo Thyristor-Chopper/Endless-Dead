@@ -29,6 +29,7 @@ object Resources : Disposable {
 			register("chest", "entity/container/chest.bmp");
 			register("empty_building", "entity/container/building_empty.bmp");
 			register("empty_chest", "entity/container/chest_empty.bmp");
+			register("empty_vault", "entity/container/vault_empty.bmp");
 			register("landmine", "entity/landmine.bmp");
 			register("player_item_indicator", "entity/container/player_item.bmp");
 			register("portal", "entity/portal.bmp");
@@ -38,6 +39,7 @@ object Resources : Disposable {
 			register("triggerman_summoner", "entity/triggerman_summoner.bmp");
 			register("turret_friendly", "entity/turret_friendly.bmp");
 			register("turret_hostile", "entity/turret_hostile.bmp");
+			register("vault", "entity/container/vault.bmp");
 			register("zombie", "entity/zombie.bmp");
 
 			register("button", "widget/button.bmp", true);

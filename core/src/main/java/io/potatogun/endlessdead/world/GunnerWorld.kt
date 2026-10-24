@@ -12,6 +12,7 @@ import io.potatogun.endlessdead.entity.Portal;
 import io.potatogun.endlessdead.entity.container.Chest;
 import io.potatogun.endlessdead.entity.container.Container;
 import io.potatogun.endlessdead.entity.container.TrapChest;
+import io.potatogun.endlessdead.entity.container.Vault;
 import io.potatogun.endlessdead.entity.turret.FriendlyTurret;
 import io.potatogun.endlessdead.entity.turret.HostileTurret;
 import io.potatogun.endlessdead.item.Bandage;
@@ -98,7 +99,8 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 			val rand = random.nextInt(100) + 1;
 			entities.add(when {
 				rand >= 98	-> TrapChest(this, x, y, item)		// 3% 확률
-				else		-> Chest(this, x, y, item)			// 97% 확률
+				rand >= 61	-> Chest(this, x, y, item)			// 37% 확률 (상자 전체: 40%)
+				else		-> Vault(this, x, y, item)			// 60% 확률
 			});
 		}
 
