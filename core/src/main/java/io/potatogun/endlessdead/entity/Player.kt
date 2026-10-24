@@ -204,7 +204,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 				putItemToContainer(container, mainPlayer, projector);
 			} else {
 				if(container is HardContainer && !container.opened)
-					container.open { takeItemFromContainer(container, mainPlayer, projector) };
+					container.open { takeItemFromContainer(container, mainPlayer, projector) };  // 구현의 귀찮음으로 플레이어가 금고가 있는 곳을 벗어나도 그냥 지급됨
 				else
 					takeItemFromContainer(container, mainPlayer, projector);
 			}
