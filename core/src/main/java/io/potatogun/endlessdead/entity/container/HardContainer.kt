@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.item.Item;
+import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.widget.ProgressBar;
 import io.potatogun.gdxhelper.world.World;
 
@@ -32,6 +33,7 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 		private set;
 	private var openCallback: Runnable? = null;
 	private val openingProgressBar = ProgressBar({ x - 18f + originOffsetX }, { y + height * 0.5f + originOffsetY }, { 36f }, { 8f }, skin = Resources.smallProgressBar, color = Color.SLATE);
+	private var opener: Entity? = null;
 
 	init {
 		if(openDuration <= 0f)
@@ -42,16 +44,23 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 		super.update(delta);
 
 		if(opening) {
-			openTimer -= delta;
-			if(openTimer <= 0f) {
+			if(!(opener?.collidesWith(this) ?: true)) {  // 여는 이가 자리를 벗어나면 열기 취소
 				openTimer = 0f;
-				opened = true;
-				openCallback?.let {
-					it.run();
-					openCallback = null;
-				};
+				opener = null;
+				openCallback = null;
+			} else {
+				openTimer -= delta;
+				if(openTimer <= 0f) {
+					openTimer = 0f;
+					opened = true;
+					opener = null;
+					openCallback?.let {
+						it.run();
+						openCallback = null;
+					};
+				}
+				openingProgressBar.value = 1f - openTimer / openDuration;
 			}
-			openingProgressBar.value = 1f - openTimer / openDuration;
 		}
 	}
 
@@ -62,10 +71,11 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 			openingProgressBar.draw(batch);
 	}
 
-	@JvmOverloads fun open(callback: Runnable? = null) {
+	@JvmOverloads fun open(opener: Entity? = null, callback: Runnable? = null) {
 		if(opened || opening) return;
 		openTimer = openDuration;
 		openCallback = callback;
+		this.opener = opener;
 	}
 
 	override fun takeItem(taker: InventoryHolder): Item? {

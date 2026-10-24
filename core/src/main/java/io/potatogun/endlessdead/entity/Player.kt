@@ -212,7 +212,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 							projector?.drawSubtitles("Opening the vault...");
 						}
 					}
-					container.open { takeItemFromContainer(container, mainPlayer, projector) };  // 구현의 귀찮음으로 플레이어가 금고가 있는 곳을 벗어나도 그냥 지급됨
+					container.open(this) { takeItemFromContainer(container, mainPlayer, projector) };
 				} else {
 					takeItemFromContainer(container, mainPlayer, projector);
 				}
