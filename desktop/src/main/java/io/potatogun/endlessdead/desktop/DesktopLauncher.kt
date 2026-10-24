@@ -2,8 +2,8 @@
 package io.potatogun.endlessdead.desktop;
 
 import com.badlogic.gdx.Files.FileType;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
@@ -26,17 +26,21 @@ fun main(args: Array<String>) {
 	val game = EndlessDead();
 
 	// 창(Window) 설정
-	val config = Lwjgl3ApplicationConfiguration().apply {
-		setTitle("${Constants.GAME_TITLE} - Loading...");
-		setWindowedMode(800, 600);
-		setResizable(true);
-		setWindowSizeLimits(640, 480, -1, -1);  // -1: 제한 없음
-		useVsync(false);  // 수직동기화를 꺼야 랙이 줄어듦
-		setForegroundFPS(Constants.PASSIVE_FPS);  // 타이틀 화면에서는 낮은 fps로
-		setIdleFPS(1);
-		setWindowIcon(FileType.Internal, "assets/icon_16.bmp", "assets/icon_32.bmp");
+	val config = LwjglApplicationConfiguration().apply {
+		title = "${Constants.GAME_TITLE} - Loading...";
+		width = 800;
+		height = 600;
+		resizable = true;
+		vSyncEnabled = false;  // 수직동기화를 꺼야 랙이 줄어듦
+		foregroundFPS = Constants.FPS;
+		backgroundFPS = Constants.PASSIVE_FPS;
+		pauseWhenBackground = true;
+		pauseWhenMinimized = true;
+		addIcon("assets/icon_128.bmp", FileType.Internal);
+		addIcon("assets/icon_32.bmp", FileType.Internal);
+		addIcon("assets/icon_16.bmp", FileType.Internal);
 	};
 
 	// 실행
-	Lwjgl3Application(game, config);
+	LwjglApplication(game, config);
 }
