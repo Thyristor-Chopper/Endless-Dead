@@ -34,7 +34,7 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 	private val openingProgressBar = ProgressBar({ x - 18f + originOffsetX }, { y + height * 0.5f + originOffsetY }, { 36f }, { 8f }, skin = Resources.smallProgressBar, color = Color.SLATE);
 
 	init {
-		if(openDuration < 0f)
+		if(openDuration <= 0f)
 			throw IllegalArgumentException("invalid open duration");
 	}
 
