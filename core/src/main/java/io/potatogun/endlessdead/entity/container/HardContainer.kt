@@ -26,9 +26,15 @@ import io.potatogun.gdxhelper.world.World;
  * @property openDuration 여는 데 걸리는 시간
  */
 abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, y: Float = 0f, width: Float, height: Float, texture: Texture?, emptyTexture: Texture? = null, initialItem: Item? = null, private val openDuration: Float): Container(world, name, x, y, width, height, texture, emptyTexture, initialItem) {
+	/**
+	 * 열리는 중인지의 여부
+	 */
 	@get:JvmName("isOpening") val opening: Boolean
 		get() = (!opened && openTimer > 0f);
 	private var openTimer = 0f;
+	/**
+	 * 완전히 열렸는지의 여부
+	 */
 	@get:JvmName("isOpened") var opened = false
 		private set;
 	private var openCallback: Runnable? = null;
