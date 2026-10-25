@@ -35,9 +35,13 @@ import io.potatogun.gdxhelper.util.InputListener;
 import io.potatogun.gdxhelper.util.beep2;
 import io.potatogun.gdxhelper.util.isMobile as isMobilePlatform;
 import io.potatogun.gdxhelper.util.loadTexture;
+import io.potatogun.gdxhelper.util.takeIfInstance;
 import io.potatogun.gdxhelper.world.World;
 
+import java.lang.Math.toDegrees;
 import java.lang.ref.WeakReference;
+
+import kotlin.math.atan2;
 
 /**
  * 플레이어 — 화살표나 WASD로 조종
@@ -113,7 +117,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		super.update(delta);
 
 		// 다람쥐 위치에 따라 플레이어 회전
-		rotateToCursor();
+		if(!isMobile)
+			rotateToCursor();
 
 		// 아이템 사용
 		selectedItem?.let {
@@ -123,13 +128,16 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 					val mouseX = Input.mouseX.toFloat();
 					val mouseY = Window.height - Input.mouseY;
 					val joystick = (level?.projector as? JoystickScreen)?.joystick;
-					isInClickableRegion = !(mouseX < 128f && mouseY < 128f) && (joystick == null || (mouseX < joystick.x || mouseY > joystick.y + joystick.height));
+					isInClickableRegion = !(mouseX < 128f && mouseY < 128f) && (joystick == null || (mouseX < joystick.x - 48f || mouseY > joystick.y + joystick.height + 48f));
 				} else {
 					isInClickableRegion = true;
 				}
 
-				if(isInClickableRegion)
+				if(isInClickableRegion) {
+					if(isMobile)
+						rotateToCursor();
 					useItem(it);
+				}
 			}
 		};
 
@@ -197,21 +205,31 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		val originalX = x;
 		val originalY = y;
 
-		var dx = 0f;
-		var dy = 0f;
-		if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A))
-			dx -= 1f;
-		if(Input.isKeyPressed(Input.RIGHT) || Input.isKeyPressed(Input.D))
-			dx += 1f;
-		if(Input.isKeyPressed(Input.UP) || Input.isKeyPressed(Input.W))
-			dy += 1f;
-		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S))
-			dy -= 1f;
-		move(delta, dx, dy);
+		if(isMobile) {
+			level?.projector?.takeIfInstance<JoystickScreen>()?.joystick?.let {
+				val dx = it.knobPercentX;
+				val dy = it.knobPercentY;
+				if(dx != 0f || dy != 0f) {
+					val radians = atan2(dy, dx);
+					val degrees = toDegrees(radians.toDouble()).toFloat() - 90f;
+					rotate(degrees);
 
-		val projector = level?.projector;
-		if(projector is JoystickScreen)
-			projector.joystick?.let { move(delta, it.knobPercentX, it.knobPercentY) };
+					move(delta, dx, dy);
+				}
+			};
+		} else {
+			var dx = 0f;
+			var dy = 0f;
+			if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A))
+				dx -= 1f;
+			if(Input.isKeyPressed(Input.RIGHT) || Input.isKeyPressed(Input.D))
+				dx += 1f;
+			if(Input.isKeyPressed(Input.UP) || Input.isKeyPressed(Input.W))
+				dy += 1f;
+			if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S))
+				dy -= 1f;
+			move(delta, dx, dy);
+		}
 
 		// 월드 경계 안쪽으로 가두기.
 		val world = level;

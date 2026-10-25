@@ -191,7 +191,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 
 		if(isMobile) {
 			uiStage = Stage(ScreenViewport());
-			joystick = Touchpad(10f, Touchpad.TouchpadStyle().apply {
+			joystick = Touchpad(16f, Touchpad.TouchpadStyle().apply {
 				background = TextureRegionDrawable(resources.textures.getShared("joystick_background"));
 				knob = TextureRegionDrawable(resources.textures.getShared("joystick_thumb"));
 			});
@@ -249,7 +249,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 
 	override fun resize(width: Int, height: Int) {
 		super.resize(width, height);
-		uiStage?.let { it.viewport.update(width, height) };
+		uiStage?.let { it.viewport.update(width, height, true) };
 		setJoystickBounds();
 	}
 
@@ -262,8 +262,13 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	private inline fun setJoystickBounds() {
 		if(joystick == null) return;
 		val size = Window.height * 0.25f;
-		val margin = 36f;
+		val knobSize = size * 0.421875f;
+		val margin = 48f;
 		joystick.setBounds(Window.width - size - margin, margin, size, size);
+		joystick.style.knob.let {
+			it.minWidth = knobSize;
+			it.minHeight = knobSize;
+		};
 	}
 
 	override fun update(delta: Float) {
