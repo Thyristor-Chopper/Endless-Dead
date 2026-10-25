@@ -67,7 +67,7 @@ JDK 1.8 이상이 설치된 환경에서 `build.bat`를 실행하거나
 
 #### APK 빌드
 
-PC 버전 빌드는 자바 1.8에서도 가능하지만 안드로이드 버전 빌드는 자바 17 이상이 요구된다.
+PC 버전 빌드는 JDK 1.8에서도 가능하지만 안드로이드 버전 빌드는 JDK 17 이상이 요구된다.
 
 `android` 디렉토리 내 `genkey.bat`를 실행하여 서명 키를 생성하고 `local.properties`를 만들어 키와 저장소의 비밀번호(`RELEASE_STORE_PASSWORD`, `RELEASE_KEY_PASSWORD`)를 등록한다.
 
