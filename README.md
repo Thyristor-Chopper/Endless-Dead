@@ -16,7 +16,7 @@ Windows XP 32비트 SP3, Windows 7 64비트 SP1, Windows 10 64비트 LTSC 2021�
 
 ### Android
 
-안드로이드 4.4 이상 필요 (현재 target SDK는 36: 안드로이드 16이다.)
+안드로이드 4.4 이상 (현재 target SDK는 36: 안드로이드 16이다.)
 
 안드로이드 4.4.2(갤럭시 노트2), 6.0.1(갤럭시 S7), 8.0(갤럭시 S7), 16(갤럭시 S7 커스텀 펌웨어)에서 정상 실행 확인.
 
@@ -32,6 +32,8 @@ git submodule init && git submodule update
 
 #### 직접 실행 (JDK)
 
+JDK 1.8 이상이 필요하다.
+
 Windows는 `run.bat` 실행
 
 매킨토시나 리눅스는 터미날에서
@@ -41,7 +43,7 @@ Windows는 `run.bat` 실행
 
 #### 컴파일된 JAR 사용
 
-JDK가 설치된 환경에서 `build.bat`를 실행하거나
+JDK 1.8 이상이 설치된 환경에서 `build.bat`를 실행하거나
 ```bash
 ./gradlew :desktop:shadowJar
 ```
@@ -61,9 +63,11 @@ JDK가 설치된 환경에서 `build.bat`를 실행하거나
 
 #### APK 빌드
 
+PC 버전 빌드는 자바 1.8에서도 가능하지만 안드로이드 버전 빌드는 자바 17 이상이 요구된다.
+
 `android` 디렉토리 내 `genkey.bat`를 실행하여 키를 생성하고 `local.properties`를 만들어 키 저장소와 키의 비밀번호(`RELEASE_STORE_PASSWORD`, `RELEASE_KEY_PASSWORD`)를 등록한다.
 
-그 다음 `buildapk.bat`를 실행하여 APK를 빌드한다.
+그 다음 `buildapk.bat`를 실행하여 APK를 빌드한다. 빌드 시 도스창에 D8 관련(메타데이타 읽기 실패) 에러 폭탄이 뜰 수 있는데 그냥 무시해도 정상적으로 진행된다.
 
 ## 조작법
 
