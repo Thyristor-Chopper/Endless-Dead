@@ -16,7 +16,7 @@
 
 Windows XP 32비트 SP3(JDK 1.8u51), Windows 7 64비트 SP1(JDK 17)에서 빌드 가능 확인.
 
-Windows XP 32비트 SP3, Windows 7 64비트 SP1, Windows 10 64비트 LTSC 2021에서 정상 실행 확인.
+Windows XP 32비트 SP3, Windows 7 64비트 SP1, Windows 10 64비트 21H2에서 정상 실행 확인. 팀으로 개발했을 당시에는 다른 개발자의 컴퓨터로 Windows 11 64비트에서도 실행 가능함을 확인했었다.
 
 ### Android
 
