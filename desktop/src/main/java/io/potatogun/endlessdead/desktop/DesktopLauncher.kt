@@ -23,7 +23,7 @@ import org.lwjgl.util.tinyfd.TinyFileDialogs;
  * 실제 게임 내용은 EndlessDead 클래스와 각 Screen/World 클래스에서 정의된다.
  * 이 파일은 순수 'OS에 창 띄우기' 역할만 한다.
  *
- * @param args 명령줄 매개변수
+ * @param args 명령줄 매개변수 - 현재 사용하지 않지만 그냥 fun main()으로 만들면 바이트코드가 synthetic method main(String[] args)가 main()로 포워드해주는 이상한 방식을 써서...
  */
 fun main(args: Array<String>) {
 	// 게임 객체 만들기

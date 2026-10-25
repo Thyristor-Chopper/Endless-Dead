@@ -73,7 +73,7 @@ class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = Resources
 	// 나무
 	private val tree = loadTexture("world/tree.bmp");
 	private val smallTree = loadTexture("world/tree_small.bmp");
-	private val treeInfo: IntArray;  // 이 월드는 한 변 크기가 2000 뿐이므로 더블 short->int(32비트)로 써도 됨, 값은 SMALL(0), NORMAL(1)
+	private val treeInfo: IntArray;  // 이 월드는 한 변 크기가 2560 정도뿐이므로 더블 short->int(32비트)로 써도 됨, 값은 SMALL(0), NORMAL(1)
 	private val treeTint = rgb(255, 255, 255, 0.85f);  // 나무를 반투명하게
 	// 담장
 	private val horizontalBorder = loadTexture("world/horizontal_border.bmp");
