@@ -10,7 +10,6 @@ import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.LivingEntity;
-import io.potatogun.gdxhelper.UpdateListeners;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.position.Position;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
@@ -116,7 +115,7 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 		bulletSize = settings.bulletSize;
 		bulletTexture = settings.bulletFaceTexture;
 
-		UpdateListeners.register(this) { _, game -> game is EndlessDead && game.gameManager.isPlaying };
+		game.updateListeners.register(this) { _, game -> game is EndlessDead && game.gameManager.isPlaying };
 	}
 
 	override fun update(delta: Float) {
@@ -186,7 +185,7 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 	}
 
 	override fun dispose() {
-		UpdateListeners.unregister(this);
+		game.updateListeners.unregister(this);
 	}
 
 	/**

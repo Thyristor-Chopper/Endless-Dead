@@ -23,7 +23,6 @@ import io.potatogun.endlessdead.item.Shotgun;
 import io.potatogun.endlessdead.item.TurretInstaller;
 import io.potatogun.endlessdead.spawner.Spawner;
 import io.potatogun.endlessdead.spawner.TriggermanSpawner;
-import io.potatogun.gdxhelper.UpdateListeners;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.collections.filter;
 import io.potatogun.gdxhelper.collections.randomOrNull;
@@ -139,7 +138,7 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 			};
 		});
 
-		UpdateListeners.register(this) { world, game -> game is EndlessDead && game.gameManager.isPlaying && game.player?.isIn(world as World) ?: false };
+		game.updateListeners.register(this) { world, game -> game is EndlessDead && game.gameManager.isPlaying && game.player?.isIn(world as World) ?: false };
 	}
 
 	/**
@@ -267,6 +266,6 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 		horizontalBorder.dispose();
 		verticalBorder.dispose();
 		void.dispose();
-		UpdateListeners.unregister(this);
+		game.updateListeners.unregister(this);
 	}
 }

@@ -19,6 +19,8 @@ class AndroidLauncher : AndroidApplication() {
 		val config = AndroidApplicationConfiguration().apply {
 			useAccelerometer = false;
 			useCompass = false;
+			useGyroscope = false;
+			useWakelock = false;
 		};
 
 		initialize(game, config);

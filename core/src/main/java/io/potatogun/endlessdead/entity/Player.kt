@@ -93,7 +93,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 		team = "friends";
 
-		Input.registerListener(this) { player, game -> game is EndlessDead && player === game.player && game.gameManager.isPlaying };
+		game.inputListeners.register(this) { player, game -> game is EndlessDead && player === game.player && game.gameManager.isPlaying };
 	}
 
 	override fun move(delta: Float, directionX: Float, directionY: Float) {

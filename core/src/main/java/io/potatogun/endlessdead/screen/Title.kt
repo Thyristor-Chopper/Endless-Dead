@@ -33,7 +33,7 @@ class Title : Screen(font = Resources.font), InputListener {
 			Gdx.app.exit();
 		});
 
-		Input.registerListener(this);
+		game.inputListeners.register(this);
 	}
 
 	override fun update(delta: Float) {

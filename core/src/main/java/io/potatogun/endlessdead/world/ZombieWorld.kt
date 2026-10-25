@@ -30,7 +30,6 @@ import io.potatogun.endlessdead.item.TurretInstaller;
 import io.potatogun.endlessdead.spawner.GiantZombieSpawner;
 import io.potatogun.endlessdead.spawner.Spawner;
 import io.potatogun.endlessdead.spawner.ZombieSpawner;
-import io.potatogun.gdxhelper.UpdateListeners;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.collections.filter;
 import io.potatogun.gdxhelper.collections.randomOrNull;
@@ -208,7 +207,7 @@ class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = Resources
 			treeInfo.add(Tree.hashOf(x, y, size));
 		}
 
-		UpdateListeners.register(this) { world, game -> game is EndlessDead && game.gameManager.isPlaying && game.player?.isIn(world as World) ?: false };
+		game.updateListeners.register(this) { world, game -> game is EndlessDead && game.gameManager.isPlaying && game.player?.isIn(world as World) ?: false };
 	}
 
 	/**
@@ -435,7 +434,7 @@ class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = Resources
 		verticalBorder.dispose();
 		void.dispose();
 		specialWorld?.dispose();
-		UpdateListeners.unregister(this);
+		game.updateListeners.unregister(this);
 	}
 
 	/**
