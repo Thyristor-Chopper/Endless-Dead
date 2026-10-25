@@ -94,6 +94,10 @@ class EndlessDead : Game() {
 	companion object {
 		/**
 		 * 게임의 현재 인스턴스
+		 *
+		 * 자바에서는 getInstance()로 호출한다.
+		 *
+		 * @throws NullPointerException 프로그램 자체가 초기화되기 전에 접근할 경우.
 		 */
 		val instance: EndlessDead
 			inline get() = getGameInstance<EndlessDead>();
