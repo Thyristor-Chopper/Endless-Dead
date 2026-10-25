@@ -1,6 +1,18 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode
+import org.jetbrains.dokka.gradle.DokkaExtension
+
 plugins {
 	kotlin("jvm") version "2.4.20" apply false
+	id("org.jetbrains.kotlin.android") version "2.4.20" apply false
 	id("org.jetbrains.dokka-javadoc") version "2.2.0" apply false
+}
+
+buildscript {
+	dependencies {
+		classpath("com.android.tools.build:gradle:8.10.0")
+	}
 }
 
 allprojects {
@@ -9,6 +21,8 @@ allprojects {
 	}
 
 	repositories {
+		google()
+		mavenCentral()
 		gradlePluginPortal()
 	}
 }
@@ -27,10 +41,10 @@ subprojects {
 		targetCompatibility = "1.8"
 	}
 
-	tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+	tasks.withType<KotlinCompile>().configureEach {
 		compilerOptions {
 			// Windows XP 호환성
-			jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_1_8)
+			jvmTarget.set(JvmTarget.JVM_1_8)
 
 			// 최적화
 			//   -Xlambdas=indy: 코틀린 람다 함수를 invoke 메쏘드가 있는 별도 클래스를 만드는 대신 'invoke dynamic'를 사용한다. 디컴파일해서 비교했을 때 '메쏘드명$lambda$순번' static method을 만든다.
@@ -44,17 +58,17 @@ subprojects {
 			freeCompilerArgs.addAll(listOf("-Xwarning-level=NOTHING_TO_INLINE:disabled", "-Xwarning-level=UNCHECKED_CAST:disabled"))
 
 			// SinceKotlin 트릭으로 자바 전용 API를 코틀린에서만 숨길 때 나오는 경고 죽이기
-			freeCompilerArgs.addAll(listOf("-Xwarning-level=NEWER_VERSION_IN_SINCE_KOTLIN:disabled"))
+			freeCompilerArgs.add("-Xwarning-level=NEWER_VERSION_IN_SINCE_KOTLIN:disabled")
 
 			// 인터페이스 최적화
 			//   자바 8 인터페이스의 default void f() { ... }문법을 쓴다. 디컴파일해서 비교하니까 DefaultImpls 내부 클래스를 만드는 것보다
 			//   훨씬 깔끔하고 효율적이다. (코틀린 1.x은 -Xjvm-default=all)
-			jvmDefault = org.jetbrains.kotlin.gradle.dsl.JvmDefaultMode.NO_COMPATIBILITY
+			jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
 		}
 	}
 
 	plugins.withId("org.jetbrains.dokka-javadoc") {
-		extensions.configure<org.jetbrains.dokka.gradle.DokkaExtension> {
+		extensions.configure<DokkaExtension> {
 			dokkaSourceSets.configureEach {
 				enableJdkDocumentationLink.set(false)
 			}

@@ -8,3 +8,6 @@ core/src/.idea/
 desktop/.lwjgl/
 desktop/build/
 desktop/*.log
+android/build/
+android/endless-dead-key.jks
+android/local.properties

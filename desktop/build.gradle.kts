@@ -1,5 +1,6 @@
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val buildDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyMMdd-HHmm"))
 
@@ -31,7 +32,7 @@ application {
 	applicationDefaultJvmArgs = listOf("-XX:+IgnoreUnrecognizedVMOptions", "-XstartOnFirstThread")
 }
 
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+tasks.withType<KotlinCompile>().configureEach {
 	compilerOptions {
 		freeCompilerArgs.addAll(listOf("-Xno-param-assertions"))
 	}

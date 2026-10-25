@@ -1,6 +1,7 @@
 package io.potatogun.endlessdead.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -32,6 +33,7 @@ import io.potatogun.gdxhelper.screen.WorldProjector;
 import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
+import io.potatogun.gdxhelper.util.isMobile as isMobilePlatform;
 import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.util.parseSeconds;
 import io.potatogun.gdxhelper.util.rgb;
@@ -82,6 +84,7 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 	private val targetIndicator: ProgressBar;
 	private val ammoIndicator: ProgressBar;
 	private val cooldownIndicator: ProgressBar;
+	private val isMobile = isMobilePlatform;
 
 	init {
 		// 단색용 텍스처 생성

@@ -10,6 +10,7 @@ import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.Screen;
 import io.potatogun.gdxhelper.util.InputListener;
+import io.potatogun.gdxhelper.util.isMobile as isMobilePlatform;
 import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.widget.Button;
 
@@ -22,6 +23,7 @@ class Title : Screen(font = Resources.font), InputListener {
 	private val stillCut = loadTexture("title/still_cut.bmp");
 	private val stillCutTint = Color.GRAY;  // 원래보다 반 정도 어둡게
 	private var titleBlinkTimer = 0f;
+	private val isMobile = isMobilePlatform;
 
 	init {
 		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, { 120f }, caption = "Play", skin = Resources.primaryButton) {
@@ -37,9 +39,11 @@ class Title : Screen(font = Resources.font), InputListener {
 	override fun update(delta: Float) {
 		super.update(delta);
 
-		titleBlinkTimer += delta;
-		if(titleBlinkTimer >= 1f)
-			titleBlinkTimer = 0f;
+		if(!isMobile) {
+			titleBlinkTimer += delta;
+			if(titleBlinkTimer >= 1f)
+				titleBlinkTimer = 0f;
+		}
 	}
 
 	override fun onKeyDown(code: Int): Boolean {
@@ -61,7 +65,7 @@ class Title : Screen(font = Resources.font), InputListener {
 		val titleX = (Window.width - titleWidth) * 0.5f;
 		val titleY = Window.height * 0.5f + 80f;
 		batch.draw(title, titleX, titleY, titleWidth, titleHeight);
-		if(titleBlinkTimer % 1f < 0.5f)
+		if(!isMobile && titleBlinkTimer % 1f < 0.5f)
 			drawText(
 				text = "Press any key to start",
 				x = 0f,
