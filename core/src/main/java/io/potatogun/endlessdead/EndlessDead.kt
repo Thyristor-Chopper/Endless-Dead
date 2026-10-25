@@ -6,6 +6,7 @@ import io.potatogun.endlessdead.screen.Title;
 import io.potatogun.endlessdead.screen.ZombieWorldProjector;
 import io.potatogun.gdxhelper.Game;
 import io.potatogun.gdxhelper.screen.WorldProjector;
+import io.potatogun.gdxhelper.util.getGameInstance;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -38,8 +39,6 @@ class EndlessDead : Game() {
 	override fun create() {
 		super.create();
 
-		instance = this;
-
 		if(java.lang.Boolean.getBoolean("zombie.instantGame")) {
 			gameManager.newGame();
 		} else {
@@ -54,18 +53,6 @@ class EndlessDead : Game() {
 		super.update(delta);
 
 		gameManager.update(delta);
-	}
-
-	// 자원 정리
-	override fun dispose() {
-		super.dispose();
-		resources.dispose();
-		Item.textures.dispose();
-		if(lzTitleScreen.isInitialized())
-			titleScreen.dispose();
-		if(lzWorldProjector.isInitialized())
-			worldProjector.dispose();
-		player?.dispose();
 	}
 
 	@SinceKotlin("9999.9") fun createPlayer(): Player = createPlayer(null, 0f, 0f);
@@ -92,13 +79,23 @@ class EndlessDead : Game() {
 		player = null;
 	}
 
+	// 자원 정리
+	override fun dispose() {
+		super.dispose();
+		resources.dispose();
+		Item.Textures.getInstance(this).dispose();
+		if(lzTitleScreen.isInitialized())
+			titleScreen.dispose();
+		if(lzWorldProjector.isInitialized())
+			worldProjector.dispose();
+		player?.dispose();
+	}
+
 	companion object {
 		/**
-		 * 게임의 인스턴스
-		 *
-		 * libGDX는 Game()의 인스턴스가 두 개 이상일 이유가 없고 창을 두 개 이상 띄우지 못하므로 큰 위험성은 없다.
+		 * 게임의 현재 인스턴스
 		 */
-		@get:JvmStatic lateinit var instance: EndlessDead  // 일반적으로 바뀌지 않는 필드임.
-			private set;
+		val instance: EndlessDead
+			inline get() = getGameInstance<EndlessDead>();
 	}
 }
