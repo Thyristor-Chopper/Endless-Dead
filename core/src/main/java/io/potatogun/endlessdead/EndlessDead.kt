@@ -94,7 +94,7 @@ class EndlessDead : Game() {
 		 *
 		 * libGDX는 Game()의 인스턴스가 두 개 이상일 이유가 없고 창을 두 개 이상 띄우지 못하므로 큰 위험성은 없다.
 		 */
-		@get:JvmStatic lateinit var instance: EndlessDead  // 바뀌지 않는 필드임.
+		@get:JvmStatic lateinit var instance: EndlessDead  // 일반적으로 바뀌지 않는 필드임.
 			private set;
 	}
 }
