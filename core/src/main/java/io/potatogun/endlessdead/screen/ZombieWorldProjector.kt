@@ -21,7 +21,6 @@ import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.LimitedUsable;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.endlessdead.world.SpecialWorld;
-import io.potatogun.gdxhelper.TaskQueue;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.isIn;
 import io.potatogun.gdxhelper.entity.manager.countOf;
@@ -168,7 +167,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			if(world is SpecialWorld) {
 				val mainWorld = world.mainWorld;
 				if(mainWorld != null)
-					TaskQueue.post(mainWorld, WorldProjector.safeDisposeWorld);
+					game.taskQueue.post(mainWorld, WorldProjector.safeDisposeWorld);
 			}
 		};
 	}
