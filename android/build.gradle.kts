@@ -32,8 +32,6 @@ android {
 
 		// 안드로이드 4.4에서 필요
 		multiDexEnabled = true
-
-		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 	}
 
 	compileOptions {
