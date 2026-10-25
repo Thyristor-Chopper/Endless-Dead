@@ -5,7 +5,11 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.Pools;
@@ -31,6 +35,7 @@ import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.Input;
+import io.potatogun.gdxhelper.util.InputListener;
 import io.potatogun.gdxhelper.util.isMobile as isMobilePlatform;
 import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.util.parseSeconds;
@@ -44,7 +49,7 @@ import io.potatogun.gdxhelper.world.World;
  * 게임 목적에 맞게 HUD와 체력 정보, 총 정보 등을 표시해주는 월드 뷰어.
  *   이쪽에는 우리 게임의 목적에 맞게 HP 미터기, 일시 정지 처리, 게임 오버 화면 등이 모두 구현되어 있다.
  */
-class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resources.font), SubtitlesDrawable {
+class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resources.font), JoystickScreen, SubtitlesDrawable, InputListener {
 	private val game = EndlessDead.instance;
 	private val noWorldOverlay = rgb(64, 64, 64);  // 원래보다 많이 어둡게
 	private val frozenOverlay = rgb(0, 0, 0, 0.5f);
@@ -82,7 +87,18 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	private val targetIndicator: ProgressBar;
 	private val ammoIndicator: ProgressBar;
 	private val cooldownIndicator: ProgressBar;
+	// 화면접촉식 장치용 인터페이스
 	private val isMobile = isMobilePlatform;
+	private val uiStage: Stage?;
+	/**
+	 * 조이스틱 객체를 가져온다. 모바일에서만 있다.
+	 *
+	 * 자바에서는 getJoystick()로 가져온다.
+	 */
+	override val joystick: Touchpad?;
+	private val previousItemButton: Button?;
+	private val nextItemButton: Button?;
+	private val openContainerButton: Button?;
 
 	init {
 		// 단색용 텍스처 생성
@@ -93,7 +109,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			dispose();
 		};
 
-		val resources = game.resources
+		val resources = game.resources;
 
 		// 미터기 추가
 		hpIndicator = ProgressBar({ 9f }, { Window.height - 38f }, { 180f }, skin = resources.smoothProgressBar, color = rgb(73, 186, 73)).also { addWidget("hp_indicator", it) };
@@ -143,12 +159,20 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 					resumeButton.hide();
 					titleButton.hide();
 					quitButton.hide();
+
+					previousItemButton?.show();
+					nextItemButton?.show();
+					openContainerButton?.show();
 				}
 				game.gameManager.isPaused -> {
 					replayButton.hide();
 					resumeButton.show();
 					titleButton.show();
 					quitButton.show();
+
+					previousItemButton?.hide();
+					nextItemButton?.hide();
+					openContainerButton?.hide();
 				}
 				game.gameManager.isGameOver -> {
 					TitleBar.stats = null;
@@ -157,9 +181,42 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 					resumeButton.hide();
 					titleButton.show();
 					quitButton.show();
+
+					previousItemButton?.hide();
+					nextItemButton?.hide();
+					openContainerButton?.hide();
 				}
 			}
 		};
+
+		if(isMobile) {
+			uiStage = Stage(ScreenViewport());
+			joystick = Touchpad(10f, Touchpad.TouchpadStyle().apply {
+				background = TextureRegionDrawable(resources.textures.getShared("joystick_background"));
+				knob = TextureRegionDrawable(resources.textures.getShared("joystick_thumb"));
+			});
+			setJoystickBounds();
+			uiStage.addActor(joystick);
+
+			previousItemButton = Button(8f, 2f, 28f, 28f, caption = "<", skin = resources.button) {
+				game.inputListeners.fireScroll(0f, -1f);
+			}.also { addWidget("previous_item_button", it) };
+			nextItemButton = Button(8f + 28f + 8f, 2f, 28f, 28f, caption = ">", skin = resources.button) {
+				game.inputListeners.fireScroll(0f, 1f);
+			}.also { addWidget("next_item_button", it) };
+			openContainerButton = Button(8f, 72f, 96f, 32f, caption = "Open", skin = resources.button) {
+				game.inputListeners.fireTouchDown(Input.mouseX, Input.mouseY, 0, Input.RIGHT_MOUSE);
+			}.also { addWidget("open_container_button", it) };
+		} else {
+			uiStage = null;
+			joystick = null;
+
+			previousItemButton = null;
+			nextItemButton = null;
+			openContainerButton = null;
+		}
+
+		game.inputListeners.register(this);
 	}
 
 	private inline fun disposeParentWorld() {  // 원래는 세 군데에 직접 작성했던 코드라 인라인이다.
@@ -190,6 +247,25 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			game.gameManager.pause();
 	}
 
+	override fun resize(width: Int, height: Int) {
+		super.resize(width, height);
+		uiStage?.let { it.viewport.update(width, height) };
+		setJoystickBounds();
+	}
+
+	override fun onTouchDrag(x: Int, y: Int, pointer: Int): Boolean = uiStage?.touchDragged(x, y, pointer) ?: false;
+
+	override fun onTouchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = uiStage?.touchDown(x, y, pointer, button) ?: false;
+
+	override fun onTouchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = uiStage?.touchUp(x, y, pointer, button) ?: false;
+
+	private inline fun setJoystickBounds() {
+		if(joystick == null) return;
+		val size = Window.height * 0.25f;
+		val margin = 36f;
+		joystick.setBounds(Window.width - size - margin, margin, size, size);
+	}
+
 	override fun update(delta: Float) {
 		timers.update(delta);
 
@@ -207,6 +283,8 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	 */
 	private inline fun updatePlaying(delta: Float) {  // update에서만 한 번 쓰이기 때문에 inline이다.
 		super.update(delta);
+
+		uiStage?.act(delta);
 
 		val player = game.player;
 		val world = player?.world;
@@ -505,6 +583,9 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		// 월드 및 자막 그리기
 		super.drawContents();
 
+		if(game.gameManager.isPlaying)
+			uiStage?.draw();
+
 		// 자막이 있으면 표시
 		if(subtitlesVisible)
 			drawText(
@@ -563,10 +644,11 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			// 현재 플레이어가 들고 있는 아이템
 			player.selectedItem?.let {
 				val rarity = it.rarity;
-				batch.draw(it.texture, 8f, 4f, Item.sideLength, Item.sideLength);
+				val leftMargin = if(previousItemButton != null) 72f else 0f;
+				batch.draw(it.texture, leftMargin + 8f, 4f, Item.sideLength, Item.sideLength);
 				drawText(
 					text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.size}]",
-					x = 40f,
+					x = leftMargin + 40f,
 					y = 22f,
 					color =
 						if(rarity == Rarity.UNCOMMON)
@@ -607,6 +689,8 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		solidColor.dispose();
 		if(lzStillCut.isInitialized())
 			lzStillCut.value.dispose();
+		uiStage?.dispose();
+		game.inputListeners.unregister(this);
 	}
 
 	/**

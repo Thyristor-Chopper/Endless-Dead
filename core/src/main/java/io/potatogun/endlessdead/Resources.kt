@@ -50,6 +50,9 @@ class Resources internal constructor() : Disposable {
 
 			register("progress_bar", "widget/progress_bar.bmp", true);
 			register("progress_fill", "widget/progress_chunk.bmp", true);
+
+			register("joystick_background", "widget/joystick_background.bmp");
+			register("joystick_thumb", "widget/joystick_thumb.bmp");
 		}
 	};
 	/**

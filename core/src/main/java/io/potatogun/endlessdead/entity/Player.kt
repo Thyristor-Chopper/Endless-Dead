@@ -22,6 +22,8 @@ import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.endlessdead.item.Usable;
+import io.potatogun.endlessdead.screen.JoystickScreen;
+import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.WorldProjector;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
@@ -31,6 +33,7 @@ import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.Input;
 import io.potatogun.gdxhelper.util.InputListener;
 import io.potatogun.gdxhelper.util.beep2;
+import io.potatogun.gdxhelper.util.isMobile as isMobilePlatform;
 import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.world.World;
 
@@ -42,6 +45,7 @@ import java.lang.ref.WeakReference;
 class Player private constructor(world: World? = null, x: Float = 0f, y: Float = 0f, override val inventory: Inventory) : LivingEntity(world, "Player", x, y, 24f, 57f, 50, loadTexture("entity/player.bmp")), AttackListener, DamageListener, InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), Movable, InputListener {
 	private val game = EndlessDead.instance;
 	override val isUpdatableWhileFrozen = true;
+	private val isMobile = isMobilePlatform;
 	private val textureWithGun = loadTexture("entity/player_holding_gun.bmp");
 	// 타이머
 	private val timers = TimerManager();
@@ -108,32 +112,29 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 		super.update(delta);
 
-		// 반디 위치에 따라 플레이어 회전
+		// 다람쥐 위치에 따라 플레이어 회전
 		rotateToCursor();
-
-		// 아이템 가져가기 & 넣기
-		if(Input.isKeyJustPressed(Input.SPACE) || Input.isButtonJustPressed(Input.RIGHT_MOUSE))
-			interactContainer();
 
 		// 아이템 사용
 		selectedItem?.let {
-			if(it is Usable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.allowContinuousUse && Input.isButtonPressed(Input.LEFT_MOUSE))))
-				useItem(it);
-		};
+			if(it is Usable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.allowContinuousUse && Input.isButtonPressed(Input.LEFT_MOUSE)))) {
+				val isInClickableRegion: Boolean;
+				if(isMobile) {
+					val mouseX = Input.mouseX.toFloat();
+					val mouseY = Window.height - Input.mouseY;
+					val joystick = (level?.projector as? JoystickScreen)?.joystick;
+					isInClickableRegion = !(mouseX < 128f && mouseY < 128f) && (joystick == null || (mouseX < joystick.x || mouseY > joystick.y + joystick.height));
+				} else {
+					isInClickableRegion = true;
+				}
 
-		// 아이템 파괴
-		if(Input.isKeyJustPressed(Input.DELETE))
-			selectedItem?.let {
-				if(it.destroy())
-					level?.projector?.drawSubtitles("${it.name} destroyed");
-			};
+				if(isInClickableRegion)
+					useItem(it);
+			}
+		};
 
 		// 주변 아이템 줍기
 		pickupComponent.pickupNearbyItems();
-
-		// 현재 선택한 아이템 버리기
-		if(Input.isKeyJustPressed(Input.BACKTICK))
-			selectedItem?.let { dropComponent.dropItem(it) };
 
 		// 이동 (총 쏜 이후에 처리할 것.)
 		if(Input.isKeyPressed(Input.SHIFT_LEFT))
@@ -152,6 +153,35 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 			return true;
 		} else if(amountY < 0f) {
 			selectPreviousItem();
+			return true;
+		}
+		return false;
+	}
+
+	override fun onKeyDown(code: Int): Boolean {
+		when(code) {
+			Input.BACKTICK -> {
+				selectedItem?.let { dropComponent.dropItem(it) };
+				return true;
+			}
+			Input.DELETE -> {
+				selectedItem?.let {
+					if(it.destroy())
+						level?.projector?.drawSubtitles("${it.name} destroyed");
+				};
+				return true;
+			}
+			Input.SPACE -> {
+				interactContainer();
+				return true;
+			}
+		}
+		return false;
+	}
+
+	override fun onTouchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
+		if(button == Input.RIGHT_MOUSE) {
+			interactContainer();
 			return true;
 		}
 		return false;
@@ -178,6 +208,10 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S))
 			dy -= 1f;
 		move(delta, dx, dy);
+
+		val projector = level?.projector;
+		if(projector is JoystickScreen)
+			projector.joystick?.let { move(delta, it.knobPercentX, it.knobPercentY) };
 
 		// 월드 경계 안쪽으로 가두기.
 		val world = level;
