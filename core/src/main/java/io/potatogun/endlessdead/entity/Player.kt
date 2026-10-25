@@ -122,7 +122,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 		// 아이템 사용
 		selectedItem?.let {
-			if(it is Usable && (Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.allowContinuousUse && Input.isButtonPressed(Input.LEFT_MOUSE)))) {
+			if(it is Usable && ((Input.isButtonJustPressed(Input.LEFT_MOUSE) || Input.isJustTouched) || (it.allowContinuousUse && (Input.isButtonPressed(Input.LEFT_MOUSE) || Input.isTouched)))) {
 				val isInClickableRegion: Boolean;
 				if(isMobile) {
 					val mouseX = Input.mouseX.toFloat();
