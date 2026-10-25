@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.EndlessDead;
-import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.Screen;
 import io.potatogun.gdxhelper.util.InputListener;
