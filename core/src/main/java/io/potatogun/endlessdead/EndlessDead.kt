@@ -83,7 +83,8 @@ class EndlessDead : Game() {
 	override fun dispose() {
 		super.dispose();
 		resources.dispose();
-		Item.Textures.getInstance(this).dispose();
+		if(Item.Textures.isInstanceCreated(this))
+			Item.Textures.getInstance(this).dispose();
 		if(lzTitleScreen.isInitialized())
 			titleScreen.dispose();
 		if(lzWorldProjector.isInitialized())

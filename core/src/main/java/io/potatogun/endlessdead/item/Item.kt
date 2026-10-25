@@ -151,6 +151,8 @@ abstract class Item @JvmOverloads constructor(id: String, val name: String, sett
 					instance = Textures(game);
 				return instance;
 			}
+
+			fun isInstanceCreated(game: ApplicationListener): Boolean = instances.containsKey(game);
 		}
 	}
 }
