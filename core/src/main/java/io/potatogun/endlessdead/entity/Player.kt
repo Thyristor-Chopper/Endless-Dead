@@ -121,18 +121,21 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 		// 아이템 사용
 		selectedItem?.let {
-			if(it is Usable && ((Input.isButtonJustPressed(Input.LEFT_MOUSE) || Input.isJustTouched) || (it.allowContinuousUse && (Input.isButtonPressed(Input.LEFT_MOUSE) || Input.isTouched)))) {
-				val isInClickableRegion: Boolean;
+			if(it is Usable && ((Input.isButtonJustPressed(Input.LEFT_MOUSE) || Input.isJustTouched) || (it.allowContinuousUse && (Input.isButtonPressed(Input.LEFT_MOUSE) || Input.isTouched(clickPointer))))) {
+				val use: Boolean;
 				if(isMobile) {
-					val mouseX = Input.mouseX.toFloat();
-					val mouseY = Window.height - Input.mouseY.toFloat();
-					val joystick = (level?.projector as? JoystickScreen)?.joystick;
-					isInClickableRegion = !(mouseX < 128f && mouseY < 128f) && (joystick == null || (mouseX < joystick.x - 48f || mouseY > joystick.y + joystick.height + 48f));
+					if(clickPointer != -1) {
+						val mouseX = Input.mouseX(clickPointer).toFloat();
+						val mouseY = Window.height - Input.mouseY(clickPointer).toFloat();
+						use = isInClickableRegion(mouseX, mouseY);
+					} else {
+						use = false;
+					}
 				} else {
-					isInClickableRegion = true;
+					use = true;
 				}
 
-				if(isInClickableRegion) {
+				if(use) {
 					if(isMobile)
 						rotateToCursor();
 					useItem(it);
@@ -153,7 +156,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 			level?.updateOffset();
 	}
 
-	private fun isInClickableRegion(mouseX: Float, mouseY: Float): Boolean {
+	private inline fun isInClickableRegion(mouseX: Float, mouseY: Float): Boolean {
+		if(!isMobile) return true;
 		val joystick = (level?.projector as? JoystickScreen)?.joystick;
 		return !(mouseX < 128f && mouseY < 128f) && (joystick == null || (mouseX < joystick.x - 48f || mouseY > joystick.y + joystick.height + 48f));
 	}
@@ -195,14 +199,23 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 	override fun onTouchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
 		if(button == Input.LEFT_MOUSE) {
-			/*if(isInClickableRegion(Input.mouseX(pointer), Window.height - Input.mouseY(pointer)))
+			if(isInClickableRegion(Input.mouseX(pointer).toFloat(), Window.height - Input.mouseY(pointer).toFloat()))
 				clickPointer = pointer;
-			return true;*/
+			return true;
 		}
 
 		// 상자 상호작용
 		if(button == Input.RIGHT_MOUSE) {
 			interactContainer();
+			return true;
+		}
+
+		return false;
+	}
+
+	override fun onTouchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean {
+		if(button == Input.LEFT_MOUSE && pointer == clickPointer) {
+			clickPointer = -1;
 			return true;
 		}
 
