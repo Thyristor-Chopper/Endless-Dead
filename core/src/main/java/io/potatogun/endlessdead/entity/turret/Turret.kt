@@ -11,9 +11,8 @@ import io.potatogun.endlessdead.entity.Targetable;
 import io.potatogun.endlessdead.entity.ai.RotateToTarget;
 import io.potatogun.endlessdead.entity.ai.ShootTarget;
 import io.potatogun.endlessdead.inventory.SingleItemInventory;
-import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.endlessdead.item.Item;
-import io.potatogun.gdxhelper.entity.Entity;
+import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.gdxhelper.world.World;
 
 import java.lang.Math.toDegrees;
@@ -45,6 +44,9 @@ abstract class Turret private constructor(world: World, name: String, x: Float, 
 	@JvmOverloads constructor(world: World, name: String, x: Float, y: Float, width: Float, height: Float, gun: Item?, health: Int, isPermanent: Boolean = false, texture: Texture) : this(world, name, x, y, width, height, gun, health, isPermanent, texture, SingleItemInventory());
 
 	init {
+		if(gun != null && gun !is Shootable)
+			throw IllegalArgumentException("item is not shootable");
+
 		gun?.let {
 			inventory.addItem(it);
 			selectItem(it);
