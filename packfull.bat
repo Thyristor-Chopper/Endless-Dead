@@ -5,13 +5,15 @@ del /q src_packed.txt >nul 2>&1
 for /r %%i in (*.kt *.java *.gradle *.gradle.kts *.cmd *.sh *.bat *.gitmodules *.gitignore *.md *.txt *.bak *.xml gradle.properties* gradle-wrapper.properties*) do (
 	if /i not "%%~nxi"=="gradlew.bat" (
 		if /i not "%%~nxi"=="src_packed.txt" (
-			echo Packing: %%i
-			echo ---- file: %%i ---->>src_packed.txt
-			echo(>>src_packed.txt
-			type "%%i">>src_packed.txt
-			echo(>>src_packed.txt
-			echo(>>src_packed.txt
-			echo(>>src_packed.txt
+			echo %%i | find /i "\build\" > nul || (
+				echo Packing: %%i
+				echo ---- file: %%i ---->>src_packed.txt
+				echo(>>src_packed.txt
+				type "%%i">>src_packed.txt
+				echo(>>src_packed.txt
+				echo(>>src_packed.txt
+				echo(>>src_packed.txt
+			)
 		)
 	)
 )

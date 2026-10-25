@@ -10,8 +10,10 @@ plugins {
 }
 
 buildscript {
-	dependencies {
-		classpath("com.android.tools.build:gradle:8.10.0")
+	if(gradle.rootProject.findProject(":android") != null) {
+		dependencies {
+			classpath("com.android.tools.build:gradle:8.10.0")
+		}
 	}
 }
 

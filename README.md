@@ -2,6 +2,10 @@
 
 코틀린으로 만든 libGDX 기반의 좀비 사냥 슈팅 게임이다.
 
+안드로이드 버전은 아직 불완전하다(화상 조이스틱 등 화면접촉식 장치용 UI 부재).
+
+범용 라이브러리 gdx-helper는 `gdxhelper/` 디렉토리 내에 깃 서브모듈 형태로 참조돼있으며 빌드에 요구된다.
+
 ---
 
 ## 요구 사항
@@ -65,7 +69,7 @@ JDK 1.8 이상이 설치된 환경에서 `build.bat`를 실행하거나
 
 PC 버전 빌드는 자바 1.8에서도 가능하지만 안드로이드 버전 빌드는 자바 17 이상이 요구된다.
 
-`android` 디렉토리 내 `genkey.bat`를 실행하여 키를 생성하고 `local.properties`를 만들어 키 저장소와 키의 비밀번호(`RELEASE_STORE_PASSWORD`, `RELEASE_KEY_PASSWORD`)를 등록한다.
+`android` 디렉토리 내 `genkey.bat`를 실행하여 서명 키를 생성하고 `local.properties`를 만들어 키와 저장소의 비밀번호(`RELEASE_STORE_PASSWORD`, `RELEASE_KEY_PASSWORD`)를 등록한다.
 
 그 다음 `buildapk.bat`를 실행하여 APK를 빌드한다. 빌드 시 도스창에 D8 관련(메타데이타 읽기 실패) 에러 폭탄이 뜰 수 있는데 그냥 무시해도 정상적으로 진행된다.
 

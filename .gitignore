@@ -11,3 +11,4 @@ desktop/*.log
 android/build/
 android/endless-dead-key.jks
 android/local.properties
+android/src/main/jniLibs/

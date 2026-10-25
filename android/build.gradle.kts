@@ -1,5 +1,6 @@
 import java.util.Properties
 import java.io.FileInputStream
+import com.android.build.gradle.internal.api.ApkVariantOutputImpl
 
 plugins {
 	id("com.android.application")
@@ -7,9 +8,9 @@ plugins {
 }
 
 val localProperties = Properties().apply {
-    val file = file("local.properties")
-    if(file.exists()) {
-        load(FileInputStream(file))
+    val propertiesFile = file("local.properties")
+    if(propertiesFile.exists()) {
+        load(FileInputStream(propertiesFile))
     }
 }
 
@@ -75,6 +76,18 @@ android {
 			signingConfig = signingConfigs.getByName("release")
 			isMinifyEnabled = false
 		}
+	}
+
+	applicationVariants.all {
+		outputs
+			.map { it as ApkVariantOutputImpl }
+			.forEach { output ->
+				val appName = rootProject.name
+				val variantName = name
+				val version = versionName
+
+				output.outputFileName = "${appName}-${variantName}-v${version}.apk"
+			}
 	}
 }
 
