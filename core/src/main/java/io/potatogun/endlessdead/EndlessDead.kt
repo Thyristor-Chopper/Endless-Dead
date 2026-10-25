@@ -1,12 +1,16 @@
 package io.potatogun.endlessdead;
 
+import com.badlogic.gdx.Gdx;
+
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.screen.Title;
 import io.potatogun.endlessdead.screen.ZombieWorldProjector;
 import io.potatogun.gdxhelper.Game;
+import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.WorldProjector;
 import io.potatogun.gdxhelper.util.getGameInstance;
+import io.potatogun.gdxhelper.util.isMobile;
 import io.potatogun.gdxhelper.world.World;
 
 /**
@@ -38,6 +42,15 @@ class EndlessDead : Game() {
 	// 게임 시작 시 한 번 호출되는 메쏘드
 	override fun create() {
 		super.create();
+
+		if(false && isMobile) {
+			val width = Window.width;
+			val height = Window.height;
+			val dp = width / Gdx.graphics.density;
+			val fixedWidth = (dp * (width / height)).toInt();
+			val fixedHeight = (dp * 1f).toInt();
+			Window.setFixedSize(fixedWidth, fixedHeight);
+		}
 
 		if(java.lang.Boolean.getBoolean("zombie.instantGame")) {
 			gameManager.newGame();

@@ -50,6 +50,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	private val game = EndlessDead.instance;
 	override val isUpdatableWhileFrozen = true;
 	private val isMobile = isMobilePlatform;
+	private var clickPointer = -1;
 	private val textureWithGun = loadTexture("entity/player_holding_gun.bmp");
 	// 타이머
 	private val timers = TimerManager();
@@ -108,8 +109,6 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		moveComponent.move(delta, directionX, directionY);
 	}
 
-	// ---- 매 프레임 로직 ----
-
 	override fun update(delta: Float) {
 		// 타이머 갱신
 		timers.update(delta);
@@ -126,7 +125,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 				val isInClickableRegion: Boolean;
 				if(isMobile) {
 					val mouseX = Input.mouseX.toFloat();
-					val mouseY = Window.height - Input.mouseY;
+					val mouseY = Window.height - Input.mouseY.toFloat();
 					val joystick = (level?.projector as? JoystickScreen)?.joystick;
 					isInClickableRegion = !(mouseX < 128f && mouseY < 128f) && (joystick == null || (mouseX < joystick.x - 48f || mouseY > joystick.y + joystick.height + 48f));
 				} else {
@@ -154,6 +153,11 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 			level?.updateOffset();
 	}
 
+	private fun isInClickableRegion(mouseX: Float, mouseY: Float): Boolean {
+		val joystick = (level?.projector as? JoystickScreen)?.joystick;
+		return !(mouseX < 128f && mouseY < 128f) && (joystick == null || (mouseX < joystick.x - 48f || mouseY > joystick.y + joystick.height + 48f));
+	}
+
 	// 휠로 아이템 선택
 	override fun onScroll(amountX: Float, amountY: Float): Boolean {
 		if(amountY > 0f) {
@@ -163,6 +167,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 			selectPreviousItem();
 			return true;
 		}
+
 		return false;
 	}
 
@@ -184,14 +189,23 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 				return true;
 			}
 		}
+
 		return false;
 	}
 
 	override fun onTouchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
+		if(button == Input.LEFT_MOUSE) {
+			/*if(isInClickableRegion(Input.mouseX(pointer), Window.height - Input.mouseY(pointer)))
+				clickPointer = pointer;
+			return true;*/
+		}
+
+		// 상자 상호작용
 		if(button == Input.RIGHT_MOUSE) {
 			interactContainer();
 			return true;
 		}
+
 		return false;
 	}
 
@@ -301,9 +315,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		}
 	}
 
-	// ---- 콜백(이벤트) 처리 ----
-
-	// 대미지를 받았을 때 자연 회복 타이머를 초기화하고 점수를 감점한다
+	// 대미지를 받았을 때 자연 회복 타이머를 초기화하고 점수를 감점한다.
 	override fun onDamage(damage: Int, attacker: Entity?) {
 		healTimer.reset();
 
@@ -332,8 +344,6 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		if(victim is AttackScorable)
 			scoreManager.addScore(victim.attackScore);
 	}
-
-	// ---- 그 외 유틸들 ----
 
 	/**
 	 * 플레이어가 갖고 있는 아이템을 사용한다.

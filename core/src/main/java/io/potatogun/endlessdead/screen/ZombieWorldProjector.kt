@@ -5,8 +5,13 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.Cell;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -40,7 +45,6 @@ import io.potatogun.gdxhelper.util.isMobile as isMobilePlatform;
 import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.util.parseSeconds;
 import io.potatogun.gdxhelper.util.rgb;
-import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
 import io.potatogun.gdxhelper.widget.Widget;
 import io.potatogun.gdxhelper.world.World;
@@ -78,10 +82,11 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	private val gunCooldownBarX = Widget.DimensionSupplier { Window.width - 215f };
 	private val infiniteGunCooldownBarX = Widget.DimensionSupplier { Window.width - 75f };
 	// 단추들
-	private val resumeButton: Button;
-	private val replayButton: Button;
-	private val titleButton: Button;
-	private val quitButton: Button;
+	private val resumeButton: TextButton;
+	private val replayButton: TextButton;
+	private val titleButton: TextButton;
+	private val quitButton: TextButton;
+	private val menuButtons: Table;
 	// 미터기들
 	private val hpIndicator: ProgressBar;
 	private val targetIndicator: ProgressBar;
@@ -89,16 +94,16 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	private val cooldownIndicator: ProgressBar;
 	// 화면접촉식 장치용 인터페이스
 	private val isMobile = isMobilePlatform;
-	private val uiStage: Stage?;
 	/**
 	 * 조이스틱 객체를 가져온다. 모바일에서만 있다.
 	 *
 	 * 자바에서는 getJoystick()로 가져온다.
 	 */
 	override val joystick: Touchpad?;
-	private val previousItemButton: Button?;
-	private val nextItemButton: Button?;
-	private val openContainerButton: Button?;
+	private val previousItemButton: TextButton?;
+	private val nextItemButton: TextButton?;
+	private val itemSwitchButtons: Table?;
+	private val openContainerButton: TextButton?;
 
 	init {
 		// 단색용 텍스처 생성
@@ -118,29 +123,56 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		cooldownIndicator = ProgressBar(gunCooldownBarX, { 10f }, { 60f }, skin = resources.smoothProgressBar, color = Color.SCARLET).apply { hide() }.also { addWidget("gun_cooldown_indicator", it) };
 
 		// 일시 중지 및 게임 오버 단추
-		resumeButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = resources.primaryButton) {
-			game.gameManager.resume();
-		}.apply { hide() }.also { addOverlayWidget("resume_button", it) };
-		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = resources.primaryButton) {
-			clearSubtitles();
-			disposeParentWorld();
-			game.gameManager.newGame();
-		}.apply { hide() }.also { addOverlayWidget("replay_button", it) };
-		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = resources.button) {
-			disposeParentWorld();
-			unloadWorld(dispose = true);
-			clearSubtitles();
-			game.gameManager.standBy();
-		}.apply { hide() }.also { addOverlayWidget("title_button", it) };
-		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = resources.button) {
-			disposeParentWorld();
-			unloadWorld(dispose = true);
-			Gdx.app.exit();
-		}.apply { hide() }.also { addOverlayWidget("quit_button", it) };
+		resumeButton = TextButton("Resume", resources.primaryButton).apply {
+			addListener(object : ClickListener() {
+				override fun clicked(event: InputEvent, x: Float, y: Float) {
+					game.gameManager.resume();
+				}
+			});
+		};
+		replayButton = TextButton("Continue", resources.primaryButton).apply {
+			addListener(object : ClickListener() {
+				override fun clicked(event: InputEvent, x: Float, y: Float) {
+					clearSubtitles();
+					disposeParentWorld();
+					game.gameManager.newGame();
+				}
+			});
+		};
+		titleButton = TextButton("Back to title", resources.button).apply {
+			addListener(object : ClickListener() {
+				override fun clicked(event: InputEvent, x: Float, y: Float) {
+					disposeParentWorld();
+					unloadWorld(dispose = true);
+					clearSubtitles();
+					game.gameManager.standBy();
+				}
+			});
+		};
+		quitButton = TextButton("Quit", resources.button).apply {
+			addListener(object : ClickListener() {
+				override fun clicked(event: InputEvent, x: Float, y: Float) {
+					disposeParentWorld();
+					unloadWorld(dispose = true);
+					Gdx.app.exit();
+				}
+			});
+		};
+		val firstCell: Cell<Actor>;
+		menuButtons = Table().apply {
+			setFillParent(true);
+			defaults().width(120f).height(25f).pad(10f);
+			firstCell = add();
+			add(titleButton);
+			add(quitButton);
+			bottom();
+			y = 120f;
+			setVisible(false);
+		}.also { stage.addActor(it) };
 
 		if(java.lang.Boolean.getBoolean("zombie.instantGame")) {
-			replayButton.disable();
-			titleButton.disable();
+			replayButton.setDisabled(true);
+			titleButton.setDisabled(true);
 		}
 
 		// 제목 표시줄 정보 전환
@@ -155,68 +187,84 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		game.gameManager.attachStateObserver {
 			when {
 				game.gameManager.isPlaying -> {
-					replayButton.hide();
-					resumeButton.hide();
-					titleButton.hide();
-					quitButton.hide();
+					menuButtons.setVisible(false);
 
-					previousItemButton?.show();
-					nextItemButton?.show();
-					openContainerButton?.show();
+					itemSwitchButtons?.setVisible(true);
+					openContainerButton?.setVisible(true);
+
+					joystick?.setVisible(true);
 				}
 				game.gameManager.isPaused -> {
-					replayButton.hide();
-					resumeButton.show();
-					titleButton.show();
-					quitButton.show();
+					firstCell.setActor(resumeButton);
+					menuButtons.invalidateHierarchy();
+					menuButtons.setVisible(true);
 
-					previousItemButton?.hide();
-					nextItemButton?.hide();
-					openContainerButton?.hide();
+					itemSwitchButtons?.setVisible(false);
+					openContainerButton?.setVisible(false);
+
+					joystick?.setVisible(false);
 				}
 				game.gameManager.isGameOver -> {
 					TitleBar.stats = null;
 
-					replayButton.show();
-					resumeButton.hide();
-					titleButton.show();
-					quitButton.show();
+					firstCell.setActor(replayButton);
+					menuButtons.invalidateHierarchy();
+					menuButtons.setVisible(true);
 
-					previousItemButton?.hide();
-					nextItemButton?.hide();
-					openContainerButton?.hide();
+					itemSwitchButtons?.setVisible(false);
+					openContainerButton?.setVisible(false);
+
+					joystick?.setVisible(false);
 				}
 			}
 		};
 
 		if(isMobile) {
-			uiStage = Stage(ScreenViewport());
 			joystick = Touchpad(16f, Touchpad.TouchpadStyle().apply {
 				background = TextureRegionDrawable(resources.textures.getShared("joystick_background"));
 				knob = TextureRegionDrawable(resources.textures.getShared("joystick_thumb"));
 			});
 			setJoystickBounds();
-			uiStage.addActor(joystick);
+			stage.addActor(joystick);
 
-			previousItemButton = Button(8f, 2f, 28f, 28f, caption = "<", skin = resources.button) {
-				game.inputListeners.fireScroll(0f, -1f);
-			}.also { addWidget("previous_item_button", it) };
-			nextItemButton = Button(8f + 28f + 8f, 2f, 28f, 28f, caption = ">", skin = resources.button) {
-				game.inputListeners.fireScroll(0f, 1f);
-			}.also { addWidget("next_item_button", it) };
-			openContainerButton = Button(8f, 72f, 96f, 32f, caption = "Open", skin = resources.button) {
-				game.inputListeners.fireTouchDown(Input.mouseX, Input.mouseY, 0, Input.RIGHT_MOUSE);
-			}.also { addWidget("open_container_button", it) };
+			previousItemButton = TextButton("<", resources.button).apply {
+				addListener(object : ClickListener() {
+					override fun clicked(event: InputEvent, x: Float, y: Float) {
+						game.inputListeners.fireScroll(0f, -1f);
+					}
+				});
+			};
+			nextItemButton = TextButton(">", resources.button).apply {
+				addListener(object : ClickListener() {
+					override fun clicked(event: InputEvent, x: Float, y: Float) {
+						game.inputListeners.fireScroll(0f, 1f);
+					}
+				});
+			};
+			itemSwitchButtons = Table().apply {
+				defaults().width(28f).height(28f).pad(4f);
+				add(previousItemButton);
+				add(nextItemButton);
+				left();
+				bottom();
+				setPosition(4f, -2f);
+			}.also { stage.addActor(it) };
+			openContainerButton = TextButton("Open", resources.button).apply {
+				setBounds(8f, 72f, 96f, 32f);
+				addListener(object : ClickListener() {
+					override fun clicked(event: InputEvent, x: Float, y: Float) {
+						game.inputListeners.fireTouchDown(Input.mouseX, Input.mouseY, 0, Input.RIGHT_MOUSE);
+					}
+				});
+			}.also { stage.addActor(it) };
 		} else {
-			uiStage = null;
 			joystick = null;
 
 			previousItemButton = null;
 			nextItemButton = null;
+			itemSwitchButtons = null;
 			openContainerButton = null;
 		}
-
-		game.inputListeners.register(this);
 	}
 
 	private inline fun disposeParentWorld() {  // 원래는 세 군데에 직접 작성했던 코드라 인라인이다.
@@ -249,15 +297,8 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 
 	override fun resize(width: Int, height: Int) {
 		super.resize(width, height);
-		uiStage?.let { it.viewport.update(width, height, true) };
 		setJoystickBounds();
 	}
-
-	override fun onTouchDrag(x: Int, y: Int, pointer: Int): Boolean = uiStage?.touchDragged(x, y, pointer) ?: false;
-
-	override fun onTouchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = uiStage?.touchDown(x, y, pointer, button) ?: false;
-
-	override fun onTouchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = uiStage?.touchUp(x, y, pointer, button) ?: false;
 
 	private inline fun setJoystickBounds() {
 		if(joystick == null) return;
@@ -272,6 +313,8 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	}
 
 	override fun update(delta: Float) {
+		super.update(delta);
+
 		timers.update(delta);
 
 		when {
@@ -288,8 +331,6 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	 */
 	private inline fun updatePlaying(delta: Float) {  // update에서만 한 번 쓰이기 때문에 inline이다.
 		super.update(delta);
-
-		uiStage?.act(delta);
 
 		val player = game.player;
 		val world = player?.world;
@@ -588,9 +629,6 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		// 월드 및 자막 그리기
 		super.drawContents();
 
-		if(game.gameManager.isPlaying)
-			uiStage?.draw();
-
 		// 자막이 있으면 표시
 		if(subtitlesVisible)
 			drawText(
@@ -649,7 +687,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			// 현재 플레이어가 들고 있는 아이템
 			player.selectedItem?.let {
 				val rarity = it.rarity;
-				val leftMargin = if(previousItemButton != null) 72f else 0f;
+				val leftMargin = if(itemSwitchButtons?.isVisible ?: false) 72f else 0f;
 				batch.draw(it.texture, leftMargin + 8f, 4f, Item.sideLength, Item.sideLength);
 				drawText(
 					text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.size}]",
@@ -694,8 +732,6 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		solidColor.dispose();
 		if(lzStillCut.isInitialized())
 			lzStillCut.value.dispose();
-		uiStage?.dispose();
-		game.inputListeners.unregister(this);
 	}
 
 	/**

@@ -2,20 +2,22 @@ package io.potatogun.endlessdead.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.Screen;
-import io.potatogun.gdxhelper.util.InputListener;
 import io.potatogun.gdxhelper.util.isMobile as isMobilePlatform;
 import io.potatogun.gdxhelper.util.loadTexture;
-import io.potatogun.gdxhelper.widget.Button;
 
 /**
  * 타이틀 화면
  */
-class Title : Screen(font = EndlessDead.instance.resources.font), InputListener {
+class Title : Screen(font = EndlessDead.instance.resources.font) {
 	private val game = EndlessDead.instance;
 	private val title = loadTexture("title/title.bmp");
 	private val stillCut = loadTexture("title/still_cut.bmp");
@@ -25,14 +27,29 @@ class Title : Screen(font = EndlessDead.instance.resources.font), InputListener 
 
 	init {
 		val resources = game.resources;
-		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, { 120f }, caption = "Play", skin = resources.primaryButton) {
-			game.gameManager.newGame();
-		});
-		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, { 120f }, caption = "Quit", skin = resources.button) {
-			Gdx.app.exit();
-		});
 
-		game.inputListeners.register(this);
+		val playButton = TextButton("Play", resources.primaryButton).apply {
+			addListener(object : ClickListener() {
+				override fun clicked(event: InputEvent, x: Float, y: Float) {
+					game.gameManager.newGame();
+				}
+			});
+		};
+		val quitButton = TextButton("Quit", resources.button).apply {
+			addListener(object : ClickListener() {
+				override fun clicked(event: InputEvent, x: Float, y: Float) {
+					Gdx.app.exit();
+				}
+			});
+		};
+		val table = Table().apply {
+			setFillParent(true);
+			defaults().pad(10f).width(120f).height(25f);
+			add(playButton);
+			add(quitButton);
+			bottom();
+			y = 120f;
+		}.also { stage.addActor(it) };
 	}
 
 	override fun update(delta: Float) {
@@ -46,6 +63,7 @@ class Title : Screen(font = EndlessDead.instance.resources.font), InputListener 
 	}
 
 	override fun onKeyDown(code: Int): Boolean {
+		super.onKeyDown(code);
 		game.gameManager.newGame();
 		return true;
 	}
