@@ -121,7 +121,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 		// 아이템 사용
 		selectedItem?.let {
-			if(it is Usable && ((Input.isButtonJustPressed(Input.LEFT_MOUSE) || Input.isJustTouched) || (it.allowContinuousUse && (Input.isButtonPressed(Input.LEFT_MOUSE) || Input.isTouched(clickPointer))))) {
+			if(it is Usable && ((Input.isButtonJustPressed(Input.LEFT_MOUSE) || (isMobile && Input.isJustTouched)) || (it.allowContinuousUse && (Input.isButtonPressed(Input.LEFT_MOUSE) || (isMobile && Input.isTouched(clickPointer)))))) {
 				val use: Boolean;
 				if(isMobile) {
 					if(clickPointer != -1) {
@@ -135,11 +135,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 					use = true;
 				}
 
-				if(use) {
-					if(isMobile)
-						rotateToCursor();
+				if(use)
 					useItem(it);
-				}
 			}
 		};
 
