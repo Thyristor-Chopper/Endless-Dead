@@ -1,7 +1,6 @@
 package io.potatogun.endlessdead.entity.summoner;
 
 import io.potatogun.endlessdead.EndlessDead;
-import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.KillScorable;
 import io.potatogun.endlessdead.entity.zombie.WeakZombie;
 import io.potatogun.gdxhelper.entity.isIn;
@@ -22,7 +21,7 @@ import kotlin.random.Random;
  * @param x	 개체의 X 위치
  * @param y	 개체의 Y 위치
  */
-class StreamZombieSummoner(world: World, x: Float, y: Float) : Summoner(world, "Stream Zombie Summoner", x, y, 26f, 32f, 100, Resources.textures.getShared("stream_zombie_summoner"), interval = 0.5f), KillScorable {
+class StreamZombieSummoner(world: World, x: Float, y: Float) : Summoner(world, "Stream Zombie Summoner", x, y, 26f, 32f, 100, EndlessDead.instance.resources.textures.getShared("stream_zombie_summoner"), interval = 0.5f), KillScorable {
 	private val game = EndlessDead.instance;
 	private val maxDistanceToPlayer = 456f;
 	override val damageInvincibilityDuration = 0.15f;

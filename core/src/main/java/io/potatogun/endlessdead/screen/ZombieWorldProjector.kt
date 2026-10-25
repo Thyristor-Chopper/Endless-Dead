@@ -9,7 +9,6 @@ import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.Pools;
-import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.TitleBar;
 import io.potatogun.endlessdead.entity.Bullet;
 import io.potatogun.endlessdead.entity.Landmine;
@@ -46,7 +45,7 @@ import io.potatogun.gdxhelper.world.World;
  * 게임 목적에 맞게 HUD와 체력 정보, 총 정보 등을 표시해주는 월드 뷰어.
  *   이쪽에는 우리 게임의 목적에 맞게 HP 미터기, 일시 정지 처리, 게임 오버 화면 등이 모두 구현되어 있다.
  */
-class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDrawable {
+class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resources.font), SubtitlesDrawable {
 	private val game = EndlessDead.instance;
 	private val noWorldOverlay = rgb(64, 64, 64);  // 원래보다 많이 어둡게
 	private val frozenOverlay = rgb(0, 0, 0, 0.5f);
@@ -95,28 +94,30 @@ class ZombieWorldProjector : WorldProjector(font = Resources.font), SubtitlesDra
 			dispose();
 		};
 
+		val resources = game.resources
+
 		// 미터기 추가
-		hpIndicator = ProgressBar({ 9f }, { Window.height - 38f }, { 180f }, skin = Resources.smoothProgressBar, color = rgb(73, 186, 73)).also { addWidget("hp_indicator", it) };
-		targetIndicator = ProgressBar({ 210f }, { Window.height - 38f }, { 180f }, skin = Resources.smoothProgressBar, color = enemyBarColor).apply { hide() }.also { addWidget("attack_target_hp_indicator", it) };
-		ammoIndicator = ProgressBar({ Window.width - 145f }, { 10f }, { 130f }, skin = Resources.chunkedProgressBar, color = rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() }.also { addWidget("gun_ammo_indicator", it) };
-		cooldownIndicator = ProgressBar(gunCooldownBarX, { 10f }, { 60f }, skin = Resources.smoothProgressBar, color = Color.SCARLET).apply { hide() }.also { addWidget("gun_cooldown_indicator", it) };
+		hpIndicator = ProgressBar({ 9f }, { Window.height - 38f }, { 180f }, skin = resources.smoothProgressBar, color = rgb(73, 186, 73)).also { addWidget("hp_indicator", it) };
+		targetIndicator = ProgressBar({ 210f }, { Window.height - 38f }, { 180f }, skin = resources.smoothProgressBar, color = enemyBarColor).apply { hide() }.also { addWidget("attack_target_hp_indicator", it) };
+		ammoIndicator = ProgressBar({ Window.width - 145f }, { 10f }, { 130f }, skin = resources.chunkedProgressBar, color = rgb(15, 116, 240), style = ProgressBar.Style.CHUNKED).apply { hide() }.also { addWidget("gun_ammo_indicator", it) };
+		cooldownIndicator = ProgressBar(gunCooldownBarX, { 10f }, { 60f }, skin = resources.smoothProgressBar, color = Color.SCARLET).apply { hide() }.also { addWidget("gun_cooldown_indicator", it) };
 
 		// 일시 중지 및 게임 오버 단추
-		resumeButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = Resources.primaryButton) {
+		resumeButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = resources.primaryButton) {
 			game.gameManager.resume();
 		}.apply { hide() }.also { addOverlayWidget("resume_button", it) };
-		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = Resources.primaryButton) {
+		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = resources.primaryButton) {
 			clearSubtitles();
 			disposeParentWorld();
 			game.gameManager.newGame();
 		}.apply { hide() }.also { addOverlayWidget("replay_button", it) };
-		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = Resources.button) {
+		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = resources.button) {
 			disposeParentWorld();
 			unloadWorld(dispose = true);
 			clearSubtitles();
 			game.gameManager.standBy();
 		}.apply { hide() }.also { addOverlayWidget("title_button", it) };
-		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = Resources.button) {
+		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = resources.button) {
 			disposeParentWorld();
 			unloadWorld(dispose = true);
 			Gdx.app.exit();

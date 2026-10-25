@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.utils.Align;
 
 import io.potatogun.endlessdead.EndlessDead;
-import io.potatogun.endlessdead.Resources;
 import io.potatogun.gdxhelper.Input;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.screen.Screen;
@@ -17,7 +16,7 @@ import io.potatogun.gdxhelper.widget.Button;
 /**
  * 타이틀 화면
  */
-class Title : Screen(font = Resources.font), InputListener {
+class Title : Screen(font = EndlessDead.instance.resources.font), InputListener {
 	private val game = EndlessDead.instance;
 	private val title = loadTexture("title/title.bmp");
 	private val stillCut = loadTexture("title/still_cut.bmp");
@@ -26,10 +25,11 @@ class Title : Screen(font = Resources.font), InputListener {
 	private val isMobile = isMobilePlatform;
 
 	init {
-		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, { 120f }, caption = "Play", skin = Resources.primaryButton) {
+		val resources = game.resources;
+		addWidget("play_button", Button({ Window.width * 0.5f - 130f }, { 120f }, { 120f }, caption = "Play", skin = resources.primaryButton) {
 			game.gameManager.newGame();
 		});
-		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, { 120f }, caption = "Quit", skin = Resources.button) {
+		addWidget("quit_button", Button({ Window.width * 0.5f + 10f }, { 120f }, { 120f }, caption = "Quit", skin = resources.button) {
 			Gdx.app.exit();
 		});
 

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
-import io.potatogun.endlessdead.Resources;
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.gdxhelper.entity.Entity;
@@ -38,7 +38,7 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 	@get:JvmName("isOpened") var opened = false
 		private set;
 	private var openCallback: OpenCallback? = null;
-	private val openingProgressBar = ProgressBar({ x - 18f + originOffsetX }, { y + height * 0.5f + originOffsetY }, { 36f }, { 8f }, skin = Resources.smallProgressBar, color = Color.SLATE);
+	private val openingProgressBar = ProgressBar({ x - 18f + originOffsetX }, { y + height * 0.5f + originOffsetY }, { 36f }, { 8f }, skin = EndlessDead.instance.resources.smallProgressBar, color = Color.SLATE);
 	private var opener: Entity? = null;
 
 	init {

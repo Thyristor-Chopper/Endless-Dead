@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Disposable;
 
-import io.potatogun.endlessdead.Resources;
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.entity.InventoryHolder;
 import io.potatogun.endlessdead.entity.Player;
 import io.potatogun.endlessdead.inventory.SingleItemInventory;
@@ -31,7 +31,7 @@ abstract class Container(world: World? = null, name: String, x: Float = 0f, y: F
 	/**
 	 * 플레이어가 직접 아이템을 넣었을 때의 표시자
 	 */
-	private val playerItemIndicator: Texture = Resources.textures.getShared("player_item_indicator");
+	private val playerItemIndicator: Texture = EndlessDead.instance.resources.textures.getShared("player_item_indicator");
 	/**
 	 * 현재 들어있는 아이템
 	 */

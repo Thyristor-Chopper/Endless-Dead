@@ -8,7 +8,6 @@ import io.potatogun.endlessdead.ArraySuppliers;
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.Pools;
-import io.potatogun.endlessdead.Resources;
 import io.potatogun.endlessdead.entity.Portal;
 import io.potatogun.endlessdead.entity.container.Building;
 import io.potatogun.endlessdead.entity.container.Chest;
@@ -56,7 +55,7 @@ import kotlin.random.Random;
 /**
  * 좀비 파밍 월드
  */
-class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = Resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
+class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = EndlessDead.instance.resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
 	private val game = EndlessDead.instance;
 	// 등록된 스포너 목록
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);

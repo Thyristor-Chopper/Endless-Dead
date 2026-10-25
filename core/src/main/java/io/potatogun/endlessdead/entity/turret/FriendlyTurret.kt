@@ -1,6 +1,6 @@
 package io.potatogun.endlessdead.entity.turret;
 
-import io.potatogun.endlessdead.Resources;
+import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Rarity;
 import io.potatogun.gdxhelper.world.World;
@@ -13,7 +13,7 @@ import io.potatogun.gdxhelper.world.World;
  * @param y           Y 좌표
  * @param isPermanent 포탑이 영구적인지의 여부(죽지 못하는지)
  */
-class FriendlyTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : TeamTurret(world, "Friendly Turret", x, y, 83f, 120f, "friends", FriendlyTurretGun(), 456f, 2000, isPermanent, Resources.textures.getShared("turret_friendly")) {
+class FriendlyTurret(world: World, x: Float, y: Float, isPermanent: Boolean = false) : TeamTurret(world, "Friendly Turret", x, y, 83f, 120f, "friends", FriendlyTurretGun(), 456f, 2000, isPermanent, EndlessDead.instance.resources.textures.getShared("turret_friendly")) {
 	init {
 		setOriginOffsetY(-16f);
 	}

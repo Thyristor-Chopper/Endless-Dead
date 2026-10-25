@@ -17,7 +17,7 @@ import io.potatogun.gdxhelper.widget.ProgressBar;
  *
  * 여기에서 미리 정의된 텍스처는 Entity#dispose가 아닌 Game#dispose에서 정리된다.
  */
-object Resources : Disposable {
+class Resources internal constructor() : Disposable {
 	/**
 	 * 게임의 공유 텍스처 모음
 	 */

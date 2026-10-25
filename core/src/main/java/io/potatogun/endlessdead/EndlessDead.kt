@@ -16,6 +16,10 @@ class EndlessDead : Game() {
 	private val lzTitleScreen = lazy { Title() };
 	private val lzWorldProjector = lazy { ZombieWorldProjector() };
 	/**
+	 * 이 게임 인스턴스의 리소스
+	 */
+	@get:JvmName("getResourceInstance") val resources: Resources by lazy { Resources() };
+	/**
 	 * 현재 메인 게임 플레이어
 	 *
 	 * 자바에서는 getPlayer()로 가져온다.
@@ -55,7 +59,7 @@ class EndlessDead : Game() {
 	// 자원 정리
 	override fun dispose() {
 		super.dispose();
-		Resources.dispose();  // 공유 자원 정리
+		resources.dispose();
 		Item.textures.dispose();
 		if(lzTitleScreen.isInitialized())
 			titleScreen.dispose();
