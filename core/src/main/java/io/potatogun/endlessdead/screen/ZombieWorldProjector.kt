@@ -265,12 +265,12 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 
 		val x = x.toFloat();
 		val y = y.toFloat();
-		if(joystick != null && (joystick.isTouched || isActorInBounds(joystick, x, y))) {
+		if(joystick != null && (joystick.isTouched || isInActorBounds(joystick, x, y))) {
 			val joystickHeight = joystick.height;
 			(joystick.listeners[0] as GdxInputListener).touchDragged(null, x - joystick.x, joystickHeight - y + (Window.height - joystick.y - joystickHeight), pointer);
 			processed = true;
 		}
-		if(shootJoystick != null && (shootJoystick.isTouched || isActorInBounds(shootJoystick, x, y))) {
+		if(shootJoystick != null && (shootJoystick.isTouched || isInActorBounds(shootJoystick, x, y))) {
 			val joystickHeight = shootJoystick.height;
 			(shootJoystick.listeners[0] as GdxInputListener).touchDragged(null, x - shootJoystick.x, joystickHeight - y + (Window.height - shootJoystick.y - joystickHeight), pointer);
 			processed = true;
@@ -283,11 +283,11 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 
 		val x = x.toFloat();
 		val y = y.toFloat();
-		if(joystick != null && isActorInBounds(joystick, x, y)) {
+		if(joystick != null && isInActorBounds(joystick, x, y)) {
 			val joystickHeight = joystick.height;
 			processed = (joystick.listeners[0] as GdxInputListener).touchDown(null, x - joystick.x, joystickHeight - y + (Window.height - joystick.y - joystickHeight), pointer, button) || processed;
 		}
-		if(shootJoystick != null && isActorInBounds(shootJoystick, x, y)) {
+		if(shootJoystick != null && isInActorBounds(shootJoystick, x, y)) {
 			val joystickHeight = shootJoystick.height;
 			processed = (shootJoystick.listeners[0] as GdxInputListener).touchDown(null, x - shootJoystick.x, joystickHeight - y + (Window.height - shootJoystick.y - joystickHeight), pointer, button) || processed;
 		}
@@ -312,7 +312,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		return processed;
 	}
 
-	private inline fun isActorInBounds(actor: Actor, mouseX: Float, mouseY: Float): Boolean {
+	private inline fun isInActorBounds(actor: Actor, mouseX: Float, mouseY: Float): Boolean {
 		if(!actor.isVisible) return false;
 		val mouseY = Window.height - mouseY;
 		val x = actor.x;
