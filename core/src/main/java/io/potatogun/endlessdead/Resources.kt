@@ -4,11 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Disposable;
 
 import io.potatogun.gdxhelper.util.SharedTextureManager;
+import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
 
 /**
@@ -53,17 +52,17 @@ class Resources internal constructor() : Disposable {
 			register("progress_fill", "widget/progress_chunk.bmp", true);
 
 			register("joystick_background", "widget/joystick_background.bmp");
-			register("joystick_thumb", "widget/joystick_thumb.bmp");
+			register("joystick_knob", "widget/joystick_knob.bmp");
 		}
 	};
 	/**
 	 * 일반 단추(흰색이지만 Button 생성자의 Color 매개변수로 색 변환) 스킨
 	 */
-	@JvmField val button: TextButtonStyle;
+	@JvmField val button: Button.Skin;
 	/**
 	 * 기본 단추 스킨
 	 */
-	@JvmField val primaryButton: TextButtonStyle;
+	@JvmField val primaryButton: Button.Skin;
 	/**
 	 * 연속적 미터기 스킨
 	 */
@@ -82,33 +81,11 @@ class Resources internal constructor() : Disposable {
 	@JvmField val font = BitmapFont();
 
 	init {
-		val button = NinePatchDrawable(NinePatch(textures.getShared("button"), 8, 8, 4, 5));
-		val primaryButton = NinePatchDrawable(NinePatch(textures.getShared("button_primary"), 8, 8, 4, 5));
-		val buttonHover = NinePatchDrawable(NinePatch(textures.getShared("button_hover"), 8, 8, 4, 5));
-		val buttonPressed = NinePatchDrawable(NinePatch(textures.getShared("button_pressed"), 8, 8, 4, 5));
-		val buttonDisabled = NinePatchDrawable(NinePatch(textures.getShared("button_disabled"), 8, 8, 4, 5));
-		this.button = TextButtonStyle().apply {
-			up = button;
-			over = buttonHover;
-			down = buttonPressed;
-			disabled = buttonDisabled;
-			font = this@Resources.font;
-			fontColor = Color.WHITE;
-			overFontColor = Color.WHITE;
-			downFontColor = Color.WHITE;
-			disabledFontColor = Color.LIGHT_GRAY;
-		};
-		this.primaryButton = TextButtonStyle().apply {
-			up = primaryButton;
-			over = buttonHover;
-			down = buttonPressed;
-			disabled = buttonDisabled;
-			font = this@Resources.font;
-			fontColor = Color.WHITE;
-			overFontColor = Color.WHITE;
-			downFontColor = Color.WHITE;
-			disabledFontColor = Color.LIGHT_GRAY;
-		};
+		val buttonHover = NinePatch(textures.getShared("button_hover"), 8, 8, 4, 5);
+		val buttonPressed = NinePatch(textures.getShared("button_pressed"), 8, 8, 4, 5);
+		val buttonDisabled = NinePatch(textures.getShared("button_disabled"), 8, 8, 4, 5);
+		button = Button.Skin(NinePatch(textures.getShared("button"), 8, 8, 4, 5), buttonHover, buttonPressed, buttonDisabled, Color.WHITE, Color.WHITE, Color.WHITE, Color.LIGHT_GRAY, font);  // 어차피 게임 실행 시 단추가 나오므로 굳이 lazy로 할 필요 없음
+		primaryButton = Button.Skin(NinePatch(textures.getShared("button_primary"), 8, 8, 4, 5), buttonHover, buttonPressed, buttonDisabled, Color.WHITE, Color.WHITE, Color.WHITE, Color.LIGHT_GRAY, font);
 
 		val progressBar = NinePatch(textures.getShared("progress_bar"), 2, 2, 2, 2);
 		val progressFill = textures.getShared("progress_fill");

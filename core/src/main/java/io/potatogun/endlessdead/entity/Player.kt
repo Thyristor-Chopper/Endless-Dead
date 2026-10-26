@@ -22,7 +22,8 @@ import io.potatogun.endlessdead.item.Gun;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.Shootable;
 import io.potatogun.endlessdead.item.Usable;
-import io.potatogun.endlessdead.screen.JoystickScreen;
+import io.potatogun.endlessdead.screen.ZombieWorldProjector;
+import io.potatogun.gdxhelper.InputListeners;
 import io.potatogun.gdxhelper.Window;
 import io.potatogun.gdxhelper.entity.Entity;
 import io.potatogun.gdxhelper.screen.WorldProjector;
@@ -102,7 +103,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 		team = "friends";
 
-		game.inputListeners.register(this) { player, game -> game is EndlessDead && player === game.player && game.gameManager.isPlaying };
+		InputListeners.register(this) { player, game -> game is EndlessDead && player === game.player && game.gameManager.isPlaying };
 	}
 
 	override fun move(delta: Float, directionX: Float, directionY: Float) {
@@ -155,7 +156,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 	private inline fun isInClickableRegion(mouseX: Float, mouseY: Float): Boolean {
 		if(!isMobile) return true;
-		val joystick = (level?.projector as? JoystickScreen)?.joystick;
+		val joystick = level?.projector?.takeIfInstance<ZombieWorldProjector>()?.joystick;
 		return !(mouseX < 128f && mouseY < 128f) && (joystick == null || (mouseX < joystick.x - 48f || mouseY > joystick.y + joystick.height + 48f));
 	}
 
@@ -230,7 +231,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		val originalY = y;
 
 		if(isMobile) {
-			level?.projector?.takeIfInstance<JoystickScreen>()?.joystick?.let {
+			level?.projector?.takeIfInstance<ZombieWorldProjector>()?.joystick?.let {
 				val dx = it.knobPercentX;
 				val dy = it.knobPercentY;
 				if(dx != 0f || dy != 0f) {
@@ -417,5 +418,6 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		super<LivingEntity>.dispose();
 		super<InventoryHolder>.dispose();
 		textureWithGun.dispose();
+		InputListeners.unregister(this);
 	}
 }

@@ -41,8 +41,6 @@ class EndlessDead : Game() {
 
 	// 게임 시작 시 한 번 호출되는 메쏘드
 	override fun create() {
-		super.create();
-
 		if(false && isMobile) {
 			val width = Window.width;
 			val height = Window.height;
