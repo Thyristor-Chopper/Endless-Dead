@@ -50,7 +50,6 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	private val game = EndlessDead.instance;
 	override val isUpdatableWhileFrozen = true;
 	private val isMobile = isMobilePlatform;
-	private var clickPointer = -1;
 	private val textureWithGun = loadTexture("entity/player_holding_gun.bmp");
 	// 타이머
 	private val timers = TimerManager();
@@ -115,6 +114,10 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 		super.update(delta);
 
+		// 다람쥐 위치에 따라 플레이어 회전
+		if(!isMobile)
+			rotateToCursor();
+
 		// 아이템 사용
 		selectedItem?.let {
 			if(it !is Usable) return@let;
@@ -170,19 +173,6 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		return false;
 	}
 
-	// 다람쥐 위치에 따라 플레이어 회전
-	override fun onMouseMove(x: Int, y: Int): Boolean {
-		if(isMobile) return false;
-		rotateToCursor();
-		return true;
-	}
-
-	override fun onTouchDrag(x: Int, y: Int, pointer: Int): Boolean {
-		if(isMobile) return false;
-		rotateToCursor();
-		return true;
-	}
-
 	override fun onKeyDown(code: Int): Boolean {
 		when(code) {
 			Input.BACKTICK -> {
@@ -206,24 +196,9 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	}
 
 	override fun onTouchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
-		if(button == Input.LEFT_MOUSE) {
-			if(isInClickableRegion(Input.mouseX(pointer).toFloat(), Window.height - Input.mouseY(pointer).toFloat()))
-				clickPointer = pointer;
-			return true;
-		}
-
 		// 상자 상호작용
 		if(button == Input.RIGHT_MOUSE) {
 			interactContainer();
-			return true;
-		}
-
-		return false;
-	}
-
-	override fun onTouchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean {
-		if(button == Input.LEFT_MOUSE && pointer == clickPointer) {
-			clickPointer = -1;
 			return true;
 		}
 
