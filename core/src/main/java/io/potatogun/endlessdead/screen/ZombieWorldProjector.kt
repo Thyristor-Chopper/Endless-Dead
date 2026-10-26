@@ -5,11 +5,11 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.InputListener as GdxInputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.Pools;
@@ -38,7 +38,6 @@ import io.potatogun.gdxhelper.timer.RepeatingTimer;
 import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.Input;
-import io.potatogun.gdxhelper.util.InputListener;
 import io.potatogun.gdxhelper.util.isMobile as isMobilePlatform;
 import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.util.parseSeconds;
@@ -94,7 +93,6 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	private val cooldownIndicator: ProgressBar;
 	// 화면접촉식 장치용 인터페이스
 	private val isMobile = isMobilePlatform;
-	private val uiStage: Stage?;
 	/**
 	 * 조이스틱 객체를 가져온다. 모바일에서만 있다.
 	 *
@@ -127,31 +125,23 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		// 일시 중지 및 게임 오버 단추
 		resumeButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = resources.primaryButton) {
 			game.gameManager.resume();
-		}.apply {
-			setVisibleCondition { game.gameManager.isPaused };
-		}.also { addOverlayWidget(it) };
+		}.apply { hide() }.also { addOverlayWidget(it) };
 		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = resources.primaryButton) {
 			clearSubtitles();
 			disposeParentWorld();
 			game.gameManager.newGame();
-		}.apply {
-			setVisibleCondition { game.gameManager.isGameOver };
-		}.also { addOverlayWidget(it) };
+		}.apply { hide() }.also { addOverlayWidget(it) };
 		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = resources.button) {
 			disposeParentWorld();
 			unloadWorld(dispose = true);
 			clearSubtitles();
 			game.gameManager.standBy();
-		}.apply {
-			setVisibleCondition { game.gameManager.let { gameManager -> gameManager.isPaused || gameManager.isGameOver } };
-		}.also { addOverlayWidget(it) };
+		}.apply { hide() }.also { addOverlayWidget(it) };
 		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = resources.button) {
 			disposeParentWorld();
 			unloadWorld(dispose = true);
 			Gdx.app.exit();
-		}.apply {
-			setVisibleCondition { game.gameManager.let { gameManager -> gameManager.isPaused || gameManager.isGameOver } };
-		}.also { addOverlayWidget(it) };
+		}.apply { hide() }.also { addOverlayWidget(it) };
 
 		if(java.lang.Boolean.getBoolean("zombie.instantGame")) {
 			replayButton.disable();
@@ -166,24 +156,41 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			updateTitleBarInfo();
 		});
 
+		// 오버레이 단추 표시 또는 숨기기
 		game.gameManager.attachStateObserver {
 			when {
+				game.gameManager.isPlaying -> {
+					replayButton.hide();
+					resumeButton.hide();
+					titleButton.hide();
+					quitButton.hide();
+				}
+				game.gameManager.isPaused -> {
+					replayButton.hide();
+					resumeButton.show();
+					titleButton.show();
+					quitButton.show();
+				}
 				game.gameManager.isGameOver -> {
 					TitleBar.stats = null;
+
+					replayButton.show();
+					resumeButton.hide();
+					titleButton.show();
+					quitButton.show();
 				}
 			}
 		};
 
 		if(isMobile || java.lang.Boolean.getBoolean("zombie.forceTouchControls")) {
-			uiStage = Stage(ScreenViewport());
 			joystick = Touchpad(0f, Touchpad.TouchpadStyle().apply {
 				background = TextureRegionDrawable(resources.textures.getShared("joystick_background"));
 				knob = TextureRegionDrawable(resources.textures.getShared("joystick_knob"));
-			}).also { uiStage.addActor(it) };
+			});
 			shootJoystick = Touchpad(0f, Touchpad.TouchpadStyle().apply {
 				background = TextureRegionDrawable(resources.textures.getShared("joystick_background"));
 				knob = TextureRegionDrawable(resources.textures.getShared("joystick_knob_secondary"));
-			}).also { uiStage.addActor(it) };
+			});
 			setJoystickBounds();
 
 			val itemSwitcherCondition = BooleanSupplier { game.gameManager.isPlaying && game.player?.let { !it.inventory.isEmpty } ?: false };
@@ -210,7 +217,6 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 				setVisibleCondition { game.gameManager.isPlaying && game.player?.selectedItem?.let { it is Usable && it !is Shootable } ?: false };
 			}.also { addWidget(it) };
 		} else {
-			uiStage = null;
 			joystick = null;
 			shootJoystick = null;
 
@@ -251,15 +257,68 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 
 	override fun resize(width: Int, height: Int) {
 		super.resize(width, height);
-		uiStage?.let { it.viewport.update(width, height, true) };
 		setJoystickBounds();
 	}
 
-	override fun onTouchDrag(x: Int, y: Int, pointer: Int): Boolean = super.onTouchDrag(x, y, pointer) or (uiStage?.touchDragged(x, y, pointer) ?: false);
+	override fun onTouchDrag(x: Int, y: Int, pointer: Int): Boolean {
+		var processed = super.onTouchDrag(x, y, pointer);
 
-	override fun onTouchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean = super.onTouchDown(x, y, pointer, button) or (uiStage?.touchDown(x, y, pointer, button) ?: false);
+		val x = x.toFloat();
+		val y = y.toFloat();
+		if(joystick != null && (joystick.isTouched || isActorInBounds(joystick, x, y))) {
+			val joystickHeight = joystick.height;
+			(joystick.listeners[0] as GdxInputListener).touchDragged(null, x - joystick.x, joystickHeight - y + (Window.height - joystick.y - joystickHeight), pointer);
+			processed = true;
+		}
+		if(shootJoystick != null && (shootJoystick.isTouched || isActorInBounds(shootJoystick, x, y))) {
+			val joystickHeight = shootJoystick.height;
+			(shootJoystick.listeners[0] as GdxInputListener).touchDragged(null, x - shootJoystick.x, joystickHeight - y + (Window.height - shootJoystick.y - joystickHeight), pointer);
+			processed = true;
+		}
+		return processed;
+	}
 
-	override fun onTouchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = super.onTouchUp(x, y, pointer, button) or (uiStage?.touchUp(x, y, pointer, button) ?: false);
+	override fun onTouchDown(x: Int, y: Int, pointer: Int, button: Int): Boolean {
+		var processed = super.onTouchDown(x, y, pointer, button);
+
+		val x = x.toFloat();
+		val y = y.toFloat();
+		if(joystick != null && isActorInBounds(joystick, x, y)) {
+			val joystickHeight = joystick.height;
+			processed = (joystick.listeners[0] as GdxInputListener).touchDown(null, x - joystick.x, joystickHeight - y + (Window.height - joystick.y - joystickHeight), pointer, button) || processed;
+		}
+		if(shootJoystick != null && isActorInBounds(shootJoystick, x, y)) {
+			val joystickHeight = shootJoystick.height;
+			processed = (shootJoystick.listeners[0] as GdxInputListener).touchDown(null, x - shootJoystick.x, joystickHeight - y + (Window.height - shootJoystick.y - joystickHeight), pointer, button) || processed;
+		}
+		return processed;
+	}
+
+	override fun onTouchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean {
+		var processed = super.onTouchUp(x, y, pointer, button);
+
+		val x = x.toFloat();
+		val y = y.toFloat();
+		if(joystick != null) {
+			val joystickHeight = joystick.height;
+			(joystick.listeners[0] as GdxInputListener).touchUp(null, x - joystick.x, joystickHeight - y + (Window.height - joystick.y - joystickHeight), pointer, button);
+			processed = true;
+		}
+		if(shootJoystick != null) {
+			val joystickHeight = shootJoystick.height;
+			(shootJoystick.listeners[0] as GdxInputListener).touchUp(null, x - shootJoystick.x, joystickHeight - y + (Window.height - shootJoystick.y - joystickHeight), pointer, button);
+			processed = true;
+		}
+		return processed;
+	}
+
+	private inline fun isActorInBounds(actor: Actor, mouseX: Float, mouseY: Float): Boolean {
+		if(!actor.isVisible) return false;
+		val mouseY = Window.height - mouseY;
+		val x = actor.x;
+		val y = actor.y;
+		return mouseX >= x && mouseX <= x + actor.width && mouseY >= y && mouseY <= y + actor.height;
+	}
 
 	private inline fun setJoystickBounds() {
 		if(joystick == null || shootJoystick == null) return;  // 둘 중 하나만 null인 경우는 없음
@@ -300,7 +359,6 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		super.update(delta);
 
 		shootJoystick?.setVisible(game.player?.selectedItem is Shootable);
-		uiStage?.act(delta);
 
 		val player = game.player;
 		val world = player?.world;
@@ -599,8 +657,11 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		// 월드 및 자막 그리기
 		super.drawContents();
 
-		if(game.gameManager.isPlaying)
-			uiStage?.draw();
+		if(game.gameManager.isPlaying) {
+			joystick?.draw(batch, 1f);
+			if(shootJoystick?.isVisible ?: false)
+				shootJoystick.draw(batch, 1f);
+		}
 
 		// 자막이 있으면 표시
 		if(subtitlesVisible)
@@ -705,7 +766,6 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		solidColor.dispose();
 		if(lzStillCut.isInitialized())
 			lzStillCut.value.dispose();
-		uiStage?.dispose();
 	}
 
 	/**

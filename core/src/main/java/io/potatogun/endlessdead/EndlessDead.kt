@@ -42,11 +42,11 @@ class EndlessDead : Game() {
 	// 게임 시작 시 한 번 호출되는 메쏘드
 	override fun create() {
 		if(isMobile) {
-			val width = Window.width;
-			val height = Window.height;
+			val width = Window.realWidth.toFloat();
+			val height = Window.realHeight.toFloat();
 			val dp = width / Gdx.graphics.density;
-			val fixedWidth = (dp * (width / height)).toInt();
-			val fixedHeight = (dp * 1f).toInt();
+			val fixedWidth = (dp * 1f).toInt();
+			val fixedHeight = (dp * (height / width)).toInt();
 			Window.setFixedSize(fixedWidth, fixedHeight);
 		}
 
