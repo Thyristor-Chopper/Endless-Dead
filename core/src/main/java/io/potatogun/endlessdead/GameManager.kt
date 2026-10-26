@@ -3,13 +3,11 @@ package io.potatogun.endlessdead;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.Array as GdxArray;
 
-import io.potatogun.gdxhelper.timer.TimerManager;
+import io.potatogun.endlessdead.entity.teleportToCenter;
+import io.potatogun.endlessdead.world.ZombieWorld;
 import io.potatogun.gdxhelper.util.ArraySuppliers;
 import io.potatogun.gdxhelper.util.Updatable;
 import io.potatogun.gdxhelper.util.beep3;
-import io.potatogun.endlessdead.entity.Player;
-import io.potatogun.endlessdead.entity.teleportToCenter;
-import io.potatogun.endlessdead.world.ZombieWorld;
 
 /**
  * 게임 상태 관리자

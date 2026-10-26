@@ -274,7 +274,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		if(code == Input.BACK) {
 			when {
 				game.gameManager.isPlaying	-> game.gameManager.pause();
-				game.gameManager.isPaused	-> game.gameManager.standBy();
+				game.gameManager.isPaused	-> game.gameManager.resume();
 				game.gameManager.isGameOver	-> game.gameManager.standBy();
 			}
 			return true;

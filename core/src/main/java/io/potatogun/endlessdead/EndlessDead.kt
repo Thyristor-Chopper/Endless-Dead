@@ -17,13 +17,11 @@ import io.potatogun.gdxhelper.world.World;
  * 좀비 파밍 게임의 메인 본체
  */
 class EndlessDead : Game() {
-	// lazy 정의
-	private val lzTitleScreen = lazy { Title() };
-	private val lzWorldProjector = lazy { ZombieWorldProjector() };
 	/**
 	 * 이 게임 인스턴스의 리소스
 	 */
-	@get:JvmName("getResourceInstance") val resources: Resources by lazy { Resources() };
+	@get:JvmName("getResourceInstance") lateinit var resources: Resources  // create에서 초기화 후 바뀌지 않음
+		private set;
 	/**
 	 * 현재 메인 게임 플레이어
 	 *
@@ -35,12 +33,20 @@ class EndlessDead : Game() {
 	 * 게임 관리자
 	 */
 	@JvmField val gameManager = GameManager(this);
-	// 미리 등록된 스크린. val은 lateinit이 불가하여 lazy 위임 사용.
-	@get:JvmSynthetic internal val titleScreen: Title by lzTitleScreen;
-	@get:JvmSynthetic internal val worldProjector: WorldProjector by lzWorldProjector;
+	// 화면들
+	@get:JvmSynthetic internal lateinit var titleScreen: Title  // create에서 초기화 후 바뀌지 않음
+		private set;
+	@get:JvmSynthetic internal lateinit var worldProjector: WorldProjector  // create에서 초기화 후 바뀌지 않음
+		private set;
 
 	// 게임 시작 시 한 번 호출되는 메쏘드
 	override fun create() {
+		super.create();
+
+		resources = Resources();
+		titleScreen = Title();
+		worldProjector = ZombieWorldProjector();
+
 		if(isMobile) {
 			val width = Window.realWidth.toFloat();
 			val height = Window.realHeight.toFloat();
@@ -93,14 +99,12 @@ class EndlessDead : Game() {
 	// 자원 정리
 	override fun dispose() {
 		super.dispose();
-		resources.dispose();
 		if(Item.Textures.isInstanceCreated(this))
 			Item.Textures.getInstance(this).dispose();
-		if(lzTitleScreen.isInitialized())
-			titleScreen.dispose();
-		if(lzWorldProjector.isInitialized())
-			worldProjector.dispose();
+		titleScreen.dispose();
+		worldProjector.dispose();
 		player?.dispose();
+		resources.dispose();
 	}
 
 	companion object {

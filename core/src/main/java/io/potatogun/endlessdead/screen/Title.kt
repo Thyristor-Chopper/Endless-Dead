@@ -44,9 +44,12 @@ class Title : Screen(font = EndlessDead.instance.resources.font) {
 	}
 
 	override fun onKeyDown(code: Int): Boolean {
-		super.onKeyDown(code);
-		game.gameManager.newGame();
-		return true;
+		var processed = super.onKeyDown(code);
+		if(!isMobile) {
+			game.gameManager.newGame();
+			processed = true;
+		}
+		return processed;
 	}
 
 	override fun drawBackground() {
