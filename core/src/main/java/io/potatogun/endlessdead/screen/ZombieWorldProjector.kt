@@ -262,6 +262,27 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		setJoystickBounds();
 	}
 
+	override fun show() {
+		Gdx.input.setCatchKey(Input.BACK, true);
+	}
+
+	override fun hide() {
+		Gdx.input.setCatchKey(Input.BACK, false);
+	}
+
+	override fun onKeyDown(code: Int): Boolean {
+		if(code == Input.BACK) {
+			when {
+				game.gameManager.isPlaying	-> game.gameManager.pause();
+				game.gameManager.isPaused	-> game.gameManager.standBy();
+				game.gameManager.isGameOver	-> game.gameManager.standBy();
+			}
+			return true;
+		}
+
+		return false;
+	}
+
 	override fun onTouchDrag(x: Int, y: Int, pointer: Int): Boolean {
 		var processed = super.onTouchDrag(x, y, pointer);
 
@@ -567,15 +588,17 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			width = Window.width,
 			align = Align.center
 		);
-		drawText(
-			text = "Press <P> or <Esc> or <Space> to resume",
-			x = 0f,
-			y = Window.height * 0.5f - 20f,
-			color = Color.WHITE,
-			scale = 1.0f,
-			width = Window.width,
-			align = Align.center
-		);
+
+		if(!isMobile)
+			drawText(
+				text = "Press <P> or <Esc> or <Space> to resume",
+				x = 0f,
+				y = Window.height * 0.5f - 20f,
+				color = Color.WHITE,
+				scale = 1.0f,
+				width = Window.width,
+				align = Align.center
+			);
 	}
 
 	/**
@@ -591,15 +614,17 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			width = Window.width,
 			align = Align.center
 		);
-		drawText(
-			text = "Press <Esc> to exit or press <R> or <Space> to continue",
-			x = 0f,
-			y = Window.height * 0.5f + 10f,
-			color = Color.WHITE,
-			scale = 1.0f,
-			width = Window.width,
-			align = Align.center
-		);
+
+		if(!isMobile)
+			drawText(
+				text = "Press <Esc> to exit or press <R> or <Space> to continue",
+				x = 0f,
+				y = Window.height * 0.5f + 10f,
+				color = Color.WHITE,
+				scale = 1.0f,
+				width = Window.width,
+				align = Align.center
+			);
 
 		// 통계
 		val player = game.player;
