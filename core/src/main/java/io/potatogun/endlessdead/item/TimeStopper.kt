@@ -7,7 +7,6 @@ import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
 import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.util.TimerAttachable;
-import io.potatogun.gdxhelper.util.beep2;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.World;
 
@@ -25,12 +24,10 @@ class TimeStopper : Item("time_stopper", "Ultra Stopwatch", Item.Properties().ra
 		if(world == null) return false;
 		if(world !is Freezable || world !is TimerAttachable) {
 			world.projector?.drawSubtitles("Can't use this item here", Color.SALMON);
-			beep2();
 			return false;
 		}
 		if(world.isFrozen) {
 			world.projector?.drawSubtitles("Time is already stopped", Color.SALMON);
-			beep2();
 			return false;
 		}
 		world.projector?.drawSubtitles("Time stop!");

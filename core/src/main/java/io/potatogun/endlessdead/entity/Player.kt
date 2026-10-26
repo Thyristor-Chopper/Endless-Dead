@@ -33,7 +33,6 @@ import io.potatogun.gdxhelper.timer.Timer;
 import io.potatogun.gdxhelper.timer.TimerManager;
 import io.potatogun.gdxhelper.util.Input;
 import io.potatogun.gdxhelper.util.InputListener;
-import io.potatogun.gdxhelper.util.beep2;
 import io.potatogun.gdxhelper.util.isMobile as isMobilePlatform;
 import io.potatogun.gdxhelper.util.loadTexture;
 import io.potatogun.gdxhelper.util.takeIfInstance;
@@ -298,12 +297,10 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 			} else {
 				if(container is HardContainer && !container.opened) {
 					if(this === mainPlayer) {
-						if(container.opening) {
+						if(container.opening)
 							projector?.drawSubtitles("Waiting for the container to unlock", Color.YELLOW);
-							beep2();
-						} else {
+						else
 							projector?.drawSubtitles("Opening the container...");
-						}
 					}
 					container.open(this) { container, _ -> takeItemFromContainer(container) };
 				} else {
@@ -319,10 +316,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 				level?.projector?.drawSubtitles("Put ${it.name} into the container");
 			container.putItem(it, true);
 		} ?: run {
-			if(this === game.player) {
+			if(this === game.player)
 				level?.projector?.drawSubtitles("Can't take any item; container is empty", Color.SALMON);
-				beep2();
-			}
 		};
 	}
 
@@ -330,10 +325,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		val isPlayerItem = container.isPlayerItem;
 		val item: Item? = container.takeItem(this);
 		if(item == null) {
-			if(this === game.player) {
+			if(this === game.player)
 				level?.projector?.drawSubtitles("Failed to take the item in the container", Color.SALMON);
-				beep2();
-			}
 		} else {
 			selectItem(item);
 			if(this === game.player)

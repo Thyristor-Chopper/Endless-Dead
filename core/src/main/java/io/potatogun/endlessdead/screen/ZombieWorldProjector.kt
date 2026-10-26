@@ -605,10 +605,12 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	 * 게임 오버 시 화면 중앙에 띄우는 안내 메시지를 그린다.
 	 */
 	private inline fun drawGameOverMessage() {  // render에서만 한 번 쓰이기 때문에 inline이다.
+		val topOffset = if(isMobile) 110f else 0f;
+
 		drawText(
 			text = "YOU DIED!",
 			x = 0f,
-			y = Window.height * 0.5f + 40f,
+			y = Window.height * 0.5f + 40f + topOffset,
 			color = Color.RED,
 			scale = 2.0f,
 			width = Window.width,
@@ -632,42 +634,42 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			drawText(
 				text = "Opened containers: ${player.statistics.openedContainerCount}",
 				x = Window.width * 0.5f - 70f,
-				y = Window.height * 0.5f - 20f,
+				y = Window.height * 0.5f - 20f + topOffset,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f
 			);
 			drawText(
 				text = "Killed zombies: ${player.statistics.killedZombieCount}",
 				x = Window.width * 0.5f - 70f,
-				y = Window.height * 0.5f - 35f,
+				y = Window.height * 0.5f - 35f + topOffset,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f
 			);
 			drawText(
 				text = "Fired: ${player.statistics.fireCount}",
 				x = Window.width * 0.5f - 70f,
-				y = Window.height * 0.5f - 50f,
+				y = Window.height * 0.5f - 50f + topOffset,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f
 			);
 			drawText(
 				text = "Survived duration: ${parseSeconds(player.statistics.survivedDuration, "m", "s")}",
 				x = Window.width * 0.5f - 70f,
-				y = Window.height * 0.5f - 65f,
+				y = Window.height * 0.5f - 65f + topOffset,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f
 			);
 			drawText(
 				text = "Total damage: ${player.statistics.totalDamage}",
 				x = Window.width * 0.5f - 70f,
-				y = Window.height * 0.5f - 80f,
+				y = Window.height * 0.5f - 80f + topOffset,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f
 			);
 			drawText(
 				text = "Final score: ${player.scoreManager.score}",
 				x = Window.width * 0.5f - 70f,
-				y = Window.height * 0.5f - 95f,
+				y = Window.height * 0.5f - 95f + topOffset,
 				color = Color.LIGHT_GRAY,
 				scale = 1.0f
 			);

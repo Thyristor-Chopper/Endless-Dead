@@ -7,7 +7,6 @@ import io.potatogun.endlessdead.entity.teleportToCenter;
 import io.potatogun.endlessdead.world.ZombieWorld;
 import io.potatogun.gdxhelper.util.ArraySuppliers;
 import io.potatogun.gdxhelper.util.Updatable;
-import io.potatogun.gdxhelper.util.beep3;
 
 /**
  * 게임 상태 관리자
@@ -151,10 +150,8 @@ class GameManager(private val game: EndlessDead) : Updatable {
 
 	override fun update(delta: Float) {
 		val player = game.player;
-		if(state == GameState.PLAYING && player != null && !player.isAlive) {
-			beep3();
+		if(state == GameState.PLAYING && player != null && !player.isAlive)
 			setGameOver();
-		}
 	}
 
 	/**

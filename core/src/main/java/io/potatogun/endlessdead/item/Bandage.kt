@@ -6,7 +6,6 @@ import io.potatogun.endlessdead.EndlessDead;
 import io.potatogun.endlessdead.entity.ItemSelectable;
 import io.potatogun.endlessdead.entity.LivingEntity;
 import io.potatogun.gdxhelper.screen.drawSubtitles;
-import io.potatogun.gdxhelper.util.beep2;
 
 /**
  * 붕대 - 회복 아이템
@@ -19,10 +18,8 @@ class Bandage : Item("bandage", "Bandage"), Usable {
 		if(user.selectedItem !== this) return false;
 		if(user !is LivingEntity) return false;
 		if(user.health >= user.maxHealth) {
-			if(user === game.player) {
+			if(user === game.player)
 				user.world?.projector?.drawSubtitles("Can't heal anymore", Color.SALMON);
-				beep2();
-			}
 			return false;
 		}
 		user.heal(10);
