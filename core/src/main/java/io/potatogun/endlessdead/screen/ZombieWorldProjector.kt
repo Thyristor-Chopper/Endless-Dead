@@ -174,7 +174,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			}
 		};
 
-		if(isMobile || java.lang.Boolean.getBoolean("forceTouchControls")) {
+		if(isMobile || java.lang.Boolean.getBoolean("zombie.forceTouchControls")) {
 			uiStage = Stage(ScreenViewport());
 			joystick = Touchpad(0f, Touchpad.TouchpadStyle().apply {
 				background = TextureRegionDrawable(resources.textures.getShared("joystick_background"));
