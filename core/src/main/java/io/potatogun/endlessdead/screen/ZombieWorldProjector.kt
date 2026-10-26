@@ -299,7 +299,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	private inline fun updatePlaying(delta: Float) {  // update에서만 한 번 쓰이기 때문에 inline이다.
 		super.update(delta);
 
-		shootJoystick?.setVisible((game.player?.selectedItem is Shootable) ?: false);
+		shootJoystick?.setVisible(game.player?.selectedItem is Shootable);
 		uiStage?.act(delta);
 
 		val player = game.player;

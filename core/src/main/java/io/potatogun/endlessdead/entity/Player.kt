@@ -243,7 +243,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 		var movedByJoystick = false;
 		level?.projector?.takeIfInstance<ZombieWorldProjector>()?.let { projector ->
-			projector?.joystick?.let { joystick ->
+			projector.joystick?.let { joystick ->
 				val dx = joystick.knobPercentX;
 				val dy = joystick.knobPercentY;
 				if(dx != 0f || dy != 0f) {
