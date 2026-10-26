@@ -24,6 +24,8 @@ import io.potatogun.endlessdead.item.Cooldownable;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.LimitedUsable;
 import io.potatogun.endlessdead.item.Rarity;
+import io.potatogun.endlessdead.item.Shootable;
+import io.potatogun.endlessdead.item.Usable;
 import io.potatogun.endlessdead.world.SpecialWorld;
 import io.potatogun.gdxhelper.InputListeners;
 import io.potatogun.gdxhelper.Window;
@@ -45,6 +47,8 @@ import io.potatogun.gdxhelper.widget.Button;
 import io.potatogun.gdxhelper.widget.ProgressBar;
 import io.potatogun.gdxhelper.widget.Widget;
 import io.potatogun.gdxhelper.world.World;
+
+import java.util.function.BooleanSupplier;
 
 /**
  * 게임 목적에 맞게 HUD와 체력 정보, 총 정보 등을 표시해주는 월드 뷰어.
@@ -97,9 +101,11 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	 * 자바에서는 getJoystick()로 가져온다.
 	 */
 	val joystick: Touchpad?;
+	val shootJoystick: Touchpad?;
 	private val previousItemButton: Button?;
 	private val nextItemButton: Button?;
 	private val openContainerButton: Button?;
+	private val useButton: Button?;
 
 	init {
 		// 단색용 텍스처 생성
@@ -121,23 +127,31 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		// 일시 중지 및 게임 오버 단추
 		resumeButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = resources.primaryButton) {
 			game.gameManager.resume();
-		}.apply { hide() }.also { addOverlayWidget(it) };
+		}.apply {
+			setVisibleCondition { game.gameManager.isPaused };
+		}.also { addOverlayWidget(it) };
 		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = resources.primaryButton) {
 			clearSubtitles();
 			disposeParentWorld();
 			game.gameManager.newGame();
-		}.apply { hide() }.also { addOverlayWidget(it) };
+		}.apply {
+			setVisibleCondition { game.gameManager.isGameOver };
+		}.also { addOverlayWidget(it) };
 		titleButton = Button({ Window.width * 0.5f - 60f }, { 120f }, { 120f }, caption = "Back to title", skin = resources.button) {
 			disposeParentWorld();
 			unloadWorld(dispose = true);
 			clearSubtitles();
 			game.gameManager.standBy();
-		}.apply { hide() }.also { addOverlayWidget(it) };
+		}.apply {
+			setVisibleCondition { game.gameManager.let { gameManager -> gameManager.isPaused || gameManager.isGameOver } };
+		}.also { addOverlayWidget(it) };
 		quitButton = Button({ Window.width * 0.5f + 75f }, { 120f }, { 120f }, caption = "Quit", skin = resources.button) {
 			disposeParentWorld();
 			unloadWorld(dispose = true);
 			Gdx.app.exit();
-		}.apply { hide() }.also { addOverlayWidget(it) };
+		}.apply {
+			setVisibleCondition { game.gameManager.let { gameManager -> gameManager.isPaused || gameManager.isGameOver } };
+		}.also { addOverlayWidget(it) };
 
 		if(java.lang.Boolean.getBoolean("zombie.instantGame")) {
 			replayButton.disable();
@@ -152,69 +166,58 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			updateTitleBarInfo();
 		});
 
-		// 오버레이 단추 표시 또는 숨기기
 		game.gameManager.attachStateObserver {
 			when {
-				game.gameManager.isPlaying -> {
-					replayButton.hide();
-					resumeButton.hide();
-					titleButton.hide();
-					quitButton.hide();
-
-					previousItemButton?.show();
-					nextItemButton?.show();
-					openContainerButton?.show();
-				}
-				game.gameManager.isPaused -> {
-					replayButton.hide();
-					resumeButton.show();
-					titleButton.show();
-					quitButton.show();
-
-					previousItemButton?.hide();
-					nextItemButton?.hide();
-					openContainerButton?.hide();
-				}
 				game.gameManager.isGameOver -> {
 					TitleBar.stats = null;
-
-					replayButton.show();
-					resumeButton.hide();
-					titleButton.show();
-					quitButton.show();
-
-					previousItemButton?.hide();
-					nextItemButton?.hide();
-					openContainerButton?.hide();
 				}
 			}
 		};
 
-		if(isMobile) {
+		if(isMobile || java.lang.Boolean.getBoolean("forceTouchControls")) {
 			uiStage = Stage(ScreenViewport());
-			joystick = Touchpad(16f, Touchpad.TouchpadStyle().apply {
+			joystick = Touchpad(0f, Touchpad.TouchpadStyle().apply {
 				background = TextureRegionDrawable(resources.textures.getShared("joystick_background"));
 				knob = TextureRegionDrawable(resources.textures.getShared("joystick_knob"));
-			});
+			}).also { uiStage.addActor(it) };
+			shootJoystick = Touchpad(0f, Touchpad.TouchpadStyle().apply {
+				background = TextureRegionDrawable(resources.textures.getShared("joystick_background"));
+				knob = TextureRegionDrawable(resources.textures.getShared("joystick_knob_secondary"));
+			}).also { uiStage.addActor(it) };
 			setJoystickBounds();
-			uiStage.addActor(joystick);
 
+			val itemSwitcherCondition = BooleanSupplier { game.gameManager.isPlaying && game.player?.let { !it.inventory.isEmpty } ?: false };
 			previousItemButton = Button(8f, 2f, 28f, 28f, caption = "<", skin = resources.button) {
-				InputListeners.fireScroll(0f, -1f);
+				game.player?.selectPreviousItem();
+			}.apply {
+				setVisibleCondition(itemSwitcherCondition);
 			}.also { addWidget(it) };
 			nextItemButton = Button(8f + 28f + 8f, 2f, 28f, 28f, caption = ">", skin = resources.button) {
-				InputListeners.fireScroll(0f, 1f);
+				game.player?.selectNextItem();
+			}.apply {
+				setVisibleCondition(itemSwitcherCondition);
 			}.also { addWidget(it) };
-			openContainerButton = Button(8f, 72f, 96f, 32f, caption = "Open", skin = resources.button) {
-				InputListeners.fireTouchDown(Input.mouseX, Input.mouseY, 0, Input.RIGHT_MOUSE);
+			openContainerButton = Button(8f, 72f, 72f, 32f, caption = "Open", skin = resources.button) {
+				game.player?.interactContainer();
+			}.apply {
+				setVisibleCondition { game.gameManager.isPlaying };
+			}.also { addWidget(it) };
+			useButton = Button(8f, 136f, 72f, 32f, caption = "Use", skin = resources.primaryButton) {
+				game.player?.let { player ->
+					player.selectedItem?.let { player.useItem(it) };
+				};
+			}.apply {
+				setVisibleCondition { game.gameManager.isPlaying && game.player?.selectedItem?.let { it is Usable && it !is Shootable } ?: false };
 			}.also { addWidget(it) };
 		} else {
 			uiStage = null;
 			joystick = null;
+			shootJoystick = null;
 
 			previousItemButton = null;
 			nextItemButton = null;
 			openContainerButton = null;
+			useButton = null;
 		}
 	}
 
@@ -259,7 +262,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	override fun onTouchUp(x: Int, y: Int, pointer: Int, button: Int): Boolean = super.onTouchUp(x, y, pointer, button) or (uiStage?.touchUp(x, y, pointer, button) ?: false);
 
 	private inline fun setJoystickBounds() {
-		if(joystick == null) return;
+		if(joystick == null || shootJoystick == null) return;  // 둘 중 하나만 null인 경우는 없음
 		val size = Window.height * 0.25f;
 		val knobSize = size * 0.421875f;
 		val margin = 48f;
@@ -268,6 +271,14 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			it.minWidth = knobSize;
 			it.minHeight = knobSize;
 		};
+		joystick.setDeadzone(size * 0.5f * 0.2f);
+		val shootMargin = 40f;
+		shootJoystick.setBounds(margin + shootMargin, margin, size, size);
+		shootJoystick.style.knob.let {
+			it.minWidth = knobSize;
+			it.minHeight = knobSize;
+		};
+		shootJoystick.setDeadzone(size * 0.5f * 0.5f);
 	}
 
 	override fun update(delta: Float) {
@@ -288,6 +299,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	private inline fun updatePlaying(delta: Float) {  // update에서만 한 번 쓰이기 때문에 inline이다.
 		super.update(delta);
 
+		shootJoystick?.setVisible((game.player?.selectedItem is Shootable) ?: false);
 		uiStage?.act(delta);
 
 		val player = game.player;
@@ -648,7 +660,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			// 현재 플레이어가 들고 있는 아이템
 			player.selectedItem?.let {
 				val rarity = it.rarity;
-				val leftMargin = if(previousItemButton != null) 72f else 0f;
+				val leftMargin = if(previousItemButton?.isVisible ?: false) 72f else 0f;
 				batch.draw(it.texture, leftMargin + 8f, 4f, Item.sideLength, Item.sideLength);
 				drawText(
 					text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.size}]",

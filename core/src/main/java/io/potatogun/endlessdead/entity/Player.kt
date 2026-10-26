@@ -116,29 +116,27 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 
 		super.update(delta);
 
-		// 다람쥐 위치에 따라 플레이어 회전
-		if(!isMobile)
-			rotateToCursor();
-
 		// 아이템 사용
 		selectedItem?.let {
-			if(it is Usable && ((Input.isButtonJustPressed(Input.LEFT_MOUSE) || (isMobile && Input.isJustTouched)) || (it.allowContinuousUse && (Input.isButtonPressed(Input.LEFT_MOUSE) || (isMobile && Input.isTouched(clickPointer)))))) {
-				val use: Boolean;
-				if(isMobile) {
-					if(clickPointer != -1) {
-						val mouseX = Input.mouseX(clickPointer).toFloat();
-						val mouseY = Window.height - Input.mouseY(clickPointer).toFloat();
-						use = isInClickableRegion(mouseX, mouseY);
-					} else {
-						use = false;
-					}
-				} else {
-					use = true;
-				}
+			if(it !is Usable) return@let;
 
-				if(use)
+			var shootedByJoystick = false;
+			if(it is Shootable)
+				level?.projector?.takeIfInstance<ZombieWorldProjector>()?.shootJoystick?.let { shootJoystick ->
+					if(!shootJoystick.isVisible) return@let;
+					val dx = shootJoystick.knobPercentX;
+					val dy = shootJoystick.knobPercentY;
+					if(dx == 0f && dy == 0f) return@let;
+					val radians = atan2(dy, dx);
+					val degrees = toDegrees(radians.toDouble()).toFloat() - 90f;
+					rotate(degrees);
 					useItem(it);
-			}
+					shootedByJoystick = true;
+				};
+
+			if(!isMobile && !shootedByJoystick)
+				if(Input.isButtonJustPressed(Input.LEFT_MOUSE) || (it.allowContinuousUse && Input.isButtonPressed(Input.LEFT_MOUSE)))
+					useItem(it);
 		};
 
 		// 주변 아이템 줍기
@@ -171,6 +169,19 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		}
 
 		return false;
+	}
+
+	// 다람쥐 위치에 따라 플레이어 회전
+	override fun onMouseMove(x: Int, y: Int): Boolean {
+		if(isMobile) return false;
+		rotateToCursor();
+		return true;
+	}
+
+	override fun onTouchDrag(x: Int, y: Int, pointer: Int): Boolean {
+		if(isMobile) return false;
+		rotateToCursor();
+		return true;
 	}
 
 	override fun onKeyDown(code: Int): Boolean {
@@ -230,19 +241,25 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 		val originalX = x;
 		val originalY = y;
 
-		if(isMobile) {
-			level?.projector?.takeIfInstance<ZombieWorldProjector>()?.joystick?.let {
-				val dx = it.knobPercentX;
-				val dy = it.knobPercentY;
+		var movedByJoystick = false;
+		level?.projector?.takeIfInstance<ZombieWorldProjector>()?.let { projector ->
+			projector?.joystick?.let { joystick ->
+				val dx = joystick.knobPercentX;
+				val dy = joystick.knobPercentY;
 				if(dx != 0f || dy != 0f) {
-					val radians = atan2(dy, dx);
-					val degrees = toDegrees(radians.toDouble()).toFloat() - 90f;
-					rotate(degrees);
-
+					val shootJoystick = projector.shootJoystick!!;
+					if(shootJoystick.knobPercentX == 0f && shootJoystick.knobPercentY == 0f) {
+						val radians = atan2(dy, dx);
+						val degrees = toDegrees(radians.toDouble()).toFloat() - 90f;
+						rotate(degrees);
+					}
 					move(delta, dx, dy);
+					movedByJoystick = true;
 				}
 			};
-		} else {
+		};
+
+		if(!movedByJoystick) {
 			var dx = 0f;
 			var dy = 0f;
 			if(Input.isKeyPressed(Input.LEFT) || Input.isKeyPressed(Input.A))
@@ -271,7 +288,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	/**
 	 * 닿아 있는 상자와 상호작용한다.
 	 */
-	private inline fun interactContainer() {  // update()에서만 한 번 쓰이기 때문에 inline이다.
+	internal fun interactContainer() {
 		val mainPlayer = game.player;
 		val projector = level?.projector;
 		forEachNearby { container ->

@@ -53,6 +53,7 @@ class Resources internal constructor() : Disposable {
 
 			register("joystick_background", "widget/joystick_background.bmp");
 			register("joystick_knob", "widget/joystick_knob.bmp");
+			register("joystick_knob_secondary", "widget/joystick_knob_secondary.bmp");
 		}
 	};
 	/**
