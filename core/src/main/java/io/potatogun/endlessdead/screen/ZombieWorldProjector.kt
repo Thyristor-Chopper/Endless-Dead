@@ -99,7 +99,9 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	 * 자바에서는 getJoystick()로 가져온다.
 	 */
 	val joystick: Touchpad?;
+	private var joystickPointer = -1;
 	val shootJoystick: Touchpad?;
+	private var shootJoystickPointer = -1;
 	private val previousItemButton: Button?;
 	private val nextItemButton: Button?;
 	private val openContainerButton: Button?;
@@ -265,12 +267,12 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 
 		val x = x.toFloat();
 		val y = y.toFloat();
-		if(joystick != null && (joystick.isTouched || isInActorBounds(joystick, x, y))) {
+		if(joystick != null && (joystick.isTouched || isInActorBounds(joystick, x, y)) && pointer == joystickPointer) {
 			val joystickHeight = joystick.height;
 			(joystick.listeners[0] as GdxInputListener).touchDragged(null, x - joystick.x, joystickHeight - y + (Window.height - joystick.y - joystickHeight), pointer);
 			processed = true;
 		}
-		if(shootJoystick != null && (shootJoystick.isTouched || isInActorBounds(shootJoystick, x, y))) {
+		if(shootJoystick != null && (shootJoystick.isTouched || isInActorBounds(shootJoystick, x, y)) && pointer == shootJoystickPointer) {
 			val joystickHeight = shootJoystick.height;
 			(shootJoystick.listeners[0] as GdxInputListener).touchDragged(null, x - shootJoystick.x, joystickHeight - y + (Window.height - shootJoystick.y - joystickHeight), pointer);
 			processed = true;
@@ -286,10 +288,12 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		if(joystick != null && isInActorBounds(joystick, x, y)) {
 			val joystickHeight = joystick.height;
 			processed = (joystick.listeners[0] as GdxInputListener).touchDown(null, x - joystick.x, joystickHeight - y + (Window.height - joystick.y - joystickHeight), pointer, button) || processed;
+			joystickPointer = pointer;
 		}
 		if(shootJoystick != null && isInActorBounds(shootJoystick, x, y)) {
 			val joystickHeight = shootJoystick.height;
 			processed = (shootJoystick.listeners[0] as GdxInputListener).touchDown(null, x - shootJoystick.x, joystickHeight - y + (Window.height - shootJoystick.y - joystickHeight), pointer, button) || processed;
+			shootJoystickPointer = pointer;
 		}
 		return processed;
 	}
@@ -299,14 +303,16 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 
 		val x = x.toFloat();
 		val y = y.toFloat();
-		if(joystick != null) {
+		if(joystick != null && pointer == joystickPointer) {
 			val joystickHeight = joystick.height;
 			(joystick.listeners[0] as GdxInputListener).touchUp(null, x - joystick.x, joystickHeight - y + (Window.height - joystick.y - joystickHeight), pointer, button);
+			joystickPointer = -1;
 			processed = true;
 		}
-		if(shootJoystick != null) {
+		if(shootJoystick != null && pointer == shootJoystickPointer) {
 			val joystickHeight = shootJoystick.height;
 			(shootJoystick.listeners[0] as GdxInputListener).touchUp(null, x - shootJoystick.x, joystickHeight - y + (Window.height - shootJoystick.y - joystickHeight), pointer, button);
+			shootJoystickPointer = -1;
 			processed = true;
 		}
 		return processed;
