@@ -1,11 +1,11 @@
 package io.potatogun.endlessdead.entity;
 
 /**
- * 관통하는 총알에게 영향을 주는 개체
+ * 관통 방어력이 있는 개체 (관통하는 총알에게 영향을 주는 개체)
  */
 interface PenetratorDamagable {
 	/**
-	 * 관통할 때 관통자에게 주는 대미지
+	 * 관통 방어력 (관통할 때 관통자에게 주는 대미지)
 	 */
 	val penetrationDamage: Int;
 }
