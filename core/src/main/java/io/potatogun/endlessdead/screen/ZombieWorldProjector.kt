@@ -86,6 +86,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 	private val replayButton: Button;
 	private val titleButton: Button;
 	private val quitButton: Button;
+	private val reviveButton: Button;
 	// 미터기들
 	private val hpIndicator: ProgressBar;
 	private val targetIndicator: ProgressBar;
@@ -128,7 +129,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 		resumeButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Resume", skin = resources.primaryButton) {
 			game.gameManager.resume();
 		}.apply { hide() }.also { addOverlayWidget(it) };
-		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Continue", skin = resources.primaryButton) {
+		replayButton = Button({ Window.width * 0.5f - 195f }, { 120f }, { 120f }, caption = "Replay", skin = resources.primaryButton) {
 			clearSubtitles();
 			disposeParentWorld();
 			game.gameManager.newGame();
@@ -144,6 +145,11 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			unloadWorld(dispose = true);
 			Gdx.app.exit();
 		}.apply { hide() }.also { addOverlayWidget(it) };
+		reviveButton = Button({ Window.width * 0.5f - 60f }, { 80f }, { 120f }, caption = "Revive", skin = resources.button) {
+			game.gameManager.revive();
+		}.apply {
+			hide();
+		}.also { addOverlayWidget(it) };
 
 		if(java.lang.Boolean.getBoolean("zombie.instantGame")) {
 			replayButton.disable();
@@ -163,12 +169,14 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			when {
 				game.gameManager.isPlaying -> {
 					replayButton.hide();
+					reviveButton.hide();
 					resumeButton.hide();
 					titleButton.hide();
 					quitButton.hide();
 				}
 				game.gameManager.isPaused -> {
 					replayButton.hide();
+					reviveButton.hide();
 					resumeButton.show();
 					titleButton.show();
 					quitButton.show();
@@ -177,6 +185,12 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 					TitleBar.stats = null;
 
 					replayButton.show();
+					game.player?.let { player ->
+						if(!player.hasRevived && player.scoreManager.score >= 5000)
+							reviveButton.show();
+						else
+							reviveButton.hide();
+					} ?: run { reviveButton.hide() };
 					resumeButton.hide();
 					titleButton.show();
 					quitButton.show();

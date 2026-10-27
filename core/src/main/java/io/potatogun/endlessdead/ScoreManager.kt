@@ -38,4 +38,8 @@ class ScoreManager {
 	fun resetScore() {
 		score = 0;
 	}
+
+	inline fun copy(destination: ScoreManager) {
+		destination.addScore(score);
+	}
 }

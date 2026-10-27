@@ -22,10 +22,14 @@ class MoveComponent(private val entity: Entity, override val speed: Float) : Mov
 	var speedAddend = 0f;
 
 	override fun move(delta: Float, directionX: Float, directionY: Float) {
+		move(delta, directionX, directionY, 1f, 0f);
+	}
+
+	fun move(delta: Float, directionX: Float, directionY: Float, modifier: Float = 1f, addend: Float = 0f) {
 		val length = sqrt(directionX * directionX + directionY * directionY);
 		if(length == 0f) return;
 
-		val speed = this.speed * speedModifier + speedAddend;
+		val speed = this.speed * this.speedModifier * modifier + this.speedAddend + addend;
 		entity.position.add(directionX / length * speed * delta, directionY / length * speed * delta);
 	}
 

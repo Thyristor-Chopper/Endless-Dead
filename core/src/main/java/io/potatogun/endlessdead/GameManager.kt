@@ -132,6 +132,29 @@ class GameManager(private val game: EndlessDead) : Updatable {
 	}
 
 	/**
+	 * 부활한다.
+	 */
+	fun revive() {
+		val previousPlayer = game.player;
+		val projector = game.worldProjector;
+		val world = projector.projectingWorld;
+		if(previousPlayer == null || world == null || state != GameState.GAME_OVER)
+			throw IllegalStateException("game is not over or started");
+
+		state = GameState.PLAYING;
+		val player = game.recreatePlayer(world).apply {
+			resetHealth();
+			teleportToCenter();
+			previousPlayer.statistics.copy(statistics);
+			previousPlayer.scoreManager.copy(scoreManager);
+			scoreManager.subtractScore(500);
+			hasRevived = true;
+		};
+		world.entities.add(player);
+		world.updateOffset();
+	}
+
+	/**
 	 * 게임을 일시 중지한다.
 	 */
 	fun pause() {

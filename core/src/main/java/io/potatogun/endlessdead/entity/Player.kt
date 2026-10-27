@@ -42,6 +42,7 @@ import java.lang.Math.toDegrees;
 import java.lang.ref.WeakReference;
 
 import kotlin.math.atan2;
+import kotlin.math.sqrt;
 
 /**
  * 플레이어 — 화살표나 WASD로 조종
@@ -50,6 +51,8 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	private val game = EndlessDead.instance;
 	override val isUpdatableWhileFrozen = true;
 	private val isMobile = isMobilePlatform;
+	@get:JvmName("hasRevived") @set:JvmName("setRevived") var hasRevived = false
+		internal set;
 	private val textureWithGun = loadTexture("entity/player_holding_gun.bmp");
 	// 타이머
 	private val timers = TimerManager();
@@ -227,7 +230,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 						val degrees = toDegrees(radians.toDouble()).toFloat() - 90f;
 						rotate(degrees);
 					}
-					move(delta, dx, dy);
+					moveComponent.move(delta, dx, dy, modifier = sqrt(dx * dx + dy * dy));
 					movedByJoystick = true;
 				}
 			};
@@ -244,7 +247,7 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 				dy += 1f;
 			if(Input.isKeyPressed(Input.DOWN) || Input.isKeyPressed(Input.S))
 				dy -= 1f;
-			move(delta, dx, dy);
+			moveComponent.move(delta, dx, dy);
 		}
 
 		// 월드 경계 안쪽으로 가두기.
