@@ -15,6 +15,7 @@ class StrongZombie(world: World, x: Float, y: Float) : Zombie(world, "Rabid Zomb
 	private val dasher = DashToTarget(this, 20, 800f, 250f);
 	// 강한 좀비는 살짝 붉게
 	override val tint = rgb(255, 204, 204);
+	override val killScore = 15;
 
 	override fun updateAI(delta: Float) {
 		dasher.update(delta);

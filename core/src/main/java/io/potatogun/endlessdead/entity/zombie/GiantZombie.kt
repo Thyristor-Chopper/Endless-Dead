@@ -9,4 +9,6 @@ import io.potatogun.gdxhelper.world.World;
  * @param x     개체의 처음 X 위치
  * @param y     개체의 처음 Y 위치
  */
-class GiantZombie(world: World, x: Float, y: Float) : Zombie(world, "Giant Zombie", x, y, 100f, 140f, Zombie.Properties(100, 15, 10f));
+class GiantZombie(world: World, x: Float, y: Float) : Zombie(world, "Giant Zombie", x, y, 100f, 140f, Zombie.Properties(100, 15, 10f)) {
+	override val killScore = 100;
+}
