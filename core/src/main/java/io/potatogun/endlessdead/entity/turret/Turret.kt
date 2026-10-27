@@ -26,7 +26,7 @@ import kotlin.random.Random;
 abstract class Turret private constructor(world: World, name: String, x: Float, y: Float, width: Float, height: Float, gun: Item?, health: Int, isPermanent: Boolean, texture: Texture, final override val inventory: SingleItemInventory) : LivingEntity(world, name, x, y, width, height, health, texture), InventoryHolder, ItemSelectable by InventoryItemSelector(inventory), PenetratorDamagable, Targetable {
 	private val rotator = RotateToTarget(this);
 	private val shooter = ShootTarget(this);
-	override val penetrationDamage = (health * 0.1f).toInt();
+	override val penetrationDamage = (health * 0.005f).toInt();  // 체력의 절반의 100분의 1
 	override val damageInvincibilityDuration = 0.05f;
 
 	/**
