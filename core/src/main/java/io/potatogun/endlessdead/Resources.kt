@@ -30,6 +30,7 @@ class Resources internal constructor() : Disposable {
 			register("empty_building", "entity/container/building_empty.bmp");
 			register("empty_chest", "entity/container/chest_empty.bmp");
 			register("empty_vault", "entity/container/vault_empty.bmp");
+			register("grenade", "entity/grenade.bmp");
 			register("landmine", "entity/landmine.bmp");
 			register("player_item_indicator", "entity/container/player_item.bmp");
 			register("portal", "entity/portal.bmp");

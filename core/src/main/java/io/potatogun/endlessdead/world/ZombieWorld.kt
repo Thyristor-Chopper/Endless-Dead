@@ -19,6 +19,7 @@ import io.potatogun.endlessdead.entity.summoner.TriggermanSummoner;
 import io.potatogun.endlessdead.entity.turret.FriendlyTurret;
 import io.potatogun.endlessdead.entity.turret.HostileTurret;
 import io.potatogun.endlessdead.item.Bandage;
+import io.potatogun.endlessdead.item.GrenadeLauncher;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.LandminePlacer;
 import io.potatogun.endlessdead.item.MachineGun;
@@ -222,11 +223,12 @@ class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = EndlessDe
 			rand <= 850	-> Bandage()			// 20% 확률
 			rand <= 900	-> SpeedPotion()		// 5% 확률
 			rand <= 950	-> LandminePlacer()		// 5% 확률
+			rand <= 970	-> GrenadeLauncher()	// 2% 확률
 			else		-> {
 				if(rand >= 1000 && allowRare)
 					TurretInstaller()			// 0.1% 확률
 				else
-					TimeStopper()				// 5% 확률
+					TimeStopper()				// 3% 확률
 			}
 		};
 	}

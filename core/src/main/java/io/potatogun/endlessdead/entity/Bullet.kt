@@ -13,7 +13,7 @@ import io.potatogun.gdxhelper.world.World;
 import kotlin.math.sqrt;
 
 /**
- * 총알 개체
+ * 총알
  *
  * @param    world        총알이 있는 세계
  * @property shooter      쏜 개체
@@ -25,7 +25,7 @@ import kotlin.math.sqrt;
  * @param    size         총알 지름
  * @param    texture      총알 텍스처
  */
-class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target: Position?, speed: Float, val damage: Int, val isPenetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = EndlessDead.instance.resources.textures.getShared("bullet")) : LivingEntity(world, "Bullet", shooter.position.x, shooter.position.y, size, size, health, texture), Movable {
+open class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target: Position?, speed: Float, val damage: Int, val isPenetrable: Boolean, health: Int, size: Float = 16f, texture: Texture = EndlessDead.instance.resources.textures.getShared("bullet"), initialPosition: Position? = null) : LivingEntity(world, "Bullet", if(initialPosition != null) initialPosition.x else shooter.x, if(initialPosition != null) initialPosition.y else shooter.y, size, size, health, texture), Movable {
 	private val game = EndlessDead.instance;
 	private val moveComponent = MoveComponent(this, speed);
 	override val speed: Float by moveComponent::speed;
@@ -49,8 +49,8 @@ class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target
 		if(target != null && speed == 0f) throw IllegalArgumentException("bullet with zero speed can't have a target");
 
 		if(target != null) {
-			val dx = target.x - shooter.x;
-			val dy = target.y - shooter.y;
+			val dx = target.x - x;
+			val dy = target.y - y;
 			val distance = sqrt(dx * dx + dy * dy);
 			if(distance != 0f) {
 				directionX = dx / distance;
@@ -83,12 +83,17 @@ class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지를 준다.
 		forEachNearby { entity ->
 			if(entity !== shooter && entity is LivingEntity && !entity.isInvincible && !isSameTeamWith(entity) && collidesWith(entity)) {
+				if(!onColliding(entity)) return@forEachNearby;
 				entity.takeDamage(damage, attacker = shooter);  // 무적 시간이 필요하면 추가...
+				val next = onCollided(entity);
 				if(isPenetrable) {
 					if(entity is PenetratorDamagable) {
 						this.takeDamage(entity.penetrationDamage, attacker = entity);
-						if(!isAlive) return;
+						if(!isAlive)
+							return;
 					}
+					if(!next)
+						return;
 				} else {
 					this.remove();
 					return;
@@ -96,6 +101,20 @@ class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, target
 			}
 		};
 	}
+
+	/**
+	 * 총알이 살아있는 개체와 충돌했을 때 호출되는 콜백이다. (정확히는 충돌 처리 직전에 호출된다.)
+	 *
+	 * @return 이번 개체를 처리할지의 여부
+	 */
+	open fun onColliding(entity: LivingEntity): Boolean = true;
+
+	/**
+	 * 총알이 살아있는 개체와 충돌돼서 처리된 이후 호출되는 콜백이다.
+	 *
+	 * @return 충돌 처리를 계속할지의 여부 (비관통 총알은 효과 없음)
+	 */
+	open fun onCollided(entity: LivingEntity): Boolean = true;
 
 	override fun move(delta: Float, directionX: Float, directionY: Float) {
 		moveComponent.move(delta, directionX, directionY);

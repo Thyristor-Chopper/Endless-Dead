@@ -71,7 +71,9 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 	/**
 	 * 무한 총알 여부
 	 */
-	@JvmField val infiniteBullets: Boolean;
+	@JvmField protected val infiniteBullets: Boolean;
+	val isBulletsInfinite: Boolean
+		get() = infiniteBullets;
 	/**
 	 * 총알 지름
 	 */
@@ -130,20 +132,16 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 	override fun shoot(target: Position, shooter: Entity): Int {
 		val world = shooter.world;
 		if(world == null) return 0;
-		var shooted = 0;
-
+		val shooted: Int;
 		if(canFire) {
-			val bullet = Bullet(world, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture);
-			world.entities.add(bullet);
-			shooted = 1;
+			shooted = createBullets(target, shooter);
 
 			if(fireInterval > 0f)
 				remainingCooldown = fireInterval;
-
-			if(!infiniteBullets)
-				bullets--;
-		} else if(shooter === game.player && remainingCooldown <= 0f) {  // 쿨타임 외 다른 이유로 발사 실패 시
-			world.projector?.drawSubtitles("Can't shoot now", color = Color.SALMON);
+		} else {
+			if(shooter === game.player && remainingCooldown <= 0f)  // 쿨타임 외 다른 이유로 발사 실패 시
+				world.projector?.drawSubtitles("Can't shoot now", color = Color.SALMON);
+			shooted = 0;
 		}
 
 		// ammo가 다 떨어진 총은 파괴
@@ -154,6 +152,16 @@ abstract class Gun(id: String, name: String, settings: Item.Properties) : Item(i
 		}
 
 		return shooted;
+	}
+
+	protected open fun createBullets(target: Position, shooter: Entity): Int {
+		val world = shooter.world;
+		if(world == null) return 0;
+		val bullet = Bullet(world, shooter, target, bulletSpeed, bulletDamage, isBulletPenetrable, bulletPenetration, bulletSize, bulletTexture);
+		world.entities.add(bullet);
+		if(!infiniteBullets)
+			bullets--;
+		return 1;
 	}
 
 	/**

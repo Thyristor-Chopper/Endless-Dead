@@ -16,6 +16,7 @@ import io.potatogun.endlessdead.entity.container.Vault;
 import io.potatogun.endlessdead.entity.turret.FriendlyTurret;
 import io.potatogun.endlessdead.entity.turret.HostileTurret;
 import io.potatogun.endlessdead.item.Bandage;
+import io.potatogun.endlessdead.item.GrenadeLauncher;
 import io.potatogun.endlessdead.item.Item;
 import io.potatogun.endlessdead.item.MachineGun;
 import io.potatogun.endlessdead.item.Shotgun;
@@ -146,13 +147,14 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 	private fun generateLoot(allowRare: Boolean = false): Item {
 		val rand = random.nextInt(100) + 1;  // 1~100
 		return when {
-			rand <= 40	-> MachineGun()			// 40% 확률
-			rand <= 80	-> Shotgun()			// 40% 확률
+			rand <= 35	-> MachineGun()			// 35% 확률
+			rand <= 70	-> Shotgun()			// 35% 확률
+			rand <= 90	-> GrenadeLauncher()	// 20% 확률
 			else		-> {
 				if(allowRare && rand > 95)
 					TurretInstaller()			// 5% 확률
 				else
-					Bandage()					// 15%/20% 확률
+					Bandage()					// 5%/10% 확률
 			}
 		};
 	}
