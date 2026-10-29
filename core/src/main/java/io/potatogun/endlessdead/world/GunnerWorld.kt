@@ -138,7 +138,7 @@ class GunnerWorld @JvmOverloads constructor(override val mainWorld: World? = nul
 			};
 		});
 
-		game.updateListeners.register(this) { world, game -> game is EndlessDead && game.gameManager.isPlaying && game.player?.isIn(world as World) ?: false };
+		game.updateListeners.register(this) { world, game -> val player = (game as? EndlessDead)?.player; game is EndlessDead && game.gameManager.isPlaying && player != null && player.isIn(world as World) };
 	}
 
 	/**

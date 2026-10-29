@@ -50,9 +50,10 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 		super.update(delta);
 
 		if(opening) {
-			if(!(opener?.collidesWith(this) ?: true)) {  // 여는 이가 자리를 벗어나면 열기 취소
+			val opener = this.opener;
+			if(!(opener == null || opener.collidesWith(this))) {  // 여는 이가 자리를 벗어나면 열기 취소
 				openTimer = 0f;
-				opener = null;
+				this.opener = null;
 				openCallback = null;
 				openingProgressBar.value = 0f;
 			} else {
@@ -64,7 +65,7 @@ abstract class HardContainer(world: World? = null, name: String, x: Float = 0f, 
 						it.accept(this, opener);
 						openCallback = null;
 					};
-					opener = null;
+					this.opener = null;
 				}
 				openingProgressBar.value = 1f - openTimer / openDuration;
 			}

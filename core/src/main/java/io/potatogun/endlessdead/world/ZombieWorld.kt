@@ -207,7 +207,7 @@ class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = EndlessDe
 			treeInfo.add(Tree.hashOf(x, y, size));
 		}
 
-		game.updateListeners.register(this) { world, game -> game is EndlessDead && game.gameManager.isPlaying && game.player?.isIn(world as World) ?: false };
+		game.updateListeners.register(this) { world, game -> val player = (game as? EndlessDead)?.player; game is EndlessDead && game.gameManager.isPlaying && player != null && player.isIn(world as World) };
 	}
 
 	/**

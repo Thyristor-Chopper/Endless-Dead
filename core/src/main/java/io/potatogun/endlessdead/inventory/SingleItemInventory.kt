@@ -24,7 +24,7 @@ class SingleItemInventory : ObservableInventory() {
 	override fun addItem(item: Item): Boolean {
 		if(inventoryItem != null) return false;
 		val holder: Inventory? = item.inventory;
-		if(!(holder?.removeItem(item, false) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
+		if(holder != null && !holder.removeItem(item, false)) return false;
 		inventoryItem = item;
 		item.inventory = this;
 		invokeAddObservers(item);
@@ -104,7 +104,7 @@ class SingleItemInventory : ObservableInventory() {
 	@JvmOverloads fun replaceItem(item: Item, disposePrevious: Boolean = true): Boolean {
 		if(inventoryItem == null) return false;
 		val holder: Inventory? = item.inventory;
-		if(!(holder?.removeItem(item, false) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
+		if(holder != null && !holder.removeItem(item, false)) return false;
 		inventoryItem?.let {
 			it.inventory = null;
 			inventoryItem = item;

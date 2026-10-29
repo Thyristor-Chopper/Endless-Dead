@@ -64,7 +64,7 @@ class GridInventory(val rows: Int, val columns: Int) : ObservableInventory() {
 				}
 		if(emptyI == -1 || emptyJ == -1) return false;
 		val holder: Inventory? = item.inventory;
-		if(!(holder?.removeItem(item, false) ?: true)) return false;  // ?: true가 있어서 기존에 들고 있던 개체가 없다면 정상 추가
+		if(holder != null && !holder.removeItem(item, false)) return false;
 		inventory.items[emptyI].items[emptyJ] = item;
 		item.inventory = this;
 		invokeAddObservers(item);

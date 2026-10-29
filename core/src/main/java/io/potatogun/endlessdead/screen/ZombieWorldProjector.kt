@@ -209,7 +209,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			});
 			setJoystickBounds();
 
-			val itemSwitcherCondition = BooleanSupplier { game.gameManager.isPlaying && game.player?.let { !it.inventory.isEmpty } ?: false };
+			val itemSwitcherCondition = BooleanSupplier { val player = game.player; game.gameManager.isPlaying && player != null && !player.inventory.isEmpty };
 			previousItemButton = Button(8f, 2f, 28f, 28f, caption = "<", skin = resources.button) {
 				game.player?.selectPreviousItem();
 			}.apply {
@@ -230,7 +230,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 					player.selectedItem?.let { player.useItem(it) };
 				};
 			}.apply {
-				setVisibleCondition { game.gameManager.isPlaying && game.player?.selectedItem?.let { it is Usable && it !is Shootable } ?: false };
+				setVisibleCondition { val selectedItem = game.player?.selectedItem; game.gameManager.isPlaying && selectedItem is Usable && selectedItem !is Shootable };
 			}.also { addWidget(it) };
 		} else {
 			joystick = null;
@@ -706,7 +706,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 
 		if(game.gameManager.isPlaying) {
 			joystick?.draw(batch, 1f);
-			if(shootJoystick?.isVisible ?: false)
+			if(shootJoystick != null && shootJoystick.isVisible)
 				shootJoystick.draw(batch, 1f);
 		}
 
@@ -768,7 +768,7 @@ class ZombieWorldProjector : WorldProjector(font = EndlessDead.instance.resource
 			// 현재 플레이어가 들고 있는 아이템
 			player.selectedItem?.let {
 				val rarity = it.rarity;
-				val leftMargin = if(previousItemButton?.isVisible ?: false) 72f else 0f;
+				val leftMargin = if(previousItemButton != null && previousItemButton.isVisible) 72f else 0f;
 				batch.draw(it.texture, leftMargin + 8f, 4f, Item.sideLength, Item.sideLength);
 				drawText(
 					text = "${it.name} [${player.selectedItemIndex + 1}/${player.inventory.size}]",

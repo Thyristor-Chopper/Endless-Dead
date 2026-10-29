@@ -26,7 +26,7 @@ class ItemPickupComponent<T>(private val entity: T) where T : Entity, T : Invent
 		entity.forEachNearby { e ->
 			if(e !is DroppedItem) return@forEachNearby;
 			if(!entity.collidesWith(e)) return@forEachNearby;
-			if(condition?.test(e.item) ?: true)
+			if(condition == null || condition.test(e.item))
 				if(e.pickup(entity))
 					pickedUp = true;
 		};
