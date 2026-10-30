@@ -83,9 +83,9 @@ open class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, t
 		// 날아갈 때마다 임의의 개체랑 충돌하는지 검사해서 대미지를 준다.
 		forEachNearby { entity ->
 			if(entity !== shooter && entity is LivingEntity && !entity.isInvincible && !isSameTeamWith(entity) && collidesWith(entity)) {
-				if(!onColliding(entity)) return@forEachNearby;
+				if(!onCollidePreProcess(entity)) return@forEachNearby;
 				entity.takeDamage(damage, attacker = shooter);  // 무적 시간이 필요하면 추가...
-				val next = onCollided(entity);
+				val next = onCollideProcessed(entity);
 				if(isPenetrable) {
 					if(entity is PenetratorDamagable) {
 						this.takeDamage(entity.penetrationDamage, attacker = entity);
@@ -107,14 +107,14 @@ open class Bullet @JvmOverloads constructor(world: World, val shooter: Entity, t
 	 *
 	 * @return 이번 개체를 처리할지의 여부
 	 */
-	open fun onColliding(entity: LivingEntity): Boolean = true;
+	protected open fun onCollidePreProcess(entity: LivingEntity): Boolean = true;
 
 	/**
 	 * 총알이 살아있는 개체와 충돌돼서 처리된 이후 호출되는 콜백이다.
 	 *
 	 * @return 충돌 처리를 계속할지의 여부 (비관통 총알은 효과 없음)
 	 */
-	open fun onCollided(entity: LivingEntity): Boolean = true;
+	protected open fun onCollideProcessed(entity: LivingEntity): Boolean = true;
 
 	override fun move(delta: Float, directionX: Float, directionY: Float) {
 		moveComponent.move(delta, directionX, directionY);
