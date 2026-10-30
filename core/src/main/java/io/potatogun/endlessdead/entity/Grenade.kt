@@ -25,12 +25,12 @@ import kotlin.math.sin;
 class Grenade @JvmOverloads constructor(world: World, shooter: Entity, target: Position?, speed: Float, private val shrapnelSpeed: Float, private val shrapnelDamage: Int, private val shrapnelPenetration: Int = Int.MAX_VALUE) : Bullet(world, shooter, target, speed, 0, false, 1, 24f, EndlessDead.instance.resources.textures.getShared("grenade")) {
 	private val grenadeShooter = shooter;  // private val shooter로 하려 했는데 코틀린 진짜 X같은 언어가 필드 섀도잉는 또 왜 쳐 막는데 진짜 욕나오는 언어네 ㅡㅡ;
 
-	override fun onCollideProcessed(entity: LivingEntity): Boolean {
+	override fun onCollide(entity: LivingEntity): Boolean {
 		explode();
 		return false;
 	}
 
-	private fun explode() {
+	private inline fun explode() {  // onCollidePreProcess에서 한 번만 쓰이므로 인라인
 		val world = level;
 		if(world == null) return;
 		val x = this.x;
