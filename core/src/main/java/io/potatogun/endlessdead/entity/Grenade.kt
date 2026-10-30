@@ -44,7 +44,7 @@ class Grenade @JvmOverloads constructor(world: World, shooter: Entity, target: P
 			val targetX = x + radius * cos(i);
 			val targetY = y + radius * sin(i);
 			bulletTarget.set(targetX, targetY);
-			world.entities.add(Bullet(world, grenadeShooter, bulletTarget, shrapnelSpeed, shrapnelDamage, true, shrapnelPenetration, initialPosition = bulletPosition).apply { teleport(x, y) });
+			world.entities.add(Bullet(world, grenadeShooter, bulletTarget, shrapnelSpeed, shrapnelDamage, true, shrapnelPenetration, initialPosition = bulletPosition));
 			i += 0.2618f;
 		}
 		Pools.position.free(bulletTarget);
