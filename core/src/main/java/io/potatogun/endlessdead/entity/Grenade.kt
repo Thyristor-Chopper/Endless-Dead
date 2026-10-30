@@ -36,7 +36,6 @@ class Grenade @JvmOverloads constructor(world: World, shooter: Entity, target: P
 		val x = this.x;
 		val y = this.y;
 		val radius = 128f;
-		val bulletPosition = Pools.position.obtain(x, y);
 		val bulletTarget = Pools.position.obtain();
 		var i = 0f;
 		val maxAngle = (2f * Math.PI).toFloat();
@@ -44,11 +43,10 @@ class Grenade @JvmOverloads constructor(world: World, shooter: Entity, target: P
 			val targetX = x + radius * cos(i);
 			val targetY = y + radius * sin(i);
 			bulletTarget.set(targetX, targetY);
-			world.entities.add(Bullet(world, grenadeShooter, bulletTarget, shrapnelSpeed, shrapnelDamage, true, shrapnelPenetration, initialPosition = bulletPosition));
-			i += 0.2618f;
+			world.entities.add(Bullet(world, grenadeShooter, bulletTarget, shrapnelSpeed, shrapnelDamage, true, shrapnelPenetration, initialPosition = this.position));
+			i += 0.1745f;
 		}
 		Pools.position.free(bulletTarget);
-		Pools.position.free(bulletPosition);
 		this.remove();
 	}
 }
