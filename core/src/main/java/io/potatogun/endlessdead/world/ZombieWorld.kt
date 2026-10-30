@@ -46,7 +46,6 @@ import io.potatogun.gdxhelper.util.min2;
 import io.potatogun.gdxhelper.util.rgb;
 import io.potatogun.gdxhelper.world.Freezable;
 import io.potatogun.gdxhelper.world.SimpleFreezer;
-import io.potatogun.gdxhelper.world.TimedWorld;
 import io.potatogun.gdxhelper.world.World;
 
 import kotlin.math.ceil;
@@ -56,7 +55,7 @@ import kotlin.random.Random;
 /**
  * 좀비 파밍 월드
  */
-class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = EndlessDead.instance.resources.font), Freezable by SimpleFreezer(), TimedWorld, TimerAttachable {
+class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = EndlessDead.instance.resources.font), Freezable by SimpleFreezer(), TimerAttachable {
 	private val game = EndlessDead.instance;
 	// 등록된 스포너 목록
 	private val spawners = GdxArray<Spawner>(false, 2, ArraySuppliers.spawner);
@@ -85,9 +84,6 @@ class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = EndlessDe
 	private val voidSize = 128f;
 	// 타이머
 	private val timers = TimerManager();
-	// 이 월드의 시간
-	override var time = 0f
-		private set;
 	// 추가 월드
 	private val specialWorld: World?;
 	private val hasSpecialWorld: Boolean
@@ -249,8 +245,6 @@ class ZombieWorld : World(2560f, 2560f, SpatialGrid(256, 128f), font = EndlessDe
 
 	// 개체, 스포너 및 타이머를 갱신한다.
 	override fun update(delta: Float) {
-		time += delta;
-
 		timers.update(delta);
 
 		// ── 게임 객체 갱신 — 각자 한 프레임씩 진행 ──

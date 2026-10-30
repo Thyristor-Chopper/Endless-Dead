@@ -339,9 +339,6 @@ class Player private constructor(world: World? = null, x: Float = 0f, y: Float =
 	override fun onAttack(victim: LivingEntity) {
 		if(victim !is Bullet && victim !is Landmine && lastAttackVictim !== victim)
 			wrLastAttackVictim = WeakReference(victim);
-
-		if(victim is AttackScorable)
-			scoreManager.addScore(victim.attackScore);
 	}
 
 	/**
