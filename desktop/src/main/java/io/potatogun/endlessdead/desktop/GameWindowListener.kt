@@ -12,7 +12,7 @@ class GameWindowListener(private val game: EndlessDead) : Lwjgl3WindowListener {
 	private var closeDialogShowing = false;
 
 	override fun closeRequested(): Boolean {
-		if(!game.gameManager.isPlaying && !game.gameManager.isPaused)
+		if(!game.gameManager.isPlaying && !game.gameManager.isPaused && !game.gameManager.isGameOver)
 			return true;
 
 		closeDialogShowing = true;
