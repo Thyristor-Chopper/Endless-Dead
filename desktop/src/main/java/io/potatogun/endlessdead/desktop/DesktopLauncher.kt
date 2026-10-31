@@ -25,9 +25,6 @@ fun main(args: Array<String>) {
 	// 게임 객체 만들기
 	val game = EndlessDead();
 
-	// 창 이벤트 감시자 생성
-	val windowListener = GameWindowListener(game);
-
 	// 창(Window) 설정
 	val config = Lwjgl3ApplicationConfiguration().apply {
 		setTitle("${Constants.GAME_TITLE} - Loading...");
@@ -38,7 +35,7 @@ fun main(args: Array<String>) {
 		setForegroundFPS(Constants.PASSIVE_FPS);  // 첫화면은 타이틀 화면이므로 낮은 fps로
 		setIdleFPS(1);  // 최소화됐을 땐 1 FPS
 		setWindowIcon(FileType.Internal, "icon_16.bmp", "icon_32.bmp", "icon_48.bmp");
-		setWindowListener(windowListener);
+		setWindowListener(GameWindowListener(game));
 	};
 
 	// 실행

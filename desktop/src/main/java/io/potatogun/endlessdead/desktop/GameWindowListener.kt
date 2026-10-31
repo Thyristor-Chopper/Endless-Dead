@@ -1,14 +1,13 @@
 package io.potatogun.endlessdead.desktop;
 
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
+import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowAdapter;
 
 import io.potatogun.endlessdead.Constants;
 import io.potatogun.endlessdead.EndlessDead;
 
 import org.lwjgl.util.tinyfd.TinyFileDialogs;
 
-class GameWindowListener(private val game: EndlessDead) : Lwjgl3WindowListener {
+class GameWindowListener(private val game: EndlessDead) : Lwjgl3WindowAdapter() {
 	private var closeDialogShowing = false;
 
 	override fun closeRequested(): Boolean {
@@ -20,10 +19,6 @@ class GameWindowListener(private val game: EndlessDead) : Lwjgl3WindowListener {
 		return result;
 	}
 
-	override fun created(window: Lwjgl3Window) {}
-
-	override fun filesDropped(files: Array<String>) {}
-
 	override fun focusGained() {
 		if(closeDialogShowing)
 			closeDialogShowing = false;
@@ -32,13 +27,8 @@ class GameWindowListener(private val game: EndlessDead) : Lwjgl3WindowListener {
 	override fun focusLost() {
 		if(game.gameManager.isPlaying && !closeDialogShowing)
 			game.gameManager.pause();
+
 		if(closeDialogShowing)
 			closeDialogShowing = false;
 	}
-
-	override fun iconified(isIconified: Boolean) {}
-
-	override fun maximized(isMaximized: Boolean) {}
-
-	override fun refreshRequested() {}
 }
