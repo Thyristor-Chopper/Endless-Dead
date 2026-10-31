@@ -31,7 +31,7 @@ class TurboStreamliner : Gun("turbo_streamliner", "Turbo Streamliner", Gun.Prope
 		val result = super.shoot(target, shooter);
 
 		// 1분마다 총알 재장전
-		if(bullets <= 0)
+		if(result > 0 && bullets <= 0)
 			refillTimer = refillInterval;
 
 		return result;
